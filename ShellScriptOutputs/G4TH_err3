@@ -1,0 +1,13 @@
+{Error using parallel_function (line 598)
+The session that parfor is using has shut down
+
+Error in MultiAngleDiffuseScript_parallel1 (line 41)
+parfor i = 1:length(flist)
+} 
+{The client lost connection to lab 3.
+This  might be due to network problems, or the interactive matlabpool job might
+have errored. This is causing: java.io.EOFException: EOF while reading from
+PlainConnection{fSocketChannel=java.nio.channels.SocketChannel[closed],
+fRemoteInstance=[Process: lab 3]}
+} 
+

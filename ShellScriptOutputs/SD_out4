@@ -1,0 +1,1648 @@
+Warning: No window system found.  Java option 'MWT' ignored
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2011 The MathWorks, Inc.
+                    R2011b (7.13.0.31) 64-bit (glnxa64)
+                                May 24, 2011
+
+ 
+To get started, type one of these: helpwin, helpdesk, or demo.
+For product information, visit www.mathworks.com.
+ 
+Found 817 files at 19-Oct-2012 09:58:34
+Initialized variables are taking ~135826492 bytes
+Loaded MultiAngle_Diffused_40_1.mat at 19-Oct-2012 09:58:35 in 0 seconds with 135826500 b used
+Finished MultiAngle_Diffused_40_1.mat at 19-Oct-2012 09:58:36
+Loaded MultiAngle_Diffused_40_10.mat at 19-Oct-2012 09:58:36 in 0.85544 seconds with 117883097 b used
+Finished MultiAngle_Diffused_40_10.mat at 19-Oct-2012 09:58:37
+Loaded MultiAngle_Diffused_40_100.mat at 19-Oct-2012 09:58:38 in 0.96369 seconds with 131438478 b used
+Finished MultiAngle_Diffused_40_100.mat at 19-Oct-2012 09:58:38
+Loaded MultiAngle_Diffused_40_101.mat at 19-Oct-2012 09:58:39 in 0.83302 seconds with 126670661 b used
+Finished MultiAngle_Diffused_40_101.mat at 19-Oct-2012 09:58:39
+Loaded MultiAngle_Diffused_40_102.mat at 19-Oct-2012 09:58:40 in 0.89266 seconds with 123873833 b used
+Finished MultiAngle_Diffused_40_102.mat at 19-Oct-2012 09:58:40
+Loaded MultiAngle_Diffused_40_103.mat at 19-Oct-2012 09:58:41 in 0.8683 seconds with 130236853 b used
+Finished MultiAngle_Diffused_40_103.mat at 19-Oct-2012 09:58:41
+Loaded MultiAngle_Diffused_40_104.mat at 19-Oct-2012 09:58:52 in 10.867 seconds with 132007588 b used
+Finished MultiAngle_Diffused_40_104.mat at 19-Oct-2012 09:58:52
+Loaded MultiAngle_Diffused_40_105.mat at 19-Oct-2012 09:58:53 in 1.0002 seconds with 138636745 b used
+Finished MultiAngle_Diffused_40_105.mat at 19-Oct-2012 09:58:53
+Loaded MultiAngle_Diffused_40_106.mat at 19-Oct-2012 09:58:54 in 0.89851 seconds with 133519231 b used
+Finished MultiAngle_Diffused_40_106.mat at 19-Oct-2012 09:58:54
+Loaded MultiAngle_Diffused_40_107.mat at 19-Oct-2012 09:58:55 in 0.85132 seconds with 126893773 b used
+Finished MultiAngle_Diffused_40_107.mat at 19-Oct-2012 09:58:55
+Loaded MultiAngle_Diffused_40_108.mat at 19-Oct-2012 09:58:56 in 0.94646 seconds with 140899987 b used
+Finished MultiAngle_Diffused_40_108.mat at 19-Oct-2012 09:58:56
+Loaded MultiAngle_Diffused_40_109.mat at 19-Oct-2012 09:58:57 in 0.87186 seconds with 134175104 b used
+Finished MultiAngle_Diffused_40_109.mat at 19-Oct-2012 09:58:57
+Loaded MultiAngle_Diffused_40_11.mat at 19-Oct-2012 09:58:58 in 0.88627 seconds with 132375035 b used
+Finished MultiAngle_Diffused_40_11.mat at 19-Oct-2012 09:58:58
+Loaded MultiAngle_Diffused_40_110.mat at 19-Oct-2012 09:58:59 in 0.87234 seconds with 127947062 b used
+Finished MultiAngle_Diffused_40_110.mat at 19-Oct-2012 09:58:59
+Loaded MultiAngle_Diffused_40_111.mat at 19-Oct-2012 09:59:00 in 0.90048 seconds with 137091565 b used
+Finished MultiAngle_Diffused_40_111.mat at 19-Oct-2012 09:59:00
+Loaded MultiAngle_Diffused_40_112.mat at 19-Oct-2012 09:59:01 in 0.84444 seconds with 126309245 b used
+Finished MultiAngle_Diffused_40_112.mat at 19-Oct-2012 09:59:02
+Loaded MultiAngle_Diffused_40_113.mat at 19-Oct-2012 09:59:02 in 0.9861 seconds with 134584492 b used
+Finished MultiAngle_Diffused_40_113.mat at 19-Oct-2012 09:59:03
+Loaded MultiAngle_Diffused_40_114.mat at 19-Oct-2012 09:59:04 in 0.90998 seconds with 137344740 b used
+Finished MultiAngle_Diffused_40_114.mat at 19-Oct-2012 09:59:04
+Loaded MultiAngle_Diffused_40_115.mat at 19-Oct-2012 09:59:05 in 1.0334 seconds with 132045406 b used
+Finished MultiAngle_Diffused_40_115.mat at 19-Oct-2012 09:59:05
+Loaded MultiAngle_Diffused_40_116.mat at 19-Oct-2012 09:59:06 in 0.92387 seconds with 126167268 b used
+Finished MultiAngle_Diffused_40_116.mat at 19-Oct-2012 09:59:06
+Loaded MultiAngle_Diffused_40_117.mat at 19-Oct-2012 09:59:07 in 0.90563 seconds with 134240428 b used
+Finished MultiAngle_Diffused_40_117.mat at 19-Oct-2012 09:59:07
+Loaded MultiAngle_Diffused_40_118.mat at 19-Oct-2012 09:59:08 in 1.0868 seconds with 122569321 b used
+Finished MultiAngle_Diffused_40_118.mat at 19-Oct-2012 09:59:08
+Loaded MultiAngle_Diffused_40_119.mat at 19-Oct-2012 09:59:11 in 2.9903 seconds with 135054359 b used
+Finished MultiAngle_Diffused_40_119.mat at 19-Oct-2012 09:59:12
+Loaded MultiAngle_Diffused_40_12.mat at 19-Oct-2012 09:59:12 in 0.90714 seconds with 135688243 b used
+Finished MultiAngle_Diffused_40_12.mat at 19-Oct-2012 09:59:13
+Loaded MultiAngle_Diffused_40_120.mat at 19-Oct-2012 09:59:14 in 1.1306 seconds with 143552964 b used
+Finished MultiAngle_Diffused_40_120.mat at 19-Oct-2012 09:59:14
+Loaded MultiAngle_Diffused_40_121.mat at 19-Oct-2012 09:59:15 in 0.81133 seconds with 115951552 b used
+Finished MultiAngle_Diffused_40_121.mat at 19-Oct-2012 09:59:15
+Loaded MultiAngle_Diffused_40_122.mat at 19-Oct-2012 09:59:16 in 0.92951 seconds with 128048843 b used
+Finished MultiAngle_Diffused_40_122.mat at 19-Oct-2012 09:59:16
+Loaded MultiAngle_Diffused_40_123.mat at 19-Oct-2012 09:59:19 in 2.8991 seconds with 129031050 b used
+Finished MultiAngle_Diffused_40_123.mat at 19-Oct-2012 09:59:19
+Loaded MultiAngle_Diffused_40_124.mat at 19-Oct-2012 09:59:20 in 0.86826 seconds with 125559390 b used
+Finished MultiAngle_Diffused_40_124.mat at 19-Oct-2012 09:59:20
+Loaded MultiAngle_Diffused_40_125.mat at 19-Oct-2012 09:59:21 in 0.94869 seconds with 124413087 b used
+Finished MultiAngle_Diffused_40_125.mat at 19-Oct-2012 09:59:21
+Loaded MultiAngle_Diffused_40_126.mat at 19-Oct-2012 09:59:22 in 0.84597 seconds with 121837478 b used
+Finished MultiAngle_Diffused_40_126.mat at 19-Oct-2012 09:59:22
+Loaded MultiAngle_Diffused_40_127.mat at 19-Oct-2012 09:59:23 in 0.98735 seconds with 136975447 b used
+Finished MultiAngle_Diffused_40_127.mat at 19-Oct-2012 09:59:23
+Loaded MultiAngle_Diffused_40_128.mat at 19-Oct-2012 09:59:24 in 0.82025 seconds with 121097079 b used
+Finished MultiAngle_Diffused_40_128.mat at 19-Oct-2012 09:59:24
+Loaded MultiAngle_Diffused_40_129.mat at 19-Oct-2012 09:59:25 in 0.84546 seconds with 120343076 b used
+Finished MultiAngle_Diffused_40_129.mat at 19-Oct-2012 09:59:25
+Loaded MultiAngle_Diffused_40_13.mat at 19-Oct-2012 09:59:26 in 0.97822 seconds with 139279876 b used
+Finished MultiAngle_Diffused_40_13.mat at 19-Oct-2012 09:59:27
+Loaded MultiAngle_Diffused_40_130.mat at 19-Oct-2012 09:59:27 in 0.8604 seconds with 125169424 b used
+Finished MultiAngle_Diffused_40_130.mat at 19-Oct-2012 09:59:28
+Loaded MultiAngle_Diffused_40_131.mat at 19-Oct-2012 09:59:29 in 0.93693 seconds with 129543878 b used
+Finished MultiAngle_Diffused_40_131.mat at 19-Oct-2012 09:59:29
+Loaded MultiAngle_Diffused_40_132.mat at 19-Oct-2012 09:59:30 in 0.814 seconds with 127578583 b used
+Finished MultiAngle_Diffused_40_132.mat at 19-Oct-2012 09:59:30
+Loaded MultiAngle_Diffused_40_133.mat at 19-Oct-2012 09:59:33 in 3.6701 seconds with 137010513 b used
+Finished MultiAngle_Diffused_40_133.mat at 19-Oct-2012 09:59:34
+Loaded MultiAngle_Diffused_40_134.mat at 19-Oct-2012 09:59:34 in 0.81024 seconds with 124050014 b used
+Finished MultiAngle_Diffused_40_134.mat at 19-Oct-2012 09:59:35
+Loaded MultiAngle_Diffused_40_135.mat at 19-Oct-2012 09:59:41 in 5.9987 seconds with 132586884 b used
+Finished MultiAngle_Diffused_40_135.mat at 19-Oct-2012 09:59:41
+Loaded MultiAngle_Diffused_40_136.mat at 19-Oct-2012 09:59:42 in 1.1596 seconds with 143562620 b used
+Finished MultiAngle_Diffused_40_136.mat at 19-Oct-2012 09:59:42
+Loaded MultiAngle_Diffused_40_137.mat at 19-Oct-2012 09:59:43 in 1.0902 seconds with 150064119 b used
+Finished MultiAngle_Diffused_40_137.mat at 19-Oct-2012 09:59:43
+Skipping placeholder file MultiAngle_Diffused_40_138_PH.mat
+Loaded MultiAngle_Diffused_40_139.mat at 19-Oct-2012 09:59:44 in 1.0243 seconds with 131298009 b used
+Finished MultiAngle_Diffused_40_139.mat at 19-Oct-2012 09:59:45
+Loaded MultiAngle_Diffused_40_14.mat at 19-Oct-2012 09:59:45 in 0.87536 seconds with 132142818 b used
+Finished MultiAngle_Diffused_40_14.mat at 19-Oct-2012 09:59:46
+Loaded MultiAngle_Diffused_40_140.mat at 19-Oct-2012 09:59:47 in 1.0318 seconds with 147310469 b used
+Finished MultiAngle_Diffused_40_140.mat at 19-Oct-2012 09:59:47
+Loaded MultiAngle_Diffused_40_141.mat at 19-Oct-2012 09:59:48 in 0.91753 seconds with 122877195 b used
+Finished MultiAngle_Diffused_40_141.mat at 19-Oct-2012 09:59:48
+Loaded MultiAngle_Diffused_40_142.mat at 19-Oct-2012 09:59:49 in 0.94306 seconds with 136495117 b used
+Finished MultiAngle_Diffused_40_142.mat at 19-Oct-2012 09:59:49
+Loaded MultiAngle_Diffused_40_143.mat at 19-Oct-2012 09:59:50 in 0.91509 seconds with 136323717 b used
+Finished MultiAngle_Diffused_40_143.mat at 19-Oct-2012 09:59:50
+Loaded MultiAngle_Diffused_40_144.mat at 19-Oct-2012 09:59:55 in 4.5484 seconds with 140593946 b used
+Finished MultiAngle_Diffused_40_144.mat at 19-Oct-2012 09:59:55
+Loaded MultiAngle_Diffused_40_145.mat at 19-Oct-2012 09:59:56 in 0.94997 seconds with 140613279 b used
+Finished MultiAngle_Diffused_40_145.mat at 19-Oct-2012 09:59:56
+Loaded MultiAngle_Diffused_40_146.mat at 19-Oct-2012 09:59:57 in 0.89075 seconds with 127591450 b used
+Finished MultiAngle_Diffused_40_146.mat at 19-Oct-2012 09:59:57
+Loaded MultiAngle_Diffused_40_147.mat at 19-Oct-2012 09:59:58 in 0.86875 seconds with 123961050 b used
+Finished MultiAngle_Diffused_40_147.mat at 19-Oct-2012 09:59:58
+Loaded MultiAngle_Diffused_40_148.mat at 19-Oct-2012 09:59:59 in 1.2204 seconds with 125895243 b used
+Finished MultiAngle_Diffused_40_148.mat at 19-Oct-2012 09:59:59
+Loaded MultiAngle_Diffused_40_149.mat at 19-Oct-2012 10:00:01 in 1.0794 seconds with 123454020 b used
+Finished MultiAngle_Diffused_40_149.mat at 19-Oct-2012 10:00:01
+Loaded MultiAngle_Diffused_40_15.mat at 19-Oct-2012 10:00:02 in 1.1071 seconds with 144536125 b used
+Finished MultiAngle_Diffused_40_15.mat at 19-Oct-2012 10:00:02
+Loaded MultiAngle_Diffused_40_150.mat at 19-Oct-2012 10:00:03 in 0.96352 seconds with 146117156 b used
+Finished MultiAngle_Diffused_40_150.mat at 19-Oct-2012 10:00:03
+Loaded MultiAngle_Diffused_40_151.mat at 19-Oct-2012 10:00:04 in 0.818 seconds with 127098036 b used
+Finished MultiAngle_Diffused_40_151.mat at 19-Oct-2012 10:00:04
+Loaded MultiAngle_Diffused_40_152.mat at 19-Oct-2012 10:00:05 in 0.82971 seconds with 126833802 b used
+Finished MultiAngle_Diffused_40_152.mat at 19-Oct-2012 10:00:05
+Loaded MultiAngle_Diffused_40_153.mat at 19-Oct-2012 10:00:06 in 0.82545 seconds with 124512545 b used
+Finished MultiAngle_Diffused_40_153.mat at 19-Oct-2012 10:00:06
+Loaded MultiAngle_Diffused_40_154.mat at 19-Oct-2012 10:00:07 in 0.89464 seconds with 126696061 b used
+Finished MultiAngle_Diffused_40_154.mat at 19-Oct-2012 10:00:07
+Loaded MultiAngle_Diffused_40_155.mat at 19-Oct-2012 10:00:08 in 0.90226 seconds with 130905476 b used
+Finished MultiAngle_Diffused_40_155.mat at 19-Oct-2012 10:00:08
+Loaded MultiAngle_Diffused_40_156.mat at 19-Oct-2012 10:00:10 in 2.2135 seconds with 143854588 b used
+Finished MultiAngle_Diffused_40_156.mat at 19-Oct-2012 10:00:11
+Loaded MultiAngle_Diffused_40_157.mat at 19-Oct-2012 10:00:12 in 1.1494 seconds with 137838453 b used
+Finished MultiAngle_Diffused_40_157.mat at 19-Oct-2012 10:00:12
+Loaded MultiAngle_Diffused_40_158.mat at 19-Oct-2012 10:00:13 in 1.1129 seconds with 127716251 b used
+Finished MultiAngle_Diffused_40_158.mat at 19-Oct-2012 10:00:13
+Loaded MultiAngle_Diffused_40_159.mat at 19-Oct-2012 10:00:14 in 1.0825 seconds with 129105691 b used
+Finished MultiAngle_Diffused_40_159.mat at 19-Oct-2012 10:00:14
+Loaded MultiAngle_Diffused_40_16.mat at 19-Oct-2012 10:00:23 in 8.5773 seconds with 137307325 b used
+Finished MultiAngle_Diffused_40_16.mat at 19-Oct-2012 10:00:23
+Loaded MultiAngle_Diffused_40_160.mat at 19-Oct-2012 10:00:25 in 1.687 seconds with 141141611 b used
+Finished MultiAngle_Diffused_40_160.mat at 19-Oct-2012 10:00:25
+Loaded MultiAngle_Diffused_40_161.mat at 19-Oct-2012 10:00:34 in 8.5342 seconds with 120913052 b used
+Finished MultiAngle_Diffused_40_161.mat at 19-Oct-2012 10:00:34
+Loaded MultiAngle_Diffused_40_162.mat at 19-Oct-2012 10:00:35 in 0.90314 seconds with 135200864 b used
+Finished MultiAngle_Diffused_40_162.mat at 19-Oct-2012 10:00:35
+Loaded MultiAngle_Diffused_40_163.mat at 19-Oct-2012 10:00:36 in 0.90578 seconds with 137634314 b used
+Finished MultiAngle_Diffused_40_163.mat at 19-Oct-2012 10:00:36
+Loaded MultiAngle_Diffused_40_164.mat at 19-Oct-2012 10:00:37 in 0.92663 seconds with 133352382 b used
+Finished MultiAngle_Diffused_40_164.mat at 19-Oct-2012 10:00:37
+Loaded MultiAngle_Diffused_40_165.mat at 19-Oct-2012 10:00:38 in 1.0381 seconds with 144265230 b used
+Finished MultiAngle_Diffused_40_165.mat at 19-Oct-2012 10:00:38
+Loaded MultiAngle_Diffused_40_166.mat at 19-Oct-2012 10:00:39 in 0.92408 seconds with 125257039 b used
+Finished MultiAngle_Diffused_40_166.mat at 19-Oct-2012 10:00:39
+Loaded MultiAngle_Diffused_40_167.mat at 19-Oct-2012 10:00:40 in 0.94471 seconds with 137192723 b used
+Finished MultiAngle_Diffused_40_167.mat at 19-Oct-2012 10:00:41
+Loaded MultiAngle_Diffused_40_168.mat at 19-Oct-2012 10:00:41 in 0.83028 seconds with 121563928 b used
+Finished MultiAngle_Diffused_40_168.mat at 19-Oct-2012 10:00:42
+Loaded MultiAngle_Diffused_40_169.mat at 19-Oct-2012 10:00:43 in 1.0047 seconds with 145957944 b used
+Finished MultiAngle_Diffused_40_169.mat at 19-Oct-2012 10:00:43
+Loaded MultiAngle_Diffused_40_17.mat at 19-Oct-2012 10:00:44 in 0.96597 seconds with 134806828 b used
+Finished MultiAngle_Diffused_40_17.mat at 19-Oct-2012 10:00:44
+Loaded MultiAngle_Diffused_40_170.mat at 19-Oct-2012 10:00:45 in 0.88343 seconds with 131061602 b used
+Finished MultiAngle_Diffused_40_170.mat at 19-Oct-2012 10:00:45
+Loaded MultiAngle_Diffused_40_171.mat at 19-Oct-2012 10:00:46 in 0.95611 seconds with 125974481 b used
+Finished MultiAngle_Diffused_40_171.mat at 19-Oct-2012 10:00:46
+Loaded MultiAngle_Diffused_40_18.mat at 19-Oct-2012 10:00:47 in 0.9043 seconds with 125385110 b used
+Finished MultiAngle_Diffused_40_18.mat at 19-Oct-2012 10:00:47
+Loaded MultiAngle_Diffused_40_19.mat at 19-Oct-2012 10:00:48 in 0.96014 seconds with 136936090 b used
+Finished MultiAngle_Diffused_40_19.mat at 19-Oct-2012 10:00:48
+Loaded MultiAngle_Diffused_40_2.mat at 19-Oct-2012 10:00:50 in 2.2305 seconds with 133724604 b used
+Finished MultiAngle_Diffused_40_2.mat at 19-Oct-2012 10:00:51
+Loaded MultiAngle_Diffused_40_20.mat at 19-Oct-2012 10:00:59 in 8.7579 seconds with 137223119 b used
+Finished MultiAngle_Diffused_40_20.mat at 19-Oct-2012 10:01:00
+Loaded MultiAngle_Diffused_40_21.mat at 19-Oct-2012 10:01:00 in 0.90274 seconds with 135567466 b used
+Finished MultiAngle_Diffused_40_21.mat at 19-Oct-2012 10:01:01
+Loaded MultiAngle_Diffused_40_22.mat at 19-Oct-2012 10:01:02 in 0.96488 seconds with 126537242 b used
+Finished MultiAngle_Diffused_40_22.mat at 19-Oct-2012 10:01:02
+Loaded MultiAngle_Diffused_40_23.mat at 19-Oct-2012 10:01:03 in 0.9126 seconds with 136089579 b used
+Finished MultiAngle_Diffused_40_23.mat at 19-Oct-2012 10:01:03
+Loaded MultiAngle_Diffused_40_24.mat at 19-Oct-2012 10:01:05 in 2.1567 seconds with 138542073 b used
+Finished MultiAngle_Diffused_40_24.mat at 19-Oct-2012 10:01:05
+Loaded MultiAngle_Diffused_40_25.mat at 19-Oct-2012 10:01:06 in 1.0192 seconds with 122568603 b used
+Finished MultiAngle_Diffused_40_25.mat at 19-Oct-2012 10:01:06
+Loaded MultiAngle_Diffused_40_26.mat at 19-Oct-2012 10:01:07 in 1.0042 seconds with 143355578 b used
+Finished MultiAngle_Diffused_40_26.mat at 19-Oct-2012 10:01:08
+Loaded MultiAngle_Diffused_40_27.mat at 19-Oct-2012 10:01:09 in 1.0437 seconds with 144745564 b used
+Finished MultiAngle_Diffused_40_27.mat at 19-Oct-2012 10:01:09
+Loaded MultiAngle_Diffused_40_28.mat at 19-Oct-2012 10:01:11 in 1.8907 seconds with 130379351 b used
+Finished MultiAngle_Diffused_40_28.mat at 19-Oct-2012 10:01:11
+Loaded MultiAngle_Diffused_40_29.mat at 19-Oct-2012 10:01:12 in 0.98458 seconds with 136523133 b used
+Finished MultiAngle_Diffused_40_29.mat at 19-Oct-2012 10:01:12
+Loaded MultiAngle_Diffused_40_3.mat at 19-Oct-2012 10:01:13 in 0.95202 seconds with 134347818 b used
+Finished MultiAngle_Diffused_40_3.mat at 19-Oct-2012 10:01:13
+Loaded MultiAngle_Diffused_40_30.mat at 19-Oct-2012 10:01:14 in 0.89339 seconds with 133670393 b used
+Finished MultiAngle_Diffused_40_30.mat at 19-Oct-2012 10:01:14
+Loaded MultiAngle_Diffused_40_31.mat at 19-Oct-2012 10:01:15 in 1.0288 seconds with 151327628 b used
+Finished MultiAngle_Diffused_40_31.mat at 19-Oct-2012 10:01:15
+Loaded MultiAngle_Diffused_40_32.mat at 19-Oct-2012 10:01:16 in 1.0046 seconds with 133788700 b used
+Finished MultiAngle_Diffused_40_32.mat at 19-Oct-2012 10:01:17
+Loaded MultiAngle_Diffused_40_33.mat at 19-Oct-2012 10:01:18 in 0.9519 seconds with 134372403 b used
+Finished MultiAngle_Diffused_40_33.mat at 19-Oct-2012 10:01:18
+Loaded MultiAngle_Diffused_40_34.mat at 19-Oct-2012 10:01:19 in 0.95163 seconds with 134097711 b used
+Finished MultiAngle_Diffused_40_34.mat at 19-Oct-2012 10:01:19
+Loaded MultiAngle_Diffused_40_35.mat at 19-Oct-2012 10:01:20 in 0.95778 seconds with 134604108 b used
+Finished MultiAngle_Diffused_40_35.mat at 19-Oct-2012 10:01:20
+Loaded MultiAngle_Diffused_40_36.mat at 19-Oct-2012 10:01:27 in 7.0069 seconds with 121689091 b used
+Finished MultiAngle_Diffused_40_36.mat at 19-Oct-2012 10:01:27
+Loaded MultiAngle_Diffused_40_37.mat at 19-Oct-2012 10:01:28 in 1.1149 seconds with 138116933 b used
+Finished MultiAngle_Diffused_40_37.mat at 19-Oct-2012 10:01:29
+Loaded MultiAngle_Diffused_40_38.mat at 19-Oct-2012 10:01:29 in 0.97256 seconds with 128709795 b used
+Finished MultiAngle_Diffused_40_38.mat at 19-Oct-2012 10:01:30
+Loaded MultiAngle_Diffused_40_39.mat at 19-Oct-2012 10:01:31 in 0.97977 seconds with 139386113 b used
+Finished MultiAngle_Diffused_40_39.mat at 19-Oct-2012 10:01:31
+Loaded MultiAngle_Diffused_40_4.mat at 19-Oct-2012 10:01:33 in 1.7143 seconds with 142741730 b used
+Finished MultiAngle_Diffused_40_4.mat at 19-Oct-2012 10:01:33
+Loaded MultiAngle_Diffused_40_40.mat at 19-Oct-2012 10:01:34 in 0.98446 seconds with 128674417 b used
+Finished MultiAngle_Diffused_40_40.mat at 19-Oct-2012 10:01:34
+Loaded MultiAngle_Diffused_40_41.mat at 19-Oct-2012 10:01:35 in 0.88423 seconds with 129603909 b used
+Finished MultiAngle_Diffused_40_41.mat at 19-Oct-2012 10:01:35
+Loaded MultiAngle_Diffused_40_42.mat at 19-Oct-2012 10:01:36 in 0.88842 seconds with 131373009 b used
+Finished MultiAngle_Diffused_40_42.mat at 19-Oct-2012 10:01:36
+Loaded MultiAngle_Diffused_40_43.mat at 19-Oct-2012 10:01:37 in 0.89928 seconds with 131923646 b used
+Finished MultiAngle_Diffused_40_43.mat at 19-Oct-2012 10:01:37
+Loaded MultiAngle_Diffused_40_44.mat at 19-Oct-2012 10:01:38 in 0.85454 seconds with 125826435 b used
+Finished MultiAngle_Diffused_40_44.mat at 19-Oct-2012 10:01:38
+Loaded MultiAngle_Diffused_40_45.mat at 19-Oct-2012 10:01:39 in 0.93262 seconds with 131602621 b used
+Finished MultiAngle_Diffused_40_45.mat at 19-Oct-2012 10:01:39
+Loaded MultiAngle_Diffused_40_46.mat at 19-Oct-2012 10:01:40 in 0.91835 seconds with 134116958 b used
+Finished MultiAngle_Diffused_40_46.mat at 19-Oct-2012 10:01:40
+Loaded MultiAngle_Diffused_40_47.mat at 19-Oct-2012 10:01:41 in 0.89322 seconds with 130038273 b used
+Finished MultiAngle_Diffused_40_47.mat at 19-Oct-2012 10:01:41
+Loaded MultiAngle_Diffused_40_48.mat at 19-Oct-2012 10:01:42 in 1.0892 seconds with 129256267 b used
+Finished MultiAngle_Diffused_40_48.mat at 19-Oct-2012 10:01:43
+Loaded MultiAngle_Diffused_40_49.mat at 19-Oct-2012 10:01:43 in 0.83044 seconds with 125946620 b used
+Finished MultiAngle_Diffused_40_49.mat at 19-Oct-2012 10:01:44
+Loaded MultiAngle_Diffused_40_5.mat at 19-Oct-2012 10:01:44 in 0.87001 seconds with 127784053 b used
+Finished MultiAngle_Diffused_40_5.mat at 19-Oct-2012 10:01:45
+Loaded MultiAngle_Diffused_40_50.mat at 19-Oct-2012 10:01:46 in 0.99646 seconds with 141949919 b used
+Finished MultiAngle_Diffused_40_50.mat at 19-Oct-2012 10:01:46
+Loaded MultiAngle_Diffused_40_51.mat at 19-Oct-2012 10:01:47 in 0.85636 seconds with 124825875 b used
+Finished MultiAngle_Diffused_40_51.mat at 19-Oct-2012 10:01:47
+Loaded MultiAngle_Diffused_40_52.mat at 19-Oct-2012 10:01:48 in 1.3431 seconds with 113878534 b used
+Finished MultiAngle_Diffused_40_52.mat at 19-Oct-2012 10:01:48
+Loaded MultiAngle_Diffused_40_53.mat at 19-Oct-2012 10:01:51 in 2.494 seconds with 133176838 b used
+Finished MultiAngle_Diffused_40_53.mat at 19-Oct-2012 10:01:51
+Loaded MultiAngle_Diffused_40_54.mat at 19-Oct-2012 10:01:52 in 1.0163 seconds with 136533732 b used
+Finished MultiAngle_Diffused_40_54.mat at 19-Oct-2012 10:01:52
+Loaded MultiAngle_Diffused_40_55.mat at 19-Oct-2012 10:01:53 in 1.21 seconds with 135562587 b used
+Finished MultiAngle_Diffused_40_55.mat at 19-Oct-2012 10:01:54
+Loaded MultiAngle_Diffused_40_56.mat at 19-Oct-2012 10:01:55 in 0.9755 seconds with 140090001 b used
+Finished MultiAngle_Diffused_40_56.mat at 19-Oct-2012 10:01:55
+Loaded MultiAngle_Diffused_40_57.mat at 19-Oct-2012 10:01:56 in 0.94033 seconds with 139881302 b used
+Finished MultiAngle_Diffused_40_57.mat at 19-Oct-2012 10:01:56
+Loaded MultiAngle_Diffused_40_58.mat at 19-Oct-2012 10:01:57 in 0.8715 seconds with 130907784 b used
+Finished MultiAngle_Diffused_40_58.mat at 19-Oct-2012 10:01:57
+Loaded MultiAngle_Diffused_40_59.mat at 19-Oct-2012 10:01:58 in 0.88124 seconds with 131922667 b used
+Finished MultiAngle_Diffused_40_59.mat at 19-Oct-2012 10:01:58
+Loaded MultiAngle_Diffused_40_6.mat at 19-Oct-2012 10:01:59 in 0.93967 seconds with 140488575 b used
+Finished MultiAngle_Diffused_40_6.mat at 19-Oct-2012 10:01:59
+Loaded MultiAngle_Diffused_40_60.mat at 19-Oct-2012 10:02:00 in 1.0812 seconds with 142642178 b used
+Finished MultiAngle_Diffused_40_60.mat at 19-Oct-2012 10:02:00
+Loaded MultiAngle_Diffused_40_61.mat at 19-Oct-2012 10:02:01 in 0.88118 seconds with 130871725 b used
+Finished MultiAngle_Diffused_40_61.mat at 19-Oct-2012 10:02:01
+Loaded MultiAngle_Diffused_40_62.mat at 19-Oct-2012 10:02:02 in 0.94135 seconds with 126964520 b used
+Finished MultiAngle_Diffused_40_62.mat at 19-Oct-2012 10:02:03
+Loaded MultiAngle_Diffused_40_63.mat at 19-Oct-2012 10:02:04 in 1.0728 seconds with 152335862 b used
+Finished MultiAngle_Diffused_40_63.mat at 19-Oct-2012 10:02:04
+Loaded MultiAngle_Diffused_40_64.mat at 19-Oct-2012 10:02:05 in 0.88115 seconds with 126014716 b used
+Finished MultiAngle_Diffused_40_64.mat at 19-Oct-2012 10:02:05
+Loaded MultiAngle_Diffused_40_65.mat at 19-Oct-2012 10:02:06 in 0.9391 seconds with 132344648 b used
+Finished MultiAngle_Diffused_40_65.mat at 19-Oct-2012 10:02:06
+Loaded MultiAngle_Diffused_40_66.mat at 19-Oct-2012 10:02:07 in 0.94161 seconds with 136569724 b used
+Finished MultiAngle_Diffused_40_66.mat at 19-Oct-2012 10:02:07
+Loaded MultiAngle_Diffused_40_67.mat at 19-Oct-2012 10:02:08 in 0.93476 seconds with 134201319 b used
+Finished MultiAngle_Diffused_40_67.mat at 19-Oct-2012 10:02:08
+Loaded MultiAngle_Diffused_40_68.mat at 19-Oct-2012 10:02:09 in 1.0455 seconds with 141650198 b used
+Finished MultiAngle_Diffused_40_68.mat at 19-Oct-2012 10:02:09
+Loaded MultiAngle_Diffused_40_69.mat at 19-Oct-2012 10:02:10 in 0.90621 seconds with 135314161 b used
+Finished MultiAngle_Diffused_40_69.mat at 19-Oct-2012 10:02:11
+Loaded MultiAngle_Diffused_40_7.mat at 19-Oct-2012 10:02:11 in 0.93715 seconds with 138891943 b used
+Finished MultiAngle_Diffused_40_7.mat at 19-Oct-2012 10:02:12
+Loaded MultiAngle_Diffused_40_70.mat at 19-Oct-2012 10:02:13 in 0.97215 seconds with 139511727 b used
+Finished MultiAngle_Diffused_40_70.mat at 19-Oct-2012 10:02:13
+Loaded MultiAngle_Diffused_40_71.mat at 19-Oct-2012 10:02:14 in 0.94518 seconds with 142673797 b used
+Finished MultiAngle_Diffused_40_71.mat at 19-Oct-2012 10:02:14
+Loaded MultiAngle_Diffused_40_72.mat at 19-Oct-2012 10:02:15 in 0.90695 seconds with 133118384 b used
+Finished MultiAngle_Diffused_40_72.mat at 19-Oct-2012 10:02:15
+Loaded MultiAngle_Diffused_40_73.mat at 19-Oct-2012 10:02:16 in 1.0681 seconds with 133897221 b used
+Finished MultiAngle_Diffused_40_73.mat at 19-Oct-2012 10:02:16
+Loaded MultiAngle_Diffused_40_74.mat at 19-Oct-2012 10:02:17 in 0.93227 seconds with 135684907 b used
+Finished MultiAngle_Diffused_40_74.mat at 19-Oct-2012 10:02:17
+Loaded MultiAngle_Diffused_40_75.mat at 19-Oct-2012 10:02:18 in 0.96146 seconds with 137678531 b used
+Finished MultiAngle_Diffused_40_75.mat at 19-Oct-2012 10:02:18
+Loaded MultiAngle_Diffused_40_76.mat at 19-Oct-2012 10:02:19 in 0.96757 seconds with 136064532 b used
+Finished MultiAngle_Diffused_40_76.mat at 19-Oct-2012 10:02:20
+Loaded MultiAngle_Diffused_40_77.mat at 19-Oct-2012 10:02:21 in 1.7845 seconds with 140254655 b used
+Finished MultiAngle_Diffused_40_77.mat at 19-Oct-2012 10:02:22
+Loaded MultiAngle_Diffused_40_78.mat at 19-Oct-2012 10:02:24 in 2.4025 seconds with 127489368 b used
+Finished MultiAngle_Diffused_40_78.mat at 19-Oct-2012 10:02:24
+Loaded MultiAngle_Diffused_40_79.mat at 19-Oct-2012 10:02:25 in 1.0885 seconds with 139257743 b used
+Finished MultiAngle_Diffused_40_79.mat at 19-Oct-2012 10:02:25
+Loaded MultiAngle_Diffused_40_8.mat at 19-Oct-2012 10:02:27 in 1.6595 seconds with 128667536 b used
+Finished MultiAngle_Diffused_40_8.mat at 19-Oct-2012 10:02:27
+Loaded MultiAngle_Diffused_40_80.mat at 19-Oct-2012 10:02:28 in 1.0408 seconds with 127434310 b used
+Finished MultiAngle_Diffused_40_80.mat at 19-Oct-2012 10:02:28
+Loaded MultiAngle_Diffused_40_81.mat at 19-Oct-2012 10:02:30 in 1.095 seconds with 133327095 b used
+Finished MultiAngle_Diffused_40_81.mat at 19-Oct-2012 10:02:30
+Loaded MultiAngle_Diffused_40_82.mat at 19-Oct-2012 10:03:16 in 46.16 seconds with 134387574 b used
+Finished MultiAngle_Diffused_40_82.mat at 19-Oct-2012 10:03:16
+Loaded MultiAngle_Diffused_40_83.mat at 19-Oct-2012 10:03:17 in 1.0046 seconds with 142356034 b used
+Finished MultiAngle_Diffused_40_83.mat at 19-Oct-2012 10:03:17
+Loaded MultiAngle_Diffused_40_84.mat at 19-Oct-2012 10:03:50 in 32.4098 seconds with 134824472 b used
+Finished MultiAngle_Diffused_40_84.mat at 19-Oct-2012 10:03:50
+Loaded MultiAngle_Diffused_40_85.mat at 19-Oct-2012 10:03:51 in 1.2662 seconds with 137328643 b used
+Finished MultiAngle_Diffused_40_85.mat at 19-Oct-2012 10:03:51
+Loaded MultiAngle_Diffused_40_86.mat at 19-Oct-2012 10:03:53 in 1.3764 seconds with 134494793 b used
+Finished MultiAngle_Diffused_40_86.mat at 19-Oct-2012 10:03:53
+Loaded MultiAngle_Diffused_40_87.mat at 19-Oct-2012 10:03:55 in 1.6793 seconds with 134917120 b used
+Finished MultiAngle_Diffused_40_87.mat at 19-Oct-2012 10:03:55
+Loaded MultiAngle_Diffused_40_88.mat at 19-Oct-2012 10:03:56 in 1.2651 seconds with 138413623 b used
+Finished MultiAngle_Diffused_40_88.mat at 19-Oct-2012 10:03:56
+Loaded MultiAngle_Diffused_40_89.mat at 19-Oct-2012 10:04:35 in 38.6057 seconds with 136717525 b used
+Finished MultiAngle_Diffused_40_89.mat at 19-Oct-2012 10:04:35
+Loaded MultiAngle_Diffused_40_9.mat at 19-Oct-2012 10:04:36 in 0.86121 seconds with 124409220 b used
+Finished MultiAngle_Diffused_40_9.mat at 19-Oct-2012 10:04:36
+Loaded MultiAngle_Diffused_40_90.mat at 19-Oct-2012 10:04:37 in 0.89363 seconds with 134099233 b used
+Finished MultiAngle_Diffused_40_90.mat at 19-Oct-2012 10:04:37
+Loaded MultiAngle_Diffused_40_91.mat at 19-Oct-2012 10:04:39 in 1.582 seconds with 133198728 b used
+Finished MultiAngle_Diffused_40_91.mat at 19-Oct-2012 10:04:39
+Loaded MultiAngle_Diffused_40_92.mat at 19-Oct-2012 10:04:45 in 6.359 seconds with 138581468 b used
+Finished MultiAngle_Diffused_40_92.mat at 19-Oct-2012 10:04:45
+Loaded MultiAngle_Diffused_40_93.mat at 19-Oct-2012 10:04:49 in 3.6954 seconds with 132052431 b used
+Finished MultiAngle_Diffused_40_93.mat at 19-Oct-2012 10:04:49
+Loaded MultiAngle_Diffused_40_94.mat at 19-Oct-2012 10:04:50 in 0.95234 seconds with 129623523 b used
+Finished MultiAngle_Diffused_40_94.mat at 19-Oct-2012 10:04:50
+Loaded MultiAngle_Diffused_40_95.mat at 19-Oct-2012 10:04:51 in 0.984 seconds with 137544425 b used
+Finished MultiAngle_Diffused_40_95.mat at 19-Oct-2012 10:04:51
+Loaded MultiAngle_Diffused_40_96.mat at 19-Oct-2012 10:04:52 in 0.89788 seconds with 128508472 b used
+Finished MultiAngle_Diffused_40_96.mat at 19-Oct-2012 10:04:53
+Loaded MultiAngle_Diffused_40_97.mat at 19-Oct-2012 10:04:54 in 0.96948 seconds with 139127831 b used
+Finished MultiAngle_Diffused_40_97.mat at 19-Oct-2012 10:04:54
+Loaded MultiAngle_Diffused_40_98.mat at 19-Oct-2012 10:04:55 in 0.95307 seconds with 138551555 b used
+Finished MultiAngle_Diffused_40_98.mat at 19-Oct-2012 10:04:55
+Loaded MultiAngle_Diffused_40_99.mat at 19-Oct-2012 10:04:56 in 0.93918 seconds with 131806813 b used
+Finished MultiAngle_Diffused_40_99.mat at 19-Oct-2012 10:04:56
+Loaded MultiAngle_Diffused_41_1.mat at 19-Oct-2012 10:04:58 in 2.301 seconds with 126725970 b used
+Finished MultiAngle_Diffused_41_1.mat at 19-Oct-2012 10:04:58
+Loaded MultiAngle_Diffused_41_10.mat at 19-Oct-2012 10:04:59 in 0.92425 seconds with 128744704 b used
+Finished MultiAngle_Diffused_41_10.mat at 19-Oct-2012 10:05:00
+Loaded MultiAngle_Diffused_41_100.mat at 19-Oct-2012 10:05:05 in 5.1315 seconds with 133009884 b used
+Finished MultiAngle_Diffused_41_100.mat at 19-Oct-2012 10:05:05
+Loaded MultiAngle_Diffused_41_101.mat at 19-Oct-2012 10:05:10 in 4.7164 seconds with 144046300 b used
+Finished MultiAngle_Diffused_41_101.mat at 19-Oct-2012 10:05:10
+Loaded MultiAngle_Diffused_41_102.mat at 19-Oct-2012 10:05:11 in 0.91576 seconds with 121819593 b used
+Finished MultiAngle_Diffused_41_102.mat at 19-Oct-2012 10:05:11
+Loaded MultiAngle_Diffused_41_103.mat at 19-Oct-2012 10:05:12 in 1.028 seconds with 138821156 b used
+Finished MultiAngle_Diffused_41_103.mat at 19-Oct-2012 10:05:12
+Loaded MultiAngle_Diffused_41_104.mat at 19-Oct-2012 10:05:13 in 0.87788 seconds with 122671040 b used
+Finished MultiAngle_Diffused_41_104.mat at 19-Oct-2012 10:05:13
+Loaded MultiAngle_Diffused_41_105.mat at 19-Oct-2012 10:05:14 in 0.89416 seconds with 128455569 b used
+Finished MultiAngle_Diffused_41_105.mat at 19-Oct-2012 10:05:14
+Loaded MultiAngle_Diffused_41_106.mat at 19-Oct-2012 10:05:43 in 28.874 seconds with 128943143 b used
+Finished MultiAngle_Diffused_41_106.mat at 19-Oct-2012 10:05:43
+Loaded MultiAngle_Diffused_41_107.mat at 19-Oct-2012 10:05:44 in 1.0047 seconds with 129670687 b used
+Finished MultiAngle_Diffused_41_107.mat at 19-Oct-2012 10:05:44
+Loaded MultiAngle_Diffused_41_108.mat at 19-Oct-2012 10:05:45 in 1.2264 seconds with 134939234 b used
+Finished MultiAngle_Diffused_41_108.mat at 19-Oct-2012 10:05:46
+Loaded MultiAngle_Diffused_41_109.mat at 19-Oct-2012 10:05:48 in 1.9794 seconds with 126627363 b used
+Finished MultiAngle_Diffused_41_109.mat at 19-Oct-2012 10:05:48
+Loaded MultiAngle_Diffused_41_11.mat at 19-Oct-2012 10:05:49 in 0.9707 seconds with 132040917 b used
+Finished MultiAngle_Diffused_41_11.mat at 19-Oct-2012 10:05:49
+Loaded MultiAngle_Diffused_41_110.mat at 19-Oct-2012 10:05:50 in 0.89211 seconds with 129086036 b used
+Finished MultiAngle_Diffused_41_110.mat at 19-Oct-2012 10:05:50
+Loaded MultiAngle_Diffused_41_111.mat at 19-Oct-2012 10:05:51 in 0.87757 seconds with 125908127 b used
+Finished MultiAngle_Diffused_41_111.mat at 19-Oct-2012 10:05:51
+Loaded MultiAngle_Diffused_41_112.mat at 19-Oct-2012 10:05:52 in 1.2213 seconds with 129014002 b used
+Finished MultiAngle_Diffused_41_112.mat at 19-Oct-2012 10:05:52
+Loaded MultiAngle_Diffused_41_113.mat at 19-Oct-2012 10:05:53 in 1.0275 seconds with 139942189 b used
+Finished MultiAngle_Diffused_41_113.mat at 19-Oct-2012 10:05:54
+Loaded MultiAngle_Diffused_41_114.mat at 19-Oct-2012 10:05:55 in 0.95305 seconds with 126701417 b used
+Finished MultiAngle_Diffused_41_114.mat at 19-Oct-2012 10:05:55
+Loaded MultiAngle_Diffused_41_115.mat at 19-Oct-2012 10:05:56 in 0.93422 seconds with 123227670 b used
+Finished MultiAngle_Diffused_41_115.mat at 19-Oct-2012 10:05:56
+Loaded MultiAngle_Diffused_41_116.mat at 19-Oct-2012 10:05:57 in 0.98215 seconds with 139209695 b used
+Finished MultiAngle_Diffused_41_116.mat at 19-Oct-2012 10:05:57
+Loaded MultiAngle_Diffused_41_117.mat at 19-Oct-2012 10:05:58 in 1.0297 seconds with 136344907 b used
+Finished MultiAngle_Diffused_41_117.mat at 19-Oct-2012 10:05:58
+Loaded MultiAngle_Diffused_41_118.mat at 19-Oct-2012 10:05:59 in 1.0618 seconds with 123936736 b used
+Finished MultiAngle_Diffused_41_118.mat at 19-Oct-2012 10:05:59
+Loaded MultiAngle_Diffused_41_119.mat at 19-Oct-2012 10:06:00 in 0.99715 seconds with 134231677 b used
+Finished MultiAngle_Diffused_41_119.mat at 19-Oct-2012 10:06:01
+Loaded MultiAngle_Diffused_41_12.mat at 19-Oct-2012 10:06:02 in 1.0731 seconds with 128105892 b used
+Finished MultiAngle_Diffused_41_12.mat at 19-Oct-2012 10:06:02
+Loaded MultiAngle_Diffused_41_120.mat at 19-Oct-2012 10:06:03 in 1.0958 seconds with 138243783 b used
+Finished MultiAngle_Diffused_41_120.mat at 19-Oct-2012 10:06:03
+Loaded MultiAngle_Diffused_41_121.mat at 19-Oct-2012 10:06:04 in 0.93383 seconds with 129453523 b used
+Finished MultiAngle_Diffused_41_121.mat at 19-Oct-2012 10:06:04
+Loaded MultiAngle_Diffused_41_122.mat at 19-Oct-2012 10:06:05 in 0.92998 seconds with 129887854 b used
+Finished MultiAngle_Diffused_41_122.mat at 19-Oct-2012 10:06:05
+Loaded MultiAngle_Diffused_41_123.mat at 19-Oct-2012 10:06:06 in 0.91658 seconds with 132132801 b used
+Finished MultiAngle_Diffused_41_123.mat at 19-Oct-2012 10:06:06
+Loaded MultiAngle_Diffused_41_124.mat at 19-Oct-2012 10:06:07 in 0.9887 seconds with 130943435 b used
+Finished MultiAngle_Diffused_41_124.mat at 19-Oct-2012 10:06:08
+Loaded MultiAngle_Diffused_41_125.mat at 19-Oct-2012 10:06:08 in 0.87763 seconds with 125689505 b used
+Finished MultiAngle_Diffused_41_125.mat at 19-Oct-2012 10:06:09
+Loaded MultiAngle_Diffused_41_126.mat at 19-Oct-2012 10:06:10 in 0.901 seconds with 130644622 b used
+Finished MultiAngle_Diffused_41_126.mat at 19-Oct-2012 10:06:10
+Loaded MultiAngle_Diffused_41_127.mat at 19-Oct-2012 10:06:13 in 3.4258 seconds with 147139633 b used
+Finished MultiAngle_Diffused_41_127.mat at 19-Oct-2012 10:06:13
+Loaded MultiAngle_Diffused_41_128.mat at 19-Oct-2012 10:06:14 in 1.0804 seconds with 130781724 b used
+Finished MultiAngle_Diffused_41_128.mat at 19-Oct-2012 10:06:15
+Loaded MultiAngle_Diffused_41_129.mat at 19-Oct-2012 10:06:16 in 1.3086 seconds with 138867076 b used
+Finished MultiAngle_Diffused_41_129.mat at 19-Oct-2012 10:06:16
+Loaded MultiAngle_Diffused_41_13.mat at 19-Oct-2012 10:06:17 in 0.98374 seconds with 138490845 b used
+Finished MultiAngle_Diffused_41_13.mat at 19-Oct-2012 10:06:17
+Loaded MultiAngle_Diffused_41_130.mat at 19-Oct-2012 10:06:18 in 0.9353 seconds with 132807128 b used
+Finished MultiAngle_Diffused_41_130.mat at 19-Oct-2012 10:06:18
+Loaded MultiAngle_Diffused_41_131.mat at 19-Oct-2012 10:06:19 in 1.1016 seconds with 135942837 b used
+Finished MultiAngle_Diffused_41_131.mat at 19-Oct-2012 10:06:20
+Loaded MultiAngle_Diffused_41_132.mat at 19-Oct-2012 10:06:21 in 1.0417 seconds with 130067771 b used
+Finished MultiAngle_Diffused_41_132.mat at 19-Oct-2012 10:06:21
+Loaded MultiAngle_Diffused_41_133.mat at 19-Oct-2012 10:06:22 in 0.98955 seconds with 131426324 b used
+Finished MultiAngle_Diffused_41_133.mat at 19-Oct-2012 10:06:22
+Loaded MultiAngle_Diffused_41_134.mat at 19-Oct-2012 10:06:23 in 1.0648 seconds with 139726959 b used
+Finished MultiAngle_Diffused_41_134.mat at 19-Oct-2012 10:06:23
+Loaded MultiAngle_Diffused_41_135.mat at 19-Oct-2012 10:06:24 in 0.90486 seconds with 126193803 b used
+Finished MultiAngle_Diffused_41_135.mat at 19-Oct-2012 10:06:24
+Loaded MultiAngle_Diffused_41_136.mat at 19-Oct-2012 10:06:25 in 1.1509 seconds with 139155659 b used
+Finished MultiAngle_Diffused_41_136.mat at 19-Oct-2012 10:06:26
+Loaded MultiAngle_Diffused_41_137.mat at 19-Oct-2012 10:06:26 in 0.88225 seconds with 117838610 b used
+Finished MultiAngle_Diffused_41_137.mat at 19-Oct-2012 10:06:27
+Loaded MultiAngle_Diffused_41_138.mat at 19-Oct-2012 10:06:28 in 1.2014 seconds with 144495068 b used
+Finished MultiAngle_Diffused_41_138.mat at 19-Oct-2012 10:06:28
+Loaded MultiAngle_Diffused_41_139.mat at 19-Oct-2012 10:06:29 in 1.0535 seconds with 136423111 b used
+Finished MultiAngle_Diffused_41_139.mat at 19-Oct-2012 10:06:29
+Loaded MultiAngle_Diffused_41_14.mat at 19-Oct-2012 10:06:30 in 1.1136 seconds with 136768679 b used
+Finished MultiAngle_Diffused_41_14.mat at 19-Oct-2012 10:06:30
+Loaded MultiAngle_Diffused_41_140.mat at 19-Oct-2012 10:06:31 in 0.99141 seconds with 132574537 b used
+Finished MultiAngle_Diffused_41_140.mat at 19-Oct-2012 10:06:32
+Loaded MultiAngle_Diffused_41_141.mat at 19-Oct-2012 10:06:33 in 1.1452 seconds with 125637632 b used
+Finished MultiAngle_Diffused_41_141.mat at 19-Oct-2012 10:06:33
+Loaded MultiAngle_Diffused_41_142.mat at 19-Oct-2012 10:06:34 in 0.91143 seconds with 122787101 b used
+Finished MultiAngle_Diffused_41_142.mat at 19-Oct-2012 10:06:34
+Loaded MultiAngle_Diffused_41_143.mat at 19-Oct-2012 10:06:35 in 1.0678 seconds with 136868741 b used
+Finished MultiAngle_Diffused_41_143.mat at 19-Oct-2012 10:06:35
+Loaded MultiAngle_Diffused_41_144.mat at 19-Oct-2012 10:06:38 in 2.7091 seconds with 142932279 b used
+Finished MultiAngle_Diffused_41_144.mat at 19-Oct-2012 10:06:38
+Loaded MultiAngle_Diffused_41_145.mat at 19-Oct-2012 10:06:39 in 0.9499 seconds with 128039933 b used
+Problem on event #33; field name missing
+Finished MultiAngle_Diffused_41_145.mat at 19-Oct-2012 10:06:39
+Loaded MultiAngle_Diffused_41_146.mat at 19-Oct-2012 10:06:40 in 0.94761 seconds with 132489003 b used
+Finished MultiAngle_Diffused_41_146.mat at 19-Oct-2012 10:06:40
+Loaded MultiAngle_Diffused_41_147.mat at 19-Oct-2012 10:06:45 in 4.3452 seconds with 132615742 b used
+Finished MultiAngle_Diffused_41_147.mat at 19-Oct-2012 10:06:45
+Loaded MultiAngle_Diffused_41_148.mat at 19-Oct-2012 10:06:48 in 2.7446 seconds with 140653824 b used
+Finished MultiAngle_Diffused_41_148.mat at 19-Oct-2012 10:06:48
+Loaded MultiAngle_Diffused_41_149.mat at 19-Oct-2012 10:06:49 in 1.1942 seconds with 127747496 b used
+Finished MultiAngle_Diffused_41_149.mat at 19-Oct-2012 10:06:49
+Loaded MultiAngle_Diffused_41_15.mat at 19-Oct-2012 10:06:51 in 1.8859 seconds with 123973129 b used
+Finished MultiAngle_Diffused_41_15.mat at 19-Oct-2012 10:06:51
+Loaded MultiAngle_Diffused_41_150.mat at 19-Oct-2012 10:06:52 in 0.88244 seconds with 122724898 b used
+Finished MultiAngle_Diffused_41_150.mat at 19-Oct-2012 10:06:52
+Loaded MultiAngle_Diffused_41_151.mat at 19-Oct-2012 10:06:53 in 0.89328 seconds with 124749831 b used
+Finished MultiAngle_Diffused_41_151.mat at 19-Oct-2012 10:06:53
+Loaded MultiAngle_Diffused_41_152.mat at 19-Oct-2012 10:06:54 in 0.99372 seconds with 134385977 b used
+Finished MultiAngle_Diffused_41_152.mat at 19-Oct-2012 10:06:54
+Loaded MultiAngle_Diffused_41_153.mat at 19-Oct-2012 10:06:55 in 0.86131 seconds with 124017770 b used
+Finished MultiAngle_Diffused_41_153.mat at 19-Oct-2012 10:06:56
+Loaded MultiAngle_Diffused_41_154.mat at 19-Oct-2012 10:06:56 in 0.95818 seconds with 134696739 b used
+Finished MultiAngle_Diffused_41_154.mat at 19-Oct-2012 10:06:57
+Loaded MultiAngle_Diffused_41_155.mat at 19-Oct-2012 10:06:58 in 0.92539 seconds with 132436735 b used
+Finished MultiAngle_Diffused_41_155.mat at 19-Oct-2012 10:06:58
+Loaded MultiAngle_Diffused_41_156.mat at 19-Oct-2012 10:06:59 in 0.86085 seconds with 121328693 b used
+Finished MultiAngle_Diffused_41_156.mat at 19-Oct-2012 10:06:59
+Loaded MultiAngle_Diffused_41_157.mat at 19-Oct-2012 10:07:00 in 0.93135 seconds with 132768945 b used
+Finished MultiAngle_Diffused_41_157.mat at 19-Oct-2012 10:07:00
+Loaded MultiAngle_Diffused_41_158.mat at 19-Oct-2012 10:07:01 in 1.1596 seconds with 133665927 b used
+Finished MultiAngle_Diffused_41_158.mat at 19-Oct-2012 10:07:01
+Loaded MultiAngle_Diffused_41_159.mat at 19-Oct-2012 10:07:02 in 1.0852 seconds with 131686947 b used
+Finished MultiAngle_Diffused_41_159.mat at 19-Oct-2012 10:07:02
+Loaded MultiAngle_Diffused_41_16.mat at 19-Oct-2012 10:07:04 in 1.0222 seconds with 131318162 b used
+Finished MultiAngle_Diffused_41_16.mat at 19-Oct-2012 10:07:04
+Loaded MultiAngle_Diffused_41_160.mat at 19-Oct-2012 10:07:05 in 1.0664 seconds with 121347008 b used
+Finished MultiAngle_Diffused_41_160.mat at 19-Oct-2012 10:07:05
+Loaded MultiAngle_Diffused_41_161.mat at 19-Oct-2012 10:07:06 in 0.85629 seconds with 122026700 b used
+Finished MultiAngle_Diffused_41_161.mat at 19-Oct-2012 10:07:06
+Loaded MultiAngle_Diffused_41_162.mat at 19-Oct-2012 10:07:07 in 0.86404 seconds with 126389153 b used
+Finished MultiAngle_Diffused_41_162.mat at 19-Oct-2012 10:07:07
+Loaded MultiAngle_Diffused_41_163.mat at 19-Oct-2012 10:07:08 in 1.0892 seconds with 139159960 b used
+Finished MultiAngle_Diffused_41_163.mat at 19-Oct-2012 10:07:08
+Loaded MultiAngle_Diffused_41_164.mat at 19-Oct-2012 10:07:09 in 0.95935 seconds with 129517137 b used
+Finished MultiAngle_Diffused_41_164.mat at 19-Oct-2012 10:07:09
+Loaded MultiAngle_Diffused_41_165.mat at 19-Oct-2012 10:07:10 in 1.0061 seconds with 130013420 b used
+Finished MultiAngle_Diffused_41_165.mat at 19-Oct-2012 10:07:11
+Loaded MultiAngle_Diffused_41_166.mat at 19-Oct-2012 10:07:11 in 0.86296 seconds with 123861952 b used
+Finished MultiAngle_Diffused_41_166.mat at 19-Oct-2012 10:07:12
+Loaded MultiAngle_Diffused_41_167.mat at 19-Oct-2012 10:07:13 in 1.3684 seconds with 136888192 b used
+Finished MultiAngle_Diffused_41_167.mat at 19-Oct-2012 10:07:13
+Loaded MultiAngle_Diffused_41_168.mat at 19-Oct-2012 10:07:14 in 1.0446 seconds with 137910704 b used
+Finished MultiAngle_Diffused_41_168.mat at 19-Oct-2012 10:07:14
+Loaded MultiAngle_Diffused_41_169.mat at 19-Oct-2012 10:07:15 in 0.92732 seconds with 134082591 b used
+Finished MultiAngle_Diffused_41_169.mat at 19-Oct-2012 10:07:15
+Loaded MultiAngle_Diffused_41_17.mat at 19-Oct-2012 10:07:17 in 1.2388 seconds with 144098653 b used
+Finished MultiAngle_Diffused_41_17.mat at 19-Oct-2012 10:07:17
+Loaded MultiAngle_Diffused_41_170.mat at 19-Oct-2012 10:07:18 in 0.96225 seconds with 141759765 b used
+Finished MultiAngle_Diffused_41_170.mat at 19-Oct-2012 10:07:18
+Loaded MultiAngle_Diffused_41_171.mat at 19-Oct-2012 10:07:19 in 0.89639 seconds with 132253949 b used
+Finished MultiAngle_Diffused_41_171.mat at 19-Oct-2012 10:07:19
+Loaded MultiAngle_Diffused_41_172.mat at 19-Oct-2012 10:07:20 in 0.87523 seconds with 128112166 b used
+Finished MultiAngle_Diffused_41_172.mat at 19-Oct-2012 10:07:20
+Loaded MultiAngle_Diffused_41_18.mat at 19-Oct-2012 10:07:21 in 1.2052 seconds with 123599242 b used
+Finished MultiAngle_Diffused_41_18.mat at 19-Oct-2012 10:07:21
+Loaded MultiAngle_Diffused_41_19.mat at 19-Oct-2012 10:07:23 in 1.0826 seconds with 135589040 b used
+Finished MultiAngle_Diffused_41_19.mat at 19-Oct-2012 10:07:23
+Loaded MultiAngle_Diffused_41_2.mat at 19-Oct-2012 10:07:24 in 0.85966 seconds with 123350195 b used
+Finished MultiAngle_Diffused_41_2.mat at 19-Oct-2012 10:07:24
+Loaded MultiAngle_Diffused_41_20.mat at 19-Oct-2012 10:07:25 in 0.88177 seconds with 124076064 b used
+Finished MultiAngle_Diffused_41_20.mat at 19-Oct-2012 10:07:25
+Loaded MultiAngle_Diffused_41_21.mat at 19-Oct-2012 10:07:26 in 1.2291 seconds with 131019777 b used
+Finished MultiAngle_Diffused_41_21.mat at 19-Oct-2012 10:07:26
+Loaded MultiAngle_Diffused_41_22.mat at 19-Oct-2012 10:07:27 in 1.2874 seconds with 125384340 b used
+Finished MultiAngle_Diffused_41_22.mat at 19-Oct-2012 10:07:28
+Loaded MultiAngle_Diffused_41_23.mat at 19-Oct-2012 10:07:30 in 2.2867 seconds with 141070981 b used
+Finished MultiAngle_Diffused_41_23.mat at 19-Oct-2012 10:07:30
+Loaded MultiAngle_Diffused_41_24.mat at 19-Oct-2012 10:07:31 in 1.0477 seconds with 138994379 b used
+Finished MultiAngle_Diffused_41_24.mat at 19-Oct-2012 10:07:31
+Loaded MultiAngle_Diffused_41_25.mat at 19-Oct-2012 10:07:32 in 1.0227 seconds with 132835660 b used
+Finished MultiAngle_Diffused_41_25.mat at 19-Oct-2012 10:07:32
+Loaded MultiAngle_Diffused_41_26.mat at 19-Oct-2012 10:07:34 in 1.0189 seconds with 127225501 b used
+Finished MultiAngle_Diffused_41_26.mat at 19-Oct-2012 10:07:34
+Loaded MultiAngle_Diffused_41_27.mat at 19-Oct-2012 10:07:35 in 0.96114 seconds with 141462556 b used
+Finished MultiAngle_Diffused_41_27.mat at 19-Oct-2012 10:07:35
+Loaded MultiAngle_Diffused_41_28.mat at 19-Oct-2012 10:07:36 in 0.96721 seconds with 137618462 b used
+Finished MultiAngle_Diffused_41_28.mat at 19-Oct-2012 10:07:36
+Loaded MultiAngle_Diffused_41_29.mat at 19-Oct-2012 10:07:37 in 1.0762 seconds with 125651425 b used
+Finished MultiAngle_Diffused_41_29.mat at 19-Oct-2012 10:07:37
+Loaded MultiAngle_Diffused_41_3.mat at 19-Oct-2012 10:07:38 in 0.91992 seconds with 132397044 b used
+Finished MultiAngle_Diffused_41_3.mat at 19-Oct-2012 10:07:38
+Loaded MultiAngle_Diffused_41_30.mat at 19-Oct-2012 10:07:39 in 0.88672 seconds with 120209094 b used
+Finished MultiAngle_Diffused_41_30.mat at 19-Oct-2012 10:07:39
+Loaded MultiAngle_Diffused_41_31.mat at 19-Oct-2012 10:07:40 in 1.0655 seconds with 144410245 b used
+Finished MultiAngle_Diffused_41_31.mat at 19-Oct-2012 10:07:41
+Loaded MultiAngle_Diffused_41_32.mat at 19-Oct-2012 10:07:41 in 0.86543 seconds with 116005576 b used
+Finished MultiAngle_Diffused_41_32.mat at 19-Oct-2012 10:07:42
+Loaded MultiAngle_Diffused_41_33.mat at 19-Oct-2012 10:07:43 in 0.97355 seconds with 133860437 b used
+Finished MultiAngle_Diffused_41_33.mat at 19-Oct-2012 10:07:43
+Loaded MultiAngle_Diffused_41_34.mat at 19-Oct-2012 10:07:44 in 1.648 seconds with 127315509 b used
+Finished MultiAngle_Diffused_41_34.mat at 19-Oct-2012 10:07:45
+Loaded MultiAngle_Diffused_41_35.mat at 19-Oct-2012 10:07:46 in 1.186 seconds with 132533133 b used
+Finished MultiAngle_Diffused_41_35.mat at 19-Oct-2012 10:07:46
+Loaded MultiAngle_Diffused_41_36.mat at 19-Oct-2012 10:07:47 in 1.1961 seconds with 122908480 b used
+Finished MultiAngle_Diffused_41_36.mat at 19-Oct-2012 10:07:47
+Loaded MultiAngle_Diffused_41_37.mat at 19-Oct-2012 10:07:50 in 2.7898 seconds with 137656173 b used
+Finished MultiAngle_Diffused_41_37.mat at 19-Oct-2012 10:07:50
+Loaded MultiAngle_Diffused_41_38.mat at 19-Oct-2012 10:07:51 in 1.0686 seconds with 137785819 b used
+Finished MultiAngle_Diffused_41_38.mat at 19-Oct-2012 10:07:51
+Loaded MultiAngle_Diffused_41_39.mat at 19-Oct-2012 10:07:52 in 0.99127 seconds with 137758079 b used
+Finished MultiAngle_Diffused_41_39.mat at 19-Oct-2012 10:07:53
+Loaded MultiAngle_Diffused_41_4.mat at 19-Oct-2012 10:07:54 in 1.0815 seconds with 127850065 b used
+Finished MultiAngle_Diffused_41_4.mat at 19-Oct-2012 10:07:54
+Loaded MultiAngle_Diffused_41_40.mat at 19-Oct-2012 10:07:55 in 1.143 seconds with 132499743 b used
+Finished MultiAngle_Diffused_41_40.mat at 19-Oct-2012 10:07:55
+Loaded MultiAngle_Diffused_41_41.mat at 19-Oct-2012 10:07:56 in 0.91571 seconds with 120728064 b used
+Finished MultiAngle_Diffused_41_41.mat at 19-Oct-2012 10:07:56
+Loaded MultiAngle_Diffused_41_42.mat at 19-Oct-2012 10:07:57 in 1.1406 seconds with 141163034 b used
+Finished MultiAngle_Diffused_41_42.mat at 19-Oct-2012 10:07:58
+Loaded MultiAngle_Diffused_41_43.mat at 19-Oct-2012 10:07:59 in 0.98679 seconds with 132249989 b used
+Finished MultiAngle_Diffused_41_43.mat at 19-Oct-2012 10:07:59
+Loaded MultiAngle_Diffused_41_44.mat at 19-Oct-2012 10:08:00 in 0.94857 seconds with 129041084 b used
+Finished MultiAngle_Diffused_41_44.mat at 19-Oct-2012 10:08:00
+Loaded MultiAngle_Diffused_41_45.mat at 19-Oct-2012 10:08:01 in 0.91859 seconds with 129933520 b used
+Finished MultiAngle_Diffused_41_45.mat at 19-Oct-2012 10:08:01
+Loaded MultiAngle_Diffused_41_46.mat at 19-Oct-2012 10:08:02 in 1.0683 seconds with 141496501 b used
+Finished MultiAngle_Diffused_41_46.mat at 19-Oct-2012 10:08:02
+Loaded MultiAngle_Diffused_41_47.mat at 19-Oct-2012 10:08:03 in 1.0698 seconds with 141007651 b used
+Finished MultiAngle_Diffused_41_47.mat at 19-Oct-2012 10:08:03
+Loaded MultiAngle_Diffused_41_48.mat at 19-Oct-2012 10:08:04 in 0.94135 seconds with 130766620 b used
+Finished MultiAngle_Diffused_41_48.mat at 19-Oct-2012 10:08:05
+Loaded MultiAngle_Diffused_41_49.mat at 19-Oct-2012 10:08:06 in 1.0257 seconds with 134130513 b used
+Finished MultiAngle_Diffused_41_49.mat at 19-Oct-2012 10:08:06
+Loaded MultiAngle_Diffused_41_5.mat at 19-Oct-2012 10:08:07 in 1.033 seconds with 139174761 b used
+Finished MultiAngle_Diffused_41_5.mat at 19-Oct-2012 10:08:07
+Loaded MultiAngle_Diffused_41_50.mat at 19-Oct-2012 10:08:09 in 1.6022 seconds with 144133533 b used
+Finished MultiAngle_Diffused_41_50.mat at 19-Oct-2012 10:08:09
+Loaded MultiAngle_Diffused_41_51.mat at 19-Oct-2012 10:08:10 in 0.99441 seconds with 133625986 b used
+Finished MultiAngle_Diffused_41_51.mat at 19-Oct-2012 10:08:10
+Loaded MultiAngle_Diffused_41_52.mat at 19-Oct-2012 10:08:12 in 1.8728 seconds with 127414139 b used
+Finished MultiAngle_Diffused_41_52.mat at 19-Oct-2012 10:08:12
+Loaded MultiAngle_Diffused_41_53.mat at 19-Oct-2012 10:08:14 in 1.5495 seconds with 141244756 b used
+Finished MultiAngle_Diffused_41_53.mat at 19-Oct-2012 10:08:14
+Loaded MultiAngle_Diffused_41_54.mat at 19-Oct-2012 10:08:15 in 1.044 seconds with 138516225 b used
+Finished MultiAngle_Diffused_41_54.mat at 19-Oct-2012 10:08:15
+Loaded MultiAngle_Diffused_41_55.mat at 19-Oct-2012 10:08:16 in 1.2267 seconds with 122749722 b used
+Finished MultiAngle_Diffused_41_55.mat at 19-Oct-2012 10:08:16
+Loaded MultiAngle_Diffused_41_56.mat at 19-Oct-2012 10:08:17 in 0.9008 seconds with 121574711 b used
+Finished MultiAngle_Diffused_41_56.mat at 19-Oct-2012 10:08:17
+Loaded MultiAngle_Diffused_41_57.mat at 19-Oct-2012 10:08:18 in 1.1221 seconds with 139368768 b used
+Finished MultiAngle_Diffused_41_57.mat at 19-Oct-2012 10:08:19
+Loaded MultiAngle_Diffused_41_58.mat at 19-Oct-2012 10:08:20 in 0.90967 seconds with 128644986 b used
+Finished MultiAngle_Diffused_41_58.mat at 19-Oct-2012 10:08:20
+Loaded MultiAngle_Diffused_41_59.mat at 19-Oct-2012 10:08:21 in 0.82108 seconds with 114100126 b used
+Finished MultiAngle_Diffused_41_59.mat at 19-Oct-2012 10:08:21
+Loaded MultiAngle_Diffused_41_6.mat at 19-Oct-2012 10:08:22 in 0.92328 seconds with 131687218 b used
+Finished MultiAngle_Diffused_41_6.mat at 19-Oct-2012 10:08:22
+Loaded MultiAngle_Diffused_41_60.mat at 19-Oct-2012 10:08:23 in 0.89793 seconds with 124756057 b used
+Finished MultiAngle_Diffused_41_60.mat at 19-Oct-2012 10:08:23
+Loaded MultiAngle_Diffused_41_61.mat at 19-Oct-2012 10:08:24 in 1.0097 seconds with 122267482 b used
+Finished MultiAngle_Diffused_41_61.mat at 19-Oct-2012 10:08:24
+Loaded MultiAngle_Diffused_41_62.mat at 19-Oct-2012 10:08:26 in 2.1847 seconds with 145263985 b used
+Finished MultiAngle_Diffused_41_62.mat at 19-Oct-2012 10:08:26
+Loaded MultiAngle_Diffused_41_63.mat at 19-Oct-2012 10:08:27 in 0.93728 seconds with 124838166 b used
+Finished MultiAngle_Diffused_41_63.mat at 19-Oct-2012 10:08:28
+Loaded MultiAngle_Diffused_41_64.mat at 19-Oct-2012 10:08:30 in 2.7517 seconds with 131076523 b used
+Finished MultiAngle_Diffused_41_64.mat at 19-Oct-2012 10:08:30
+Loaded MultiAngle_Diffused_41_65.mat at 19-Oct-2012 10:08:31 in 0.89156 seconds with 122502239 b used
+Finished MultiAngle_Diffused_41_65.mat at 19-Oct-2012 10:08:31
+Loaded MultiAngle_Diffused_41_66.mat at 19-Oct-2012 10:08:32 in 0.96278 seconds with 138193851 b used
+Finished MultiAngle_Diffused_41_66.mat at 19-Oct-2012 10:08:33
+Loaded MultiAngle_Diffused_41_67.mat at 19-Oct-2012 10:08:34 in 1.3167 seconds with 120966945 b used
+Finished MultiAngle_Diffused_41_67.mat at 19-Oct-2012 10:08:34
+Loaded MultiAngle_Diffused_41_68.mat at 19-Oct-2012 10:08:35 in 1.2939 seconds with 126375832 b used
+Finished MultiAngle_Diffused_41_68.mat at 19-Oct-2012 10:08:36
+Loaded MultiAngle_Diffused_41_69.mat at 19-Oct-2012 10:08:37 in 1.0498 seconds with 139250729 b used
+Finished MultiAngle_Diffused_41_69.mat at 19-Oct-2012 10:08:37
+Loaded MultiAngle_Diffused_41_7.mat at 19-Oct-2012 10:08:38 in 0.97174 seconds with 130835862 b used
+Finished MultiAngle_Diffused_41_7.mat at 19-Oct-2012 10:08:38
+Loaded MultiAngle_Diffused_41_70.mat at 19-Oct-2012 10:08:39 in 1.1529 seconds with 137622509 b used
+Finished MultiAngle_Diffused_41_70.mat at 19-Oct-2012 10:08:39
+Loaded MultiAngle_Diffused_41_71.mat at 19-Oct-2012 10:08:40 in 0.86238 seconds with 121393077 b used
+Finished MultiAngle_Diffused_41_71.mat at 19-Oct-2012 10:08:40
+Loaded MultiAngle_Diffused_41_72.mat at 19-Oct-2012 10:08:41 in 0.85278 seconds with 115972600 b used
+Finished MultiAngle_Diffused_41_72.mat at 19-Oct-2012 10:08:41
+Loaded MultiAngle_Diffused_41_73.mat at 19-Oct-2012 10:08:42 in 1.1348 seconds with 132143017 b used
+Finished MultiAngle_Diffused_41_73.mat at 19-Oct-2012 10:08:43
+Loaded MultiAngle_Diffused_41_74.mat at 19-Oct-2012 10:08:44 in 0.93838 seconds with 128583054 b used
+Finished MultiAngle_Diffused_41_74.mat at 19-Oct-2012 10:08:44
+Loaded MultiAngle_Diffused_41_75.mat at 19-Oct-2012 10:08:45 in 1.0528 seconds with 139685667 b used
+Finished MultiAngle_Diffused_41_75.mat at 19-Oct-2012 10:08:45
+Loaded MultiAngle_Diffused_41_76.mat at 19-Oct-2012 10:08:46 in 1.0324 seconds with 120408248 b used
+Finished MultiAngle_Diffused_41_76.mat at 19-Oct-2012 10:08:46
+Loaded MultiAngle_Diffused_41_77.mat at 19-Oct-2012 10:08:47 in 1.0963 seconds with 140650156 b used
+Finished MultiAngle_Diffused_41_77.mat at 19-Oct-2012 10:08:47
+Loaded MultiAngle_Diffused_41_78.mat at 19-Oct-2012 10:08:49 in 1.7649 seconds with 132670751 b used
+Finished MultiAngle_Diffused_41_78.mat at 19-Oct-2012 10:08:49
+Loaded MultiAngle_Diffused_41_79.mat at 19-Oct-2012 10:08:50 in 1.0426 seconds with 134432058 b used
+Finished MultiAngle_Diffused_41_79.mat at 19-Oct-2012 10:08:51
+Loaded MultiAngle_Diffused_41_8.mat at 19-Oct-2012 10:08:52 in 1.4129 seconds with 141799641 b used
+Finished MultiAngle_Diffused_41_8.mat at 19-Oct-2012 10:08:52
+Loaded MultiAngle_Diffused_41_80.mat at 19-Oct-2012 10:08:53 in 1.0648 seconds with 131936802 b used
+Finished MultiAngle_Diffused_41_80.mat at 19-Oct-2012 10:08:53
+Loaded MultiAngle_Diffused_41_81.mat at 19-Oct-2012 10:08:54 in 1.0016 seconds with 140243017 b used
+Finished MultiAngle_Diffused_41_81.mat at 19-Oct-2012 10:08:55
+Loaded MultiAngle_Diffused_41_82.mat at 19-Oct-2012 10:08:56 in 1.6022 seconds with 129956788 b used
+Finished MultiAngle_Diffused_41_82.mat at 19-Oct-2012 10:08:56
+Loaded MultiAngle_Diffused_41_83.mat at 19-Oct-2012 10:08:57 in 1.1084 seconds with 141710376 b used
+Finished MultiAngle_Diffused_41_83.mat at 19-Oct-2012 10:08:58
+Loaded MultiAngle_Diffused_41_84.mat at 19-Oct-2012 10:08:59 in 0.97137 seconds with 130257328 b used
+Finished MultiAngle_Diffused_41_84.mat at 19-Oct-2012 10:08:59
+Loaded MultiAngle_Diffused_41_85.mat at 19-Oct-2012 10:09:00 in 1.4483 seconds with 148398550 b used
+Finished MultiAngle_Diffused_41_85.mat at 19-Oct-2012 10:09:00
+Loaded MultiAngle_Diffused_41_86.mat at 19-Oct-2012 10:09:01 in 1.0046 seconds with 130558043 b used
+Finished MultiAngle_Diffused_41_86.mat at 19-Oct-2012 10:09:01
+Loaded MultiAngle_Diffused_41_87.mat at 19-Oct-2012 10:09:03 in 1.1233 seconds with 131588423 b used
+Finished MultiAngle_Diffused_41_87.mat at 19-Oct-2012 10:09:03
+Loaded MultiAngle_Diffused_41_88.mat at 19-Oct-2012 10:09:04 in 1.3987 seconds with 134603383 b used
+Finished MultiAngle_Diffused_41_88.mat at 19-Oct-2012 10:09:04
+Loaded MultiAngle_Diffused_41_89.mat at 19-Oct-2012 10:09:05 in 1.1478 seconds with 139714745 b used
+Finished MultiAngle_Diffused_41_89.mat at 19-Oct-2012 10:09:06
+Loaded MultiAngle_Diffused_41_9.mat at 19-Oct-2012 10:09:07 in 1.0344 seconds with 131863674 b used
+Finished MultiAngle_Diffused_41_9.mat at 19-Oct-2012 10:09:07
+Loaded MultiAngle_Diffused_41_90.mat at 19-Oct-2012 10:09:08 in 0.97659 seconds with 127607427 b used
+Finished MultiAngle_Diffused_41_90.mat at 19-Oct-2012 10:09:08
+Loaded MultiAngle_Diffused_41_91.mat at 19-Oct-2012 10:09:09 in 0.96132 seconds with 123040279 b used
+Finished MultiAngle_Diffused_41_91.mat at 19-Oct-2012 10:09:09
+Loaded MultiAngle_Diffused_41_92.mat at 19-Oct-2012 10:09:11 in 1.4453 seconds with 134317403 b used
+Finished MultiAngle_Diffused_41_92.mat at 19-Oct-2012 10:09:11
+Loaded MultiAngle_Diffused_41_93.mat at 19-Oct-2012 10:09:12 in 1.1741 seconds with 136717484 b used
+Finished MultiAngle_Diffused_41_93.mat at 19-Oct-2012 10:09:12
+Loaded MultiAngle_Diffused_41_94.mat at 19-Oct-2012 10:09:13 in 1.3341 seconds with 132273752 b used
+Finished MultiAngle_Diffused_41_94.mat at 19-Oct-2012 10:09:14
+Loaded MultiAngle_Diffused_41_95.mat at 19-Oct-2012 10:09:15 in 0.9632 seconds with 128901537 b used
+Finished MultiAngle_Diffused_41_95.mat at 19-Oct-2012 10:09:15
+Loaded MultiAngle_Diffused_41_96.mat at 19-Oct-2012 10:09:16 in 1.0327 seconds with 128465491 b used
+Finished MultiAngle_Diffused_41_96.mat at 19-Oct-2012 10:09:16
+Loaded MultiAngle_Diffused_41_97.mat at 19-Oct-2012 10:09:17 in 1.1996 seconds with 123589453 b used
+Finished MultiAngle_Diffused_41_97.mat at 19-Oct-2012 10:09:17
+Loaded MultiAngle_Diffused_41_98.mat at 19-Oct-2012 10:09:18 in 0.89307 seconds with 122219820 b used
+Finished MultiAngle_Diffused_41_98.mat at 19-Oct-2012 10:09:18
+Loaded MultiAngle_Diffused_41_99.mat at 19-Oct-2012 10:09:19 in 1.0669 seconds with 132010048 b used
+Finished MultiAngle_Diffused_41_99.mat at 19-Oct-2012 10:09:20
+Loaded MultiAngle_Diffused_47_1.mat at 19-Oct-2012 10:09:21 in 0.95495 seconds with 126003071 b used
+Finished MultiAngle_Diffused_47_1.mat at 19-Oct-2012 10:09:21
+Loaded MultiAngle_Diffused_47_2.mat at 19-Oct-2012 10:09:22 in 0.94544 seconds with 127915271 b used
+Finished MultiAngle_Diffused_47_2.mat at 19-Oct-2012 10:09:22
+Loaded MultiAngle_Diffused_47_3.mat at 19-Oct-2012 10:09:23 in 0.99376 seconds with 128761383 b used
+Finished MultiAngle_Diffused_47_3.mat at 19-Oct-2012 10:09:23
+Loaded MultiAngle_Diffused_48_1.mat at 19-Oct-2012 10:09:24 in 0.90166 seconds with 123507913 b used
+Finished MultiAngle_Diffused_48_1.mat at 19-Oct-2012 10:09:24
+Loaded MultiAngle_Diffused_48_10.mat at 19-Oct-2012 10:09:25 in 0.96205 seconds with 131526049 b used
+Finished MultiAngle_Diffused_48_10.mat at 19-Oct-2012 10:09:25
+Loaded MultiAngle_Diffused_48_100.mat at 19-Oct-2012 10:09:26 in 0.95871 seconds with 131637593 b used
+Finished MultiAngle_Diffused_48_100.mat at 19-Oct-2012 10:09:26
+Loaded MultiAngle_Diffused_48_101.mat at 19-Oct-2012 10:09:27 in 0.87597 seconds with 132600935 b used
+Finished MultiAngle_Diffused_48_101.mat at 19-Oct-2012 10:09:27
+Loaded MultiAngle_Diffused_48_102.mat at 19-Oct-2012 10:09:28 in 0.86103 seconds with 123459816 b used
+Finished MultiAngle_Diffused_48_102.mat at 19-Oct-2012 10:09:28
+Loaded MultiAngle_Diffused_48_103.mat at 19-Oct-2012 10:09:29 in 1.0707 seconds with 145791325 b used
+Finished MultiAngle_Diffused_48_103.mat at 19-Oct-2012 10:09:30
+Loaded MultiAngle_Diffused_48_104.mat at 19-Oct-2012 10:09:31 in 0.90194 seconds with 124896295 b used
+Finished MultiAngle_Diffused_48_104.mat at 19-Oct-2012 10:09:31
+Loaded MultiAngle_Diffused_48_105.mat at 19-Oct-2012 10:09:32 in 1.0054 seconds with 143920010 b used
+Finished MultiAngle_Diffused_48_105.mat at 19-Oct-2012 10:09:32
+Loaded MultiAngle_Diffused_48_106.mat at 19-Oct-2012 10:09:33 in 0.99227 seconds with 127330376 b used
+Finished MultiAngle_Diffused_48_106.mat at 19-Oct-2012 10:09:33
+Loaded MultiAngle_Diffused_48_107.mat at 19-Oct-2012 10:09:34 in 0.97485 seconds with 130383316 b used
+Finished MultiAngle_Diffused_48_107.mat at 19-Oct-2012 10:09:34
+Loaded MultiAngle_Diffused_48_108.mat at 19-Oct-2012 10:09:35 in 1.0292 seconds with 141391352 b used
+Finished MultiAngle_Diffused_48_108.mat at 19-Oct-2012 10:09:35
+Loaded MultiAngle_Diffused_48_109.mat at 19-Oct-2012 10:09:36 in 0.88946 seconds with 126037234 b used
+Finished MultiAngle_Diffused_48_109.mat at 19-Oct-2012 10:09:36
+Loaded MultiAngle_Diffused_48_11.mat at 19-Oct-2012 10:09:38 in 1.0505 seconds with 145935371 b used
+Finished MultiAngle_Diffused_48_11.mat at 19-Oct-2012 10:09:38
+Loaded MultiAngle_Diffused_48_110.mat at 19-Oct-2012 10:09:39 in 1.0015 seconds with 138578200 b used
+Finished MultiAngle_Diffused_48_110.mat at 19-Oct-2012 10:09:39
+Loaded MultiAngle_Diffused_48_111.mat at 19-Oct-2012 10:09:40 in 0.92348 seconds with 129170950 b used
+Finished MultiAngle_Diffused_48_111.mat at 19-Oct-2012 10:09:40
+Loaded MultiAngle_Diffused_48_112.mat at 19-Oct-2012 10:09:41 in 1.1432 seconds with 149158058 b used
+Finished MultiAngle_Diffused_48_112.mat at 19-Oct-2012 10:09:41
+Loaded MultiAngle_Diffused_48_113.mat at 19-Oct-2012 10:09:42 in 1.0715 seconds with 144593591 b used
+Finished MultiAngle_Diffused_48_113.mat at 19-Oct-2012 10:09:43
+Loaded MultiAngle_Diffused_48_114.mat at 19-Oct-2012 10:09:43 in 0.90789 seconds with 135623804 b used
+Finished MultiAngle_Diffused_48_114.mat at 19-Oct-2012 10:09:44
+Loaded MultiAngle_Diffused_48_115.mat at 19-Oct-2012 10:09:45 in 0.96085 seconds with 126890864 b used
+Finished MultiAngle_Diffused_48_115.mat at 19-Oct-2012 10:09:45
+Loaded MultiAngle_Diffused_48_116.mat at 19-Oct-2012 10:09:46 in 1.0077 seconds with 142896362 b used
+Finished MultiAngle_Diffused_48_116.mat at 19-Oct-2012 10:09:46
+Loaded MultiAngle_Diffused_48_117.mat at 19-Oct-2012 10:09:47 in 0.88525 seconds with 126725441 b used
+Finished MultiAngle_Diffused_48_117.mat at 19-Oct-2012 10:09:47
+Loaded MultiAngle_Diffused_48_118.mat at 19-Oct-2012 10:09:48 in 0.98222 seconds with 139104741 b used
+Finished MultiAngle_Diffused_48_118.mat at 19-Oct-2012 10:09:48
+Loaded MultiAngle_Diffused_48_119.mat at 19-Oct-2012 10:09:49 in 0.95487 seconds with 135083458 b used
+Finished MultiAngle_Diffused_48_119.mat at 19-Oct-2012 10:09:49
+Loaded MultiAngle_Diffused_48_12.mat at 19-Oct-2012 10:09:50 in 0.98892 seconds with 141212411 b used
+Finished MultiAngle_Diffused_48_12.mat at 19-Oct-2012 10:09:51
+Loaded MultiAngle_Diffused_48_120.mat at 19-Oct-2012 10:09:52 in 0.97611 seconds with 133122757 b used
+Finished MultiAngle_Diffused_48_120.mat at 19-Oct-2012 10:09:52
+Loaded MultiAngle_Diffused_48_121.mat at 19-Oct-2012 10:09:53 in 1.1344 seconds with 143747732 b used
+Finished MultiAngle_Diffused_48_121.mat at 19-Oct-2012 10:09:53
+Loaded MultiAngle_Diffused_48_122.mat at 19-Oct-2012 10:09:54 in 0.99739 seconds with 133146636 b used
+Finished MultiAngle_Diffused_48_122.mat at 19-Oct-2012 10:09:54
+Loaded MultiAngle_Diffused_48_123.mat at 19-Oct-2012 10:09:55 in 0.85337 seconds with 124326441 b used
+Finished MultiAngle_Diffused_48_123.mat at 19-Oct-2012 10:09:55
+Loaded MultiAngle_Diffused_48_124.mat at 19-Oct-2012 10:09:56 in 0.89114 seconds with 131912665 b used
+Finished MultiAngle_Diffused_48_124.mat at 19-Oct-2012 10:09:56
+Loaded MultiAngle_Diffused_48_125.mat at 19-Oct-2012 10:09:57 in 0.87003 seconds with 123396077 b used
+Finished MultiAngle_Diffused_48_125.mat at 19-Oct-2012 10:09:57
+Loaded MultiAngle_Diffused_48_126.mat at 19-Oct-2012 10:09:58 in 0.90886 seconds with 133864204 b used
+Finished MultiAngle_Diffused_48_126.mat at 19-Oct-2012 10:09:58
+Loaded MultiAngle_Diffused_48_127.mat at 19-Oct-2012 10:09:59 in 0.86426 seconds with 124716974 b used
+Finished MultiAngle_Diffused_48_127.mat at 19-Oct-2012 10:09:59
+Loaded MultiAngle_Diffused_48_128.mat at 19-Oct-2012 10:10:00 in 0.93024 seconds with 131159721 b used
+Finished MultiAngle_Diffused_48_128.mat at 19-Oct-2012 10:10:01
+Loaded MultiAngle_Diffused_48_129.mat at 19-Oct-2012 10:10:01 in 0.90603 seconds with 135206724 b used
+Finished MultiAngle_Diffused_48_129.mat at 19-Oct-2012 10:10:02
+Loaded MultiAngle_Diffused_48_13.mat at 19-Oct-2012 10:10:03 in 0.95743 seconds with 138605394 b used
+Finished MultiAngle_Diffused_48_13.mat at 19-Oct-2012 10:10:03
+Loaded MultiAngle_Diffused_48_130.mat at 19-Oct-2012 10:10:04 in 0.95643 seconds with 142982234 b used
+Finished MultiAngle_Diffused_48_130.mat at 19-Oct-2012 10:10:04
+Loaded MultiAngle_Diffused_48_131.mat at 19-Oct-2012 10:10:05 in 1.023 seconds with 147328886 b used
+Finished MultiAngle_Diffused_48_131.mat at 19-Oct-2012 10:10:05
+Loaded MultiAngle_Diffused_48_132.mat at 19-Oct-2012 10:10:06 in 1.0207 seconds with 140985953 b used
+Finished MultiAngle_Diffused_48_132.mat at 19-Oct-2012 10:10:06
+Loaded MultiAngle_Diffused_48_133.mat at 19-Oct-2012 10:10:07 in 0.89074 seconds with 125555046 b used
+Finished MultiAngle_Diffused_48_133.mat at 19-Oct-2012 10:10:07
+Loaded MultiAngle_Diffused_48_134.mat at 19-Oct-2012 10:10:09 in 2.0969 seconds with 127159565 b used
+Finished MultiAngle_Diffused_48_134.mat at 19-Oct-2012 10:10:10
+Loaded MultiAngle_Diffused_48_135.mat at 19-Oct-2012 10:10:11 in 1.0311 seconds with 136008328 b used
+Finished MultiAngle_Diffused_48_135.mat at 19-Oct-2012 10:10:11
+Loaded MultiAngle_Diffused_48_136.mat at 19-Oct-2012 10:10:12 in 1.0463 seconds with 146171133 b used
+Finished MultiAngle_Diffused_48_136.mat at 19-Oct-2012 10:10:12
+Loaded MultiAngle_Diffused_48_137.mat at 19-Oct-2012 10:10:13 in 0.95401 seconds with 135504384 b used
+Finished MultiAngle_Diffused_48_137.mat at 19-Oct-2012 10:10:13
+Loaded MultiAngle_Diffused_48_138.mat at 19-Oct-2012 10:10:14 in 0.99091 seconds with 141750724 b used
+Finished MultiAngle_Diffused_48_138.mat at 19-Oct-2012 10:10:14
+Loaded MultiAngle_Diffused_48_139.mat at 19-Oct-2012 10:10:15 in 0.84129 seconds with 123034790 b used
+Finished MultiAngle_Diffused_48_139.mat at 19-Oct-2012 10:10:15
+Loaded MultiAngle_Diffused_48_14.mat at 19-Oct-2012 10:10:16 in 0.98866 seconds with 135722946 b used
+Finished MultiAngle_Diffused_48_14.mat at 19-Oct-2012 10:10:17
+Loaded MultiAngle_Diffused_48_140.mat at 19-Oct-2012 10:10:18 in 0.98703 seconds with 143225823 b used
+Finished MultiAngle_Diffused_48_140.mat at 19-Oct-2012 10:10:18
+Loaded MultiAngle_Diffused_48_141.mat at 19-Oct-2012 10:10:19 in 0.97222 seconds with 127648324 b used
+Finished MultiAngle_Diffused_48_141.mat at 19-Oct-2012 10:10:19
+Loaded MultiAngle_Diffused_48_142.mat at 19-Oct-2012 10:10:20 in 0.92065 seconds with 132315670 b used
+Finished MultiAngle_Diffused_48_142.mat at 19-Oct-2012 10:10:20
+Loaded MultiAngle_Diffused_48_143.mat at 19-Oct-2012 10:10:21 in 0.867 seconds with 127543367 b used
+Finished MultiAngle_Diffused_48_143.mat at 19-Oct-2012 10:10:21
+Loaded MultiAngle_Diffused_48_144.mat at 19-Oct-2012 10:10:22 in 0.81213 seconds with 119982579 b used
+Finished MultiAngle_Diffused_48_144.mat at 19-Oct-2012 10:10:22
+Loaded MultiAngle_Diffused_48_15.mat at 19-Oct-2012 10:10:23 in 0.88638 seconds with 127347820 b used
+Finished MultiAngle_Diffused_48_15.mat at 19-Oct-2012 10:10:23
+Loaded MultiAngle_Diffused_48_16.mat at 19-Oct-2012 10:10:24 in 0.91258 seconds with 129593923 b used
+Finished MultiAngle_Diffused_48_16.mat at 19-Oct-2012 10:10:24
+Loaded MultiAngle_Diffused_48_17.mat at 19-Oct-2012 10:10:25 in 0.86456 seconds with 120576342 b used
+Finished MultiAngle_Diffused_48_17.mat at 19-Oct-2012 10:10:25
+Loaded MultiAngle_Diffused_48_18.mat at 19-Oct-2012 10:10:26 in 1.1232 seconds with 128296274 b used
+Finished MultiAngle_Diffused_48_18.mat at 19-Oct-2012 10:10:26
+Loaded MultiAngle_Diffused_48_19.mat at 19-Oct-2012 10:10:27 in 0.98708 seconds with 133333994 b used
+Finished MultiAngle_Diffused_48_19.mat at 19-Oct-2012 10:10:28
+Loaded MultiAngle_Diffused_48_2.mat at 19-Oct-2012 10:10:29 in 0.88043 seconds with 120648600 b used
+Finished MultiAngle_Diffused_48_2.mat at 19-Oct-2012 10:10:29
+Loaded MultiAngle_Diffused_48_20.mat at 19-Oct-2012 10:10:30 in 1.0263 seconds with 134365212 b used
+Finished MultiAngle_Diffused_48_20.mat at 19-Oct-2012 10:10:30
+Loaded MultiAngle_Diffused_48_21.mat at 19-Oct-2012 10:10:31 in 0.95467 seconds with 138501913 b used
+Finished MultiAngle_Diffused_48_21.mat at 19-Oct-2012 10:10:31
+Loaded MultiAngle_Diffused_48_22.mat at 19-Oct-2012 10:10:32 in 1.1125 seconds with 128228980 b used
+Finished MultiAngle_Diffused_48_22.mat at 19-Oct-2012 10:10:32
+Loaded MultiAngle_Diffused_48_23.mat at 19-Oct-2012 10:10:33 in 0.96958 seconds with 137642271 b used
+Finished MultiAngle_Diffused_48_23.mat at 19-Oct-2012 10:10:33
+Loaded MultiAngle_Diffused_48_24.mat at 19-Oct-2012 10:10:34 in 0.99743 seconds with 137514911 b used
+Finished MultiAngle_Diffused_48_24.mat at 19-Oct-2012 10:10:35
+Loaded MultiAngle_Diffused_48_25.mat at 19-Oct-2012 10:10:36 in 1.3412 seconds with 143454539 b used
+Finished MultiAngle_Diffused_48_25.mat at 19-Oct-2012 10:10:36
+Loaded MultiAngle_Diffused_48_26.mat at 19-Oct-2012 10:10:37 in 1.0541 seconds with 141365675 b used
+Finished MultiAngle_Diffused_48_26.mat at 19-Oct-2012 10:10:37
+Loaded MultiAngle_Diffused_48_27.mat at 19-Oct-2012 10:10:38 in 0.93426 seconds with 135635305 b used
+Finished MultiAngle_Diffused_48_27.mat at 19-Oct-2012 10:10:38
+Loaded MultiAngle_Diffused_48_28.mat at 19-Oct-2012 10:10:39 in 0.99926 seconds with 139800131 b used
+Finished MultiAngle_Diffused_48_28.mat at 19-Oct-2012 10:10:40
+Loaded MultiAngle_Diffused_48_29.mat at 19-Oct-2012 10:10:41 in 1.0211 seconds with 131148960 b used
+Finished MultiAngle_Diffused_48_29.mat at 19-Oct-2012 10:10:41
+Loaded MultiAngle_Diffused_48_3.mat at 19-Oct-2012 10:10:42 in 0.97035 seconds with 130519892 b used
+Finished MultiAngle_Diffused_48_3.mat at 19-Oct-2012 10:10:42
+Loaded MultiAngle_Diffused_48_30.mat at 19-Oct-2012 10:10:43 in 0.93242 seconds with 126311885 b used
+Finished MultiAngle_Diffused_48_30.mat at 19-Oct-2012 10:10:43
+Loaded MultiAngle_Diffused_48_31.mat at 19-Oct-2012 10:10:44 in 0.9317 seconds with 133025732 b used
+Finished MultiAngle_Diffused_48_31.mat at 19-Oct-2012 10:10:44
+Loaded MultiAngle_Diffused_48_32.mat at 19-Oct-2012 10:10:45 in 0.93538 seconds with 134013568 b used
+Finished MultiAngle_Diffused_48_32.mat at 19-Oct-2012 10:10:45
+Loaded MultiAngle_Diffused_48_33.mat at 19-Oct-2012 10:10:46 in 0.93062 seconds with 131915736 b used
+Finished MultiAngle_Diffused_48_33.mat at 19-Oct-2012 10:10:46
+Loaded MultiAngle_Diffused_48_34.mat at 19-Oct-2012 10:10:47 in 0.89435 seconds with 132744212 b used
+Finished MultiAngle_Diffused_48_34.mat at 19-Oct-2012 10:10:48
+Loaded MultiAngle_Diffused_48_35.mat at 19-Oct-2012 10:10:49 in 0.99523 seconds with 141652177 b used
+Finished MultiAngle_Diffused_48_35.mat at 19-Oct-2012 10:10:49
+Loaded MultiAngle_Diffused_48_36.mat at 19-Oct-2012 10:10:50 in 0.85459 seconds with 121875969 b used
+Finished MultiAngle_Diffused_48_36.mat at 19-Oct-2012 10:10:50
+Loaded MultiAngle_Diffused_48_37.mat at 19-Oct-2012 10:10:51 in 0.88978 seconds with 129529617 b used
+Finished MultiAngle_Diffused_48_37.mat at 19-Oct-2012 10:10:51
+Loaded MultiAngle_Diffused_48_38.mat at 19-Oct-2012 10:10:52 in 0.96607 seconds with 137530015 b used
+Finished MultiAngle_Diffused_48_38.mat at 19-Oct-2012 10:10:52
+Loaded MultiAngle_Diffused_48_39.mat at 19-Oct-2012 10:10:53 in 0.96657 seconds with 136058484 b used
+Finished MultiAngle_Diffused_48_39.mat at 19-Oct-2012 10:10:53
+Loaded MultiAngle_Diffused_48_4.mat at 19-Oct-2012 10:10:54 in 0.97647 seconds with 140164281 b used
+Finished MultiAngle_Diffused_48_4.mat at 19-Oct-2012 10:10:54
+Loaded MultiAngle_Diffused_48_40.mat at 19-Oct-2012 10:10:55 in 0.98863 seconds with 139263805 b used
+Finished MultiAngle_Diffused_48_40.mat at 19-Oct-2012 10:10:55
+Loaded MultiAngle_Diffused_48_41.mat at 19-Oct-2012 10:10:56 in 1.0753 seconds with 133941132 b used
+Finished MultiAngle_Diffused_48_41.mat at 19-Oct-2012 10:10:57
+Loaded MultiAngle_Diffused_48_42.mat at 19-Oct-2012 10:10:58 in 0.94919 seconds with 134088053 b used
+Finished MultiAngle_Diffused_48_42.mat at 19-Oct-2012 10:10:58
+Loaded MultiAngle_Diffused_48_43.mat at 19-Oct-2012 10:10:59 in 0.93752 seconds with 130075176 b used
+Finished MultiAngle_Diffused_48_43.mat at 19-Oct-2012 10:10:59
+Loaded MultiAngle_Diffused_48_44.mat at 19-Oct-2012 10:11:00 in 0.92881 seconds with 121703730 b used
+Finished MultiAngle_Diffused_48_44.mat at 19-Oct-2012 10:11:00
+Loaded MultiAngle_Diffused_48_45.mat at 19-Oct-2012 10:11:01 in 0.84534 seconds with 124655994 b used
+Finished MultiAngle_Diffused_48_45.mat at 19-Oct-2012 10:11:01
+Loaded MultiAngle_Diffused_48_46.mat at 19-Oct-2012 10:11:02 in 0.9922 seconds with 140383811 b used
+Finished MultiAngle_Diffused_48_46.mat at 19-Oct-2012 10:11:02
+Loaded MultiAngle_Diffused_48_47.mat at 19-Oct-2012 10:11:03 in 0.88594 seconds with 127312964 b used
+Finished MultiAngle_Diffused_48_47.mat at 19-Oct-2012 10:11:03
+Loaded MultiAngle_Diffused_48_48.mat at 19-Oct-2012 10:11:04 in 1.2285 seconds with 138821183 b used
+Finished MultiAngle_Diffused_48_48.mat at 19-Oct-2012 10:11:05
+Loaded MultiAngle_Diffused_48_49.mat at 19-Oct-2012 10:11:05 in 0.79689 seconds with 118076240 b used
+Finished MultiAngle_Diffused_48_49.mat at 19-Oct-2012 10:11:06
+Loaded MultiAngle_Diffused_48_5.mat at 19-Oct-2012 10:11:07 in 0.93559 seconds with 133651081 b used
+Finished MultiAngle_Diffused_48_5.mat at 19-Oct-2012 10:11:07
+Loaded MultiAngle_Diffused_48_50.mat at 19-Oct-2012 10:11:08 in 0.98281 seconds with 140825806 b used
+Finished MultiAngle_Diffused_48_50.mat at 19-Oct-2012 10:11:08
+Loaded MultiAngle_Diffused_48_51.mat at 19-Oct-2012 10:11:09 in 0.98784 seconds with 134079529 b used
+Finished MultiAngle_Diffused_48_51.mat at 19-Oct-2012 10:11:09
+Loaded MultiAngle_Diffused_48_52.mat at 19-Oct-2012 10:11:10 in 0.98037 seconds with 140672354 b used
+Finished MultiAngle_Diffused_48_52.mat at 19-Oct-2012 10:11:10
+Loaded MultiAngle_Diffused_48_53.mat at 19-Oct-2012 10:11:11 in 0.93992 seconds with 139077199 b used
+Finished MultiAngle_Diffused_48_53.mat at 19-Oct-2012 10:11:11
+Loaded MultiAngle_Diffused_48_54.mat at 19-Oct-2012 10:11:12 in 1.0118 seconds with 146492339 b used
+Finished MultiAngle_Diffused_48_54.mat at 19-Oct-2012 10:11:12
+Loaded MultiAngle_Diffused_48_55.mat at 19-Oct-2012 10:11:13 in 0.95331 seconds with 138514727 b used
+Finished MultiAngle_Diffused_48_55.mat at 19-Oct-2012 10:11:14
+Loaded MultiAngle_Diffused_48_56.mat at 19-Oct-2012 10:11:15 in 0.98423 seconds with 139804427 b used
+Finished MultiAngle_Diffused_48_56.mat at 19-Oct-2012 10:11:15
+Loaded MultiAngle_Diffused_48_57.mat at 19-Oct-2012 10:11:16 in 0.91672 seconds with 133389403 b used
+Finished MultiAngle_Diffused_48_57.mat at 19-Oct-2012 10:11:16
+Loaded MultiAngle_Diffused_48_58.mat at 19-Oct-2012 10:11:17 in 0.92475 seconds with 135382275 b used
+Finished MultiAngle_Diffused_48_58.mat at 19-Oct-2012 10:11:17
+Loaded MultiAngle_Diffused_48_59.mat at 19-Oct-2012 10:11:18 in 0.95941 seconds with 136642501 b used
+Finished MultiAngle_Diffused_48_59.mat at 19-Oct-2012 10:11:18
+Loaded MultiAngle_Diffused_48_6.mat at 19-Oct-2012 10:11:19 in 0.9853 seconds with 139127663 b used
+Finished MultiAngle_Diffused_48_6.mat at 19-Oct-2012 10:11:19
+Loaded MultiAngle_Diffused_48_60.mat at 19-Oct-2012 10:11:20 in 0.99726 seconds with 140878410 b used
+Finished MultiAngle_Diffused_48_60.mat at 19-Oct-2012 10:11:20
+Loaded MultiAngle_Diffused_48_61.mat at 19-Oct-2012 10:11:21 in 0.91729 seconds with 132684325 b used
+Finished MultiAngle_Diffused_48_61.mat at 19-Oct-2012 10:11:22
+Loaded MultiAngle_Diffused_48_62.mat at 19-Oct-2012 10:11:22 in 0.90614 seconds with 122129327 b used
+Finished MultiAngle_Diffused_48_62.mat at 19-Oct-2012 10:11:23
+Loaded MultiAngle_Diffused_48_63.mat at 19-Oct-2012 10:11:23 in 0.86007 seconds with 124272381 b used
+Finished MultiAngle_Diffused_48_63.mat at 19-Oct-2012 10:11:24
+Loaded MultiAngle_Diffused_48_64.mat at 19-Oct-2012 10:11:25 in 0.92459 seconds with 135514171 b used
+Finished MultiAngle_Diffused_48_64.mat at 19-Oct-2012 10:11:25
+Loaded MultiAngle_Diffused_48_65.mat at 19-Oct-2012 10:11:26 in 0.78972 seconds with 116473038 b used
+Finished MultiAngle_Diffused_48_65.mat at 19-Oct-2012 10:11:26
+Loaded MultiAngle_Diffused_48_66.mat at 19-Oct-2012 10:11:27 in 0.92695 seconds with 134129303 b used
+Finished MultiAngle_Diffused_48_66.mat at 19-Oct-2012 10:11:27
+Loaded MultiAngle_Diffused_48_67.mat at 19-Oct-2012 10:11:28 in 0.95328 seconds with 139682925 b used
+Finished MultiAngle_Diffused_48_67.mat at 19-Oct-2012 10:11:28
+Loaded MultiAngle_Diffused_48_68.mat at 19-Oct-2012 10:11:29 in 0.99538 seconds with 138635502 b used
+Finished MultiAngle_Diffused_48_68.mat at 19-Oct-2012 10:11:29
+Loaded MultiAngle_Diffused_48_69.mat at 19-Oct-2012 10:11:30 in 0.9268 seconds with 133755256 b used
+Finished MultiAngle_Diffused_48_69.mat at 19-Oct-2012 10:11:30
+Loaded MultiAngle_Diffused_48_7.mat at 19-Oct-2012 10:11:31 in 0.90682 seconds with 137206018 b used
+Finished MultiAngle_Diffused_48_7.mat at 19-Oct-2012 10:11:31
+Loaded MultiAngle_Diffused_48_70.mat at 19-Oct-2012 10:11:32 in 0.972 seconds with 137503009 b used
+Finished MultiAngle_Diffused_48_70.mat at 19-Oct-2012 10:11:32
+Loaded MultiAngle_Diffused_48_71.mat at 19-Oct-2012 10:11:33 in 0.78343 seconds with 116072749 b used
+Finished MultiAngle_Diffused_48_71.mat at 19-Oct-2012 10:11:33
+Loaded MultiAngle_Diffused_48_72.mat at 19-Oct-2012 10:11:34 in 0.85124 seconds with 124046783 b used
+Finished MultiAngle_Diffused_48_72.mat at 19-Oct-2012 10:11:34
+Loaded MultiAngle_Diffused_48_73.mat at 19-Oct-2012 10:11:35 in 0.9944 seconds with 138560424 b used
+Finished MultiAngle_Diffused_48_73.mat at 19-Oct-2012 10:11:36
+Loaded MultiAngle_Diffused_48_74.mat at 19-Oct-2012 10:11:37 in 0.89966 seconds with 131928505 b used
+Finished MultiAngle_Diffused_48_74.mat at 19-Oct-2012 10:11:37
+Loaded MultiAngle_Diffused_48_75.mat at 19-Oct-2012 10:11:38 in 0.9348 seconds with 135996955 b used
+Finished MultiAngle_Diffused_48_75.mat at 19-Oct-2012 10:11:38
+Loaded MultiAngle_Diffused_48_76.mat at 19-Oct-2012 10:11:39 in 0.92272 seconds with 132102076 b used
+Finished MultiAngle_Diffused_48_76.mat at 19-Oct-2012 10:11:39
+Loaded MultiAngle_Diffused_48_77.mat at 19-Oct-2012 10:11:40 in 0.95935 seconds with 131292095 b used
+Finished MultiAngle_Diffused_48_77.mat at 19-Oct-2012 10:11:40
+Loaded MultiAngle_Diffused_48_78.mat at 19-Oct-2012 10:11:41 in 1.0208 seconds with 138911066 b used
+Finished MultiAngle_Diffused_48_78.mat at 19-Oct-2012 10:11:41
+Loaded MultiAngle_Diffused_48_8.mat at 19-Oct-2012 10:11:42 in 0.92377 seconds with 128496176 b used
+Finished MultiAngle_Diffused_48_8.mat at 19-Oct-2012 10:11:42
+Loaded MultiAngle_Diffused_48_80.mat at 19-Oct-2012 10:11:43 in 1.0727 seconds with 136392420 b used
+Finished MultiAngle_Diffused_48_80.mat at 19-Oct-2012 10:11:44
+Loaded MultiAngle_Diffused_48_81.mat at 19-Oct-2012 10:11:45 in 0.97648 seconds with 139292840 b used
+Finished MultiAngle_Diffused_48_81.mat at 19-Oct-2012 10:11:45
+Loaded MultiAngle_Diffused_48_82.mat at 19-Oct-2012 10:11:46 in 0.87877 seconds with 126748385 b used
+Finished MultiAngle_Diffused_48_82.mat at 19-Oct-2012 10:11:46
+Loaded MultiAngle_Diffused_48_83.mat at 19-Oct-2012 10:11:47 in 1.1212 seconds with 137995933 b used
+Finished MultiAngle_Diffused_48_83.mat at 19-Oct-2012 10:11:47
+Loaded MultiAngle_Diffused_48_84.mat at 19-Oct-2012 10:11:48 in 1.0018 seconds with 142528386 b used
+Finished MultiAngle_Diffused_48_84.mat at 19-Oct-2012 10:11:48
+Loaded MultiAngle_Diffused_48_85.mat at 19-Oct-2012 10:11:49 in 1.1335 seconds with 134526037 b used
+Finished MultiAngle_Diffused_48_85.mat at 19-Oct-2012 10:11:50
+Loaded MultiAngle_Diffused_48_86.mat at 19-Oct-2012 10:11:51 in 0.98319 seconds with 141009889 b used
+Finished MultiAngle_Diffused_48_86.mat at 19-Oct-2012 10:11:51
+Loaded MultiAngle_Diffused_48_87.mat at 19-Oct-2012 10:11:52 in 0.88921 seconds with 129286815 b used
+Finished MultiAngle_Diffused_48_87.mat at 19-Oct-2012 10:11:52
+Loaded MultiAngle_Diffused_48_88.mat at 19-Oct-2012 10:11:53 in 1.1146 seconds with 134874660 b used
+Finished MultiAngle_Diffused_48_88.mat at 19-Oct-2012 10:11:53
+Loaded MultiAngle_Diffused_48_89.mat at 19-Oct-2012 10:11:54 in 0.93344 seconds with 132208437 b used
+Finished MultiAngle_Diffused_48_89.mat at 19-Oct-2012 10:11:54
+Loaded MultiAngle_Diffused_48_9.mat at 19-Oct-2012 10:11:55 in 0.8989 seconds with 125615168 b used
+Finished MultiAngle_Diffused_48_9.mat at 19-Oct-2012 10:11:55
+Loaded MultiAngle_Diffused_48_90.mat at 19-Oct-2012 10:11:56 in 1.0155 seconds with 143173798 b used
+Finished MultiAngle_Diffused_48_90.mat at 19-Oct-2012 10:11:56
+Loaded MultiAngle_Diffused_48_91.mat at 19-Oct-2012 10:11:57 in 0.89735 seconds with 130402697 b used
+Finished MultiAngle_Diffused_48_91.mat at 19-Oct-2012 10:11:58
+Loaded MultiAngle_Diffused_48_92.mat at 19-Oct-2012 10:11:59 in 0.97048 seconds with 133504000 b used
+Finished MultiAngle_Diffused_48_92.mat at 19-Oct-2012 10:11:59
+Loaded MultiAngle_Diffused_48_93.mat at 19-Oct-2012 10:12:00 in 0.9284 seconds with 134922021 b used
+Finished MultiAngle_Diffused_48_93.mat at 19-Oct-2012 10:12:00
+Loaded MultiAngle_Diffused_48_94.mat at 19-Oct-2012 10:12:01 in 0.90413 seconds with 125714937 b used
+Finished MultiAngle_Diffused_48_94.mat at 19-Oct-2012 10:12:01
+Loaded MultiAngle_Diffused_48_95.mat at 19-Oct-2012 10:12:02 in 1.0087 seconds with 134717468 b used
+Finished MultiAngle_Diffused_48_95.mat at 19-Oct-2012 10:12:02
+Loaded MultiAngle_Diffused_48_96.mat at 19-Oct-2012 10:12:03 in 0.93964 seconds with 136920836 b used
+Finished MultiAngle_Diffused_48_96.mat at 19-Oct-2012 10:12:03
+Loaded MultiAngle_Diffused_48_97.mat at 19-Oct-2012 10:12:04 in 0.93487 seconds with 132766207 b used
+Finished MultiAngle_Diffused_48_97.mat at 19-Oct-2012 10:12:04
+Loaded MultiAngle_Diffused_48_98.mat at 19-Oct-2012 10:12:05 in 0.97683 seconds with 139676058 b used
+Finished MultiAngle_Diffused_48_98.mat at 19-Oct-2012 10:12:05
+Loaded MultiAngle_Diffused_48_99.mat at 19-Oct-2012 10:12:06 in 0.92074 seconds with 127719513 b used
+Finished MultiAngle_Diffused_48_99.mat at 19-Oct-2012 10:12:07
+Loaded MultiAngle_Diffused_49_1.mat at 19-Oct-2012 10:12:07 in 0.85888 seconds with 120346002 b used
+Finished MultiAngle_Diffused_49_1.mat at 19-Oct-2012 10:12:08
+Loaded MultiAngle_Diffused_49_10.mat at 19-Oct-2012 10:12:09 in 0.94397 seconds with 131427362 b used
+Finished MultiAngle_Diffused_49_10.mat at 19-Oct-2012 10:12:09
+Loaded MultiAngle_Diffused_49_100.mat at 19-Oct-2012 10:12:10 in 1.0811 seconds with 134305086 b used
+Finished MultiAngle_Diffused_49_100.mat at 19-Oct-2012 10:12:10
+Loaded MultiAngle_Diffused_49_101.mat at 19-Oct-2012 10:12:11 in 1.0262 seconds with 120779207 b used
+Finished MultiAngle_Diffused_49_101.mat at 19-Oct-2012 10:12:11
+Loaded MultiAngle_Diffused_49_102.mat at 19-Oct-2012 10:12:12 in 0.91968 seconds with 130724358 b used
+Finished MultiAngle_Diffused_49_102.mat at 19-Oct-2012 10:12:12
+Loaded MultiAngle_Diffused_49_103.mat at 19-Oct-2012 10:12:13 in 0.95104 seconds with 130898691 b used
+Finished MultiAngle_Diffused_49_103.mat at 19-Oct-2012 10:12:13
+Loaded MultiAngle_Diffused_49_104.mat at 19-Oct-2012 10:12:14 in 0.90496 seconds with 126414130 b used
+Finished MultiAngle_Diffused_49_104.mat at 19-Oct-2012 10:12:14
+Loaded MultiAngle_Diffused_49_105.mat at 19-Oct-2012 10:12:16 in 1.0881 seconds with 134957082 b used
+Finished MultiAngle_Diffused_49_105.mat at 19-Oct-2012 10:12:16
+Loaded MultiAngle_Diffused_49_106.mat at 19-Oct-2012 10:12:17 in 1.4398 seconds with 125941380 b used
+Finished MultiAngle_Diffused_49_106.mat at 19-Oct-2012 10:12:17
+Loaded MultiAngle_Diffused_49_107.mat at 19-Oct-2012 10:12:18 in 0.9307 seconds with 127683944 b used
+Finished MultiAngle_Diffused_49_107.mat at 19-Oct-2012 10:12:18
+Loaded MultiAngle_Diffused_49_108.mat at 19-Oct-2012 10:12:19 in 0.95281 seconds with 129938934 b used
+Finished MultiAngle_Diffused_49_108.mat at 19-Oct-2012 10:12:20
+Loaded MultiAngle_Diffused_49_109.mat at 19-Oct-2012 10:12:21 in 1.0255 seconds with 132632558 b used
+Finished MultiAngle_Diffused_49_109.mat at 19-Oct-2012 10:12:21
+Loaded MultiAngle_Diffused_49_11.mat at 19-Oct-2012 10:12:22 in 0.8729 seconds with 122067860 b used
+Finished MultiAngle_Diffused_49_11.mat at 19-Oct-2012 10:12:22
+Loaded MultiAngle_Diffused_49_110.mat at 19-Oct-2012 10:12:23 in 1.1885 seconds with 132384651 b used
+Finished MultiAngle_Diffused_49_110.mat at 19-Oct-2012 10:12:23
+Loaded MultiAngle_Diffused_49_111.mat at 19-Oct-2012 10:12:25 in 1.8285 seconds with 126596881 b used
+Finished MultiAngle_Diffused_49_111.mat at 19-Oct-2012 10:12:25
+Loaded MultiAngle_Diffused_49_112.mat at 19-Oct-2012 10:12:28 in 2.5255 seconds with 127373750 b used
+Finished MultiAngle_Diffused_49_112.mat at 19-Oct-2012 10:12:28
+Loaded MultiAngle_Diffused_49_113.mat at 19-Oct-2012 10:12:29 in 1.0983 seconds with 115391122 b used
+Finished MultiAngle_Diffused_49_113.mat at 19-Oct-2012 10:12:29
+Loaded MultiAngle_Diffused_49_114.mat at 19-Oct-2012 10:12:30 in 0.96043 seconds with 126218547 b used
+Finished MultiAngle_Diffused_49_114.mat at 19-Oct-2012 10:12:30
+Loaded MultiAngle_Diffused_49_115.mat at 19-Oct-2012 10:12:31 in 1.2459 seconds with 133215366 b used
+Finished MultiAngle_Diffused_49_115.mat at 19-Oct-2012 10:12:32
+Loaded MultiAngle_Diffused_49_116.mat at 19-Oct-2012 10:12:32 in 0.84009 seconds with 116721452 b used
+Finished MultiAngle_Diffused_49_116.mat at 19-Oct-2012 10:12:33
+Loaded MultiAngle_Diffused_49_117.mat at 19-Oct-2012 10:12:34 in 0.89479 seconds with 122828855 b used
+Finished MultiAngle_Diffused_49_117.mat at 19-Oct-2012 10:12:34
+Loaded MultiAngle_Diffused_49_118.mat at 19-Oct-2012 10:12:35 in 1.4377 seconds with 139037157 b used
+Finished MultiAngle_Diffused_49_118.mat at 19-Oct-2012 10:12:35
+Loaded MultiAngle_Diffused_49_119.mat at 19-Oct-2012 10:12:36 in 0.99698 seconds with 125043010 b used
+Finished MultiAngle_Diffused_49_119.mat at 19-Oct-2012 10:12:37
+Loaded MultiAngle_Diffused_49_12.mat at 19-Oct-2012 10:12:38 in 1.2674 seconds with 133169940 b used
+Finished MultiAngle_Diffused_49_12.mat at 19-Oct-2012 10:12:38
+Loaded MultiAngle_Diffused_49_120.mat at 19-Oct-2012 10:12:39 in 0.98579 seconds with 123159373 b used
+Finished MultiAngle_Diffused_49_120.mat at 19-Oct-2012 10:12:39
+Loaded MultiAngle_Diffused_49_121.mat at 19-Oct-2012 10:12:40 in 1.0202 seconds with 124108755 b used
+Finished MultiAngle_Diffused_49_121.mat at 19-Oct-2012 10:12:40
+Loaded MultiAngle_Diffused_49_122.mat at 19-Oct-2012 10:12:41 in 0.97298 seconds with 132897692 b used
+Finished MultiAngle_Diffused_49_122.mat at 19-Oct-2012 10:12:41
+Loaded MultiAngle_Diffused_49_123.mat at 19-Oct-2012 10:12:43 in 1.2201 seconds with 136549715 b used
+Finished MultiAngle_Diffused_49_123.mat at 19-Oct-2012 10:12:43
+Loaded MultiAngle_Diffused_49_124.mat at 19-Oct-2012 10:12:44 in 1.1045 seconds with 133475736 b used
+Finished MultiAngle_Diffused_49_124.mat at 19-Oct-2012 10:12:44
+Loaded MultiAngle_Diffused_49_125.mat at 19-Oct-2012 10:12:46 in 1.508 seconds with 120759715 b used
+Finished MultiAngle_Diffused_49_125.mat at 19-Oct-2012 10:12:46
+Loaded MultiAngle_Diffused_49_126.mat at 19-Oct-2012 10:12:48 in 1.7309 seconds with 129528385 b used
+Finished MultiAngle_Diffused_49_126.mat at 19-Oct-2012 10:12:48
+Loaded MultiAngle_Diffused_49_127.mat at 19-Oct-2012 10:12:49 in 0.9591 seconds with 127257552 b used
+Finished MultiAngle_Diffused_49_127.mat at 19-Oct-2012 10:12:49
+Loaded MultiAngle_Diffused_49_128.mat at 19-Oct-2012 10:12:50 in 1.4362 seconds with 138452235 b used
+Finished MultiAngle_Diffused_49_128.mat at 19-Oct-2012 10:12:50
+Loaded MultiAngle_Diffused_49_13.mat at 19-Oct-2012 10:12:52 in 1.3991 seconds with 136592122 b used
+Finished MultiAngle_Diffused_49_13.mat at 19-Oct-2012 10:12:52
+Loaded MultiAngle_Diffused_49_130.mat at 19-Oct-2012 10:12:53 in 1.4556 seconds with 135647186 b used
+Finished MultiAngle_Diffused_49_130.mat at 19-Oct-2012 10:12:54
+Loaded MultiAngle_Diffused_49_131.mat at 19-Oct-2012 10:12:55 in 1.3858 seconds with 137036099 b used
+Finished MultiAngle_Diffused_49_131.mat at 19-Oct-2012 10:12:55
+Loaded MultiAngle_Diffused_49_132.mat at 19-Oct-2012 10:12:56 in 0.94543 seconds with 122845251 b used
+Finished MultiAngle_Diffused_49_132.mat at 19-Oct-2012 10:12:56
+Loaded MultiAngle_Diffused_49_133.mat at 19-Oct-2012 10:12:57 in 1.0288 seconds with 128103768 b used
+Finished MultiAngle_Diffused_49_133.mat at 19-Oct-2012 10:12:57
+Loaded MultiAngle_Diffused_49_134.mat at 19-Oct-2012 10:12:58 in 0.9747 seconds with 134390992 b used
+Finished MultiAngle_Diffused_49_134.mat at 19-Oct-2012 10:12:59
+Loaded MultiAngle_Diffused_49_135.mat at 19-Oct-2012 10:13:00 in 1.0631 seconds with 142779599 b used
+Finished MultiAngle_Diffused_49_135.mat at 19-Oct-2012 10:13:00
+Loaded MultiAngle_Diffused_49_136.mat at 19-Oct-2012 10:13:01 in 0.94667 seconds with 125168006 b used
+Finished MultiAngle_Diffused_49_136.mat at 19-Oct-2012 10:13:01
+Loaded MultiAngle_Diffused_49_137.mat at 19-Oct-2012 10:13:02 in 0.89394 seconds with 124827816 b used
+Finished MultiAngle_Diffused_49_137.mat at 19-Oct-2012 10:13:02
+Loaded MultiAngle_Diffused_49_138.mat at 19-Oct-2012 10:13:03 in 0.98236 seconds with 134639814 b used
+Finished MultiAngle_Diffused_49_138.mat at 19-Oct-2012 10:13:03
+Loaded MultiAngle_Diffused_49_139.mat at 19-Oct-2012 10:13:05 in 1.3921 seconds with 136739964 b used
+Finished MultiAngle_Diffused_49_139.mat at 19-Oct-2012 10:13:05
+Loaded MultiAngle_Diffused_49_14.mat at 19-Oct-2012 10:13:06 in 0.96628 seconds with 132429420 b used
+Finished MultiAngle_Diffused_49_14.mat at 19-Oct-2012 10:13:06
+Loaded MultiAngle_Diffused_49_140.mat at 19-Oct-2012 10:13:07 in 1.0179 seconds with 138262253 b used
+Finished MultiAngle_Diffused_49_140.mat at 19-Oct-2012 10:13:07
+Loaded MultiAngle_Diffused_49_141.mat at 19-Oct-2012 10:13:08 in 1.3806 seconds with 128855383 b used
+Finished MultiAngle_Diffused_49_141.mat at 19-Oct-2012 10:13:09
+Loaded MultiAngle_Diffused_49_142.mat at 19-Oct-2012 10:13:10 in 0.945 seconds with 129654479 b used
+Finished MultiAngle_Diffused_49_142.mat at 19-Oct-2012 10:13:10
+Loaded MultiAngle_Diffused_49_143.mat at 19-Oct-2012 10:13:11 in 0.97099 seconds with 134200316 b used
+Finished MultiAngle_Diffused_49_143.mat at 19-Oct-2012 10:13:11
+Loaded MultiAngle_Diffused_49_144.mat at 19-Oct-2012 10:13:12 in 1.0332 seconds with 137903921 b used
+Finished MultiAngle_Diffused_49_144.mat at 19-Oct-2012 10:13:12
+Loaded MultiAngle_Diffused_49_146.mat at 19-Oct-2012 10:13:13 in 0.96409 seconds with 129614276 b used
+Finished MultiAngle_Diffused_49_146.mat at 19-Oct-2012 10:13:13
+Loaded MultiAngle_Diffused_49_148.mat at 19-Oct-2012 10:13:15 in 1.4023 seconds with 133085361 b used
+Finished MultiAngle_Diffused_49_148.mat at 19-Oct-2012 10:13:15
+Loaded MultiAngle_Diffused_49_149.mat at 19-Oct-2012 10:13:16 in 0.89313 seconds with 129967469 b used
+Finished MultiAngle_Diffused_49_149.mat at 19-Oct-2012 10:13:16
+Loaded MultiAngle_Diffused_49_15.mat at 19-Oct-2012 10:13:17 in 1.067 seconds with 143527995 b used
+Finished MultiAngle_Diffused_49_15.mat at 19-Oct-2012 10:13:17
+Loaded MultiAngle_Diffused_49_150.mat at 19-Oct-2012 10:13:18 in 0.89805 seconds with 131664300 b used
+Finished MultiAngle_Diffused_49_150.mat at 19-Oct-2012 10:13:18
+Loaded MultiAngle_Diffused_49_151.mat at 19-Oct-2012 10:13:19 in 1.1984 seconds with 143638176 b used
+Finished MultiAngle_Diffused_49_151.mat at 19-Oct-2012 10:13:20
+Loaded MultiAngle_Diffused_49_152.mat at 19-Oct-2012 10:13:21 in 0.97858 seconds with 129112857 b used
+Finished MultiAngle_Diffused_49_152.mat at 19-Oct-2012 10:13:21
+Loaded MultiAngle_Diffused_49_153.mat at 19-Oct-2012 10:13:22 in 0.87703 seconds with 122979775 b used
+Finished MultiAngle_Diffused_49_153.mat at 19-Oct-2012 10:13:22
+Loaded MultiAngle_Diffused_49_154.mat at 19-Oct-2012 10:13:24 in 2.3474 seconds with 141437687 b used
+Finished MultiAngle_Diffused_49_154.mat at 19-Oct-2012 10:13:24
+Loaded MultiAngle_Diffused_49_155.mat at 19-Oct-2012 10:13:25 in 0.95877 seconds with 143048211 b used
+Finished MultiAngle_Diffused_49_155.mat at 19-Oct-2012 10:13:25
+Loaded MultiAngle_Diffused_49_156.mat at 19-Oct-2012 10:13:26 in 1.0315 seconds with 146370192 b used
+Finished MultiAngle_Diffused_49_156.mat at 19-Oct-2012 10:13:27
+Loaded MultiAngle_Diffused_49_157.mat at 19-Oct-2012 10:13:28 in 0.88399 seconds with 129137459 b used
+Finished MultiAngle_Diffused_49_157.mat at 19-Oct-2012 10:13:28
+Loaded MultiAngle_Diffused_49_158.mat at 19-Oct-2012 10:13:29 in 1.0065 seconds with 130250111 b used
+Finished MultiAngle_Diffused_49_158.mat at 19-Oct-2012 10:13:29
+Loaded MultiAngle_Diffused_49_159.mat at 19-Oct-2012 10:13:30 in 0.96301 seconds with 132133597 b used
+Finished MultiAngle_Diffused_49_159.mat at 19-Oct-2012 10:13:30
+Loaded MultiAngle_Diffused_49_16.mat at 19-Oct-2012 10:13:32 in 1.6423 seconds with 141167441 b used
+Finished MultiAngle_Diffused_49_16.mat at 19-Oct-2012 10:13:32
+Loaded MultiAngle_Diffused_49_160.mat at 19-Oct-2012 10:13:33 in 1.0244 seconds with 141261196 b used
+Finished MultiAngle_Diffused_49_160.mat at 19-Oct-2012 10:13:33
+Loaded MultiAngle_Diffused_49_161.mat at 19-Oct-2012 10:13:34 in 0.95558 seconds with 134853121 b used
+Finished MultiAngle_Diffused_49_161.mat at 19-Oct-2012 10:13:34
+Loaded MultiAngle_Diffused_49_162.mat at 19-Oct-2012 10:13:35 in 0.92418 seconds with 131424808 b used
+Finished MultiAngle_Diffused_49_162.mat at 19-Oct-2012 10:13:35
+Loaded MultiAngle_Diffused_49_163.mat at 19-Oct-2012 10:13:36 in 0.91358 seconds with 120281939 b used
+Finished MultiAngle_Diffused_49_163.mat at 19-Oct-2012 10:13:36
+Loaded MultiAngle_Diffused_49_164.mat at 19-Oct-2012 10:13:37 in 1.0186 seconds with 140023905 b used
+Finished MultiAngle_Diffused_49_164.mat at 19-Oct-2012 10:13:38
+Loaded MultiAngle_Diffused_49_165.mat at 19-Oct-2012 10:13:38 in 0.92085 seconds with 131974178 b used
+Finished MultiAngle_Diffused_49_165.mat at 19-Oct-2012 10:13:39
+Loaded MultiAngle_Diffused_49_166.mat at 19-Oct-2012 10:13:40 in 0.88285 seconds with 129631776 b used
+Finished MultiAngle_Diffused_49_166.mat at 19-Oct-2012 10:13:40
+Loaded MultiAngle_Diffused_49_167.mat at 19-Oct-2012 10:13:41 in 1.0374 seconds with 131008677 b used
+Finished MultiAngle_Diffused_49_167.mat at 19-Oct-2012 10:13:41
+Loaded MultiAngle_Diffused_49_168.mat at 19-Oct-2012 10:13:42 in 0.93906 seconds with 120013459 b used
+Finished MultiAngle_Diffused_49_168.mat at 19-Oct-2012 10:13:42
+Loaded MultiAngle_Diffused_49_169.mat at 19-Oct-2012 10:13:43 in 0.88492 seconds with 127499407 b used
+Finished MultiAngle_Diffused_49_169.mat at 19-Oct-2012 10:13:43
+Loaded MultiAngle_Diffused_49_18.mat at 19-Oct-2012 10:13:45 in 1.921 seconds with 131217591 b used
+Finished MultiAngle_Diffused_49_18.mat at 19-Oct-2012 10:13:45
+Loaded MultiAngle_Diffused_49_19.mat at 19-Oct-2012 10:13:46 in 1.0944 seconds with 141286566 b used
+Finished MultiAngle_Diffused_49_19.mat at 19-Oct-2012 10:13:46
+Loaded MultiAngle_Diffused_49_2.mat at 19-Oct-2012 10:13:47 in 0.93742 seconds with 125891285 b used
+Finished MultiAngle_Diffused_49_2.mat at 19-Oct-2012 10:13:48
+Loaded MultiAngle_Diffused_49_20.mat at 19-Oct-2012 10:13:49 in 1.5806 seconds with 133412296 b used
+Finished MultiAngle_Diffused_49_20.mat at 19-Oct-2012 10:13:49
+Loaded MultiAngle_Diffused_49_21.mat at 19-Oct-2012 10:13:50 in 0.97508 seconds with 132650595 b used
+Finished MultiAngle_Diffused_49_21.mat at 19-Oct-2012 10:13:50
+Loaded MultiAngle_Diffused_49_22.mat at 19-Oct-2012 10:13:51 in 0.99234 seconds with 123488548 b used
+Finished MultiAngle_Diffused_49_22.mat at 19-Oct-2012 10:13:52
+Loaded MultiAngle_Diffused_49_23.mat at 19-Oct-2012 10:13:52 in 0.86876 seconds with 121562977 b used
+Finished MultiAngle_Diffused_49_23.mat at 19-Oct-2012 10:13:53
+Loaded MultiAngle_Diffused_49_25.mat at 19-Oct-2012 10:13:54 in 1.1529 seconds with 137147965 b used
+Finished MultiAngle_Diffused_49_25.mat at 19-Oct-2012 10:13:54
+Loaded MultiAngle_Diffused_49_26.mat at 19-Oct-2012 10:13:55 in 1.5044 seconds with 136436426 b used
+Finished MultiAngle_Diffused_49_26.mat at 19-Oct-2012 10:13:56
+Loaded MultiAngle_Diffused_49_27.mat at 19-Oct-2012 10:13:57 in 0.95234 seconds with 134014843 b used
+Finished MultiAngle_Diffused_49_27.mat at 19-Oct-2012 10:13:57
+Loaded MultiAngle_Diffused_49_28.mat at 19-Oct-2012 10:13:58 in 1.0529 seconds with 138307722 b used
+Finished MultiAngle_Diffused_49_28.mat at 19-Oct-2012 10:13:58
+Loaded MultiAngle_Diffused_49_29.mat at 19-Oct-2012 10:13:59 in 1.0762 seconds with 136117642 b used
+Finished MultiAngle_Diffused_49_29.mat at 19-Oct-2012 10:13:59
+Loaded MultiAngle_Diffused_49_3.mat at 19-Oct-2012 10:14:00 in 0.9383 seconds with 124728431 b used
+Finished MultiAngle_Diffused_49_3.mat at 19-Oct-2012 10:14:00
+Loaded MultiAngle_Diffused_49_30.mat at 19-Oct-2012 10:14:01 in 0.97299 seconds with 131010739 b used
+Finished MultiAngle_Diffused_49_30.mat at 19-Oct-2012 10:14:01
+Loaded MultiAngle_Diffused_49_31.mat at 19-Oct-2012 10:14:03 in 1.0637 seconds with 140980051 b used
+Finished MultiAngle_Diffused_49_31.mat at 19-Oct-2012 10:14:03
+Loaded MultiAngle_Diffused_49_32.mat at 19-Oct-2012 10:14:04 in 1.0089 seconds with 126649879 b used
+Finished MultiAngle_Diffused_49_32.mat at 19-Oct-2012 10:14:04
+Loaded MultiAngle_Diffused_49_33.mat at 19-Oct-2012 10:14:05 in 0.91284 seconds with 126840939 b used
+Finished MultiAngle_Diffused_49_33.mat at 19-Oct-2012 10:14:05
+Loaded MultiAngle_Diffused_49_34.mat at 19-Oct-2012 10:14:06 in 0.99464 seconds with 130475701 b used
+Finished MultiAngle_Diffused_49_34.mat at 19-Oct-2012 10:14:06
+Loaded MultiAngle_Diffused_49_35.mat at 19-Oct-2012 10:14:07 in 0.94556 seconds with 131404358 b used
+Finished MultiAngle_Diffused_49_35.mat at 19-Oct-2012 10:14:07
+Loaded MultiAngle_Diffused_49_36.mat at 19-Oct-2012 10:14:09 in 1.6948 seconds with 148320750 b used
+Finished MultiAngle_Diffused_49_36.mat at 19-Oct-2012 10:14:09
+Loaded MultiAngle_Diffused_49_37.mat at 19-Oct-2012 10:14:11 in 2.0816 seconds with 131484924 b used
+Finished MultiAngle_Diffused_49_37.mat at 19-Oct-2012 10:14:11
+Loaded MultiAngle_Diffused_49_38.mat at 19-Oct-2012 10:14:12 in 1.0142 seconds with 128782744 b used
+Finished MultiAngle_Diffused_49_38.mat at 19-Oct-2012 10:14:13
+Loaded MultiAngle_Diffused_49_39.mat at 19-Oct-2012 10:14:14 in 1.0622 seconds with 143406266 b used
+Finished MultiAngle_Diffused_49_39.mat at 19-Oct-2012 10:14:14
+Loaded MultiAngle_Diffused_49_4.mat at 19-Oct-2012 10:14:15 in 1.1083 seconds with 130005092 b used
+Finished MultiAngle_Diffused_49_4.mat at 19-Oct-2012 10:14:15
+Loaded MultiAngle_Diffused_49_40.mat at 19-Oct-2012 10:14:16 in 1.2585 seconds with 127019333 b used
+Finished MultiAngle_Diffused_49_40.mat at 19-Oct-2012 10:14:16
+Loaded MultiAngle_Diffused_49_41.mat at 19-Oct-2012 10:14:17 in 0.96405 seconds with 133522347 b used
+Finished MultiAngle_Diffused_49_41.mat at 19-Oct-2012 10:14:18
+Loaded MultiAngle_Diffused_49_42.mat at 19-Oct-2012 10:14:19 in 1.1778 seconds with 130965956 b used
+Finished MultiAngle_Diffused_49_42.mat at 19-Oct-2012 10:14:19
+Loaded MultiAngle_Diffused_49_43.mat at 19-Oct-2012 10:14:20 in 1.4078 seconds with 124318497 b used
+Finished MultiAngle_Diffused_49_43.mat at 19-Oct-2012 10:14:21
+Loaded MultiAngle_Diffused_49_44.mat at 19-Oct-2012 10:14:22 in 1.3003 seconds with 133842324 b used
+Finished MultiAngle_Diffused_49_44.mat at 19-Oct-2012 10:14:22
+Loaded MultiAngle_Diffused_49_45.mat at 19-Oct-2012 10:14:23 in 0.99997 seconds with 134572946 b used
+Finished MultiAngle_Diffused_49_45.mat at 19-Oct-2012 10:14:23
+Loaded MultiAngle_Diffused_49_46.mat at 19-Oct-2012 10:14:24 in 1.0044 seconds with 122698507 b used
+Finished MultiAngle_Diffused_49_46.mat at 19-Oct-2012 10:14:24
+Loaded MultiAngle_Diffused_49_47.mat at 19-Oct-2012 10:14:25 in 1.021 seconds with 133900460 b used
+Finished MultiAngle_Diffused_49_47.mat at 19-Oct-2012 10:14:26
+Loaded MultiAngle_Diffused_49_48.mat at 19-Oct-2012 10:14:27 in 1.1806 seconds with 139668480 b used
+Finished MultiAngle_Diffused_49_48.mat at 19-Oct-2012 10:14:27
+Loaded MultiAngle_Diffused_49_49.mat at 19-Oct-2012 10:14:28 in 1.2919 seconds with 136382760 b used
+Finished MultiAngle_Diffused_49_49.mat at 19-Oct-2012 10:14:28
+Loaded MultiAngle_Diffused_49_5.mat at 19-Oct-2012 10:14:29 in 1.0818 seconds with 129943949 b used
+Finished MultiAngle_Diffused_49_5.mat at 19-Oct-2012 10:14:30
+Loaded MultiAngle_Diffused_49_50.mat at 19-Oct-2012 10:14:31 in 1.0977 seconds with 136989707 b used
+Finished MultiAngle_Diffused_49_50.mat at 19-Oct-2012 10:14:31
+Loaded MultiAngle_Diffused_49_51.mat at 19-Oct-2012 10:14:32 in 1.0146 seconds with 131439104 b used
+Finished MultiAngle_Diffused_49_51.mat at 19-Oct-2012 10:14:32
+Loaded MultiAngle_Diffused_49_53.mat at 19-Oct-2012 10:14:33 in 0.9724 seconds with 128730530 b used
+Finished MultiAngle_Diffused_49_53.mat at 19-Oct-2012 10:14:33
+Loaded MultiAngle_Diffused_49_54.mat at 19-Oct-2012 10:14:34 in 1.2469 seconds with 130677721 b used
+Finished MultiAngle_Diffused_49_54.mat at 19-Oct-2012 10:14:35
+Loaded MultiAngle_Diffused_49_55.mat at 19-Oct-2012 10:14:36 in 1.1404 seconds with 132696792 b used
+Finished MultiAngle_Diffused_49_55.mat at 19-Oct-2012 10:14:36
+Loaded MultiAngle_Diffused_49_56.mat at 19-Oct-2012 10:14:37 in 1.0459 seconds with 141364530 b used
+Finished MultiAngle_Diffused_49_56.mat at 19-Oct-2012 10:14:37
+Loaded MultiAngle_Diffused_49_57.mat at 19-Oct-2012 10:14:38 in 1.024 seconds with 131489160 b used
+Finished MultiAngle_Diffused_49_57.mat at 19-Oct-2012 10:14:38
+Loaded MultiAngle_Diffused_49_58.mat at 19-Oct-2012 10:14:40 in 1.16 seconds with 129013112 b used
+Finished MultiAngle_Diffused_49_58.mat at 19-Oct-2012 10:14:40
+Loaded MultiAngle_Diffused_49_59.mat at 19-Oct-2012 10:14:41 in 1.2908 seconds with 144755779 b used
+Finished MultiAngle_Diffused_49_59.mat at 19-Oct-2012 10:14:41
+Loaded MultiAngle_Diffused_49_6.mat at 19-Oct-2012 10:14:42 in 1.0322 seconds with 127340229 b used
+Finished MultiAngle_Diffused_49_6.mat at 19-Oct-2012 10:14:42
+Loaded MultiAngle_Diffused_49_60.mat at 19-Oct-2012 10:14:43 in 0.8752 seconds with 117674701 b used
+Finished MultiAngle_Diffused_49_60.mat at 19-Oct-2012 10:14:43
+Loaded MultiAngle_Diffused_49_61.mat at 19-Oct-2012 10:14:45 in 1.265 seconds with 126598847 b used
+Finished MultiAngle_Diffused_49_61.mat at 19-Oct-2012 10:14:45
+Loaded MultiAngle_Diffused_49_62.mat at 19-Oct-2012 10:14:46 in 0.97685 seconds with 115762316 b used
+Finished MultiAngle_Diffused_49_62.mat at 19-Oct-2012 10:14:46
+Loaded MultiAngle_Diffused_49_63.mat at 19-Oct-2012 10:14:47 in 1.182 seconds with 131324968 b used
+Finished MultiAngle_Diffused_49_63.mat at 19-Oct-2012 10:14:47
+Loaded MultiAngle_Diffused_49_64.mat at 19-Oct-2012 10:14:48 in 0.8765 seconds with 125743201 b used
+Finished MultiAngle_Diffused_49_64.mat at 19-Oct-2012 10:14:48
+Loaded MultiAngle_Diffused_49_66.mat at 19-Oct-2012 10:14:49 in 0.92822 seconds with 125319323 b used
+Finished MultiAngle_Diffused_49_66.mat at 19-Oct-2012 10:14:49
+Loaded MultiAngle_Diffused_49_67.mat at 19-Oct-2012 10:14:51 in 1.3681 seconds with 132706165 b used
+Finished MultiAngle_Diffused_49_67.mat at 19-Oct-2012 10:14:51
+Loaded MultiAngle_Diffused_49_68.mat at 19-Oct-2012 10:14:52 in 0.98368 seconds with 135010791 b used
+Finished MultiAngle_Diffused_49_68.mat at 19-Oct-2012 10:14:52
+Loaded MultiAngle_Diffused_49_69.mat at 19-Oct-2012 10:14:53 in 0.90776 seconds with 129521643 b used
+Finished MultiAngle_Diffused_49_69.mat at 19-Oct-2012 10:14:53
+Loaded MultiAngle_Diffused_49_7.mat at 19-Oct-2012 10:14:54 in 0.91574 seconds with 127140841 b used
+Finished MultiAngle_Diffused_49_7.mat at 19-Oct-2012 10:14:54
+Loaded MultiAngle_Diffused_49_70.mat at 19-Oct-2012 10:14:57 in 2.816 seconds with 144840625 b used
+Finished MultiAngle_Diffused_49_70.mat at 19-Oct-2012 10:14:57
+Loaded MultiAngle_Diffused_49_71.mat at 19-Oct-2012 10:14:58 in 1.2022 seconds with 123544101 b used
+Finished MultiAngle_Diffused_49_71.mat at 19-Oct-2012 10:14:59
+Loaded MultiAngle_Diffused_49_72.mat at 19-Oct-2012 10:15:00 in 1.2453 seconds with 136608238 b used
+Finished MultiAngle_Diffused_49_72.mat at 19-Oct-2012 10:15:00
+Loaded MultiAngle_Diffused_49_73.mat at 19-Oct-2012 10:15:01 in 0.92854 seconds with 129906286 b used
+Finished MultiAngle_Diffused_49_73.mat at 19-Oct-2012 10:15:01
+Loaded MultiAngle_Diffused_49_74.mat at 19-Oct-2012 10:15:02 in 1.0491 seconds with 131702687 b used
+Finished MultiAngle_Diffused_49_74.mat at 19-Oct-2012 10:15:02
+Loaded MultiAngle_Diffused_49_75.mat at 19-Oct-2012 10:15:03 in 0.88123 seconds with 121854060 b used
+Finished MultiAngle_Diffused_49_75.mat at 19-Oct-2012 10:15:03
+Loaded MultiAngle_Diffused_49_76.mat at 19-Oct-2012 10:15:05 in 1.1563 seconds with 125039457 b used
+Finished MultiAngle_Diffused_49_76.mat at 19-Oct-2012 10:15:05
+Loaded MultiAngle_Diffused_49_77.mat at 19-Oct-2012 10:15:06 in 0.89047 seconds with 119089442 b used
+Finished MultiAngle_Diffused_49_77.mat at 19-Oct-2012 10:15:06
+Loaded MultiAngle_Diffused_49_78.mat at 19-Oct-2012 10:15:07 in 0.87341 seconds with 122529464 b used
+Finished MultiAngle_Diffused_49_78.mat at 19-Oct-2012 10:15:07
+Loaded MultiAngle_Diffused_49_79.mat at 19-Oct-2012 10:15:08 in 1.2199 seconds with 126538360 b used
+Finished MultiAngle_Diffused_49_79.mat at 19-Oct-2012 10:15:08
+Loaded MultiAngle_Diffused_49_8.mat at 19-Oct-2012 10:15:09 in 1.0801 seconds with 134581154 b used
+Finished MultiAngle_Diffused_49_8.mat at 19-Oct-2012 10:15:10
+Loaded MultiAngle_Diffused_49_80.mat at 19-Oct-2012 10:15:11 in 1.0458 seconds with 135913838 b used
+Finished MultiAngle_Diffused_49_80.mat at 19-Oct-2012 10:15:11
+Loaded MultiAngle_Diffused_49_81.mat at 19-Oct-2012 10:15:12 in 1.0554 seconds with 133615875 b used
+Finished MultiAngle_Diffused_49_81.mat at 19-Oct-2012 10:15:12
+Loaded MultiAngle_Diffused_49_82.mat at 19-Oct-2012 10:15:13 in 0.94609 seconds with 124211044 b used
+Finished MultiAngle_Diffused_49_82.mat at 19-Oct-2012 10:15:13
+Loaded MultiAngle_Diffused_49_83.mat at 19-Oct-2012 10:15:14 in 1.0163 seconds with 129396216 b used
+Finished MultiAngle_Diffused_49_83.mat at 19-Oct-2012 10:15:14
+Loaded MultiAngle_Diffused_49_84.mat at 19-Oct-2012 10:15:15 in 1.1072 seconds with 145004344 b used
+Finished MultiAngle_Diffused_49_84.mat at 19-Oct-2012 10:15:16
+Loaded MultiAngle_Diffused_49_85.mat at 19-Oct-2012 10:15:17 in 1.1412 seconds with 133671830 b used
+Finished MultiAngle_Diffused_49_85.mat at 19-Oct-2012 10:15:17
+Loaded MultiAngle_Diffused_49_86.mat at 19-Oct-2012 10:15:18 in 0.95775 seconds with 133174551 b used
+Finished MultiAngle_Diffused_49_86.mat at 19-Oct-2012 10:15:18
+Loaded MultiAngle_Diffused_49_87.mat at 19-Oct-2012 10:15:19 in 1.0304 seconds with 130346097 b used
+Finished MultiAngle_Diffused_49_87.mat at 19-Oct-2012 10:15:19
+Loaded MultiAngle_Diffused_49_88.mat at 19-Oct-2012 10:15:20 in 0.89061 seconds with 118257107 b used
+Finished MultiAngle_Diffused_49_88.mat at 19-Oct-2012 10:15:20
+Loaded MultiAngle_Diffused_49_89.mat at 19-Oct-2012 10:15:21 in 1.0175 seconds with 137752811 b used
+Finished MultiAngle_Diffused_49_89.mat at 19-Oct-2012 10:15:21
+Loaded MultiAngle_Diffused_49_9.mat at 19-Oct-2012 10:15:22 in 0.97804 seconds with 125714325 b used
+Finished MultiAngle_Diffused_49_9.mat at 19-Oct-2012 10:15:23
+Loaded MultiAngle_Diffused_49_90.mat at 19-Oct-2012 10:15:24 in 1.1535 seconds with 132315216 b used
+Finished MultiAngle_Diffused_49_90.mat at 19-Oct-2012 10:15:24
+Loaded MultiAngle_Diffused_49_91.mat at 19-Oct-2012 10:15:25 in 0.84339 seconds with 122005576 b used
+Finished MultiAngle_Diffused_49_91.mat at 19-Oct-2012 10:15:25
+Loaded MultiAngle_Diffused_49_92.mat at 19-Oct-2012 10:15:26 in 1.3272 seconds with 128850392 b used
+Finished MultiAngle_Diffused_49_92.mat at 19-Oct-2012 10:15:26
+Loaded MultiAngle_Diffused_49_93.mat at 19-Oct-2012 10:15:28 in 1.3226 seconds with 143665967 b used
+Finished MultiAngle_Diffused_49_93.mat at 19-Oct-2012 10:15:28
+Loaded MultiAngle_Diffused_49_94.mat at 19-Oct-2012 10:15:29 in 0.93571 seconds with 131042693 b used
+Finished MultiAngle_Diffused_49_94.mat at 19-Oct-2012 10:15:29
+Loaded MultiAngle_Diffused_49_95.mat at 19-Oct-2012 10:15:30 in 0.99512 seconds with 134791769 b used
+Finished MultiAngle_Diffused_49_95.mat at 19-Oct-2012 10:15:30
+Loaded MultiAngle_Diffused_49_96.mat at 19-Oct-2012 10:15:31 in 0.88934 seconds with 130509089 b used
+Finished MultiAngle_Diffused_49_96.mat at 19-Oct-2012 10:15:31
+Loaded MultiAngle_Diffused_49_97.mat at 19-Oct-2012 10:15:32 in 0.97948 seconds with 139373035 b used
+Finished MultiAngle_Diffused_49_97.mat at 19-Oct-2012 10:15:32
+Loaded MultiAngle_Diffused_49_98.mat at 19-Oct-2012 10:15:33 in 0.96524 seconds with 137013568 b used
+Finished MultiAngle_Diffused_49_98.mat at 19-Oct-2012 10:15:34
+Loaded MultiAngle_Diffused_49_99.mat at 19-Oct-2012 10:15:35 in 1.112 seconds with 126472484 b used
+Finished MultiAngle_Diffused_49_99.mat at 19-Oct-2012 10:15:35
+Loaded MultiAngle_Diffused_4_1.mat at 19-Oct-2012 10:15:36 in 0.99004 seconds with 137308554 b used
+Finished MultiAngle_Diffused_4_1.mat at 19-Oct-2012 10:15:36
+Loaded MultiAngle_Diffused_4_10.mat at 19-Oct-2012 10:15:37 in 0.91456 seconds with 136472526 b used
+Finished MultiAngle_Diffused_4_10.mat at 19-Oct-2012 10:15:37
+Loaded MultiAngle_Diffused_4_101.mat at 19-Oct-2012 10:15:38 in 0.93424 seconds with 138884136 b used
+Finished MultiAngle_Diffused_4_101.mat at 19-Oct-2012 10:15:38
+Loaded MultiAngle_Diffused_4_102.mat at 19-Oct-2012 10:15:39 in 1.0084 seconds with 148126610 b used
+Finished MultiAngle_Diffused_4_102.mat at 19-Oct-2012 10:15:39
+Loaded MultiAngle_Diffused_4_103.mat at 19-Oct-2012 10:15:40 in 0.91803 seconds with 124762515 b used
+Finished MultiAngle_Diffused_4_103.mat at 19-Oct-2012 10:15:40
+Loaded MultiAngle_Diffused_4_104.mat at 19-Oct-2012 10:15:42 in 1.0671 seconds with 130113440 b used
+Finished MultiAngle_Diffused_4_104.mat at 19-Oct-2012 10:15:42
+Loaded MultiAngle_Diffused_4_105.mat at 19-Oct-2012 10:15:43 in 1.0469 seconds with 137042539 b used
+Finished MultiAngle_Diffused_4_105.mat at 19-Oct-2012 10:15:43
+Loaded MultiAngle_Diffused_4_106.mat at 19-Oct-2012 10:15:44 in 0.87434 seconds with 124256604 b used
+Finished MultiAngle_Diffused_4_106.mat at 19-Oct-2012 10:15:44
+Loaded MultiAngle_Diffused_4_107.mat at 19-Oct-2012 10:15:46 in 2.4377 seconds with 146959064 b used
+Finished MultiAngle_Diffused_4_107.mat at 19-Oct-2012 10:15:47
+Loaded MultiAngle_Diffused_4_108.mat at 19-Oct-2012 10:15:48 in 0.93536 seconds with 123788450 b used
+Finished MultiAngle_Diffused_4_108.mat at 19-Oct-2012 10:15:48
+Loaded MultiAngle_Diffused_4_109.mat at 19-Oct-2012 10:15:49 in 0.86527 seconds with 127652728 b used
+Finished MultiAngle_Diffused_4_109.mat at 19-Oct-2012 10:15:49
+Loaded MultiAngle_Diffused_4_11.mat at 19-Oct-2012 10:15:50 in 1.072 seconds with 142817996 b used
+Finished MultiAngle_Diffused_4_11.mat at 19-Oct-2012 10:15:50
+Loaded MultiAngle_Diffused_4_110.mat at 19-Oct-2012 10:15:51 in 1.057 seconds with 132040178 b used
+Finished MultiAngle_Diffused_4_110.mat at 19-Oct-2012 10:15:51
+Loaded MultiAngle_Diffused_4_111.mat at 19-Oct-2012 10:15:52 in 0.91933 seconds with 130033095 b used
+Finished MultiAngle_Diffused_4_111.mat at 19-Oct-2012 10:15:52
+Loaded MultiAngle_Diffused_4_112.mat at 19-Oct-2012 10:15:53 in 0.88463 seconds with 127023772 b used
+Finished MultiAngle_Diffused_4_112.mat at 19-Oct-2012 10:15:53
+Loaded MultiAngle_Diffused_4_113.mat at 19-Oct-2012 10:15:54 in 1.0857 seconds with 128479122 b used
+Finished MultiAngle_Diffused_4_113.mat at 19-Oct-2012 10:15:55
+Loaded MultiAngle_Diffused_4_114.mat at 19-Oct-2012 10:15:56 in 0.9513 seconds with 134732449 b used
+Finished MultiAngle_Diffused_4_114.mat at 19-Oct-2012 10:15:56
+Loaded MultiAngle_Diffused_4_115.mat at 19-Oct-2012 10:15:57 in 0.92421 seconds with 130260399 b used
+Finished MultiAngle_Diffused_4_115.mat at 19-Oct-2012 10:15:57
+Loaded MultiAngle_Diffused_4_116.mat at 19-Oct-2012 10:15:58 in 0.94328 seconds with 133506268 b used
+Finished MultiAngle_Diffused_4_116.mat at 19-Oct-2012 10:15:58
+Loaded MultiAngle_Diffused_4_117.mat at 19-Oct-2012 10:15:59 in 0.94754 seconds with 130429804 b used
+Finished MultiAngle_Diffused_4_117.mat at 19-Oct-2012 10:15:59
+Loaded MultiAngle_Diffused_4_118.mat at 19-Oct-2012 10:16:00 in 0.96181 seconds with 125263450 b used
+Finished MultiAngle_Diffused_4_118.mat at 19-Oct-2012 10:16:00
+Loaded MultiAngle_Diffused_4_119.mat at 19-Oct-2012 10:16:01 in 1.04 seconds with 140144401 b used
+Finished MultiAngle_Diffused_4_119.mat at 19-Oct-2012 10:16:02
+Loaded MultiAngle_Diffused_4_12.mat at 19-Oct-2012 10:16:02 in 0.9544 seconds with 141528669 b used
+Finished MultiAngle_Diffused_4_12.mat at 19-Oct-2012 10:16:03
+Loaded MultiAngle_Diffused_4_120.mat at 19-Oct-2012 10:16:04 in 0.93121 seconds with 129396624 b used
+Finished MultiAngle_Diffused_4_120.mat at 19-Oct-2012 10:16:04
+Loaded MultiAngle_Diffused_4_121.mat at 19-Oct-2012 10:16:05 in 0.96526 seconds with 126710350 b used
+Finished MultiAngle_Diffused_4_121.mat at 19-Oct-2012 10:16:05
+Loaded MultiAngle_Diffused_4_122.mat at 19-Oct-2012 10:16:06 in 0.91819 seconds with 124160840 b used
+Finished MultiAngle_Diffused_4_122.mat at 19-Oct-2012 10:16:06
+Loaded MultiAngle_Diffused_4_123.mat at 19-Oct-2012 10:16:07 in 1.2193 seconds with 141633480 b used
+Finished MultiAngle_Diffused_4_123.mat at 19-Oct-2012 10:16:07
+Loaded MultiAngle_Diffused_4_124.mat at 19-Oct-2012 10:16:08 in 0.92592 seconds with 130431885 b used
+Finished MultiAngle_Diffused_4_124.mat at 19-Oct-2012 10:16:08
+Loaded MultiAngle_Diffused_4_125.mat at 19-Oct-2012 10:16:09 in 0.9834 seconds with 138516046 b used
+Finished MultiAngle_Diffused_4_125.mat at 19-Oct-2012 10:16:10
+Loaded MultiAngle_Diffused_4_126.mat at 19-Oct-2012 10:16:11 in 1.0247 seconds with 137404681 b used
+Finished MultiAngle_Diffused_4_126.mat at 19-Oct-2012 10:16:11
+Loaded MultiAngle_Diffused_4_127.mat at 19-Oct-2012 10:16:12 in 1.0714 seconds with 136725717 b used
+Finished MultiAngle_Diffused_4_127.mat at 19-Oct-2012 10:16:12
+Loaded MultiAngle_Diffused_4_129.mat at 19-Oct-2012 10:16:13 in 0.90052 seconds with 125411070 b used
+Finished MultiAngle_Diffused_4_129.mat at 19-Oct-2012 10:16:13
+Loaded MultiAngle_Diffused_4_13.mat at 19-Oct-2012 10:16:14 in 1.0481 seconds with 136391708 b used
+Finished MultiAngle_Diffused_4_13.mat at 19-Oct-2012 10:16:14
+Loaded MultiAngle_Diffused_4_130.mat at 19-Oct-2012 10:16:15 in 0.96799 seconds with 140842846 b used
+Finished MultiAngle_Diffused_4_130.mat at 19-Oct-2012 10:16:16
+Loaded MultiAngle_Diffused_4_131.mat at 19-Oct-2012 10:16:16 in 0.88795 seconds with 123682272 b used
+Finished MultiAngle_Diffused_4_131.mat at 19-Oct-2012 10:16:17
+Loaded MultiAngle_Diffused_4_132.mat at 19-Oct-2012 10:16:18 in 0.96735 seconds with 140916286 b used
+Finished MultiAngle_Diffused_4_132.mat at 19-Oct-2012 10:16:18
+Loaded MultiAngle_Diffused_4_133.mat at 19-Oct-2012 10:16:19 in 0.91882 seconds with 119328286 b used
+Finished MultiAngle_Diffused_4_133.mat at 19-Oct-2012 10:16:19
+Loaded MultiAngle_Diffused_4_134.mat at 19-Oct-2012 10:16:20 in 0.89613 seconds with 130299682 b used
+Finished MultiAngle_Diffused_4_134.mat at 19-Oct-2012 10:16:20
+Loaded MultiAngle_Diffused_4_135.mat at 19-Oct-2012 10:16:21 in 0.94232 seconds with 135083274 b used
+Finished MultiAngle_Diffused_4_135.mat at 19-Oct-2012 10:16:21
+Loaded MultiAngle_Diffused_4_136.mat at 19-Oct-2012 10:16:22 in 0.87119 seconds with 130480731 b used
+Finished MultiAngle_Diffused_4_136.mat at 19-Oct-2012 10:16:22
+Loaded MultiAngle_Diffused_4_137.mat at 19-Oct-2012 10:16:23 in 1.0017 seconds with 127851799 b used
+Finished MultiAngle_Diffused_4_137.mat at 19-Oct-2012 10:16:23
+Loaded MultiAngle_Diffused_4_138.mat at 19-Oct-2012 10:16:24 in 0.85584 seconds with 119644493 b used
+Finished MultiAngle_Diffused_4_138.mat at 19-Oct-2012 10:16:24
+Loaded MultiAngle_Diffused_4_139.mat at 19-Oct-2012 10:16:25 in 0.86988 seconds with 122601748 b used
+Finished MultiAngle_Diffused_4_139.mat at 19-Oct-2012 10:16:25
+Loaded MultiAngle_Diffused_4_14.mat at 19-Oct-2012 10:16:26 in 1.0656 seconds with 137845925 b used
+Finished MultiAngle_Diffused_4_14.mat at 19-Oct-2012 10:16:27
+Loaded MultiAngle_Diffused_4_140.mat at 19-Oct-2012 10:16:28 in 1.0974 seconds with 121680614 b used
+Finished MultiAngle_Diffused_4_140.mat at 19-Oct-2012 10:16:28
+Loaded MultiAngle_Diffused_4_141.mat at 19-Oct-2012 10:16:29 in 0.85799 seconds with 129558095 b used
+Finished MultiAngle_Diffused_4_141.mat at 19-Oct-2012 10:16:29
+Loaded MultiAngle_Diffused_4_142.mat at 19-Oct-2012 10:16:30 in 0.90251 seconds with 125404009 b used
+Finished MultiAngle_Diffused_4_142.mat at 19-Oct-2012 10:16:30
+Loaded MultiAngle_Diffused_4_143.mat at 19-Oct-2012 10:16:31 in 1.0175 seconds with 140947662 b used
+Finished MultiAngle_Diffused_4_143.mat at 19-Oct-2012 10:16:31
+Loaded MultiAngle_Diffused_4_144.mat at 19-Oct-2012 10:16:33 in 1.4223 seconds with 132480187 b used
+Finished MultiAngle_Diffused_4_144.mat at 19-Oct-2012 10:16:33
+Loaded MultiAngle_Diffused_4_145.mat at 19-Oct-2012 10:16:34 in 0.91039 seconds with 129428613 b used
+Finished MultiAngle_Diffused_4_145.mat at 19-Oct-2012 10:16:34
+Loaded MultiAngle_Diffused_4_146.mat at 19-Oct-2012 10:16:35 in 0.88596 seconds with 123513977 b used
+Finished MultiAngle_Diffused_4_146.mat at 19-Oct-2012 10:16:35
+Loaded MultiAngle_Diffused_4_147.mat at 19-Oct-2012 10:16:36 in 1.0614 seconds with 133568659 b used
+Finished MultiAngle_Diffused_4_147.mat at 19-Oct-2012 10:16:36
+Loaded MultiAngle_Diffused_4_148.mat at 19-Oct-2012 10:16:37 in 1.1269 seconds with 147239947 b used
+Finished MultiAngle_Diffused_4_148.mat at 19-Oct-2012 10:16:37
+Loaded MultiAngle_Diffused_4_149.mat at 19-Oct-2012 10:16:39 in 1.1468 seconds with 149408412 b used
+Finished MultiAngle_Diffused_4_149.mat at 19-Oct-2012 10:16:39
+Loaded MultiAngle_Diffused_4_15.mat at 19-Oct-2012 10:16:40 in 1.142 seconds with 135548795 b used
+Finished MultiAngle_Diffused_4_15.mat at 19-Oct-2012 10:16:40
+Loaded MultiAngle_Diffused_4_150.mat at 19-Oct-2012 10:16:41 in 1.2802 seconds with 135004170 b used
+Finished MultiAngle_Diffused_4_150.mat at 19-Oct-2012 10:16:42
+Loaded MultiAngle_Diffused_4_151.mat at 19-Oct-2012 10:16:43 in 1.1983 seconds with 132921170 b used
+Finished MultiAngle_Diffused_4_151.mat at 19-Oct-2012 10:16:43
+Loaded MultiAngle_Diffused_4_152.mat at 19-Oct-2012 10:16:44 in 0.9214 seconds with 132382406 b used
+Finished MultiAngle_Diffused_4_152.mat at 19-Oct-2012 10:16:44
+Loaded MultiAngle_Diffused_4_153.mat at 19-Oct-2012 10:16:45 in 1.0194 seconds with 122663359 b used
+Finished MultiAngle_Diffused_4_153.mat at 19-Oct-2012 10:16:45
+Loaded MultiAngle_Diffused_4_154.mat at 19-Oct-2012 10:16:46 in 0.8441 seconds with 124639970 b used
+Finished MultiAngle_Diffused_4_154.mat at 19-Oct-2012 10:16:46
+Loaded MultiAngle_Diffused_4_155.mat at 19-Oct-2012 10:16:47 in 0.90022 seconds with 135243185 b used
+Finished MultiAngle_Diffused_4_155.mat at 19-Oct-2012 10:16:47
+Loaded MultiAngle_Diffused_4_156.mat at 19-Oct-2012 10:16:48 in 0.88902 seconds with 126324596 b used
+Finished MultiAngle_Diffused_4_156.mat at 19-Oct-2012 10:16:48
+Loaded MultiAngle_Diffused_4_157.mat at 19-Oct-2012 10:16:49 in 1.0718 seconds with 122156097 b used
+Finished MultiAngle_Diffused_4_157.mat at 19-Oct-2012 10:16:50
+Loaded MultiAngle_Diffused_4_158.mat at 19-Oct-2012 10:16:51 in 1.014 seconds with 141629387 b used
+Finished MultiAngle_Diffused_4_158.mat at 19-Oct-2012 10:16:51
+Loaded MultiAngle_Diffused_4_159.mat at 19-Oct-2012 10:16:52 in 1.0142 seconds with 137358574 b used
+Finished MultiAngle_Diffused_4_159.mat at 19-Oct-2012 10:16:52
+Loaded MultiAngle_Diffused_4_16.mat at 19-Oct-2012 10:16:53 in 0.97984 seconds with 133256958 b used
+Finished MultiAngle_Diffused_4_16.mat at 19-Oct-2012 10:16:53
+Loaded MultiAngle_Diffused_4_160.mat at 19-Oct-2012 10:16:54 in 0.83714 seconds with 118216257 b used
+Finished MultiAngle_Diffused_4_160.mat at 19-Oct-2012 10:16:54
+Loaded MultiAngle_Diffused_4_161.mat at 19-Oct-2012 10:16:55 in 0.82547 seconds with 124164079 b used
+Finished MultiAngle_Diffused_4_161.mat at 19-Oct-2012 10:16:55
+Loaded MultiAngle_Diffused_4_162.mat at 19-Oct-2012 10:16:56 in 0.91084 seconds with 131596733 b used
+Finished MultiAngle_Diffused_4_162.mat at 19-Oct-2012 10:16:56
+Loaded MultiAngle_Diffused_4_163.mat at 19-Oct-2012 10:16:57 in 0.88914 seconds with 125993085 b used
+Finished MultiAngle_Diffused_4_163.mat at 19-Oct-2012 10:16:57
+Loaded MultiAngle_Diffused_4_164.mat at 19-Oct-2012 10:16:58 in 0.88266 seconds with 122259527 b used
+Finished MultiAngle_Diffused_4_164.mat at 19-Oct-2012 10:16:58
+Loaded MultiAngle_Diffused_4_165.mat at 19-Oct-2012 10:16:59 in 0.90855 seconds with 129771452 b used
+Finished MultiAngle_Diffused_4_165.mat at 19-Oct-2012 10:17:00
+Loaded MultiAngle_Diffused_4_166.mat at 19-Oct-2012 10:17:00 in 0.92431 seconds with 135103813 b used
+Finished MultiAngle_Diffused_4_166.mat at 19-Oct-2012 10:17:01
+Loaded MultiAngle_Diffused_4_167.mat at 19-Oct-2012 10:17:02 in 0.97788 seconds with 133236202 b used
+Finished MultiAngle_Diffused_4_167.mat at 19-Oct-2012 10:17:02
+Loaded MultiAngle_Diffused_4_168.mat at 19-Oct-2012 10:17:03 in 1.0861 seconds with 139799769 b used
+Finished MultiAngle_Diffused_4_168.mat at 19-Oct-2012 10:17:03
+Loaded MultiAngle_Diffused_4_169.mat at 19-Oct-2012 10:17:04 in 1.0518 seconds with 141594019 b used
+Finished MultiAngle_Diffused_4_169.mat at 19-Oct-2012 10:17:04
+Loaded MultiAngle_Diffused_4_17.mat at 19-Oct-2012 10:17:05 in 0.98848 seconds with 133436028 b used
+Finished MultiAngle_Diffused_4_17.mat at 19-Oct-2012 10:17:05
+Loaded MultiAngle_Diffused_4_18.mat at 19-Oct-2012 10:17:06 in 1.0123 seconds with 139979565 b used
+Finished MultiAngle_Diffused_4_18.mat at 19-Oct-2012 10:17:07
+Loaded MultiAngle_Diffused_4_19.mat at 19-Oct-2012 10:17:08 in 1.0173 seconds with 141835511 b used
+Finished MultiAngle_Diffused_4_19.mat at 19-Oct-2012 10:17:08
+Loaded MultiAngle_Diffused_4_2.mat at 19-Oct-2012 10:17:09 in 1.1886 seconds with 131055294 b used
+Finished MultiAngle_Diffused_4_2.mat at 19-Oct-2012 10:17:09
+Loaded MultiAngle_Diffused_4_20.mat at 19-Oct-2012 10:17:10 in 0.89675 seconds with 129684513 b used
+Finished MultiAngle_Diffused_4_20.mat at 19-Oct-2012 10:17:10
+Loaded MultiAngle_Diffused_4_21.mat at 19-Oct-2012 10:17:11 in 0.97537 seconds with 137722483 b used
+Finished MultiAngle_Diffused_4_21.mat at 19-Oct-2012 10:17:11
+Loaded MultiAngle_Diffused_4_22.mat at 19-Oct-2012 10:17:12 in 0.88768 seconds with 131589915 b used
+Finished MultiAngle_Diffused_4_22.mat at 19-Oct-2012 10:17:12
+Loaded MultiAngle_Diffused_4_23.mat at 19-Oct-2012 10:17:14 in 1.6248 seconds with 135616651 b used
+Finished MultiAngle_Diffused_4_23.mat at 19-Oct-2012 10:17:14
+Loaded MultiAngle_Diffused_4_24.mat at 19-Oct-2012 10:17:15 in 0.86097 seconds with 124805068 b used
+Finished MultiAngle_Diffused_4_24.mat at 19-Oct-2012 10:17:15
+Loaded MultiAngle_Diffused_4_25.mat at 19-Oct-2012 10:17:16 in 0.87732 seconds with 124983818 b used
+Finished MultiAngle_Diffused_4_25.mat at 19-Oct-2012 10:17:16
+Loaded MultiAngle_Diffused_4_26.mat at 19-Oct-2012 10:17:17 in 0.99055 seconds with 133885613 b used
+Finished MultiAngle_Diffused_4_26.mat at 19-Oct-2012 10:17:18
+Loaded MultiAngle_Diffused_4_27.mat at 19-Oct-2012 10:17:18 in 0.89286 seconds with 122861791 b used
+Finished MultiAngle_Diffused_4_27.mat at 19-Oct-2012 10:17:19
+Loaded MultiAngle_Diffused_4_28.mat at 19-Oct-2012 10:17:20 in 0.91109 seconds with 125997095 b used
+Finished MultiAngle_Diffused_4_28.mat at 19-Oct-2012 10:17:20
+Loaded MultiAngle_Diffused_4_29.mat at 19-Oct-2012 10:17:21 in 0.95369 seconds with 141828756 b used
+Finished MultiAngle_Diffused_4_29.mat at 19-Oct-2012 10:17:21
+Loaded MultiAngle_Diffused_4_3.mat at 19-Oct-2012 10:17:22 in 0.89569 seconds with 131155701 b used
+Finished MultiAngle_Diffused_4_3.mat at 19-Oct-2012 10:17:22
+Loaded MultiAngle_Diffused_4_30.mat at 19-Oct-2012 10:17:23 in 0.98211 seconds with 134182871 b used
+Finished MultiAngle_Diffused_4_30.mat at 19-Oct-2012 10:17:23
+Loaded MultiAngle_Diffused_4_31.mat at 19-Oct-2012 10:17:24 in 0.97331 seconds with 137147206 b used
+Finished MultiAngle_Diffused_4_31.mat at 19-Oct-2012 10:17:24
+Loaded MultiAngle_Diffused_4_32.mat at 19-Oct-2012 10:17:25 in 1.0098 seconds with 139009535 b used
+Finished MultiAngle_Diffused_4_32.mat at 19-Oct-2012 10:17:25
+Loaded MultiAngle_Diffused_4_33.mat at 19-Oct-2012 10:17:26 in 0.90607 seconds with 123163750 b used
+Finished MultiAngle_Diffused_4_33.mat at 19-Oct-2012 10:17:26
+Loaded MultiAngle_Diffused_4_34.mat at 19-Oct-2012 10:17:27 in 0.92663 seconds with 130971761 b used
+Finished MultiAngle_Diffused_4_34.mat at 19-Oct-2012 10:17:28
+Loaded MultiAngle_Diffused_4_35.mat at 19-Oct-2012 10:17:29 in 0.96403 seconds with 130852014 b used
+Finished MultiAngle_Diffused_4_35.mat at 19-Oct-2012 10:17:29
+Loaded MultiAngle_Diffused_4_36.mat at 19-Oct-2012 10:17:30 in 0.96554 seconds with 133572219 b used
+Finished MultiAngle_Diffused_4_36.mat at 19-Oct-2012 10:17:30
+Loaded MultiAngle_Diffused_4_37.mat at 19-Oct-2012 10:17:31 in 1.1325 seconds with 139204265 b used
+Finished MultiAngle_Diffused_4_37.mat at 19-Oct-2012 10:17:31
+Loaded MultiAngle_Diffused_4_38.mat at 19-Oct-2012 10:17:32 in 1.0766 seconds with 144999959 b used
+Finished MultiAngle_Diffused_4_38.mat at 19-Oct-2012 10:17:32
+Loaded MultiAngle_Diffused_4_39.mat at 19-Oct-2012 10:17:33 in 1.1003 seconds with 151693334 b used
+Finished MultiAngle_Diffused_4_39.mat at 19-Oct-2012 10:17:34
+Loaded MultiAngle_Diffused_4_4.mat at 19-Oct-2012 10:17:35 in 0.97585 seconds with 129436797 b used
+Finished MultiAngle_Diffused_4_4.mat at 19-Oct-2012 10:17:35
+Loaded MultiAngle_Diffused_4_40.mat at 19-Oct-2012 10:17:36 in 0.85972 seconds with 124357059 b used
+Finished MultiAngle_Diffused_4_40.mat at 19-Oct-2012 10:17:36
+Loaded MultiAngle_Diffused_4_41.mat at 19-Oct-2012 10:17:37 in 0.94957 seconds with 131721734 b used
+Finished MultiAngle_Diffused_4_41.mat at 19-Oct-2012 10:17:37
+Loaded MultiAngle_Diffused_4_42.mat at 19-Oct-2012 10:17:38 in 0.92432 seconds with 132117743 b used
+Finished MultiAngle_Diffused_4_42.mat at 19-Oct-2012 10:17:38
+Loaded MultiAngle_Diffused_4_43.mat at 19-Oct-2012 10:17:39 in 0.92275 seconds with 129706916 b used
+Finished MultiAngle_Diffused_4_43.mat at 19-Oct-2012 10:17:39
+Loaded MultiAngle_Diffused_4_44.mat at 19-Oct-2012 10:17:40 in 1.0347 seconds with 137246333 b used
+Finished MultiAngle_Diffused_4_44.mat at 19-Oct-2012 10:17:40
+Loaded MultiAngle_Diffused_4_45.mat at 19-Oct-2012 10:17:41 in 0.87957 seconds with 122934257 b used
+Finished MultiAngle_Diffused_4_45.mat at 19-Oct-2012 10:17:41
+Loaded MultiAngle_Diffused_4_46.mat at 19-Oct-2012 10:17:42 in 0.95177 seconds with 138490857 b used
+Finished MultiAngle_Diffused_4_46.mat at 19-Oct-2012 10:17:43
+Loaded MultiAngle_Diffused_4_47.mat at 19-Oct-2012 10:17:44 in 1.0117 seconds with 137492037 b used
+Finished MultiAngle_Diffused_4_47.mat at 19-Oct-2012 10:17:44
+Loaded MultiAngle_Diffused_4_48.mat at 19-Oct-2012 10:17:45 in 0.93383 seconds with 136135931 b used
+Finished MultiAngle_Diffused_4_48.mat at 19-Oct-2012 10:17:45
+Loaded MultiAngle_Diffused_4_49.mat at 19-Oct-2012 10:17:46 in 0.93057 seconds with 131941728 b used
+Finished MultiAngle_Diffused_4_49.mat at 19-Oct-2012 10:17:46
+Loaded MultiAngle_Diffused_4_5.mat at 19-Oct-2012 10:17:47 in 0.92066 seconds with 122013600 b used
+Finished MultiAngle_Diffused_4_5.mat at 19-Oct-2012 10:17:47
+Loaded MultiAngle_Diffused_4_50.mat at 19-Oct-2012 10:17:48 in 1.0845 seconds with 143018598 b used
+Finished MultiAngle_Diffused_4_50.mat at 19-Oct-2012 10:17:48
+Loaded MultiAngle_Diffused_4_51.mat at 19-Oct-2012 10:17:49 in 0.86872 seconds with 124389747 b used
+Finished MultiAngle_Diffused_4_51.mat at 19-Oct-2012 10:17:49
+Loaded MultiAngle_Diffused_4_52.mat at 19-Oct-2012 10:17:51 in 1.1575 seconds with 136313026 b used
+Finished MultiAngle_Diffused_4_52.mat at 19-Oct-2012 10:17:51
+Loaded MultiAngle_Diffused_4_53.mat at 19-Oct-2012 10:17:52 in 1.0684 seconds with 130769626 b used
+Finished MultiAngle_Diffused_4_53.mat at 19-Oct-2012 10:17:52
+Loaded MultiAngle_Diffused_4_54.mat at 19-Oct-2012 10:17:53 in 0.91759 seconds with 128322815 b used
+Finished MultiAngle_Diffused_4_54.mat at 19-Oct-2012 10:17:53
+Loaded MultiAngle_Diffused_4_55.mat at 19-Oct-2012 10:17:54 in 0.98688 seconds with 131243320 b used
+Finished MultiAngle_Diffused_4_55.mat at 19-Oct-2012 10:17:54
+Loaded MultiAngle_Diffused_4_56.mat at 19-Oct-2012 10:17:55 in 0.9696 seconds with 134906088 b used
+Finished MultiAngle_Diffused_4_56.mat at 19-Oct-2012 10:17:55
+Loaded MultiAngle_Diffused_4_57.mat at 19-Oct-2012 10:17:56 in 0.83131 seconds with 117813493 b used
+Finished MultiAngle_Diffused_4_57.mat at 19-Oct-2012 10:17:56
+Loaded MultiAngle_Diffused_4_58.mat at 19-Oct-2012 10:17:57 in 0.93144 seconds with 137426032 b used
+Finished MultiAngle_Diffused_4_58.mat at 19-Oct-2012 10:17:58
+Loaded MultiAngle_Diffused_4_59.mat at 19-Oct-2012 10:17:58 in 0.87902 seconds with 118178534 b used
+Finished MultiAngle_Diffused_4_59.mat at 19-Oct-2012 10:17:59
+Loaded MultiAngle_Diffused_4_6.mat at 19-Oct-2012 10:18:00 in 1.1852 seconds with 154060040 b used
+Finished MultiAngle_Diffused_4_6.mat at 19-Oct-2012 10:18:00
+Loaded MultiAngle_Diffused_4_60.mat at 19-Oct-2012 10:18:01 in 0.92912 seconds with 123318053 b used
+Finished MultiAngle_Diffused_4_60.mat at 19-Oct-2012 10:18:01
+Loaded MultiAngle_Diffused_4_61.mat at 19-Oct-2012 10:18:02 in 0.91486 seconds with 129741866 b used
+Finished MultiAngle_Diffused_4_61.mat at 19-Oct-2012 10:18:02
+Loaded MultiAngle_Diffused_4_62.mat at 19-Oct-2012 10:18:03 in 1.0202 seconds with 138027441 b used
+Finished MultiAngle_Diffused_4_62.mat at 19-Oct-2012 10:18:03
+Loaded MultiAngle_Diffused_4_64.mat at 19-Oct-2012 10:18:04 in 1.0261 seconds with 140728545 b used
+Finished MultiAngle_Diffused_4_64.mat at 19-Oct-2012 10:18:05
+Loaded MultiAngle_Diffused_4_65.mat at 19-Oct-2012 10:18:06 in 1.051 seconds with 143357916 b used
+Finished MultiAngle_Diffused_4_65.mat at 19-Oct-2012 10:18:06
+Loaded MultiAngle_Diffused_4_66.mat at 19-Oct-2012 10:18:07 in 0.91214 seconds with 127059653 b used
+Finished MultiAngle_Diffused_4_66.mat at 19-Oct-2012 10:18:07
+Loaded MultiAngle_Diffused_4_67.mat at 19-Oct-2012 10:18:08 in 0.94441 seconds with 128115571 b used
+Finished MultiAngle_Diffused_4_67.mat at 19-Oct-2012 10:18:08
+Loaded MultiAngle_Diffused_4_68.mat at 19-Oct-2012 10:18:09 in 0.82747 seconds with 118658419 b used
+Finished MultiAngle_Diffused_4_68.mat at 19-Oct-2012 10:18:09
+Loaded MultiAngle_Diffused_4_69.mat at 19-Oct-2012 10:18:10 in 0.8985 seconds with 128920174 b used
+Finished MultiAngle_Diffused_4_69.mat at 19-Oct-2012 10:18:10
+Loaded MultiAngle_Diffused_4_7.mat at 19-Oct-2012 10:18:11 in 0.90482 seconds with 127509135 b used
+Finished MultiAngle_Diffused_4_7.mat at 19-Oct-2012 10:18:11
+Loaded MultiAngle_Diffused_4_70.mat at 19-Oct-2012 10:18:12 in 1.0804 seconds with 150915727 b used
+Finished MultiAngle_Diffused_4_70.mat at 19-Oct-2012 10:18:12
+Loaded MultiAngle_Diffused_4_71.mat at 19-Oct-2012 10:18:15 in 2.2915 seconds with 152200001 b used
+Finished MultiAngle_Diffused_4_71.mat at 19-Oct-2012 10:18:15
+Loaded MultiAngle_Diffused_4_72.mat at 19-Oct-2012 10:18:17 in 1.9884 seconds with 139256178 b used
+Finished MultiAngle_Diffused_4_72.mat at 19-Oct-2012 10:18:17
+Loaded MultiAngle_Diffused_4_73.mat at 19-Oct-2012 10:18:18 in 0.99388 seconds with 140177934 b used
+Finished MultiAngle_Diffused_4_73.mat at 19-Oct-2012 10:18:18
+Loaded MultiAngle_Diffused_4_74.mat at 19-Oct-2012 10:18:19 in 1.1337 seconds with 147609888 b used
+Finished MultiAngle_Diffused_4_74.mat at 19-Oct-2012 10:18:20
+Loaded MultiAngle_Diffused_4_75.mat at 19-Oct-2012 10:18:20 in 0.96059 seconds with 125236231 b used
+Finished MultiAngle_Diffused_4_75.mat at 19-Oct-2012 10:18:21
+Loaded MultiAngle_Diffused_4_76.mat at 19-Oct-2012 10:18:22 in 1.0877 seconds with 132186591 b used
+Finished MultiAngle_Diffused_4_76.mat at 19-Oct-2012 10:18:22
+Loaded MultiAngle_Diffused_4_77.mat at 19-Oct-2012 10:18:23 in 1.36 seconds with 117531765 b used
+Finished MultiAngle_Diffused_4_77.mat at 19-Oct-2012 10:18:23
+Loaded MultiAngle_Diffused_4_78.mat at 19-Oct-2012 10:18:25 in 1.9443 seconds with 135148476 b used
+Finished MultiAngle_Diffused_4_78.mat at 19-Oct-2012 10:18:26
+Loaded MultiAngle_Diffused_4_79.mat at 19-Oct-2012 10:18:27 in 0.95439 seconds with 130778150 b used
+Finished MultiAngle_Diffused_4_79.mat at 19-Oct-2012 10:18:27
+Loaded MultiAngle_Diffused_4_8.mat at 19-Oct-2012 10:18:28 in 0.88345 seconds with 118596228 b used
+Finished MultiAngle_Diffused_4_8.mat at 19-Oct-2012 10:18:28
+Loaded MultiAngle_Diffused_4_80.mat at 19-Oct-2012 10:18:29 in 0.92208 seconds with 135167376 b used
+Finished MultiAngle_Diffused_4_80.mat at 19-Oct-2012 10:18:29
+Loaded MultiAngle_Diffused_4_81.mat at 19-Oct-2012 10:18:30 in 0.97911 seconds with 143430616 b used
+Finished MultiAngle_Diffused_4_81.mat at 19-Oct-2012 10:18:30
+Loaded MultiAngle_Diffused_4_82.mat at 19-Oct-2012 10:18:31 in 0.9401 seconds with 133212521 b used
+Finished MultiAngle_Diffused_4_82.mat at 19-Oct-2012 10:18:31
+Loaded MultiAngle_Diffused_4_83.mat at 19-Oct-2012 10:18:32 in 1.0513 seconds with 155657543 b used
+Finished MultiAngle_Diffused_4_83.mat at 19-Oct-2012 10:18:32
+Loaded MultiAngle_Diffused_4_84.mat at 19-Oct-2012 10:18:33 in 1.0022 seconds with 147039994 b used
+Finished MultiAngle_Diffused_4_84.mat at 19-Oct-2012 10:18:34
+Loaded MultiAngle_Diffused_4_85.mat at 19-Oct-2012 10:18:35 in 0.96562 seconds with 135347239 b used
+Finished MultiAngle_Diffused_4_85.mat at 19-Oct-2012 10:18:35
+Loaded MultiAngle_Diffused_4_86.mat at 19-Oct-2012 10:18:36 in 0.94429 seconds with 127727004 b used
+Finished MultiAngle_Diffused_4_86.mat at 19-Oct-2012 10:18:36
+Loaded MultiAngle_Diffused_4_87.mat at 19-Oct-2012 10:18:37 in 0.99645 seconds with 137244204 b used
+Finished MultiAngle_Diffused_4_87.mat at 19-Oct-2012 10:18:37
+Loaded MultiAngle_Diffused_4_88.mat at 19-Oct-2012 10:18:38 in 1.0314 seconds with 146082433 b used
+Finished MultiAngle_Diffused_4_88.mat at 19-Oct-2012 10:18:38
+Loaded MultiAngle_Diffused_4_89.mat at 19-Oct-2012 10:18:39 in 0.81994 seconds with 116067758 b used
+Finished MultiAngle_Diffused_4_89.mat at 19-Oct-2012 10:18:39
+Loaded MultiAngle_Diffused_4_9.mat at 19-Oct-2012 10:18:40 in 0.98995 seconds with 134850300 b used
+Finished MultiAngle_Diffused_4_9.mat at 19-Oct-2012 10:18:40
+Loaded MultiAngle_Diffused_4_90.mat at 19-Oct-2012 10:18:41 in 0.95796 seconds with 142704353 b used
+Finished MultiAngle_Diffused_4_90.mat at 19-Oct-2012 10:18:42
+Loaded MultiAngle_Diffused_4_91.mat at 19-Oct-2012 10:18:43 in 1.7307 seconds with 138342354 b used
+Finished MultiAngle_Diffused_4_91.mat at 19-Oct-2012 10:18:43
+Loaded MultiAngle_Diffused_4_92.mat at 19-Oct-2012 10:18:44 in 0.90984 seconds with 127090366 b used
+Finished MultiAngle_Diffused_4_92.mat at 19-Oct-2012 10:18:45
+Loaded MultiAngle_Diffused_4_93.mat at 19-Oct-2012 10:18:46 in 1.0554 seconds with 140514051 b used
+Finished MultiAngle_Diffused_4_93.mat at 19-Oct-2012 10:18:46
+Loaded MultiAngle_Diffused_4_94.mat at 19-Oct-2012 10:18:47 in 1.0145 seconds with 132954364 b used
+Finished MultiAngle_Diffused_4_94.mat at 19-Oct-2012 10:18:47
+Loaded MultiAngle_Diffused_4_95.mat at 19-Oct-2012 10:18:48 in 0.93435 seconds with 129163760 b used
+Finished MultiAngle_Diffused_4_95.mat at 19-Oct-2012 10:18:48
+Loaded MultiAngle_Diffused_4_96.mat at 19-Oct-2012 10:18:49 in 1.0485 seconds with 137185794 b used
+Finished MultiAngle_Diffused_4_96.mat at 19-Oct-2012 10:18:49
+Loaded MultiAngle_Diffused_4_97.mat at 19-Oct-2012 10:18:50 in 0.95722 seconds with 135702395 b used
+Finished MultiAngle_Diffused_4_97.mat at 19-Oct-2012 10:18:50
+Loaded MultiAngle_Diffused_4_98.mat at 19-Oct-2012 10:18:51 in 0.94921 seconds with 130652164 b used
+Finished MultiAngle_Diffused_4_98.mat at 19-Oct-2012 10:18:52
+Loaded MultiAngle_Diffused_4_99.mat at 19-Oct-2012 10:18:53 in 1.0103 seconds with 135714144 b used
+Finished MultiAngle_Diffused_4_99.mat at 19-Oct-2012 10:18:53
+>> 

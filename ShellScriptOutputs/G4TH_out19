@@ -1,0 +1,780 @@
+Warning: No window system found.  Java option 'MWT' ignored
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2011 The MathWorks, Inc.
+                    R2011b (7.13.0.31) 64-bit (glnxa64)
+                                May 24, 2011
+
+ 
+To get started, type one of these: helpwin, helpdesk, or demo.
+For product information, visit www.mathworks.com.
+ 
+{Warning: Found 6 pre-existing parallel job(s) created by matlabpool that are
+running.
+You can use   'matlabpool close force local'    or create a configuration for
+the distcomp.localscheduler object and use   'matlabpool close force
+<configurationName>'    to remove all jobs created by matlabpool.} 
+{> In distcomp.interactiveclient.pRemoveOldJobs at 55
+  In distcomp.interactiveclient.start at 58
+  In MatlabpoolHelper>MatlabpoolHelper.doOpen at 250
+  In MatlabpoolHelper>MatlabpoolHelper.doMatlabpool at 102
+  In matlabpool at 131
+  In MultiAngleDiffuseScript_parallel1 at 38} 
+Starting matlabpool using the 'local' configuration ... connected to 6 labs.
+Found 100 files in /global/scratch/bcplimley/multi_angle/newtracks01/ at 19-Oct-2012 22:00:11
+Skipping MultiAngle_Diffused_1_1.mat at 19-Oct-2012 22:00:15
+Skipping MultiAngle_Diffused_1_2.mat at 19-Oct-2012 22:00:16
+Skipping MultiAngle_Diffused_1_3.mat at 19-Oct-2012 22:00:16
+Skipping MultiAngle_Diffused_1_4.mat at 19-Oct-2012 22:00:16
+Skipping MultiAngle_Diffused_1_5.mat at 19-Oct-2012 22:00:16
+Starting MultiAngle_Diffused_1_6.mat at 19-Oct-2012 22:00:16 with 565211805 bytes in memory
+Skipping MultiAngle_Diffused_5_1.mat at 19-Oct-2012 22:00:16
+Skipping MultiAngle_Diffused_5_2.mat at 19-Oct-2012 22:00:16
+Skipping MultiAngle_Diffused_5_3.mat at 19-Oct-2012 22:00:16
+Skipping MultiAngle_Diffused_5_4.mat at 19-Oct-2012 22:00:16
+Skipping MultiAngle_Diffused_5_5.mat at 19-Oct-2012 22:00:16
+Starting MultiAngle_Diffused_5_6.mat at 19-Oct-2012 22:00:16 with 569150469 bytes in memory
+Skipping MultiAngle_Diffused_30_1.mat at 19-Oct-2012 22:00:16
+Skipping MultiAngle_Diffused_30_2.mat at 19-Oct-2012 22:00:16
+Skipping MultiAngle_Diffused_30_3.mat at 19-Oct-2012 22:00:16
+Skipping MultiAngle_Diffused_30_4.mat at 19-Oct-2012 22:00:16
+Skipping MultiAngle_Diffused_30_5.mat at 19-Oct-2012 22:00:16
+Starting MultiAngle_Diffused_30_6.mat at 19-Oct-2012 22:00:16 with 553934195 bytes in memory
+Skipping MultiAngle_Diffused_67_1.mat at 19-Oct-2012 22:00:17
+Skipping MultiAngle_Diffused_67_2.mat at 19-Oct-2012 22:00:17
+Skipping MultiAngle_Diffused_67_3.mat at 19-Oct-2012 22:00:17
+Starting MultiAngle_Diffused_67_4.mat at 19-Oct-2012 22:00:17 with 559751731 bytes in memory
+Skipping MultiAngle_Diffused_41_1.mat at 19-Oct-2012 22:00:27
+Skipping MultiAngle_Diffused_41_2.mat at 19-Oct-2012 22:00:27
+Skipping MultiAngle_Diffused_41_3.mat at 19-Oct-2012 22:00:27
+Skipping MultiAngle_Diffused_41_4.mat at 19-Oct-2012 22:00:27
+Skipping MultiAngle_Diffused_41_5.mat at 19-Oct-2012 22:00:27
+Skipping MultiAngle_Diffused_41_6.mat at 19-Oct-2012 22:00:27
+Starting MultiAngle_Diffused_41_7.mat at 19-Oct-2012 22:00:27 with 572630443 bytes in memory
+Skipping MultiAngle_Diffused_51_1.mat at 19-Oct-2012 22:00:27
+Skipping MultiAngle_Diffused_51_2.mat at 19-Oct-2012 22:00:27
+Skipping MultiAngle_Diffused_51_3.mat at 19-Oct-2012 22:00:27
+Skipping MultiAngle_Diffused_51_4.mat at 19-Oct-2012 22:00:27
+Skipping MultiAngle_Diffused_51_5.mat at 19-Oct-2012 22:00:27
+Starting MultiAngle_Diffused_51_6.mat at 19-Oct-2012 22:00:27 with 560879723 bytes in memory
+Finished MultiAngle_Diffused_5_6.mat at 19-Oct-2012 22:01:45 with 633286029 bytes in memory
+Skipping MultiAngle_Diffused_5_7.mat at 19-Oct-2012 22:01:45
+Starting MultiAngle_Diffused_5_8.mat at 19-Oct-2012 22:01:45 with 633286029 bytes in memory
+Finished MultiAngle_Diffused_67_4.mat at 19-Oct-2012 22:01:50 with 627329716 bytes in memory
+Starting MultiAngle_Diffused_67_5.mat at 19-Oct-2012 22:01:50 with 627329716 bytes in memory
+Finished MultiAngle_Diffused_30_6.mat at 19-Oct-2012 22:01:57 with 626937193 bytes in memory
+Skipping MultiAngle_Diffused_30_7.mat at 19-Oct-2012 22:01:57
+Starting MultiAngle_Diffused_30_8.mat at 19-Oct-2012 22:01:57 with 626937193 bytes in memory
+Finished MultiAngle_Diffused_51_6.mat at 19-Oct-2012 22:02:28 with 639863491 bytes in memory
+Skipping MultiAngle_Diffused_51_7.mat at 19-Oct-2012 22:02:28
+Skipping MultiAngle_Diffused_51_8.mat at 19-Oct-2012 22:02:28
+Starting MultiAngle_Diffused_51_9.mat at 19-Oct-2012 22:02:28 with 639863491 bytes in memory
+Finished MultiAngle_Diffused_1_6.mat at 19-Oct-2012 22:02:50 with 632839593 bytes in memory
+Skipping MultiAngle_Diffused_1_7.mat at 19-Oct-2012 22:02:50
+Starting MultiAngle_Diffused_1_8.mat at 19-Oct-2012 22:02:50 with 632839593 bytes in memory
+Finished MultiAngle_Diffused_5_8.mat at 19-Oct-2012 22:03:17 with 635837936 bytes in memory
+Starting MultiAngle_Diffused_5_9.mat at 19-Oct-2012 22:03:17 with 635837936 bytes in memory
+Finished MultiAngle_Diffused_67_5.mat at 19-Oct-2012 22:03:20 with 627997066 bytes in memory
+Starting MultiAngle_Diffused_67_6.mat at 19-Oct-2012 22:03:20 with 627997066 bytes in memory
+Finished MultiAngle_Diffused_30_8.mat at 19-Oct-2012 22:03:59 with 635378351 bytes in memory
+Skipping MultiAngle_Diffused_30_9.mat at 19-Oct-2012 22:03:59
+Starting MultiAngle_Diffused_30_10.mat at 19-Oct-2012 22:03:59 with 635378357 bytes in memory
+Finished MultiAngle_Diffused_51_9.mat at 19-Oct-2012 22:04:18 with 632922327 bytes in memory
+Starting MultiAngle_Diffused_51_10.mat at 19-Oct-2012 22:04:18 with 632922333 bytes in memory
+Finished MultiAngle_Diffused_1_8.mat at 19-Oct-2012 22:04:44 with 646909862 bytes in memory
+Skipping MultiAngle_Diffused_1_9.mat at 19-Oct-2012 22:04:44
+Skipping MultiAngle_Diffused_1_10.mat at 19-Oct-2012 22:04:44
+Starting MultiAngle_Diffused_1_11.mat at 19-Oct-2012 22:04:44 with 646909868 bytes in memory
+Finished MultiAngle_Diffused_67_6.mat at 19-Oct-2012 22:04:51 with 625173622 bytes in memory
+Starting MultiAngle_Diffused_67_7.mat at 19-Oct-2012 22:04:52 with 625173622 bytes in memory
+Finished MultiAngle_Diffused_1_11.mat at 19-Oct-2012 22:06:04 with 626196769 bytes in memory
+Starting MultiAngle_Diffused_1_12.mat at 19-Oct-2012 22:06:04 with 626196769 bytes in memory
+Finished MultiAngle_Diffused_51_10.mat at 19-Oct-2012 22:06:25 with 623413275 bytes in memory
+Skipping MultiAngle_Diffused_51_11.mat at 19-Oct-2012 22:06:25
+Starting MultiAngle_Diffused_51_12.mat at 19-Oct-2012 22:06:25 with 623413275 bytes in memory
+Finished MultiAngle_Diffused_5_9.mat at 19-Oct-2012 22:06:32 with 635649660 bytes in memory
+Skipping MultiAngle_Diffused_5_10.mat at 19-Oct-2012 22:06:32
+Skipping MultiAngle_Diffused_5_11.mat at 19-Oct-2012 22:06:32
+Starting MultiAngle_Diffused_5_12.mat at 19-Oct-2012 22:06:32 with 635649666 bytes in memory
+Finished MultiAngle_Diffused_67_7.mat at 19-Oct-2012 22:06:52 with 629723559 bytes in memory
+Skipping MultiAngle_Diffused_67_8.mat at 19-Oct-2012 22:06:52
+Starting MultiAngle_Diffused_67_9.mat at 19-Oct-2012 22:06:52 with 629723559 bytes in memory
+Finished MultiAngle_Diffused_30_10.mat at 19-Oct-2012 22:06:53 with 619554412 bytes in memory
+Skipping MultiAngle_Diffused_30_11.mat at 19-Oct-2012 22:06:53
+Starting MultiAngle_Diffused_30_12.mat at 19-Oct-2012 22:06:53 with 619554412 bytes in memory
+Finished MultiAngle_Diffused_41_7.mat at 19-Oct-2012 22:07:11 with 642576217 bytes in memory
+Skipping MultiAngle_Diffused_41_8.mat at 19-Oct-2012 22:07:11
+Skipping MultiAngle_Diffused_41_9.mat at 19-Oct-2012 22:07:11
+Skipping MultiAngle_Diffused_41_10.mat at 19-Oct-2012 22:07:11
+Starting MultiAngle_Diffused_41_11.mat at 19-Oct-2012 22:07:11 with 642576223 bytes in memory
+Finished MultiAngle_Diffused_1_12.mat at 19-Oct-2012 22:07:46 with 639660864 bytes in memory
+Skipping MultiAngle_Diffused_1_13.mat at 19-Oct-2012 22:07:46
+Starting MultiAngle_Diffused_1_14.mat at 19-Oct-2012 22:07:46 with 639660864 bytes in memory
+Finished MultiAngle_Diffused_5_12.mat at 19-Oct-2012 22:07:59 with 636905185 bytes in memory
+Skipping MultiAngle_Diffused_5_13.mat at 19-Oct-2012 22:07:59
+Starting MultiAngle_Diffused_5_14.mat at 19-Oct-2012 22:07:59 with 636905185 bytes in memory
+Finished MultiAngle_Diffused_51_12.mat at 19-Oct-2012 22:08:21 with 630829704 bytes in memory
+Skipping MultiAngle_Diffused_51_13.mat at 19-Oct-2012 22:08:21
+Starting MultiAngle_Diffused_51_14.mat at 19-Oct-2012 22:08:21 with 630829704 bytes in memory
+Finished MultiAngle_Diffused_67_9.mat at 19-Oct-2012 22:08:23 with 626227488 bytes in memory
+Skipping MultiAngle_Diffused_67_10.mat at 19-Oct-2012 22:08:23
+Starting MultiAngle_Diffused_67_11.mat at 19-Oct-2012 22:08:23 with 626227494 bytes in memory
+Finished MultiAngle_Diffused_30_12.mat at 19-Oct-2012 22:08:33 with 624945992 bytes in memory
+Starting MultiAngle_Diffused_30_13.mat at 19-Oct-2012 22:08:33 with 624945992 bytes in memory
+Finished MultiAngle_Diffused_41_11.mat at 19-Oct-2012 22:09:05 with 643505797 bytes in memory
+Skipping MultiAngle_Diffused_41_12.mat at 19-Oct-2012 22:09:05
+Starting MultiAngle_Diffused_41_13.mat at 19-Oct-2012 22:09:05 with 643505797 bytes in memory
+Finished MultiAngle_Diffused_1_14.mat at 19-Oct-2012 22:09:36 with 641565987 bytes in memory
+Starting MultiAngle_Diffused_1_15.mat at 19-Oct-2012 22:09:36 with 641565987 bytes in memory
+Finished MultiAngle_Diffused_5_14.mat at 19-Oct-2012 22:09:40 with 640255888 bytes in memory
+Starting MultiAngle_Diffused_5_15.mat at 19-Oct-2012 22:09:40 with 640255888 bytes in memory
+Finished MultiAngle_Diffused_51_14.mat at 19-Oct-2012 22:10:20 with 646768683 bytes in memory
+Skipping MultiAngle_Diffused_51_15.mat at 19-Oct-2012 22:10:20
+Starting MultiAngle_Diffused_51_16.mat at 19-Oct-2012 22:10:20 with 646768683 bytes in memory
+Finished MultiAngle_Diffused_5_15.mat at 19-Oct-2012 22:11:06 with 631801999 bytes in memory
+Skipping MultiAngle_Diffused_5_16.mat at 19-Oct-2012 22:11:06
+Starting MultiAngle_Diffused_5_17.mat at 19-Oct-2012 22:11:06 with 631801999 bytes in memory
+Finished MultiAngle_Diffused_67_11.mat at 19-Oct-2012 22:11:25 with 641838402 bytes in memory
+Skipping MultiAngle_Diffused_67_12.mat at 19-Oct-2012 22:11:25
+Starting MultiAngle_Diffused_67_13.mat at 19-Oct-2012 22:11:25 with 641838402 bytes in memory
+Finished MultiAngle_Diffused_1_15.mat at 19-Oct-2012 22:11:27 with 643650198 bytes in memory
+Starting MultiAngle_Diffused_1_16.mat at 19-Oct-2012 22:11:27 with 643650198 bytes in memory
+Finished MultiAngle_Diffused_30_13.mat at 19-Oct-2012 22:11:30 with 626134850 bytes in memory
+Skipping MultiAngle_Diffused_30_14.mat at 19-Oct-2012 22:11:30
+Skipping MultiAngle_Diffused_30_15.mat at 19-Oct-2012 22:11:30
+Starting MultiAngle_Diffused_30_16.mat at 19-Oct-2012 22:11:30 with 626134850 bytes in memory
+Finished MultiAngle_Diffused_51_16.mat at 19-Oct-2012 22:12:08 with 640650607 bytes in memory
+Skipping MultiAngle_Diffused_51_17.mat at 19-Oct-2012 22:12:08
+Starting MultiAngle_Diffused_51_18.mat at 19-Oct-2012 22:12:08 with 640650607 bytes in memory
+Finished MultiAngle_Diffused_5_17.mat at 19-Oct-2012 22:12:40 with 637019012 bytes in memory
+Skipping MultiAngle_Diffused_5_18.mat at 19-Oct-2012 22:12:40
+Starting MultiAngle_Diffused_5_19.mat at 19-Oct-2012 22:12:40 with 637019012 bytes in memory
+Warning: encountered error "Cannot find the photon interaction for this primary electron" in Mat_MultiAngle_CCD_eTracks_662_500k_5_TRK.mat event # 909
+Finished MultiAngle_Diffused_1_16.mat at 19-Oct-2012 22:13:18 with 631586254 bytes in memory
+Starting MultiAngle_Diffused_1_17.mat at 19-Oct-2012 22:13:18 with 631586254 bytes in memory
+Finished MultiAngle_Diffused_67_13.mat at 19-Oct-2012 22:13:50 with 629618093 bytes in memory
+Skipping MultiAngle_Diffused_67_14.mat at 19-Oct-2012 22:13:50
+Starting MultiAngle_Diffused_67_15.mat at 19-Oct-2012 22:13:50 with 629618093 bytes in memory
+Finished MultiAngle_Diffused_51_18.mat at 19-Oct-2012 22:14:05 with 641151470 bytes in memory
+Starting MultiAngle_Diffused_51_19.mat at 19-Oct-2012 22:14:05 with 641151470 bytes in memory
+Finished MultiAngle_Diffused_1_17.mat at 19-Oct-2012 22:14:52 with 633085025 bytes in memory
+Skipping MultiAngle_Diffused_1_18.mat at 19-Oct-2012 22:14:52
+Starting MultiAngle_Diffused_1_19.mat at 19-Oct-2012 22:14:52 with 633085025 bytes in memory
+Finished MultiAngle_Diffused_5_19.mat at 19-Oct-2012 22:15:24 with 653343696 bytes in memory
+Skipping MultiAngle_Diffused_5_20.mat at 19-Oct-2012 22:15:24
+Starting MultiAngle_Diffused_5_21.mat at 19-Oct-2012 22:15:24 with 653343696 bytes in memory
+Finished MultiAngle_Diffused_51_19.mat at 19-Oct-2012 22:15:38 with 628039974 bytes in memory
+Starting MultiAngle_Diffused_51_20.mat at 19-Oct-2012 22:15:38 with 628039974 bytes in memory
+Finished MultiAngle_Diffused_67_15.mat at 19-Oct-2012 22:16:39 with 638947910 bytes in memory
+Skipping MultiAngle_Diffused_67_16.mat at 19-Oct-2012 22:16:39
+Starting MultiAngle_Diffused_67_17.mat at 19-Oct-2012 22:16:39 with 638947910 bytes in memory
+Finished MultiAngle_Diffused_5_21.mat at 19-Oct-2012 22:16:55 with 634772422 bytes in memory
+Skipping MultiAngle_Diffused_5_22.mat at 19-Oct-2012 22:16:55
+Starting MultiAngle_Diffused_5_23.mat at 19-Oct-2012 22:16:55 with 634772422 bytes in memory
+Finished MultiAngle_Diffused_1_19.mat at 19-Oct-2012 22:18:20 with 648340877 bytes in memory
+Skipping MultiAngle_Diffused_1_20.mat at 19-Oct-2012 22:18:20
+Starting MultiAngle_Diffused_1_21.mat at 19-Oct-2012 22:18:20 with 648340877 bytes in memory
+Finished MultiAngle_Diffused_67_17.mat at 19-Oct-2012 22:18:46 with 621339599 bytes in memory
+Starting MultiAngle_Diffused_67_18.mat at 19-Oct-2012 22:18:46 with 621339599 bytes in memory
+Finished MultiAngle_Diffused_41_13.mat at 19-Oct-2012 22:19:01 with 650636002 bytes in memory
+Skipping MultiAngle_Diffused_41_14.mat at 19-Oct-2012 22:19:01
+Skipping MultiAngle_Diffused_41_15.mat at 19-Oct-2012 22:19:01
+Skipping MultiAngle_Diffused_41_16.mat at 19-Oct-2012 22:19:01
+Skipping MultiAngle_Diffused_41_17.mat at 19-Oct-2012 22:19:01
+Skipping MultiAngle_Diffused_41_18.mat at 19-Oct-2012 22:19:01
+Starting MultiAngle_Diffused_41_19.mat at 19-Oct-2012 22:19:01 with 650636002 bytes in memory
+Finished MultiAngle_Diffused_5_23.mat at 19-Oct-2012 22:19:09 with 644512788 bytes in memory
+Starting MultiAngle_Diffused_5_24.mat at 19-Oct-2012 22:19:09 with 644512788 bytes in memory
+Finished MultiAngle_Diffused_1_21.mat at 19-Oct-2012 22:19:56 with 633173098 bytes in memory
+Skipping MultiAngle_Diffused_1_22.mat at 19-Oct-2012 22:19:56
+Starting MultiAngle_Diffused_1_23.mat at 19-Oct-2012 22:19:56 with 633173098 bytes in memory
+Finished MultiAngle_Diffused_41_19.mat at 19-Oct-2012 22:20:46 with 647279374 bytes in memory
+Starting MultiAngle_Diffused_41_20.mat at 19-Oct-2012 22:20:46 with 647279374 bytes in memory
+Finished MultiAngle_Diffused_5_24.mat at 19-Oct-2012 22:20:56 with 627547897 bytes in memory
+Starting MultiAngle_Diffused_5_25.mat at 19-Oct-2012 22:20:56 with 627547897 bytes in memory
+Finished MultiAngle_Diffused_1_23.mat at 19-Oct-2012 22:21:16 with 623826100 bytes in memory
+Starting MultiAngle_Diffused_1_24.mat at 19-Oct-2012 22:21:16 with 623826100 bytes in memory
+Finished MultiAngle_Diffused_67_18.mat at 19-Oct-2012 22:21:38 with 634092172 bytes in memory
+Starting MultiAngle_Diffused_67_19.mat at 19-Oct-2012 22:21:38 with 634092172 bytes in memory
+Finished MultiAngle_Diffused_5_25.mat at 19-Oct-2012 22:22:13 with 624773904 bytes in memory
+Starting MultiAngle_Diffused_5_26.mat at 19-Oct-2012 22:22:13 with 624773904 bytes in memory
+Finished MultiAngle_Diffused_41_20.mat at 19-Oct-2012 22:22:33 with 635515239 bytes in memory
+Starting MultiAngle_Diffused_41_21.mat at 19-Oct-2012 22:22:33 with 635515239 bytes in memory
+Finished MultiAngle_Diffused_1_24.mat at 19-Oct-2012 22:23:28 with 622640519 bytes in memory
+Starting MultiAngle_Diffused_1_25.mat at 19-Oct-2012 22:23:28 with 622640519 bytes in memory
+Finished MultiAngle_Diffused_5_26.mat at 19-Oct-2012 22:23:43 with 635388888 bytes in memory
+Starting MultiAngle_Diffused_5_27.mat at 19-Oct-2012 22:23:43 with 635388888 bytes in memory
+Finished MultiAngle_Diffused_67_19.mat at 19-Oct-2012 22:24:06 with 633939941 bytes in memory
+Starting MultiAngle_Diffused_67_20.mat at 19-Oct-2012 22:24:06 with 633939941 bytes in memory
+Finished MultiAngle_Diffused_41_21.mat at 19-Oct-2012 22:24:13 with 643014263 bytes in memory
+Starting MultiAngle_Diffused_41_22.mat at 19-Oct-2012 22:24:14 with 643014263 bytes in memory
+Finished MultiAngle_Diffused_1_25.mat at 19-Oct-2012 22:25:08 with 636556004 bytes in memory
+Starting MultiAngle_Diffused_1_26.mat at 19-Oct-2012 22:25:08 with 636556004 bytes in memory
+Finished MultiAngle_Diffused_5_27.mat at 19-Oct-2012 22:25:28 with 642557969 bytes in memory
+Starting MultiAngle_Diffused_5_28.mat at 19-Oct-2012 22:25:28 with 642557969 bytes in memory
+Finished MultiAngle_Diffused_41_22.mat at 19-Oct-2012 22:25:41 with 637011288 bytes in memory
+Starting MultiAngle_Diffused_41_23.mat at 19-Oct-2012 22:25:41 with 637011288 bytes in memory
+Finished MultiAngle_Diffused_67_20.mat at 19-Oct-2012 22:25:56 with 633253772 bytes in memory
+Starting MultiAngle_Diffused_67_21.mat at 19-Oct-2012 22:25:56 with 633253772 bytes in memory
+Finished MultiAngle_Diffused_51_20.mat at 19-Oct-2012 22:26:17 with 630218431 bytes in memory
+Starting MultiAngle_Diffused_51_21.mat at 19-Oct-2012 22:26:17 with 630218431 bytes in memory
+Finished MultiAngle_Diffused_1_26.mat at 19-Oct-2012 22:26:37 with 624244162 bytes in memory
+Starting MultiAngle_Diffused_1_27.mat at 19-Oct-2012 22:26:37 with 624244162 bytes in memory
+Finished MultiAngle_Diffused_41_23.mat at 19-Oct-2012 22:27:28 with 653645542 bytes in memory
+Starting MultiAngle_Diffused_41_24.mat at 19-Oct-2012 22:27:29 with 653645542 bytes in memory
+Finished MultiAngle_Diffused_5_28.mat at 19-Oct-2012 22:27:29 with 651903141 bytes in memory
+Starting MultiAngle_Diffused_5_29.mat at 19-Oct-2012 22:27:29 with 651903141 bytes in memory
+Finished MultiAngle_Diffused_51_21.mat at 19-Oct-2012 22:27:49 with 627139872 bytes in memory
+Starting MultiAngle_Diffused_51_22.mat at 19-Oct-2012 22:27:49 with 627139872 bytes in memory
+Finished MultiAngle_Diffused_67_21.mat at 19-Oct-2012 22:27:49 with 638416076 bytes in memory
+Starting MultiAngle_Diffused_67_22.mat at 19-Oct-2012 22:27:50 with 638416076 bytes in memory
+Finished MultiAngle_Diffused_1_27.mat at 19-Oct-2012 22:28:27 with 639650776 bytes in memory
+Starting MultiAngle_Diffused_1_28.mat at 19-Oct-2012 22:28:27 with 639650776 bytes in memory
+Finished MultiAngle_Diffused_5_29.mat at 19-Oct-2012 22:29:07 with 638727179 bytes in memory
+Starting MultiAngle_Diffused_5_30.mat at 19-Oct-2012 22:29:07 with 638727179 bytes in memory
+Finished MultiAngle_Diffused_67_22.mat at 19-Oct-2012 22:29:14 with 622387545 bytes in memory
+Starting MultiAngle_Diffused_67_23.mat at 19-Oct-2012 22:29:14 with 622387545 bytes in memory
+Finished MultiAngle_Diffused_41_24.mat at 19-Oct-2012 22:29:24 with 650835518 bytes in memory
+Starting MultiAngle_Diffused_41_25.mat at 19-Oct-2012 22:29:24 with 650835518 bytes in memory
+Finished MultiAngle_Diffused_51_22.mat at 19-Oct-2012 22:29:40 with 626977444 bytes in memory
+Starting MultiAngle_Diffused_51_23.mat at 19-Oct-2012 22:29:40 with 626977444 bytes in memory
+Finished MultiAngle_Diffused_30_16.mat at 19-Oct-2012 22:30:07 with 625229676 bytes in memory
+Skipping MultiAngle_Diffused_30_17.mat at 19-Oct-2012 22:30:07
+Skipping MultiAngle_Diffused_30_18.mat at 19-Oct-2012 22:30:07
+Skipping MultiAngle_Diffused_30_19.mat at 19-Oct-2012 22:30:07
+Starting MultiAngle_Diffused_30_20.mat at 19-Oct-2012 22:30:07 with 625229676 bytes in memory
+Finished MultiAngle_Diffused_1_28.mat at 19-Oct-2012 22:30:45 with 629789247 bytes in memory
+Starting MultiAngle_Diffused_1_29.mat at 19-Oct-2012 22:30:45 with 629789247 bytes in memory
+Finished MultiAngle_Diffused_67_23.mat at 19-Oct-2012 22:30:53 with 622227806 bytes in memory
+Starting MultiAngle_Diffused_67_24.mat at 19-Oct-2012 22:30:53 with 622227806 bytes in memory
+Finished MultiAngle_Diffused_5_30.mat at 19-Oct-2012 22:30:56 with 644634062 bytes in memory
+Starting MultiAngle_Diffused_5_31.mat at 19-Oct-2012 22:30:56 with 644634062 bytes in memory
+Finished MultiAngle_Diffused_51_23.mat at 19-Oct-2012 22:31:03 with 624101856 bytes in memory
+Starting MultiAngle_Diffused_51_24.mat at 19-Oct-2012 22:31:03 with 624101856 bytes in memory
+Finished MultiAngle_Diffused_41_25.mat at 19-Oct-2012 22:31:06 with 644595362 bytes in memory
+Starting MultiAngle_Diffused_41_26.mat at 19-Oct-2012 22:31:06 with 644595362 bytes in memory
+Finished MultiAngle_Diffused_30_20.mat at 19-Oct-2012 22:32:10 with 615839828 bytes in memory
+Starting MultiAngle_Diffused_30_21.mat at 19-Oct-2012 22:32:10 with 615839828 bytes in memory
+Finished MultiAngle_Diffused_5_31.mat at 19-Oct-2012 22:32:40 with 645522400 bytes in memory
+Starting MultiAngle_Diffused_5_32.mat at 19-Oct-2012 22:32:40 with 645522400 bytes in memory
+Finished MultiAngle_Diffused_1_29.mat at 19-Oct-2012 22:32:41 with 639098714 bytes in memory
+Starting MultiAngle_Diffused_1_30.mat at 19-Oct-2012 22:32:41 with 639098714 bytes in memory
+Finished MultiAngle_Diffused_67_24.mat at 19-Oct-2012 22:32:41 with 639344341 bytes in memory
+Starting MultiAngle_Diffused_67_25.mat at 19-Oct-2012 22:32:41 with 639344341 bytes in memory
+Finished MultiAngle_Diffused_41_26.mat at 19-Oct-2012 22:32:42 with 638840226 bytes in memory
+Starting MultiAngle_Diffused_41_27.mat at 19-Oct-2012 22:32:42 with 638840226 bytes in memory
+Finished MultiAngle_Diffused_51_24.mat at 19-Oct-2012 22:33:39 with 622790085 bytes in memory
+Starting MultiAngle_Diffused_51_25.mat at 19-Oct-2012 22:33:39 with 622790085 bytes in memory
+Finished MultiAngle_Diffused_30_21.mat at 19-Oct-2012 22:33:53 with 625074187 bytes in memory
+Starting MultiAngle_Diffused_30_22.mat at 19-Oct-2012 22:33:53 with 625074187 bytes in memory
+Finished MultiAngle_Diffused_41_27.mat at 19-Oct-2012 22:34:28 with 650669504 bytes in memory
+Starting MultiAngle_Diffused_41_28.mat at 19-Oct-2012 22:34:28 with 650669504 bytes in memory
+Finished MultiAngle_Diffused_1_30.mat at 19-Oct-2012 22:34:36 with 645051296 bytes in memory
+Starting MultiAngle_Diffused_1_31.mat at 19-Oct-2012 22:34:36 with 645051296 bytes in memory
+Finished MultiAngle_Diffused_5_32.mat at 19-Oct-2012 22:34:40 with 643203299 bytes in memory
+Starting MultiAngle_Diffused_5_33.mat at 19-Oct-2012 22:34:40 with 643203299 bytes in memory
+Finished MultiAngle_Diffused_51_25.mat at 19-Oct-2012 22:35:19 with 633281080 bytes in memory
+Starting MultiAngle_Diffused_51_26.mat at 19-Oct-2012 22:35:19 with 633281080 bytes in memory
+Finished MultiAngle_Diffused_30_22.mat at 19-Oct-2012 22:36:06 with 619830363 bytes in memory
+Starting MultiAngle_Diffused_30_23.mat at 19-Oct-2012 22:36:06 with 619830363 bytes in memory
+Finished MultiAngle_Diffused_5_33.mat at 19-Oct-2012 22:36:07 with 635265670 bytes in memory
+Starting MultiAngle_Diffused_5_34.mat at 19-Oct-2012 22:36:07 with 635265670 bytes in memory
+Finished MultiAngle_Diffused_1_31.mat at 19-Oct-2012 22:37:17 with 635884393 bytes in memory
+Starting MultiAngle_Diffused_1_32.mat at 19-Oct-2012 22:37:17 with 635884393 bytes in memory
+Finished MultiAngle_Diffused_30_23.mat at 19-Oct-2012 22:37:43 with 619654969 bytes in memory
+Starting MultiAngle_Diffused_30_24.mat at 19-Oct-2012 22:37:43 with 619654969 bytes in memory
+Finished MultiAngle_Diffused_67_25.mat at 19-Oct-2012 22:38:16 with 636261815 bytes in memory
+Starting MultiAngle_Diffused_67_26.mat at 19-Oct-2012 22:38:16 with 636261815 bytes in memory
+Finished MultiAngle_Diffused_5_34.mat at 19-Oct-2012 22:38:22 with 636402156 bytes in memory
+Starting MultiAngle_Diffused_5_35.mat at 19-Oct-2012 22:38:22 with 636402156 bytes in memory
+Finished MultiAngle_Diffused_51_26.mat at 19-Oct-2012 22:38:32 with 631453244 bytes in memory
+Starting MultiAngle_Diffused_51_27.mat at 19-Oct-2012 22:38:32 with 631453244 bytes in memory
+Finished MultiAngle_Diffused_30_24.mat at 19-Oct-2012 22:39:18 with 619637579 bytes in memory
+Starting MultiAngle_Diffused_30_25.mat at 19-Oct-2012 22:39:18 with 619637579 bytes in memory
+Finished MultiAngle_Diffused_1_32.mat at 19-Oct-2012 22:39:53 with 635021121 bytes in memory
+Starting MultiAngle_Diffused_1_33.mat at 19-Oct-2012 22:39:53 with 635021121 bytes in memory
+Finished MultiAngle_Diffused_5_35.mat at 19-Oct-2012 22:39:53 with 640327438 bytes in memory
+Starting MultiAngle_Diffused_5_36.mat at 19-Oct-2012 22:39:53 with 640327438 bytes in memory
+Finished MultiAngle_Diffused_67_26.mat at 19-Oct-2012 22:40:28 with 640797623 bytes in memory
+Starting MultiAngle_Diffused_67_27.mat at 19-Oct-2012 22:40:28 with 640797623 bytes in memory
+Finished MultiAngle_Diffused_41_28.mat at 19-Oct-2012 22:40:43 with 649653500 bytes in memory
+Starting MultiAngle_Diffused_41_29.mat at 19-Oct-2012 22:40:43 with 649653500 bytes in memory
+Finished MultiAngle_Diffused_30_25.mat at 19-Oct-2012 22:41:06 with 620180593 bytes in memory
+Starting MultiAngle_Diffused_30_26.mat at 19-Oct-2012 22:41:06 with 620180593 bytes in memory
+Finished MultiAngle_Diffused_5_36.mat at 19-Oct-2012 22:42:12 with 650887476 bytes in memory
+Starting MultiAngle_Diffused_5_37.mat at 19-Oct-2012 22:42:12 with 650887476 bytes in memory
+Finished MultiAngle_Diffused_41_29.mat at 19-Oct-2012 22:42:12 with 634995369 bytes in memory
+Starting MultiAngle_Diffused_41_30.mat at 19-Oct-2012 22:42:12 with 634995369 bytes in memory
+Finished MultiAngle_Diffused_1_33.mat at 19-Oct-2012 22:42:20 with 637849521 bytes in memory
+Starting MultiAngle_Diffused_1_34.mat at 19-Oct-2012 22:42:21 with 637849521 bytes in memory
+Finished MultiAngle_Diffused_30_26.mat at 19-Oct-2012 22:42:39 with 626304604 bytes in memory
+Starting MultiAngle_Diffused_30_27.mat at 19-Oct-2012 22:42:39 with 626304604 bytes in memory
+Finished MultiAngle_Diffused_67_27.mat at 19-Oct-2012 22:42:59 with 644199693 bytes in memory
+Starting MultiAngle_Diffused_67_28.mat at 19-Oct-2012 22:42:59 with 644199693 bytes in memory
+Finished MultiAngle_Diffused_5_37.mat at 19-Oct-2012 22:43:31 with 625396414 bytes in memory
+Starting MultiAngle_Diffused_5_38.mat at 19-Oct-2012 22:43:31 with 625396414 bytes in memory
+Finished MultiAngle_Diffused_30_27.mat at 19-Oct-2012 22:43:55 with 611597450 bytes in memory
+Starting MultiAngle_Diffused_30_28.mat at 19-Oct-2012 22:43:55 with 611597450 bytes in memory
+Finished MultiAngle_Diffused_1_34.mat at 19-Oct-2012 22:44:06 with 635569450 bytes in memory
+Starting MultiAngle_Diffused_1_35.mat at 19-Oct-2012 22:44:06 with 635569450 bytes in memory
+Finished MultiAngle_Diffused_67_28.mat at 19-Oct-2012 22:44:27 with 613054156 bytes in memory
+Starting MultiAngle_Diffused_67_29.mat at 19-Oct-2012 22:44:27 with 613054156 bytes in memory
+Finished MultiAngle_Diffused_41_30.mat at 19-Oct-2012 22:44:29 with 631420439 bytes in memory
+Starting MultiAngle_Diffused_41_31.mat at 19-Oct-2012 22:44:29 with 631420439 bytes in memory
+Finished MultiAngle_Diffused_1_35.mat at 19-Oct-2012 22:45:41 with 635919112 bytes in memory
+Skipping MultiAngle_Diffused_1_36.mat at 19-Oct-2012 22:45:41
+Starting MultiAngle_Diffused_1_37.mat at 19-Oct-2012 22:45:41 with 635919112 bytes in memory
+Finished MultiAngle_Diffused_30_28.mat at 19-Oct-2012 22:45:44 with 625823391 bytes in memory
+Skipping MultiAngle_Diffused_30_29.mat at 19-Oct-2012 22:45:44
+Starting MultiAngle_Diffused_30_30.mat at 19-Oct-2012 22:45:44 with 625823391 bytes in memory
+Finished MultiAngle_Diffused_5_38.mat at 19-Oct-2012 22:45:51 with 626699993 bytes in memory
+Skipping MultiAngle_Diffused_5_39.mat at 19-Oct-2012 22:45:51
+Starting MultiAngle_Diffused_5_40.mat at 19-Oct-2012 22:45:51 with 626699993 bytes in memory
+Finished MultiAngle_Diffused_67_29.mat at 19-Oct-2012 22:47:01 with 635059832 bytes in memory
+Skipping MultiAngle_Diffused_67_30.mat at 19-Oct-2012 22:47:01
+Skipping MultiAngle_Diffused_67_31.mat at 19-Oct-2012 22:47:01
+Starting MultiAngle_Diffused_67_32.mat at 19-Oct-2012 22:47:01 with 635059832 bytes in memory
+Finished MultiAngle_Diffused_51_27.mat at 19-Oct-2012 22:47:22 with 618065030 bytes in memory
+Skipping MultiAngle_Diffused_51_28.mat at 19-Oct-2012 22:47:22
+Skipping MultiAngle_Diffused_51_29.mat at 19-Oct-2012 22:47:22
+Starting MultiAngle_Diffused_51_30.mat at 19-Oct-2012 22:47:22 with 618065030 bytes in memory
+Finished MultiAngle_Diffused_30_30.mat at 19-Oct-2012 22:47:46 with 640966365 bytes in memory
+Skipping MultiAngle_Diffused_30_31.mat at 19-Oct-2012 22:47:46
+Starting MultiAngle_Diffused_30_32.mat at 19-Oct-2012 22:47:46 with 640966365 bytes in memory
+Finished MultiAngle_Diffused_41_31.mat at 19-Oct-2012 22:48:03 with 656702299 bytes in memory
+Skipping MultiAngle_Diffused_41_32.mat at 19-Oct-2012 22:48:03
+Starting MultiAngle_Diffused_41_33.mat at 19-Oct-2012 22:48:03 with 656702299 bytes in memory
+Finished MultiAngle_Diffused_5_40.mat at 19-Oct-2012 22:48:43 with 648642297 bytes in memory
+Skipping MultiAngle_Diffused_5_41.mat at 19-Oct-2012 22:48:43
+Starting MultiAngle_Diffused_5_42.mat at 19-Oct-2012 22:48:43 with 648642297 bytes in memory
+Finished MultiAngle_Diffused_67_32.mat at 19-Oct-2012 22:48:47 with 627039051 bytes in memory
+Starting MultiAngle_Diffused_67_33.mat at 19-Oct-2012 22:48:47 with 627039051 bytes in memory
+Finished MultiAngle_Diffused_51_30.mat at 19-Oct-2012 22:48:49 with 624073831 bytes in memory
+Starting MultiAngle_Diffused_51_31.mat at 19-Oct-2012 22:48:49 with 624073831 bytes in memory
+Finished MultiAngle_Diffused_30_32.mat at 19-Oct-2012 22:49:17 with 620889938 bytes in memory
+Skipping MultiAngle_Diffused_30_33.mat at 19-Oct-2012 22:49:17
+Starting MultiAngle_Diffused_30_34.mat at 19-Oct-2012 22:49:17 with 620889938 bytes in memory
+Finished MultiAngle_Diffused_41_33.mat at 19-Oct-2012 22:49:44 with 645521515 bytes in memory
+Skipping MultiAngle_Diffused_41_34.mat at 19-Oct-2012 22:49:44
+Starting MultiAngle_Diffused_41_35.mat at 19-Oct-2012 22:49:44 with 645521515 bytes in memory
+Finished MultiAngle_Diffused_5_42.mat at 19-Oct-2012 22:50:02 with 628298044 bytes in memory
+Skipping MultiAngle_Diffused_5_43.mat at 19-Oct-2012 22:50:02
+Starting MultiAngle_Diffused_5_44.mat at 19-Oct-2012 22:50:02 with 628298044 bytes in memory
+Finished MultiAngle_Diffused_51_31.mat at 19-Oct-2012 22:50:33 with 637111068 bytes in memory
+Skipping MultiAngle_Diffused_51_32.mat at 19-Oct-2012 22:50:33
+Starting MultiAngle_Diffused_51_33.mat at 19-Oct-2012 22:50:33 with 637111068 bytes in memory
+Finished MultiAngle_Diffused_1_37.mat at 19-Oct-2012 22:51:00 with 632332761 bytes in memory
+Skipping MultiAngle_Diffused_1_38.mat at 19-Oct-2012 22:51:00
+Skipping MultiAngle_Diffused_1_39.mat at 19-Oct-2012 22:51:00
+Skipping MultiAngle_Diffused_1_40.mat at 19-Oct-2012 22:51:00
+Starting MultiAngle_Diffused_1_41.mat at 19-Oct-2012 22:51:00 with 632332761 bytes in memory
+Finished MultiAngle_Diffused_30_34.mat at 19-Oct-2012 22:51:02 with 629874471 bytes in memory
+Skipping MultiAngle_Diffused_30_35.mat at 19-Oct-2012 22:51:02
+Starting MultiAngle_Diffused_30_36.mat at 19-Oct-2012 22:51:02 with 629874471 bytes in memory
+Finished MultiAngle_Diffused_67_33.mat at 19-Oct-2012 22:51:06 with 630988744 bytes in memory
+Skipping MultiAngle_Diffused_67_34.mat at 19-Oct-2012 22:51:06
+Skipping MultiAngle_Diffused_67_35.mat at 19-Oct-2012 22:51:06
+Starting MultiAngle_Diffused_67_36.mat at 19-Oct-2012 22:51:06 with 630988744 bytes in memory
+Finished MultiAngle_Diffused_41_35.mat at 19-Oct-2012 22:51:31 with 643939006 bytes in memory
+Skipping MultiAngle_Diffused_41_36.mat at 19-Oct-2012 22:51:31
+Starting MultiAngle_Diffused_41_37.mat at 19-Oct-2012 22:51:31 with 643939006 bytes in memory
+Finished MultiAngle_Diffused_51_33.mat at 19-Oct-2012 22:51:47 with 613598948 bytes in memory
+Starting MultiAngle_Diffused_51_34.mat at 19-Oct-2012 22:51:47 with 613598948 bytes in memory
+Finished MultiAngle_Diffused_5_44.mat at 19-Oct-2012 22:52:05 with 641678655 bytes in memory
+Starting MultiAngle_Diffused_5_45.mat at 19-Oct-2012 22:52:05 with 641678655 bytes in memory
+Finished MultiAngle_Diffused_30_36.mat at 19-Oct-2012 22:52:36 with 623303912 bytes in memory
+Starting MultiAngle_Diffused_30_37.mat at 19-Oct-2012 22:52:36 with 623303912 bytes in memory
+Finished MultiAngle_Diffused_1_41.mat at 19-Oct-2012 22:52:39 with 638720947 bytes in memory
+Starting MultiAngle_Diffused_1_42.mat at 19-Oct-2012 22:52:39 with 638720947 bytes in memory
+Finished MultiAngle_Diffused_41_37.mat at 19-Oct-2012 22:53:16 with 649897812 bytes in memory
+Skipping MultiAngle_Diffused_41_38.mat at 19-Oct-2012 22:53:16
+Starting MultiAngle_Diffused_41_39.mat at 19-Oct-2012 22:53:16 with 649897812 bytes in memory
+Finished MultiAngle_Diffused_5_45.mat at 19-Oct-2012 22:53:32 with 635433965 bytes in memory
+Skipping MultiAngle_Diffused_5_46.mat at 19-Oct-2012 22:53:32
+Starting MultiAngle_Diffused_5_47.mat at 19-Oct-2012 22:53:32 with 635433965 bytes in memory
+Finished MultiAngle_Diffused_67_36.mat at 19-Oct-2012 22:54:12 with 631611714 bytes in memory
+Skipping MultiAngle_Diffused_67_37.mat at 19-Oct-2012 22:54:12
+Starting MultiAngle_Diffused_67_38.mat at 19-Oct-2012 22:54:12 with 631611714 bytes in memory
+Finished MultiAngle_Diffused_30_37.mat at 19-Oct-2012 22:54:26 with 629948490 bytes in memory
+Skipping MultiAngle_Diffused_30_38.mat at 19-Oct-2012 22:54:26
+Starting MultiAngle_Diffused_30_39.mat at 19-Oct-2012 22:54:26 with 629948490 bytes in memory
+Finished MultiAngle_Diffused_41_39.mat at 19-Oct-2012 22:55:04 with 649684185 bytes in memory
+Skipping MultiAngle_Diffused_41_40.mat at 19-Oct-2012 22:55:04
+Starting MultiAngle_Diffused_41_41.mat at 19-Oct-2012 22:55:04 with 649684185 bytes in memory
+Finished MultiAngle_Diffused_1_42.mat at 19-Oct-2012 22:55:21 with 631875710 bytes in memory
+Skipping MultiAngle_Diffused_1_43.mat at 19-Oct-2012 22:55:21
+Skipping MultiAngle_Diffused_1_44.mat at 19-Oct-2012 22:55:21
+Starting MultiAngle_Diffused_1_45.mat at 19-Oct-2012 22:55:21 with 631875710 bytes in memory
+Finished MultiAngle_Diffused_51_34.mat at 19-Oct-2012 22:55:39 with 649953651 bytes in memory
+Skipping MultiAngle_Diffused_51_35.mat at 19-Oct-2012 22:55:39
+Skipping MultiAngle_Diffused_51_36.mat at 19-Oct-2012 22:55:39
+Starting MultiAngle_Diffused_51_37.mat at 19-Oct-2012 22:55:40 with 649953651 bytes in memory
+Finished MultiAngle_Diffused_67_38.mat at 19-Oct-2012 22:55:42 with 624151093 bytes in memory
+Skipping MultiAngle_Diffused_67_39.mat at 19-Oct-2012 22:55:42
+Starting MultiAngle_Diffused_67_40.mat at 19-Oct-2012 22:55:42 with 624151093 bytes in memory
+Finished MultiAngle_Diffused_30_39.mat at 19-Oct-2012 22:55:59 with 622002378 bytes in memory
+Starting MultiAngle_Diffused_30_40.mat at 19-Oct-2012 22:55:59 with 622002378 bytes in memory
+Finished MultiAngle_Diffused_5_47.mat at 19-Oct-2012 22:56:12 with 643908529 bytes in memory
+Skipping MultiAngle_Diffused_5_48.mat at 19-Oct-2012 22:56:12
+Starting MultiAngle_Diffused_5_49.mat at 19-Oct-2012 22:56:12 with 643908529 bytes in memory
+Finished MultiAngle_Diffused_41_41.mat at 19-Oct-2012 22:56:20 with 632002857 bytes in memory
+Starting MultiAngle_Diffused_41_42.mat at 19-Oct-2012 22:56:20 with 632002857 bytes in memory
+Finished MultiAngle_Diffused_51_37.mat at 19-Oct-2012 22:57:10 with 626785018 bytes in memory
+Starting MultiAngle_Diffused_51_38.mat at 19-Oct-2012 22:57:10 with 626785018 bytes in memory
+Finished MultiAngle_Diffused_67_40.mat at 19-Oct-2012 22:57:28 with 632499737 bytes in memory
+Skipping MultiAngle_Diffused_67_41.mat at 19-Oct-2012 22:57:28
+Starting MultiAngle_Diffused_67_42.mat at 19-Oct-2012 22:57:28 with 632499737 bytes in memory
+Finished MultiAngle_Diffused_5_49.mat at 19-Oct-2012 22:57:29 with 625058315 bytes in memory
+Skipping MultiAngle_Diffused_5_50.mat at 19-Oct-2012 22:57:29
+Starting MultiAngle_Diffused_5_51.mat at 19-Oct-2012 22:57:29 with 625058315 bytes in memory
+Finished MultiAngle_Diffused_30_40.mat at 19-Oct-2012 22:57:48 with 627151262 bytes in memory
+Skipping MultiAngle_Diffused_30_41.mat at 19-Oct-2012 22:57:48
+Starting MultiAngle_Diffused_30_42.mat at 19-Oct-2012 22:57:48 with 627151262 bytes in memory
+Finished MultiAngle_Diffused_1_45.mat at 19-Oct-2012 22:58:10 with 638989674 bytes in memory
+Starting MultiAngle_Diffused_1_46.mat at 19-Oct-2012 22:58:10 with 638989674 bytes in memory
+Finished MultiAngle_Diffused_41_42.mat at 19-Oct-2012 22:58:23 with 653359867 bytes in memory
+Starting MultiAngle_Diffused_41_43.mat at 19-Oct-2012 22:58:23 with 653359867 bytes in memory
+Finished MultiAngle_Diffused_30_42.mat at 19-Oct-2012 22:59:14 with 622641035 bytes in memory
+Starting MultiAngle_Diffused_30_43.mat at 19-Oct-2012 22:59:14 with 622641035 bytes in memory
+Finished MultiAngle_Diffused_5_51.mat at 19-Oct-2012 22:59:15 with 647180234 bytes in memory
+Skipping MultiAngle_Diffused_5_52.mat at 19-Oct-2012 22:59:15
+Starting MultiAngle_Diffused_5_53.mat at 19-Oct-2012 22:59:15 with 647180234 bytes in memory
+Finished MultiAngle_Diffused_51_38.mat at 19-Oct-2012 22:59:21 with 622398429 bytes in memory
+Skipping MultiAngle_Diffused_51_39.mat at 19-Oct-2012 22:59:21
+Skipping MultiAngle_Diffused_51_40.mat at 19-Oct-2012 22:59:21
+Starting MultiAngle_Diffused_51_41.mat at 19-Oct-2012 22:59:22 with 622398429 bytes in memory
+Finished MultiAngle_Diffused_1_46.mat at 19-Oct-2012 22:59:28 with 624135027 bytes in memory
+Skipping MultiAngle_Diffused_1_47.mat at 19-Oct-2012 22:59:28
+Starting MultiAngle_Diffused_1_48.mat at 19-Oct-2012 22:59:28 with 624135027 bytes in memory
+Finished MultiAngle_Diffused_41_43.mat at 19-Oct-2012 23:00:18 with 643903648 bytes in memory
+Skipping MultiAngle_Diffused_41_44.mat at 19-Oct-2012 23:00:18
+Starting MultiAngle_Diffused_41_45.mat at 19-Oct-2012 23:00:18 with 643903648 bytes in memory
+Finished MultiAngle_Diffused_67_42.mat at 19-Oct-2012 23:00:39 with 622207888 bytes in memory
+Skipping MultiAngle_Diffused_67_43.mat at 19-Oct-2012 23:00:39
+Skipping MultiAngle_Diffused_67_44.mat at 19-Oct-2012 23:00:39
+Starting MultiAngle_Diffused_67_45.mat at 19-Oct-2012 23:00:39 with 622207888 bytes in memory
+Finished MultiAngle_Diffused_30_43.mat at 19-Oct-2012 23:00:41 with 620657284 bytes in memory
+Starting MultiAngle_Diffused_30_44.mat at 19-Oct-2012 23:00:41 with 620657284 bytes in memory
+Finished MultiAngle_Diffused_51_41.mat at 19-Oct-2012 23:01:09 with 636784235 bytes in memory
+Starting MultiAngle_Diffused_51_42.mat at 19-Oct-2012 23:01:09 with 636784235 bytes in memory
+Finished MultiAngle_Diffused_1_48.mat at 19-Oct-2012 23:01:12 with 628646654 bytes in memory
+Skipping MultiAngle_Diffused_1_49.mat at 19-Oct-2012 23:01:12
+Starting MultiAngle_Diffused_1_50.mat at 19-Oct-2012 23:01:12 with 628646654 bytes in memory
+Finished MultiAngle_Diffused_5_53.mat at 19-Oct-2012 23:01:12 with 640680356 bytes in memory
+Skipping MultiAngle_Diffused_5_54.mat at 19-Oct-2012 23:01:12
+Starting MultiAngle_Diffused_5_55.mat at 19-Oct-2012 23:01:12 with 640680356 bytes in memory
+Finished MultiAngle_Diffused_41_45.mat at 19-Oct-2012 23:02:13 with 641461849 bytes in memory
+Starting MultiAngle_Diffused_41_46.mat at 19-Oct-2012 23:02:13 with 641461849 bytes in memory
+Finished MultiAngle_Diffused_30_44.mat at 19-Oct-2012 23:03:04 with 626010119 bytes in memory
+Starting MultiAngle_Diffused_30_45.mat at 19-Oct-2012 23:03:04 with 626010119 bytes in memory
+Finished MultiAngle_Diffused_5_55.mat at 19-Oct-2012 23:03:06 with 641301322 bytes in memory
+Skipping MultiAngle_Diffused_5_56.mat at 19-Oct-2012 23:03:06
+Starting MultiAngle_Diffused_5_57.mat at 19-Oct-2012 23:03:06 with 641301322 bytes in memory
+Finished MultiAngle_Diffused_67_45.mat at 19-Oct-2012 23:03:14 with 638101164 bytes in memory
+Skipping MultiAngle_Diffused_67_46.mat at 19-Oct-2012 23:03:14
+Starting MultiAngle_Diffused_67_47.mat at 19-Oct-2012 23:03:14 with 638101164 bytes in memory
+Finished MultiAngle_Diffused_51_42.mat at 19-Oct-2012 23:03:23 with 653044945 bytes in memory
+Skipping MultiAngle_Diffused_51_43.mat at 19-Oct-2012 23:03:23
+Skipping MultiAngle_Diffused_51_44.mat at 19-Oct-2012 23:03:23
+Starting MultiAngle_Diffused_51_45.mat at 19-Oct-2012 23:03:23 with 653044945 bytes in memory
+Finished MultiAngle_Diffused_67_47.mat at 19-Oct-2012 23:04:29 with 614731714 bytes in memory
+Starting MultiAngle_Diffused_67_48.mat at 19-Oct-2012 23:04:29 with 614731714 bytes in memory
+Finished MultiAngle_Diffused_41_46.mat at 19-Oct-2012 23:04:30 with 654001992 bytes in memory
+Starting MultiAngle_Diffused_41_47.mat at 19-Oct-2012 23:04:30 with 654001992 bytes in memory
+Finished MultiAngle_Diffused_30_45.mat at 19-Oct-2012 23:04:57 with 621189218 bytes in memory
+Starting MultiAngle_Diffused_30_46.mat at 19-Oct-2012 23:04:57 with 621189218 bytes in memory
+Finished MultiAngle_Diffused_51_45.mat at 19-Oct-2012 23:05:06 with 637336548 bytes in memory
+Skipping MultiAngle_Diffused_51_46.mat at 19-Oct-2012 23:05:06
+Starting MultiAngle_Diffused_51_47.mat at 19-Oct-2012 23:05:06 with 637336548 bytes in memory
+Finished MultiAngle_Diffused_5_57.mat at 19-Oct-2012 23:05:39 with 643540253 bytes in memory
+Skipping MultiAngle_Diffused_5_58.mat at 19-Oct-2012 23:05:39
+Starting MultiAngle_Diffused_5_59.mat at 19-Oct-2012 23:05:39 with 643540253 bytes in memory
+Finished MultiAngle_Diffused_41_47.mat at 19-Oct-2012 23:06:36 with 653009808 bytes in memory
+Skipping MultiAngle_Diffused_41_48.mat at 19-Oct-2012 23:06:36
+Starting MultiAngle_Diffused_41_49.mat at 19-Oct-2012 23:06:36 with 653009808 bytes in memory
+Finished MultiAngle_Diffused_51_47.mat at 19-Oct-2012 23:09:16 with 625187506 bytes in memory
+Skipping MultiAngle_Diffused_51_48.mat at 19-Oct-2012 23:09:34
+Starting MultiAngle_Diffused_51_49.mat at 19-Oct-2012 23:09:34 with 625187506 bytes in memory
+Finished MultiAngle_Diffused_5_59.mat at 19-Oct-2012 23:10:26 with 637869152 bytes in memory
+Skipping MultiAngle_Diffused_5_60.mat at 19-Oct-2012 23:10:49
+Skipping MultiAngle_Diffused_5_61.mat at 19-Oct-2012 23:10:49
+Skipping MultiAngle_Diffused_5_62.mat at 19-Oct-2012 23:10:49
+Starting MultiAngle_Diffused_5_63.mat at 19-Oct-2012 23:10:49 with 637869152 bytes in memory
+Finished MultiAngle_Diffused_41_49.mat at 19-Oct-2012 23:10:59 with 646039205 bytes in memory
+Skipping MultiAngle_Diffused_41_50.mat at 19-Oct-2012 23:11:15
+Skipping MultiAngle_Diffused_41_51.mat at 19-Oct-2012 23:11:15
+Skipping MultiAngle_Diffused_41_52.mat at 19-Oct-2012 23:11:15
+Starting MultiAngle_Diffused_41_53.mat at 19-Oct-2012 23:11:15 with 646039205 bytes in memory
+Finished MultiAngle_Diffused_51_49.mat at 19-Oct-2012 23:11:34 with 631374084 bytes in memory
+Skipping MultiAngle_Diffused_51_50.mat at 19-Oct-2012 23:11:34
+Starting MultiAngle_Diffused_51_51.mat at 19-Oct-2012 23:11:34 with 631374084 bytes in memory
+Finished MultiAngle_Diffused_5_63.mat at 19-Oct-2012 23:12:23 with 638675132 bytes in memory
+Starting MultiAngle_Diffused_5_64.mat at 19-Oct-2012 23:12:23 with 638675132 bytes in memory
+Finished MultiAngle_Diffused_41_53.mat at 19-Oct-2012 23:13:09 with 653550358 bytes in memory
+Skipping MultiAngle_Diffused_41_54.mat at 19-Oct-2012 23:13:09
+Starting MultiAngle_Diffused_41_55.mat at 19-Oct-2012 23:13:09 with 653550358 bytes in memory
+Finished MultiAngle_Diffused_51_51.mat at 19-Oct-2012 23:13:30 with 635550211 bytes in memory
+Skipping MultiAngle_Diffused_51_52.mat at 19-Oct-2012 23:13:30
+Starting MultiAngle_Diffused_51_53.mat at 19-Oct-2012 23:13:30 with 635550211 bytes in memory
+Finished MultiAngle_Diffused_5_64.mat at 19-Oct-2012 23:14:11 with 641497922 bytes in memory
+Skipping MultiAngle_Diffused_5_65.mat at 19-Oct-2012 23:14:12
+Starting MultiAngle_Diffused_5_66.mat at 19-Oct-2012 23:14:12 with 641497922 bytes in memory
+Finished MultiAngle_Diffused_41_55.mat at 19-Oct-2012 23:14:33 with 633966988 bytes in memory
+Starting MultiAngle_Diffused_41_56.mat at 19-Oct-2012 23:14:33 with 633966988 bytes in memory
+Finished MultiAngle_Diffused_51_53.mat at 19-Oct-2012 23:15:38 with 638870188 bytes in memory
+Skipping MultiAngle_Diffused_51_54.mat at 19-Oct-2012 23:15:38
+Starting MultiAngle_Diffused_51_55.mat at 19-Oct-2012 23:15:38 with 638870188 bytes in memory
+Finished MultiAngle_Diffused_5_66.mat at 19-Oct-2012 23:15:40 with 635922191 bytes in memory
+Skipping MultiAngle_Diffused_5_67.mat at 19-Oct-2012 23:15:40
+Starting MultiAngle_Diffused_5_68.mat at 19-Oct-2012 23:15:41 with 635922191 bytes in memory
+Warning: encountered error "Cannot find the photon interaction for this primary electron" in Mat_MultiAngle_CCD_eTracks_662_500k_5_TRK.mat event # 3360
+Finished MultiAngle_Diffused_41_56.mat at 19-Oct-2012 23:17:27 with 632701485 bytes in memory
+Skipping MultiAngle_Diffused_41_57.mat at 19-Oct-2012 23:17:27
+Skipping MultiAngle_Diffused_41_58.mat at 19-Oct-2012 23:17:27
+Starting MultiAngle_Diffused_41_59.mat at 19-Oct-2012 23:17:27 with 632701485 bytes in memory
+Finished MultiAngle_Diffused_67_48.mat at 19-Oct-2012 23:17:12 with 635152919 bytes in memory
+Skipping MultiAngle_Diffused_67_49.mat at 19-Oct-2012 23:17:32
+Skipping MultiAngle_Diffused_67_50.mat at 19-Oct-2012 23:17:32
+Skipping MultiAngle_Diffused_67_51.mat at 19-Oct-2012 23:17:32
+Skipping MultiAngle_Diffused_67_52.mat at 19-Oct-2012 23:17:32
+Skipping MultiAngle_Diffused_67_53.mat at 19-Oct-2012 23:17:32
+Skipping MultiAngle_Diffused_67_54.mat at 19-Oct-2012 23:17:32
+Starting MultiAngle_Diffused_67_55.mat at 19-Oct-2012 23:17:32 with 635152919 bytes in memory
+Finished MultiAngle_Diffused_51_55.mat at 19-Oct-2012 23:17:48 with 621978486 bytes in memory
+Skipping MultiAngle_Diffused_51_56.mat at 19-Oct-2012 23:17:48
+Starting MultiAngle_Diffused_51_57.mat at 19-Oct-2012 23:17:48 with 621978486 bytes in memory
+Finished MultiAngle_Diffused_5_68.mat at 19-Oct-2012 23:18:10 with 634760948 bytes in memory
+Skipping MultiAngle_Diffused_5_69.mat at 19-Oct-2012 23:18:10
+Skipping MultiAngle_Diffused_5_70.mat at 19-Oct-2012 23:18:10
+Starting MultiAngle_Diffused_5_71.mat at 19-Oct-2012 23:18:10 with 634760948 bytes in memory
+Finished MultiAngle_Diffused_67_55.mat at 19-Oct-2012 23:19:21 with 629503567 bytes in memory
+Starting MultiAngle_Diffused_67_56.mat at 19-Oct-2012 23:19:21 with 629503567 bytes in memory
+Finished MultiAngle_Diffused_5_71.mat at 19-Oct-2012 23:19:36 with 631250329 bytes in memory
+Skipping MultiAngle_Diffused_5_72.mat at 19-Oct-2012 23:19:36
+Starting MultiAngle_Diffused_5_73.mat at 19-Oct-2012 23:19:36 with 631250329 bytes in memory
+Finished MultiAngle_Diffused_51_57.mat at 19-Oct-2012 23:20:10 with 640659851 bytes in memory
+Skipping MultiAngle_Diffused_51_58.mat at 19-Oct-2012 23:20:10
+Starting MultiAngle_Diffused_51_59.mat at 19-Oct-2012 23:20:10 with 640659851 bytes in memory
+Finished MultiAngle_Diffused_67_56.mat at 19-Oct-2012 23:20:55 with 628782465 bytes in memory
+Skipping MultiAngle_Diffused_67_57.mat at 19-Oct-2012 23:20:55
+Starting MultiAngle_Diffused_67_58.mat at 19-Oct-2012 23:20:55 with 628782465 bytes in memory
+Finished MultiAngle_Diffused_41_59.mat at 19-Oct-2012 23:21:01 with 625135818 bytes in memory
+Skipping MultiAngle_Diffused_41_60.mat at 19-Oct-2012 23:21:01
+Starting MultiAngle_Diffused_41_61.mat at 19-Oct-2012 23:21:01 with 625135818 bytes in memory
+Finished MultiAngle_Diffused_51_59.mat at 19-Oct-2012 23:21:41 with 624911854 bytes in memory
+Starting MultiAngle_Diffused_51_60.mat at 19-Oct-2012 23:21:41 with 624911854 bytes in memory
+Finished MultiAngle_Diffused_5_73.mat at 19-Oct-2012 23:21:42 with 658926515 bytes in memory
+Skipping MultiAngle_Diffused_5_74.mat at 19-Oct-2012 23:21:42
+Starting MultiAngle_Diffused_5_75.mat at 19-Oct-2012 23:21:42 with 658926515 bytes in memory
+Finished MultiAngle_Diffused_30_46.mat at 19-Oct-2012 23:21:32 with 621918272 bytes in memory
+Skipping MultiAngle_Diffused_30_47.mat at 19-Oct-2012 23:21:52
+Skipping MultiAngle_Diffused_30_48.mat at 19-Oct-2012 23:21:52
+Skipping MultiAngle_Diffused_30_49.mat at 19-Oct-2012 23:21:52
+Starting MultiAngle_Diffused_30_50.mat at 19-Oct-2012 23:21:52 with 621918272 bytes in memory
+Finished MultiAngle_Diffused_41_61.mat at 19-Oct-2012 23:22:22 with 633800688 bytes in memory
+Skipping MultiAngle_Diffused_41_62.mat at 19-Oct-2012 23:22:22
+Starting MultiAngle_Diffused_41_63.mat at 19-Oct-2012 23:22:22 with 633800688 bytes in memory
+Finished MultiAngle_Diffused_30_50.mat at 19-Oct-2012 23:23:18 with 616721610 bytes in memory
+Starting MultiAngle_Diffused_30_51.mat at 19-Oct-2012 23:23:18 with 616721610 bytes in memory
+Finished MultiAngle_Diffused_67_58.mat at 19-Oct-2012 23:23:20 with 629606711 bytes in memory
+Skipping MultiAngle_Diffused_67_59.mat at 19-Oct-2012 23:23:20
+Starting MultiAngle_Diffused_67_60.mat at 19-Oct-2012 23:23:20 with 629606711 bytes in memory
+Finished MultiAngle_Diffused_5_75.mat at 19-Oct-2012 23:23:40 with 653365263 bytes in memory
+Skipping MultiAngle_Diffused_5_76.mat at 19-Oct-2012 23:23:40
+Starting MultiAngle_Diffused_5_77.mat at 19-Oct-2012 23:23:40 with 653365263 bytes in memory
+Finished MultiAngle_Diffused_41_63.mat at 19-Oct-2012 23:23:51 with 636594356 bytes in memory
+Starting MultiAngle_Diffused_41_64.mat at 19-Oct-2012 23:23:51 with 636594356 bytes in memory
+Finished MultiAngle_Diffused_67_60.mat at 19-Oct-2012 23:24:58 with 625107894 bytes in memory
+Skipping MultiAngle_Diffused_67_61.mat at 19-Oct-2012 23:24:58
+Starting MultiAngle_Diffused_67_62.mat at 19-Oct-2012 23:24:58 with 625107894 bytes in memory
+Finished MultiAngle_Diffused_51_60.mat at 19-Oct-2012 23:24:59 with 640994291 bytes in memory
+Starting MultiAngle_Diffused_51_61.mat at 19-Oct-2012 23:24:59 with 640994291 bytes in memory
+Finished MultiAngle_Diffused_5_77.mat at 19-Oct-2012 23:25:38 with 642896199 bytes in memory
+Skipping MultiAngle_Diffused_5_78.mat at 19-Oct-2012 23:25:38
+Starting MultiAngle_Diffused_5_79.mat at 19-Oct-2012 23:25:38 with 642896199 bytes in memory
+Finished MultiAngle_Diffused_41_64.mat at 19-Oct-2012 23:26:16 with 643254571 bytes in memory
+Skipping MultiAngle_Diffused_41_65.mat at 19-Oct-2012 23:26:16
+Starting MultiAngle_Diffused_41_66.mat at 19-Oct-2012 23:26:16 with 643254571 bytes in memory
+Finished MultiAngle_Diffused_30_51.mat at 19-Oct-2012 23:26:46 with 624645341 bytes in memory
+Starting MultiAngle_Diffused_30_52.mat at 19-Oct-2012 23:26:46 with 624645341 bytes in memory
+Finished MultiAngle_Diffused_67_62.mat at 19-Oct-2012 23:26:56 with 633354553 bytes in memory
+Skipping MultiAngle_Diffused_67_63.mat at 19-Oct-2012 23:26:57
+Starting MultiAngle_Diffused_67_64.mat at 19-Oct-2012 23:26:57 with 633354553 bytes in memory
+Finished MultiAngle_Diffused_5_79.mat at 19-Oct-2012 23:27:02 with 633172004 bytes in memory
+Skipping MultiAngle_Diffused_5_80.mat at 19-Oct-2012 23:27:02
+Starting MultiAngle_Diffused_5_81.mat at 19-Oct-2012 23:27:02 with 633172004 bytes in memory
+Finished MultiAngle_Diffused_41_66.mat at 19-Oct-2012 23:28:34 with 650262986 bytes in memory
+Skipping MultiAngle_Diffused_41_67.mat at 19-Oct-2012 23:28:34
+Starting MultiAngle_Diffused_41_68.mat at 19-Oct-2012 23:28:34 with 650262986 bytes in memory
+Finished MultiAngle_Diffused_67_64.mat at 19-Oct-2012 23:28:42 with 618211469 bytes in memory
+Skipping MultiAngle_Diffused_67_65.mat at 19-Oct-2012 23:28:42
+Starting MultiAngle_Diffused_67_66.mat at 19-Oct-2012 23:28:42 with 618211469 bytes in memory
+Finished MultiAngle_Diffused_30_52.mat at 19-Oct-2012 23:28:43 with 619526655 bytes in memory
+Starting MultiAngle_Diffused_30_53.mat at 19-Oct-2012 23:28:43 with 619526655 bytes in memory
+Finished MultiAngle_Diffused_5_81.mat at 19-Oct-2012 23:28:47 with 641337075 bytes in memory
+Skipping MultiAngle_Diffused_5_82.mat at 19-Oct-2012 23:28:47
+Starting MultiAngle_Diffused_5_83.mat at 19-Oct-2012 23:28:47 with 641337075 bytes in memory
+Finished MultiAngle_Diffused_51_61.mat at 19-Oct-2012 23:29:37 with 630417070 bytes in memory
+Starting MultiAngle_Diffused_51_62.mat at 19-Oct-2012 23:29:37 with 630417070 bytes in memory
+Finished MultiAngle_Diffused_67_66.mat at 19-Oct-2012 23:30:18 with 626003004 bytes in memory
+Skipping MultiAngle_Diffused_67_67.mat at 19-Oct-2012 23:30:18
+Starting MultiAngle_Diffused_67_68.mat at 19-Oct-2012 23:30:18 with 626003004 bytes in memory
+Finished MultiAngle_Diffused_30_53.mat at 19-Oct-2012 23:30:24 with 627740363 bytes in memory
+Starting MultiAngle_Diffused_30_54.mat at 19-Oct-2012 23:30:24 with 627740363 bytes in memory
+Finished MultiAngle_Diffused_41_68.mat at 19-Oct-2012 23:30:42 with 637624038 bytes in memory
+Skipping MultiAngle_Diffused_41_69.mat at 19-Oct-2012 23:30:42
+Skipping MultiAngle_Diffused_41_70.mat at 19-Oct-2012 23:30:42
+Starting MultiAngle_Diffused_41_71.mat at 19-Oct-2012 23:30:42 with 637624038 bytes in memory
+Finished MultiAngle_Diffused_51_62.mat at 19-Oct-2012 23:31:17 with 628534168 bytes in memory
+Starting MultiAngle_Diffused_51_63.mat at 19-Oct-2012 23:31:17 with 628534168 bytes in memory
+Finished MultiAngle_Diffused_1_50.mat at 19-Oct-2012 23:31:47 with 629811546 bytes in memory
+Skipping MultiAngle_Diffused_1_51.mat at 19-Oct-2012 23:32:07
+Skipping MultiAngle_Diffused_1_52.mat at 19-Oct-2012 23:32:07
+Skipping MultiAngle_Diffused_1_53.mat at 19-Oct-2012 23:32:07
+Skipping MultiAngle_Diffused_1_54.mat at 19-Oct-2012 23:32:07
+Skipping MultiAngle_Diffused_1_55.mat at 19-Oct-2012 23:32:07
+Skipping MultiAngle_Diffused_1_56.mat at 19-Oct-2012 23:32:07
+Skipping MultiAngle_Diffused_1_57.mat at 19-Oct-2012 23:32:08
+Skipping MultiAngle_Diffused_1_58.mat at 19-Oct-2012 23:32:08
+Skipping MultiAngle_Diffused_1_59.mat at 19-Oct-2012 23:32:08
+Skipping MultiAngle_Diffused_1_60.mat at 19-Oct-2012 23:32:08
+Skipping MultiAngle_Diffused_1_61.mat at 19-Oct-2012 23:32:08
+Skipping MultiAngle_Diffused_1_62.mat at 19-Oct-2012 23:32:08
+Skipping MultiAngle_Diffused_1_63.mat at 19-Oct-2012 23:32:08
+Skipping MultiAngle_Diffused_1_64.mat at 19-Oct-2012 23:32:08
+Starting MultiAngle_Diffused_1_65.mat at 19-Oct-2012 23:32:08 with 629811546 bytes in memory
+Finished MultiAngle_Diffused_41_71.mat at 19-Oct-2012 23:32:09 with 630558124 bytes in memory
+Starting MultiAngle_Diffused_41_72.mat at 19-Oct-2012 23:32:09 with 630558124 bytes in memory
+Finished MultiAngle_Diffused_30_54.mat at 19-Oct-2012 23:32:11 with 631629245 bytes in memory
+Starting MultiAngle_Diffused_30_55.mat at 19-Oct-2012 23:32:11 with 631629245 bytes in memory
+Finished MultiAngle_Diffused_5_83.mat at 19-Oct-2012 23:32:49 with 629491062 bytes in memory
+Skipping MultiAngle_Diffused_5_84.mat at 19-Oct-2012 23:32:49
+Skipping MultiAngle_Diffused_5_85.mat at 19-Oct-2012 23:32:49
+Starting MultiAngle_Diffused_5_86.mat at 19-Oct-2012 23:32:49 with 629491062 bytes in memory
+Finished MultiAngle_Diffused_67_68.mat at 19-Oct-2012 23:32:57 with 626059257 bytes in memory
+Skipping MultiAngle_Diffused_67_69.mat at 19-Oct-2012 23:32:57
+Starting MultiAngle_Diffused_67_70.mat at 19-Oct-2012 23:32:57 with 626059257 bytes in memory
+Finished MultiAngle_Diffused_51_63.mat at 19-Oct-2012 23:33:08 with 638719204 bytes in memory
+Starting MultiAngle_Diffused_51_64.mat at 19-Oct-2012 23:33:08 with 638719204 bytes in memory
+Finished MultiAngle_Diffused_41_72.mat at 19-Oct-2012 23:33:34 with 627290573 bytes in memory
+Skipping MultiAngle_Diffused_41_73.mat at 19-Oct-2012 23:33:34
+Starting MultiAngle_Diffused_41_74.mat at 19-Oct-2012 23:33:34 with 627290573 bytes in memory
+Finished MultiAngle_Diffused_30_55.mat at 19-Oct-2012 23:34:04 with 637864402 bytes in memory
+Starting MultiAngle_Diffused_30_56.mat at 19-Oct-2012 23:34:04 with 637864402 bytes in memory
+Finished MultiAngle_Diffused_67_70.mat at 19-Oct-2012 23:34:40 with 632923716 bytes in memory
+Skipping MultiAngle_Diffused_67_71.mat at 19-Oct-2012 23:34:40
+Starting MultiAngle_Diffused_67_72.mat at 19-Oct-2012 23:34:40 with 632923716 bytes in memory
+Finished MultiAngle_Diffused_41_74.mat at 19-Oct-2012 23:35:05 with 640441389 bytes in memory
+Starting MultiAngle_Diffused_41_75.mat at 19-Oct-2012 23:35:05 with 640441389 bytes in memory
+Finished MultiAngle_Diffused_5_86.mat at 19-Oct-2012 23:35:27 with 640591552 bytes in memory
+Starting MultiAngle_Diffused_5_87.mat at 19-Oct-2012 23:35:27 with 640591552 bytes in memory
+Finished MultiAngle_Diffused_30_56.mat at 19-Oct-2012 23:35:37 with 622284057 bytes in memory
+Starting MultiAngle_Diffused_30_57.mat at 19-Oct-2012 23:35:37 with 622284057 bytes in memory
+Finished MultiAngle_Diffused_1_65.mat at 19-Oct-2012 23:35:42 with 639435233 bytes in memory
+Skipping MultiAngle_Diffused_1_66.mat at 19-Oct-2012 23:35:42
+Skipping MultiAngle_Diffused_1_67.mat at 19-Oct-2012 23:35:42
+Starting MultiAngle_Diffused_1_68.mat at 19-Oct-2012 23:35:42 with 639435233 bytes in memory
+Finished MultiAngle_Diffused_51_64.mat at 19-Oct-2012 23:35:46 with 632005072 bytes in memory
+Starting MultiAngle_Diffused_51_65.mat at 19-Oct-2012 23:35:46 with 632005072 bytes in memory
+Finished MultiAngle_Diffused_67_72.mat at 19-Oct-2012 23:36:24 with 631063518 bytes in memory
+Skipping MultiAngle_Diffused_67_73.mat at 19-Oct-2012 23:36:24
+Starting MultiAngle_Diffused_67_74.mat at 19-Oct-2012 23:36:26 with 631063518 bytes in memory
+Finished MultiAngle_Diffused_41_75.mat at 19-Oct-2012 23:37:15 with 651857860 bytes in memory
+Skipping MultiAngle_Diffused_41_76.mat at 19-Oct-2012 23:37:15
+Starting MultiAngle_Diffused_41_77.mat at 19-Oct-2012 23:37:15 with 651857860 bytes in memory
+Finished MultiAngle_Diffused_5_87.mat at 19-Oct-2012 23:37:27 with 630874852 bytes in memory
+Skipping MultiAngle_Diffused_5_88.mat at 19-Oct-2012 23:37:27
+Starting MultiAngle_Diffused_5_89.mat at 19-Oct-2012 23:37:27 with 630874852 bytes in memory
+Finished MultiAngle_Diffused_67_74.mat at 19-Oct-2012 23:38:08 with 634067223 bytes in memory
+Skipping MultiAngle_Diffused_67_75.mat at 19-Oct-2012 23:38:08
+Starting MultiAngle_Diffused_67_76.mat at 19-Oct-2012 23:38:08 with 634067223 bytes in memory
+Finished MultiAngle_Diffused_1_68.mat at 19-Oct-2012 23:38:11 with 643423491 bytes in memory
+Skipping MultiAngle_Diffused_1_69.mat at 19-Oct-2012 23:38:11
+Starting MultiAngle_Diffused_1_70.mat at 19-Oct-2012 23:38:11 with 643423491 bytes in memory
+Finished MultiAngle_Diffused_30_57.mat at 19-Oct-2012 23:38:15 with 617420808 bytes in memory
+Starting MultiAngle_Diffused_30_58.mat at 19-Oct-2012 23:38:15 with 617420808 bytes in memory
+Finished MultiAngle_Diffused_5_89.mat at 19-Oct-2012 23:39:56 with 639263576 bytes in memory
+Skipping MultiAngle_Diffused_5_90.mat at 19-Oct-2012 23:39:56
+Starting MultiAngle_Diffused_5_91.mat at 19-Oct-2012 23:39:56 with 639263576 bytes in memory
+Finished MultiAngle_Diffused_41_77.mat at 19-Oct-2012 23:39:59 with 652636332 bytes in memory
+Skipping MultiAngle_Diffused_41_78.mat at 19-Oct-2012 23:39:59
+Starting MultiAngle_Diffused_41_79.mat at 19-Oct-2012 23:39:59 with 652636332 bytes in memory
+Finished MultiAngle_Diffused_1_70.mat at 19-Oct-2012 23:40:12 with 647417187 bytes in memory
+Starting MultiAngle_Diffused_1_71.mat at 19-Oct-2012 23:40:12 with 647417187 bytes in memory
+Finished MultiAngle_Diffused_30_58.mat at 19-Oct-2012 23:40:24 with 617982791 bytes in memory
+Starting MultiAngle_Diffused_30_59.mat at 19-Oct-2012 23:40:24 with 617982791 bytes in memory
+Finished MultiAngle_Diffused_1_71.mat at 19-Oct-2012 23:41:45 with 632087088 bytes in memory
+Skipping MultiAngle_Diffused_1_72.mat at 19-Oct-2012 23:41:45
+Starting MultiAngle_Diffused_1_73.mat at 19-Oct-2012 23:41:45 with 632087088 bytes in memory
+Finished MultiAngle_Diffused_30_59.mat at 19-Oct-2012 23:41:57 with 626862074 bytes in memory
+Starting MultiAngle_Diffused_30_60.mat at 19-Oct-2012 23:41:57 with 626862074 bytes in memory
+Finished MultiAngle_Diffused_5_91.mat at 19-Oct-2012 23:42:06 with 636111709 bytes in memory
+Skipping MultiAngle_Diffused_5_92.mat at 19-Oct-2012 23:42:06
+Starting MultiAngle_Diffused_5_93.mat at 19-Oct-2012 23:42:06 with 636111709 bytes in memory
+Finished MultiAngle_Diffused_67_76.mat at 19-Oct-2012 23:42:14 with 624753715 bytes in memory
+Skipping MultiAngle_Diffused_67_77.mat at 19-Oct-2012 23:42:14
+Skipping MultiAngle_Diffused_67_78.mat at 19-Oct-2012 23:42:14
+Starting MultiAngle_Diffused_67_79.mat at 19-Oct-2012 23:42:14 with 624753715 bytes in memory
+Finished MultiAngle_Diffused_51_65.mat at 19-Oct-2012 23:43:03 with 629440674 bytes in memory
+Skipping MultiAngle_Diffused_51_66.mat at 19-Oct-2012 23:43:03
+Skipping MultiAngle_Diffused_51_67.mat at 19-Oct-2012 23:43:03
+Skipping MultiAngle_Diffused_51_68.mat at 19-Oct-2012 23:43:03
+Skipping MultiAngle_Diffused_51_69.mat at 19-Oct-2012 23:43:03
+Starting MultiAngle_Diffused_51_70.mat at 19-Oct-2012 23:43:03 with 629440674 bytes in memory
+Finished MultiAngle_Diffused_30_60.mat at 19-Oct-2012 23:43:20 with 618245969 bytes in memory
+Starting MultiAngle_Diffused_30_61.mat at 19-Oct-2012 23:43:20 with 618245969 bytes in memory
+Finished MultiAngle_Diffused_1_73.mat at 19-Oct-2012 23:43:24 with 634701378 bytes in memory
+Starting MultiAngle_Diffused_1_74.mat at 19-Oct-2012 23:43:24 with 634701378 bytes in memory
+Finished MultiAngle_Diffused_41_79.mat at 19-Oct-2012 23:43:24 with 646415170 bytes in memory
+Skipping MultiAngle_Diffused_41_80.mat at 19-Oct-2012 23:43:24
+Starting MultiAngle_Diffused_41_81.mat at 19-Oct-2012 23:43:24 with 646415170 bytes in memory
+Finished MultiAngle_Diffused_67_79.mat at 19-Oct-2012 23:43:37 with 620038491 bytes in memory
+Skipping MultiAngle_Diffused_67_80.mat at 19-Oct-2012 23:43:37
+Starting MultiAngle_Diffused_67_81.mat at 19-Oct-2012 23:43:37 with 620038491 bytes in memory
+Finished MultiAngle_Diffused_5_93.mat at 19-Oct-2012 23:43:40 with 632931169 bytes in memory
+Skipping MultiAngle_Diffused_5_94.mat at 19-Oct-2012 23:43:40
+Starting MultiAngle_Diffused_5_95.mat at 19-Oct-2012 23:43:40 with 632931169 bytes in memory
+Finished MultiAngle_Diffused_51_70.mat at 19-Oct-2012 23:44:37 with 630521438 bytes in memory
+Starting MultiAngle_Diffused_51_71.mat at 19-Oct-2012 23:44:37 with 630521438 bytes in memory
+Finished MultiAngle_Diffused_30_61.mat at 19-Oct-2012 23:44:57 with 623938531 bytes in memory
+Starting MultiAngle_Diffused_30_62.mat at 19-Oct-2012 23:44:57 with 623938531 bytes in memory
+Finished MultiAngle_Diffused_41_81.mat at 19-Oct-2012 23:45:20 with 652375503 bytes in memory
+Skipping MultiAngle_Diffused_41_82.mat at 19-Oct-2012 23:45:20
+Starting MultiAngle_Diffused_41_83.mat at 19-Oct-2012 23:45:20 with 652375503 bytes in memory
+Finished MultiAngle_Diffused_67_81.mat at 19-Oct-2012 23:45:30 with 635530590 bytes in memory
+Starting MultiAngle_Diffused_67_82.mat at 19-Oct-2012 23:45:30 with 635530590 bytes in memory
+Finished MultiAngle_Diffused_51_71.mat at 19-Oct-2012 23:46:17 with 632632048 bytes in memory
+Skipping MultiAngle_Diffused_51_72.mat at 19-Oct-2012 23:46:17
+Starting MultiAngle_Diffused_51_73.mat at 19-Oct-2012 23:46:17 with 632632048 bytes in memory
+Finished MultiAngle_Diffused_30_62.mat at 19-Oct-2012 23:46:43 with 626283689 bytes in memory
+Starting MultiAngle_Diffused_30_63.mat at 19-Oct-2012 23:46:43 with 626283689 bytes in memory
+Finished MultiAngle_Diffused_67_82.mat at 19-Oct-2012 23:46:55 with 623228269 bytes in memory
+Skipping MultiAngle_Diffused_67_83.mat at 19-Oct-2012 23:46:55
+Starting MultiAngle_Diffused_67_84.mat at 19-Oct-2012 23:46:55 with 623228269 bytes in memory
+Finished MultiAngle_Diffused_5_95.mat at 19-Oct-2012 23:47:07 with 645193523 bytes in memory
+Skipping MultiAngle_Diffused_5_96.mat at 19-Oct-2012 23:47:08
+Skipping MultiAngle_Diffused_5_97.mat at 19-Oct-2012 23:47:08
+Starting MultiAngle_Diffused_5_98.mat at 19-Oct-2012 23:47:08 with 645193523 bytes in memory
+Finished MultiAngle_Diffused_51_73.mat at 19-Oct-2012 23:48:14 with 631552283 bytes in memory
+Starting MultiAngle_Diffused_51_74.mat at 19-Oct-2012 23:48:14 with 631552283 bytes in memory
+Finished MultiAngle_Diffused_41_83.mat at 19-Oct-2012 23:48:18 with 654172265 bytes in memory
+Skipping MultiAngle_Diffused_41_84.mat at 19-Oct-2012 23:48:18
+Skipping MultiAngle_Diffused_41_85.mat at 19-Oct-2012 23:48:18
+Starting MultiAngle_Diffused_41_86.mat at 19-Oct-2012 23:48:18 with 654172265 bytes in memory
+Finished MultiAngle_Diffused_5_98.mat at 19-Oct-2012 23:48:40 with 636730003 bytes in memory
+Skipping MultiAngle_Diffused_5_99.mat at 19-Oct-2012 23:48:40
+Starting MultiAngle_Diffused_5_100.mat at 19-Oct-2012 23:48:40 with 636730009 bytes in memory
+Finished MultiAngle_Diffused_30_63.mat at 19-Oct-2012 23:48:44 with 626850990 bytes in memory
+Starting MultiAngle_Diffused_30_64.mat at 19-Oct-2012 23:48:44 with 626850990 bytes in memory
+Finished MultiAngle_Diffused_51_74.mat at 19-Oct-2012 23:53:30 with 631476414 bytes in memory
+Skipping MultiAngle_Diffused_51_75.mat at 19-Oct-2012 23:53:30
+Skipping MultiAngle_Diffused_51_76.mat at 19-Oct-2012 23:53:30
+Starting MultiAngle_Diffused_51_77.mat at 19-Oct-2012 23:53:30 with 631476414 bytes in memory
+Finished MultiAngle_Diffused_41_86.mat at 19-Oct-2012 23:54:03 with 642053853 bytes in memory
+Skipping MultiAngle_Diffused_41_87.mat at 19-Oct-2012 23:54:04
+Skipping MultiAngle_Diffused_41_88.mat at 19-Oct-2012 23:54:04
+Starting MultiAngle_Diffused_41_89.mat at 19-Oct-2012 23:54:04 with 642053853 bytes in memory
+Finished MultiAngle_Diffused_30_64.mat at 19-Oct-2012 23:59:27 with 624743614 bytes in memory
+Skipping MultiAngle_Diffused_30_65.mat at 19-Oct-2012 23:59:27
+Starting MultiAngle_Diffused_30_66.mat at 19-Oct-2012 23:59:28 with 624743614 bytes in memory
+>> 
