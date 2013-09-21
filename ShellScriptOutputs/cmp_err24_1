@@ -1,0 +1,8 @@
+{Field reference for multiple structure elements that is followed by more
+reference blocks is an error.
+
+Error in CompileHT_01_02 (line 103)
+            z(n)    = fileload.HT{j}.cheat.x0(3) * -1e3;    %put in positive
+            microns. Not sure if 0 is pixels or not.
+} 
+

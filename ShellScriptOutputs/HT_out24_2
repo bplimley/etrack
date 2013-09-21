@@ -1,0 +1,584 @@
+Warning: No window system found.  Java option 'MWT' ignored
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2011 The MathWorks, Inc.
+                    R2011b (7.13.0.31) 64-bit (glnxa64)
+                                May 24, 2011
+
+ 
+To get started, type one of these: helpwin, helpdesk, or demo.
+For product information, visit www.mathworks.com.
+ 
+{Warning: Found 7 pre-existing parallel job(s) created by matlabpool that are
+running.
+You can use   'matlabpool close force local'    or create a configuration for
+the distcomp.localscheduler object and use   'matlabpool close force
+<configurationName>'    to remove all jobs created by matlabpool.} 
+{> In distcomp.interactiveclient.pRemoveOldJobs at 55
+  In distcomp.interactiveclient.start at 58
+  In MatlabpoolHelper>MatlabpoolHelper.doOpen at 250
+  In MatlabpoolHelper>MatlabpoolHelper.doMatlabpool at 102
+  In matlabpool at 131
+  In HTparallel at 81} 
+Starting matlabpool using the 'local' configuration ... connected to 10 labs.
+Found 1157 files in /global/scratch/bcplimley/multi_angle/DTbatch01/ at 21-May-2013 19:34:51
+Starting MultiAngle_HT_15_4.mat at 21-May-2013 19:34:59
+Starting MultiAngle_HT_27_9.mat at 21-May-2013 19:34:58
+Starting MultiAngle_HT_3_6.mat at 21-May-2013 19:34:59
+Starting MultiAngle_HT_51_3.mat at 21-May-2013 19:34:59
+Starting MultiAngle_HT_60_7.mat at 21-May-2013 19:34:59
+Starting MultiAngle_HT_65_10.mat at 21-May-2013 19:34:59
+Starting MultiAngle_HT_21_11.mat at 21-May-2013 19:34:59
+Starting MultiAngle_HT_34_1.mat at 21-May-2013 19:35:00
+Starting MultiAngle_HT_46_11.mat at 21-May-2013 19:34:59
+Starting MultiAngle_HT_56_8.mat at 21-May-2013 19:34:59
+Finished MultiAngle_HT_21_11.mat at 21-May-2013 20:09:23 with 697963639 bytes in memory
+Starting MultiAngle_HT_21_10.mat at 21-May-2013 20:09:28
+Finished MultiAngle_HT_56_8.mat at 21-May-2013 20:09:46 with 671729437 bytes in memory
+Starting MultiAngle_HT_56_7.mat at 21-May-2013 20:09:51
+Finished MultiAngle_HT_46_11.mat at 21-May-2013 20:10:18 with 685295416 bytes in memory
+Finished MultiAngle_HT_60_7.mat at 21-May-2013 20:10:21 with 699682084 bytes in memory
+Starting MultiAngle_HT_46_10.mat at 21-May-2013 20:10:23
+Starting MultiAngle_HT_60_6.mat at 21-May-2013 20:10:26
+Finished MultiAngle_HT_15_4.mat at 21-May-2013 20:10:40 with 679835258 bytes in memory
+Starting MultiAngle_HT_15_3.mat at 21-May-2013 20:10:46
+Finished MultiAngle_HT_65_10.mat at 21-May-2013 20:10:49 with 693951356 bytes in memory
+Starting MultiAngle_HT_65_1.mat at 21-May-2013 20:10:54
+Finished MultiAngle_HT_34_1.mat at 21-May-2013 20:11:01 with 691223494 bytes in memory
+Starting MultiAngle_HT_33_9.mat at 21-May-2013 20:11:06
+Finished MultiAngle_HT_51_3.mat at 21-May-2013 20:11:17 with 706030848 bytes in memory
+Starting MultiAngle_HT_51_12.mat at 21-May-2013 20:11:22
+Finished MultiAngle_HT_27_9.mat at 21-May-2013 20:11:26 with 689225872 bytes in memory
+Starting MultiAngle_HT_27_8.mat at 21-May-2013 20:11:32
+Finished MultiAngle_HT_3_6.mat at 21-May-2013 20:11:35 with 713754000 bytes in memory
+Starting MultiAngle_HT_3_5.mat at 21-May-2013 20:11:40
+Finished MultiAngle_HT_21_10.mat at 21-May-2013 20:44:41 with 695696055 bytes in memory
+Starting MultiAngle_HT_21_1.mat at 21-May-2013 20:44:46
+Finished MultiAngle_HT_60_6.mat at 21-May-2013 20:45:30 with 676702603 bytes in memory
+Starting MultiAngle_HT_60_5.mat at 21-May-2013 20:45:35
+Finished MultiAngle_HT_65_1.mat at 21-May-2013 20:46:00 with 683466014 bytes in memory
+Starting MultiAngle_HT_64_9.mat at 21-May-2013 20:46:05
+Finished MultiAngle_HT_46_10.mat at 21-May-2013 20:46:07 with 688830828 bytes in memory
+Starting MultiAngle_HT_46_1.mat at 21-May-2013 20:46:13
+Finished MultiAngle_HT_56_7.mat at 21-May-2013 20:46:23 with 692729997 bytes in memory
+Starting MultiAngle_HT_56_6.mat at 21-May-2013 20:46:29
+Finished MultiAngle_HT_27_8.mat at 21-May-2013 20:47:24 with 687685601 bytes in memory
+Starting MultiAngle_HT_27_7.mat at 21-May-2013 20:47:29
+Finished MultiAngle_HT_3_5.mat at 21-May-2013 20:47:35 with 683927488 bytes in memory
+Finished MultiAngle_HT_15_3.mat at 21-May-2013 20:47:39 with 694849748 bytes in memory
+Starting MultiAngle_HT_3_4.mat at 21-May-2013 20:47:40
+Starting MultiAngle_HT_15_2.mat at 21-May-2013 20:47:44
+Finished MultiAngle_HT_51_12.mat at 21-May-2013 20:47:46 with 688812217 bytes in memory
+Starting MultiAngle_HT_51_11.mat at 21-May-2013 20:47:51
+Finished MultiAngle_HT_33_9.mat at 21-May-2013 20:48:01 with 697049583 bytes in memory
+Starting MultiAngle_HT_33_8.mat at 21-May-2013 20:48:06
+Finished MultiAngle_HT_21_1.mat at 21-May-2013 21:20:53 with 696988857 bytes in memory
+Starting MultiAngle_HT_20_9.mat at 21-May-2013 21:20:58
+Finished MultiAngle_HT_60_5.mat at 21-May-2013 21:21:21 with 707772782 bytes in memory
+Starting MultiAngle_HT_60_4.mat at 21-May-2013 21:21:27
+Finished MultiAngle_HT_56_6.mat at 21-May-2013 21:22:17 with 716144276 bytes in memory
+Starting MultiAngle_HT_56_5.mat at 21-May-2013 21:22:22
+Finished MultiAngle_HT_64_9.mat at 21-May-2013 21:22:28 with 669838243 bytes in memory
+Starting MultiAngle_HT_64_8.mat at 21-May-2013 21:22:33
+Finished MultiAngle_HT_33_8.mat at 21-May-2013 21:23:18 with 691372357 bytes in memory
+Finished MultiAngle_HT_15_2.mat at 21-May-2013 21:23:24 with 711535675 bytes in memory
+Starting MultiAngle_HT_33_7.mat at 21-May-2013 21:23:25
+Finished MultiAngle_HT_3_4.mat at 21-May-2013 21:23:27 with 687886258 bytes in memory
+Starting MultiAngle_HT_15_12.mat at 21-May-2013 21:23:30
+Finished MultiAngle_HT_46_1.mat at 21-May-2013 21:23:31 with 700708253 bytes in memory
+Skipping MultiAngle_HT_3_3.mat at 21-May-2013 21:23:32
+Starting MultiAngle_HT_45_9.mat at 21-May-2013 21:23:36
+Skipping MultiAngle_HT_3_2.mat at 21-May-2013 21:23:37
+Skipping MultiAngle_HT_3_12.mat at 21-May-2013 21:23:42
+Skipping MultiAngle_HT_3_11_PH.mat at 21-May-2013 21:23:47
+Finished MultiAngle_HT_27_7.mat at 21-May-2013 21:23:52 with 712535585 bytes in memory
+Starting MultiAngle_HT_3_10.mat at 21-May-2013 21:23:52
+Starting MultiAngle_HT_27_6.mat at 21-May-2013 21:23:57
+Finished MultiAngle_HT_51_11.mat at 21-May-2013 21:24:06 with 665193140 bytes in memory
+Starting MultiAngle_HT_51_10.mat at 21-May-2013 21:24:11
+Finished MultiAngle_HT_20_9.mat at 21-May-2013 21:55:20 with 693931662 bytes in memory
+Starting MultiAngle_HT_20_8.mat at 21-May-2013 21:55:25
+Finished MultiAngle_HT_60_4.mat at 21-May-2013 21:57:56 with 689622768 bytes in memory
+Starting MultiAngle_HT_60_3.mat at 21-May-2013 21:58:02
+Finished MultiAngle_HT_64_8.mat at 21-May-2013 21:58:05 with 686773684 bytes in memory
+Starting MultiAngle_HT_64_7.mat at 21-May-2013 21:58:10
+Finished MultiAngle_HT_56_5.mat at 21-May-2013 21:58:15 with 681756030 bytes in memory
+Starting MultiAngle_HT_56_4.mat at 21-May-2013 21:58:20
+Finished MultiAngle_HT_27_6.mat at 21-May-2013 21:58:49 with 655696997 bytes in memory
+Starting MultiAngle_HT_27_5.mat at 21-May-2013 21:58:58
+Finished MultiAngle_HT_33_7.mat at 21-May-2013 21:59:08 with 685389155 bytes in memory
+Finished MultiAngle_HT_15_12.mat at 21-May-2013 21:59:12 with 704800369 bytes in memory
+Starting MultiAngle_HT_33_6.mat at 21-May-2013 21:59:13
+Starting MultiAngle_HT_15_11.mat at 21-May-2013 21:59:18
+Finished MultiAngle_HT_45_9.mat at 21-May-2013 21:59:40 with 678630567 bytes in memory
+Starting MultiAngle_HT_45_8.mat at 21-May-2013 21:59:45
+Finished MultiAngle_HT_51_10.mat at 21-May-2013 21:59:45 with 709805738 bytes in memory
+Starting MultiAngle_HT_51_1.mat at 21-May-2013 21:59:51
+Finished MultiAngle_HT_3_10.mat at 21-May-2013 22:00:20 with 691751181 bytes in memory
+Skipping MultiAngle_HT_3_1_PH.mat at 21-May-2013 22:00:25
+Starting MultiAngle_HT_39_9.mat at 21-May-2013 22:00:30
+Error: Reference to non-existent field 'pix2_5noise0'. on MultiAngle_DT_56_4.mat
+Starting MultiAngle_HT_56_3.mat at 21-May-2013 22:23:43
+Finished MultiAngle_HT_20_8.mat at 21-May-2013 22:30:39 with 672260274 bytes in memory
+Starting MultiAngle_HT_20_7.mat at 21-May-2013 22:37:09
+Finished MultiAngle_HT_33_6.mat at 21-May-2013 22:37:14 with 685591824 bytes in memory
+Finished MultiAngle_HT_45_8.mat at 21-May-2013 22:37:14 with 667916320 bytes in memory
+Finished MultiAngle_HT_64_7.mat at 21-May-2013 22:37:14 with 685278669 bytes in memory
+Finished MultiAngle_HT_15_11.mat at 21-May-2013 22:37:14 with 697130056 bytes in memory
+Finished MultiAngle_HT_27_5.mat at 21-May-2013 22:37:14 with 698163840 bytes in memory
+Finished MultiAngle_HT_39_9.mat at 21-May-2013 22:37:15 with 705606319 bytes in memory
+Finished MultiAngle_HT_51_1.mat at 21-May-2013 22:37:14 with 693574496 bytes in memory
+Finished MultiAngle_HT_60_3.mat at 21-May-2013 22:37:14 with 694398425 bytes in memory
+Starting MultiAngle_HT_33_5.mat at 21-May-2013 22:37:22
+Starting MultiAngle_HT_45_7.mat at 21-May-2013 22:37:22
+Starting MultiAngle_HT_15_10.mat at 21-May-2013 22:37:23
+Starting MultiAngle_HT_27_4.mat at 21-May-2013 22:37:23
+Starting MultiAngle_HT_39_8.mat at 21-May-2013 22:37:23
+Starting MultiAngle_HT_50_9.mat at 21-May-2013 22:37:23
+Starting MultiAngle_HT_60_2.mat at 21-May-2013 22:37:23
+Starting MultiAngle_HT_64_6.mat at 21-May-2013 22:37:23
+Finished MultiAngle_HT_56_3.mat at 21-May-2013 23:08:35 with 647559932 bytes in memory
+Starting MultiAngle_HT_56_2.mat at 21-May-2013 23:13:27
+Finished MultiAngle_HT_15_10.mat at 21-May-2013 23:13:32 with 690022620 bytes in memory
+Finished MultiAngle_HT_20_7.mat at 21-May-2013 23:13:32 with 684233541 bytes in memory
+Finished MultiAngle_HT_27_4.mat at 21-May-2013 23:13:32 with 694319255 bytes in memory
+Finished MultiAngle_HT_33_5.mat at 21-May-2013 23:13:31 with 664584928 bytes in memory
+Finished MultiAngle_HT_50_9.mat at 21-May-2013 23:13:32 with 700596770 bytes in memory
+Finished MultiAngle_HT_64_6.mat at 21-May-2013 23:13:32 with 703004868 bytes in memory
+Starting MultiAngle_HT_15_1.mat at 21-May-2013 23:13:37
+Starting MultiAngle_HT_20_5.mat at 21-May-2013 23:13:37
+Starting MultiAngle_HT_27_3.mat at 21-May-2013 23:13:37
+Starting MultiAngle_HT_33_4.mat at 21-May-2013 23:13:37
+Skipping MultiAngle_HT_64_5_PH.mat at 21-May-2013 23:13:37
+Starting MultiAngle_HT_50_8.mat at 21-May-2013 23:13:37
+Starting MultiAngle_HT_64_4.mat at 21-May-2013 23:13:42
+Finished MultiAngle_HT_45_7.mat at 21-May-2013 23:13:52 with 672773248 bytes in memory
+Starting MultiAngle_HT_45_6.mat at 21-May-2013 23:13:57
+Finished MultiAngle_HT_39_8.mat at 21-May-2013 23:14:00 with 723106597 bytes in memory
+Skipping MultiAngle_HT_39_7.mat at 21-May-2013 23:14:05
+Skipping MultiAngle_HT_39_6_PH.mat at 21-May-2013 23:14:09
+Starting MultiAngle_HT_39_5.mat at 21-May-2013 23:14:14
+Finished MultiAngle_HT_60_2.mat at 21-May-2013 23:14:36 with 689582864 bytes in memory
+Warning: No window system found.  Java option 'MWT' ignored
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2011 The MathWorks, Inc.
+                    R2011b (7.13.0.31) 64-bit (glnxa64)
+                                May 24, 2011
+
+ 
+To get started, type one of these: helpwin, helpdesk, or demo.
+For product information, visit www.mathworks.com.
+ 
+{Warning: Found 1 pre-existing parallel job(s) created by matlabpool that are
+running.
+You can use   'matlabpool close force local'    or create a configuration for
+the distcomp.localscheduler object and use   'matlabpool close force
+<configurationName>'    to remove all jobs created by matlabpool.} 
+{> In distcomp.interactiveclient.pRemoveOldJobs at 55
+  In distcomp.interactiveclient.start at 58
+  In MatlabpoolHelper>MatlabpoolHelper.doOpen at 250
+  In MatlabpoolHelper>MatlabpoolHelper.doMatlabpool at 102
+  In matlabpool at 131
+  In HTparallel at 81} 
+Starting matlabpool using the 'local' configuration ... connected to 10 labs.
+Found 1157 files in /global/scratch/bcplimley/multi_angle/DTbatch01/ at 21-May-2013 23:36:38
+Skipping MultiAngle_HT_15_4_PH.mat at 21-May-2013 23:36:44
+Skipping MultiAngle_HT_21_11_PH.mat at 21-May-2013 23:36:44
+Skipping MultiAngle_HT_27_9_PH.mat at 21-May-2013 23:36:44
+Skipping MultiAngle_HT_34_1_PH.mat at 21-May-2013 23:36:44
+Skipping MultiAngle_HT_3_6_PH.mat at 21-May-2013 23:36:45
+Skipping MultiAngle_HT_46_11_PH.mat at 21-May-2013 23:36:44
+Skipping MultiAngle_HT_51_3_PH.mat at 21-May-2013 23:36:44
+Skipping MultiAngle_HT_56_8_PH.mat at 21-May-2013 23:36:44
+Skipping MultiAngle_HT_60_7_PH.mat at 21-May-2013 23:36:44
+Skipping MultiAngle_HT_65_10_PH.mat at 21-May-2013 23:36:44
+Skipping MultiAngle_HT_15_3_PH.mat at 21-May-2013 23:36:49
+Skipping MultiAngle_HT_27_8_PH.mat at 21-May-2013 23:36:50
+Skipping MultiAngle_HT_33_9_PH.mat at 21-May-2013 23:36:50
+Skipping MultiAngle_HT_46_10_PH.mat at 21-May-2013 23:36:49
+Skipping MultiAngle_HT_51_12_PH.mat at 21-May-2013 23:36:49
+Skipping MultiAngle_HT_56_7_PH.mat at 21-May-2013 23:36:50
+Skipping MultiAngle_HT_65_1_PH.mat at 21-May-2013 23:36:50
+Skipping MultiAngle_HT_21_10_PH.mat at 21-May-2013 23:36:50
+Skipping MultiAngle_HT_3_5_PH.mat at 21-May-2013 23:36:50
+Skipping MultiAngle_HT_60_6_PH.mat at 21-May-2013 23:36:51
+Starting MultiAngle_HT_46_1.mat at 21-May-2013 23:36:55
+Starting MultiAngle_HT_51_11.mat at 21-May-2013 23:36:55
+Starting MultiAngle_HT_21_1.mat at 21-May-2013 23:36:55
+Starting MultiAngle_HT_27_7.mat at 21-May-2013 23:36:55
+Starting MultiAngle_HT_64_9.mat at 21-May-2013 23:36:55
+Starting MultiAngle_HT_15_2.mat at 21-May-2013 23:36:56
+Starting MultiAngle_HT_33_8.mat at 21-May-2013 23:36:56
+Starting MultiAngle_HT_3_4.mat at 21-May-2013 23:36:56
+Starting MultiAngle_HT_56_6.mat at 21-May-2013 23:36:56
+Starting MultiAngle_HT_60_5.mat at 21-May-2013 23:36:57
+Finished MultiAngle_HT_56_6.mat at 22-May-2013 01:01:11 with 1026.8397 MB in memory
+Starting MultiAngle_HT_56_5.mat at 22-May-2013 01:01:16
+Finished MultiAngle_HT_33_8.mat at 22-May-2013 01:01:34 with 988.0116 MB in memory
+Starting MultiAngle_HT_33_7.mat at 22-May-2013 01:01:40
+Finished MultiAngle_HT_51_11.mat at 22-May-2013 01:03:04 with 956.2605 MB in memory
+Finished MultiAngle_HT_15_2.mat at 22-May-2013 01:03:06 with 1010.7214 MB in memory
+Skipping MultiAngle_HT_51_10_PH.mat at 22-May-2013 01:03:09
+Starting MultiAngle_HT_15_12.mat at 22-May-2013 01:03:12
+Starting MultiAngle_HT_51_1.mat at 22-May-2013 01:03:15
+Finished MultiAngle_HT_64_9.mat at 22-May-2013 01:03:29 with 962.9364 MB in memory
+Finished MultiAngle_HT_21_1.mat at 22-May-2013 01:03:30 with 995.712 MB in memory
+Skipping MultiAngle_HT_64_8_PH.mat at 22-May-2013 01:03:34
+Starting MultiAngle_HT_20_9.mat at 22-May-2013 01:03:36
+Starting MultiAngle_HT_64_7.mat at 22-May-2013 01:03:40
+Finished MultiAngle_HT_3_4.mat at 22-May-2013 01:03:53 with 983.7064 MB in memory
+Skipping MultiAngle_HT_3_3_PH.mat at 22-May-2013 01:03:58
+Starting MultiAngle_HT_3_2.mat at 22-May-2013 01:04:04
+Finished MultiAngle_HT_60_5.mat at 22-May-2013 01:04:11 with 1015.1442 MB in memory
+Skipping MultiAngle_HT_60_4_PH.mat at 22-May-2013 01:04:17
+Starting MultiAngle_HT_60_3.mat at 22-May-2013 01:04:26
+Finished MultiAngle_HT_46_1.mat at 22-May-2013 01:05:35 with 1004.2101 MB in memory
+Finished MultiAngle_HT_27_7.mat at 22-May-2013 01:05:40 with 1017.519 MB in memory
+Skipping MultiAngle_HT_45_9_PH.mat at 22-May-2013 01:05:41
+Skipping MultiAngle_HT_27_6_PH.mat at 22-May-2013 01:05:46
+Starting MultiAngle_HT_45_8.mat at 22-May-2013 01:05:48
+Starting MultiAngle_HT_27_5.mat at 22-May-2013 01:05:51
+Finished MultiAngle_HT_33_7.mat at 22-May-2013 02:26:08 with 983.0619 MB in memory
+Skipping MultiAngle_HT_33_6_PH.mat at 22-May-2013 02:26:14
+Starting MultiAngle_HT_33_5.mat at 22-May-2013 02:26:19
+Finished MultiAngle_HT_51_1.mat at 22-May-2013 02:28:01 with 986.6974 MB in memory
+Finished MultiAngle_HT_56_5.mat at 22-May-2013 02:28:06 with 978.0237 MB in memory
+Starting MultiAngle_HT_50_9.mat at 22-May-2013 02:28:07
+Skipping MultiAngle_HT_56_4_PH.mat at 22-May-2013 02:28:11
+Skipping MultiAngle_HT_56_3_PH.mat at 22-May-2013 02:28:17
+Starting MultiAngle_HT_56_2.mat at 22-May-2013 02:28:22
+Finished MultiAngle_HT_20_9.mat at 22-May-2013 02:28:46 with 992.4945 MB in memory
+Skipping MultiAngle_HT_20_8.mat at 22-May-2013 02:28:51
+Skipping MultiAngle_HT_20_7_PH.mat at 22-May-2013 02:28:57
+Finished MultiAngle_HT_15_12.mat at 22-May-2013 02:29:00 with 1007.654 MB in memory
+Starting MultiAngle_HT_20_5.mat at 22-May-2013 02:29:02
+Skipping MultiAngle_HT_15_11_PH.mat at 22-May-2013 02:29:07
+Starting MultiAngle_HT_15_10.mat at 22-May-2013 02:29:13
+Finished MultiAngle_HT_64_7.mat at 22-May-2013 02:30:24 with 979.4482 MB in memory
+Skipping MultiAngle_HT_64_6_PH.mat at 22-May-2013 02:30:30
+Starting MultiAngle_HT_64_5.mat at 22-May-2013 02:30:36
+Finished MultiAngle_HT_3_2.mat at 22-May-2013 02:31:22 with 971.9428 MB in memory
+Finished MultiAngle_HT_27_5.mat at 22-May-2013 02:31:27 with 997.1223 MB in memory
+Skipping MultiAngle_HT_3_12_PH.mat at 22-May-2013 02:31:27
+Starting MultiAngle_HT_3_11.mat at 22-May-2013 02:31:32
+Skipping MultiAngle_HT_27_4_PH.mat at 22-May-2013 02:31:33
+Starting MultiAngle_HT_27_3.mat at 22-May-2013 02:31:38
+Finished MultiAngle_HT_60_3.mat at 22-May-2013 02:32:15 with 992.8156 MB in memory
+Skipping MultiAngle_HT_60_2_PH.mat at 22-May-2013 02:32:21
+Starting MultiAngle_HT_60_12.mat at 22-May-2013 02:32:26
+Finished MultiAngle_HT_45_8.mat at 22-May-2013 02:32:27 with 957.0011 MB in memory
+Skipping MultiAngle_HT_45_7_PH.mat at 22-May-2013 02:32:32
+Starting MultiAngle_HT_45_6.mat at 22-May-2013 02:32:39
+Finished MultiAngle_HT_56_2.mat at 22-May-2013 03:52:33 with 967.7767 MB in memory
+Skipping MultiAngle_HT_56_12_PH.mat at 22-May-2013 03:52:40
+Starting MultiAngle_HT_56_11.mat at 22-May-2013 03:52:45
+Finished MultiAngle_HT_33_5.mat at 22-May-2013 03:53:06 with 949.063 MB in memory
+Skipping MultiAngle_HT_33_4_PH.mat at 22-May-2013 03:53:12
+Starting MultiAngle_HT_33_3.mat at 22-May-2013 03:53:17
+Finished MultiAngle_HT_15_10.mat at 22-May-2013 03:54:25 with 989.4179 MB in memory
+Skipping MultiAngle_HT_15_1_PH.mat at 22-May-2013 03:54:31
+Finished MultiAngle_HT_50_9.mat at 22-May-2013 03:54:32 with 994.3569 MB in memory
+Starting MultiAngle_HT_14_9.mat at 22-May-2013 03:54:37
+Skipping MultiAngle_HT_50_8_PH.mat at 22-May-2013 03:54:38
+Starting MultiAngle_HT_50_7.mat at 22-May-2013 03:54:44
+Finished MultiAngle_HT_27_3.mat at 22-May-2013 03:55:22 with 952.9919 MB in memory
+Skipping MultiAngle_HT_27_2_PH.mat at 22-May-2013 03:55:27
+Starting MultiAngle_HT_27_12.mat at 22-May-2013 03:55:33
+Finished MultiAngle_HT_20_5.mat at 22-May-2013 03:55:56 with 987.3246 MB in memory
+Skipping MultiAngle_HT_20_4_PH.mat at 22-May-2013 03:56:02
+Starting MultiAngle_HT_20_3.mat at 22-May-2013 03:56:07
+Finished MultiAngle_HT_64_5.mat at 22-May-2013 03:57:45 with 1005.1713 MB in memory
+Skipping MultiAngle_HT_64_4_PH.mat at 22-May-2013 03:57:50
+Starting MultiAngle_HT_64_3.mat at 22-May-2013 03:57:56
+Finished MultiAngle_HT_45_6.mat at 22-May-2013 03:58:01 with 999.2006 MB in memory
+Skipping MultiAngle_HT_45_5_PH.mat at 22-May-2013 03:58:07
+Starting MultiAngle_HT_45_4.mat at 22-May-2013 03:58:13
+Finished MultiAngle_HT_60_12.mat at 22-May-2013 03:59:38 with 1007.8602 MB in memory
+Skipping MultiAngle_HT_60_11_PH.mat at 22-May-2013 03:59:44
+Starting MultiAngle_HT_60_10.mat at 22-May-2013 03:59:49
+Finished MultiAngle_HT_3_11.mat at 22-May-2013 04:00:34 with 982.1459 MB in memory
+Skipping MultiAngle_HT_3_10_PH.mat at 22-May-2013 04:00:39
+Starting MultiAngle_HT_3_1.mat at 22-May-2013 04:00:45
+Finished MultiAngle_HT_56_11.mat at 22-May-2013 05:18:43 with 967.5507 MB in memory
+Skipping MultiAngle_HT_56_10_PH.mat at 22-May-2013 05:18:50
+Starting MultiAngle_HT_56_1.mat at 22-May-2013 05:18:55
+Finished MultiAngle_HT_33_3.mat at 22-May-2013 05:18:57 with 963.5917 MB in memory
+Skipping MultiAngle_HT_33_12_PH.mat at 22-May-2013 05:19:03
+Starting MultiAngle_HT_33_11.mat at 22-May-2013 05:19:08
+Finished MultiAngle_HT_50_7.mat at 22-May-2013 05:20:38 with 991.2531 MB in memory
+Skipping MultiAngle_HT_50_6_PH.mat at 22-May-2013 05:20:44
+Skipping MultiAngle_HT_50_5_PH.mat at 22-May-2013 05:20:50
+Starting MultiAngle_HT_50_4.mat at 22-May-2013 05:20:55
+Finished MultiAngle_HT_14_9.mat at 22-May-2013 05:21:35 with 1021.7269 MB in memory
+Skipping MultiAngle_HT_14_8_PH.mat at 22-May-2013 05:21:41
+Starting MultiAngle_HT_14_7.mat at 22-May-2013 05:21:47
+Finished MultiAngle_HT_27_12.mat at 22-May-2013 05:21:57 with 990.0456 MB in memory
+Skipping MultiAngle_HT_27_11_PH.mat at 22-May-2013 05:22:03
+Starting MultiAngle_HT_27_10.mat at 22-May-2013 05:22:08
+Finished MultiAngle_HT_45_4.mat at 22-May-2013 05:25:10 with 964.8033 MB in memory
+Finished MultiAngle_HT_64_3.mat at 22-May-2013 05:25:14 with 1000.1346 MB in memory
+Skipping MultiAngle_HT_45_3_PH.mat at 22-May-2013 05:25:17
+Skipping MultiAngle_HT_64_2_PH.mat at 22-May-2013 05:25:21
+Starting MultiAngle_HT_45_2.mat at 22-May-2013 05:25:22
+Starting MultiAngle_HT_64_12.mat at 22-May-2013 05:25:22
+Finished MultiAngle_HT_20_3.mat at 22-May-2013 05:25:30 with 976.0974 MB in memory
+Skipping MultiAngle_HT_20_2_PH.mat at 22-May-2013 05:25:36
+Starting MultiAngle_HT_20_12.mat at 22-May-2013 05:25:36
+Finished MultiAngle_HT_20_12.mat at 22-May-2013 05:26:04 with 4.3001 MB in memory
+Starting MultiAngle_HT_20_11.mat at 22-May-2013 05:26:09
+Finished MultiAngle_HT_60_10.mat at 22-May-2013 05:29:04 with 993.3685 MB in memory
+Skipping MultiAngle_HT_60_1_PH.mat at 22-May-2013 05:29:09
+Starting MultiAngle_HT_5_9.mat at 22-May-2013 05:29:15
+Finished MultiAngle_HT_3_1.mat at 22-May-2013 05:30:43 with 1042.9272 MB in memory
+Skipping MultiAngle_HT_39_9_PH.mat at 22-May-2013 05:30:49
+Starting MultiAngle_HT_39_8.mat at 22-May-2013 05:30:54
+Finished MultiAngle_HT_64_12.mat at 22-May-2013 05:44:03 with 203.5313 MB in memory
+Starting MultiAngle_HT_64_10.mat at 22-May-2013 05:44:08
+Finished MultiAngle_HT_56_1.mat at 22-May-2013 06:44:43 with 971.9486 MB in memory
+Skipping MultiAngle_HT_55_9_PH.mat at 22-May-2013 06:44:49
+Starting MultiAngle_HT_55_8.mat at 22-May-2013 06:44:54
+Finished MultiAngle_HT_33_11.mat at 22-May-2013 06:45:31 with 988.9787 MB in memory
+Skipping MultiAngle_HT_33_10_PH.mat at 22-May-2013 06:45:37
+Starting MultiAngle_HT_33_1.mat at 22-May-2013 06:45:42
+Finished MultiAngle_HT_50_4.mat at 22-May-2013 06:47:23 with 967.8407 MB in memory
+Skipping MultiAngle_HT_50_3_PH.mat at 22-May-2013 06:47:29
+Starting MultiAngle_HT_50_2.mat at 22-May-2013 06:47:34
+Finished MultiAngle_HT_14_7.mat at 22-May-2013 06:47:51 with 988.2803 MB in memory
+Skipping MultiAngle_HT_14_6.mat at 22-May-2013 06:48:07
+Skipping MultiAngle_HT_14_5_PH.mat at 22-May-2013 06:48:14
+Starting MultiAngle_HT_14_4.mat at 22-May-2013 06:48:19
+Finished MultiAngle_HT_27_10.mat at 22-May-2013 06:50:01 with 1010.9899 MB in memory
+Skipping MultiAngle_HT_27_1_PH.mat at 22-May-2013 06:50:07
+Starting MultiAngle_HT_26_9.mat at 22-May-2013 06:50:12
+Finished MultiAngle_HT_20_11.mat at 22-May-2013 06:52:26 with 1019.7886 MB in memory
+Skipping MultiAngle_HT_20_10_PH.mat at 22-May-2013 06:52:32
+Starting MultiAngle_HT_20_1.mat at 22-May-2013 06:52:37
+Finished MultiAngle_HT_45_2.mat at 22-May-2013 06:55:56 with 1019.2836 MB in memory
+Skipping MultiAngle_HT_45_12_PH.mat at 22-May-2013 06:56:02
+Starting MultiAngle_HT_45_11.mat at 22-May-2013 06:56:07
+Finished MultiAngle_HT_5_9.mat at 22-May-2013 06:56:48 with 988.8844 MB in memory
+Skipping MultiAngle_HT_5_8_PH.mat at 22-May-2013 06:56:54
+Starting MultiAngle_HT_5_7.mat at 22-May-2013 06:56:59
+Finished MultiAngle_HT_39_8.mat at 22-May-2013 06:59:09 with 1028.7594 MB in memory
+Skipping MultiAngle_HT_39_7_PH.mat at 22-May-2013 06:59:14
+Starting MultiAngle_HT_39_6.mat at 22-May-2013 06:59:20
+Finished MultiAngle_HT_64_10.mat at 22-May-2013 07:07:50 with 990.1594 MB in memory
+Skipping MultiAngle_HT_64_1_PH.mat at 22-May-2013 07:07:56
+Starting MultiAngle_HT_63_9.mat at 22-May-2013 07:08:02
+Finished MultiAngle_HT_55_8.mat at 22-May-2013 08:12:46 with 1008.7838 MB in memory
+Skipping MultiAngle_HT_55_7_PH.mat at 22-May-2013 08:12:52
+Starting MultiAngle_HT_55_6.mat at 22-May-2013 08:12:57
+Finished MultiAngle_HT_14_4.mat at 22-May-2013 08:13:03 with 977.248 MB in memory
+Starting MultiAngle_HT_14_3.mat at 22-May-2013 08:13:08
+Finished MultiAngle_HT_33_1.mat at 22-May-2013 08:14:11 with 1024.015 MB in memory
+Skipping MultiAngle_HT_32_9_PH.mat at 22-May-2013 08:14:17
+Starting MultiAngle_HT_32_8.mat at 22-May-2013 08:14:22
+Finished MultiAngle_HT_50_2.mat at 22-May-2013 08:15:53 with 985.5384 MB in memory
+Skipping MultiAngle_HT_50_11_PH.mat at 22-May-2013 08:15:58
+Starting MultiAngle_HT_50_10.mat at 22-May-2013 08:16:04
+Finished MultiAngle_HT_26_9.mat at 22-May-2013 08:17:01 with 971.4922 MB in memory
+Skipping MultiAngle_HT_26_8_PH.mat at 22-May-2013 08:17:07
+Starting MultiAngle_HT_26_7.mat at 22-May-2013 08:17:12
+Finished MultiAngle_HT_20_1.mat at 22-May-2013 08:18:21 with 960.2947 MB in memory
+Skipping MultiAngle_HT_1_9_PH.mat at 22-May-2013 08:18:27
+Starting MultiAngle_HT_1_8.mat at 22-May-2013 08:18:32
+Finished MultiAngle_HT_5_7.mat at 22-May-2013 08:23:33 with 1012.4539 MB in memory
+Skipping MultiAngle_HT_5_6_PH.mat at 22-May-2013 08:23:39
+Starting MultiAngle_HT_5_5.mat at 22-May-2013 08:23:44
+Finished MultiAngle_HT_45_11.mat at 22-May-2013 08:24:02 with 997.5173 MB in memory
+Skipping MultiAngle_HT_45_10_PH.mat at 22-May-2013 08:24:08
+Starting MultiAngle_HT_45_1.mat at 22-May-2013 08:24:14
+Finished MultiAngle_HT_39_6.mat at 22-May-2013 08:25:59 with 997.4058 MB in memory
+Skipping MultiAngle_HT_39_5_PH.mat at 22-May-2013 08:26:05
+Starting MultiAngle_HT_39_4.mat at 22-May-2013 08:26:11
+Finished MultiAngle_HT_63_9.mat at 22-May-2013 08:33:34 with 994.7487 MB in memory
+Skipping MultiAngle_HT_63_8_PH.mat at 22-May-2013 08:33:40
+Starting MultiAngle_HT_63_7.mat at 22-May-2013 08:33:46
+Finished MultiAngle_HT_55_6.mat at 22-May-2013 09:38:51 with 978.1468 MB in memory
+Skipping MultiAngle_HT_55_5_PH.mat at 22-May-2013 09:38:58
+Starting MultiAngle_HT_55_4.mat at 22-May-2013 09:39:03
+Finished MultiAngle_HT_14_3.mat at 22-May-2013 09:39:46 with 993.5282 MB in memory
+Skipping MultiAngle_HT_14_2_PH.mat at 22-May-2013 09:39:52
+Starting MultiAngle_HT_14_12.mat at 22-May-2013 09:39:57
+Finished MultiAngle_HT_32_8.mat at 22-May-2013 09:42:03 with 1004.6117 MB in memory
+Skipping MultiAngle_HT_32_6_PH.mat at 22-May-2013 09:42:09
+Starting MultiAngle_HT_32_5.mat at 22-May-2013 09:42:14
+Finished MultiAngle_HT_50_10.mat at 22-May-2013 09:42:57 with 974.5036 MB in memory
+Skipping MultiAngle_HT_50_1_PH.mat at 22-May-2013 09:43:03
+Starting MultiAngle_HT_4_9.mat at 22-May-2013 09:43:08
+Finished MultiAngle_HT_26_7.mat at 22-May-2013 09:45:24 with 999.1433 MB in memory
+Skipping MultiAngle_HT_26_6_PH.mat at 22-May-2013 09:45:29
+Starting MultiAngle_HT_26_5.mat at 22-May-2013 09:45:35
+Finished MultiAngle_HT_1_8.mat at 22-May-2013 09:46:45 with 956.22 MB in memory
+Skipping MultiAngle_HT_1_7_PH.mat at 22-May-2013 09:46:51
+Starting MultiAngle_HT_1_6.mat at 22-May-2013 09:46:56
+Finished MultiAngle_HT_45_1.mat at 22-May-2013 09:48:49 with 959.2776 MB in memory
+Skipping MultiAngle_HT_44_9_PH.mat at 22-May-2013 09:48:55
+Starting MultiAngle_HT_44_8.mat at 22-May-2013 09:49:00
+Finished MultiAngle_HT_39_4.mat at 22-May-2013 09:50:37 with 959.2923 MB in memory
+Skipping MultiAngle_HT_39_3_PH.mat at 22-May-2013 09:50:42
+Starting MultiAngle_HT_39_2.mat at 22-May-2013 09:50:48
+Finished MultiAngle_HT_5_5.mat at 22-May-2013 09:53:10 with 991.1434 MB in memory
+Skipping MultiAngle_HT_5_4_PH.mat at 22-May-2013 09:53:15
+Starting MultiAngle_HT_5_3.mat at 22-May-2013 09:53:21
+Finished MultiAngle_HT_63_7.mat at 22-May-2013 10:01:19 with 1019.1922 MB in memory
+Skipping MultiAngle_HT_63_6_PH.mat at 22-May-2013 10:01:25
+Starting MultiAngle_HT_63_5.mat at 22-May-2013 10:01:30
+Finished MultiAngle_HT_55_4.mat at 22-May-2013 11:03:11 with 982.6499 MB in memory
+Skipping MultiAngle_HT_55_3_PH.mat at 22-May-2013 11:03:18
+Starting MultiAngle_HT_55_2.mat at 22-May-2013 11:03:23
+Finished MultiAngle_HT_14_12.mat at 22-May-2013 11:06:53 with 998.7927 MB in memory
+Skipping MultiAngle_HT_14_11.mat at 22-May-2013 11:06:58
+Skipping MultiAngle_HT_14_10_PH.mat at 22-May-2013 11:07:04
+Starting MultiAngle_HT_14_1.mat at 22-May-2013 11:07:09
+Finished MultiAngle_HT_32_5.mat at 22-May-2013 11:08:42 with 970.1734 MB in memory
+Skipping MultiAngle_HT_32_4_PH.mat at 22-May-2013 11:08:48
+Starting MultiAngle_HT_32_3.mat at 22-May-2013 11:08:56
+Finished MultiAngle_HT_4_9.mat at 22-May-2013 11:10:12 with 954.0442 MB in memory
+Skipping MultiAngle_HT_4_8_PH.mat at 22-May-2013 11:10:18
+Starting MultiAngle_HT_4_7.mat at 22-May-2013 11:10:24
+Finished MultiAngle_HT_1_6.mat at 22-May-2013 11:12:56 with 974.0787 MB in memory
+Skipping MultiAngle_HT_1_4_PH.mat at 22-May-2013 11:13:02
+Starting MultiAngle_HT_1_3.mat at 22-May-2013 11:13:07
+Finished MultiAngle_HT_26_5.mat at 22-May-2013 11:13:32 with 1006.7624 MB in memory
+Skipping MultiAngle_HT_26_4_PH.mat at 22-May-2013 11:13:37
+Starting MultiAngle_HT_26_3.mat at 22-May-2013 11:13:43
+Finished MultiAngle_HT_44_8.mat at 22-May-2013 11:14:50 with 961.3957 MB in memory
+Skipping MultiAngle_HT_44_7_PH.mat at 22-May-2013 11:14:55
+Starting MultiAngle_HT_44_6.mat at 22-May-2013 11:15:01
+Finished MultiAngle_HT_39_2.mat at 22-May-2013 11:16:14 with 975.7063 MB in memory
+Skipping MultiAngle_HT_39_12_PH.mat at 22-May-2013 11:16:19
+Starting MultiAngle_HT_39_11.mat at 22-May-2013 11:16:25
+Finished MultiAngle_HT_5_3.mat at 22-May-2013 11:18:30 with 960.6485 MB in memory
+Skipping MultiAngle_HT_5_11_PH.mat at 22-May-2013 11:18:35
+Starting MultiAngle_HT_5_10.mat at 22-May-2013 11:18:41
+Finished MultiAngle_HT_63_5.mat at 22-May-2013 11:24:48 with 968.2992 MB in memory
+Skipping MultiAngle_HT_63_4_PH.mat at 22-May-2013 11:24:54
+Starting MultiAngle_HT_63_3.mat at 22-May-2013 11:25:00
+Error: Reference to non-existent field 'pix2_5noise0'. on MultiAngle_DT_32_3.mat
+Skipping MultiAngle_HT_32_2_PH.mat at 22-May-2013 11:50:34
+Skipping MultiAngle_HT_32_12.mat at 22-May-2013 11:50:36
+Skipping MultiAngle_HT_32_11_PH.mat at 22-May-2013 11:50:41
+Starting MultiAngle_HT_32_1.mat at 22-May-2013 11:50:52
+Finished MultiAngle_HT_14_1.mat at 22-May-2013 12:30:08 with 968.8825 MB in memory
+Skipping MultiAngle_HT_13_9_PH.mat at 22-May-2013 12:30:14
+Starting MultiAngle_HT_13_8.mat at 22-May-2013 12:30:19
+Finished MultiAngle_HT_55_2.mat at 22-May-2013 12:31:09 with 996.6569 MB in memory
+Skipping MultiAngle_HT_55_12_PH.mat at 22-May-2013 12:31:15
+Starting MultiAngle_HT_55_11.mat at 22-May-2013 12:31:20
+Finished MultiAngle_HT_4_7.mat at 22-May-2013 12:34:45 with 986.6013 MB in memory
+Skipping MultiAngle_HT_4_6_PH.mat at 22-May-2013 12:34:52
+Starting MultiAngle_HT_4_5.mat at 22-May-2013 12:34:58
+Finished MultiAngle_HT_1_3.mat at 22-May-2013 12:37:34 with 952.78 MB in memory
+Skipping MultiAngle_HT_1_2_PH.mat at 22-May-2013 12:37:39
+Starting MultiAngle_HT_1_12.mat at 22-May-2013 12:37:45
+Finished MultiAngle_HT_44_6.mat at 22-May-2013 12:39:39 with 988.8102 MB in memory
+Skipping MultiAngle_HT_44_5_PH.mat at 22-May-2013 12:39:46
+Starting MultiAngle_HT_44_4.mat at 22-May-2013 12:39:52
+Finished MultiAngle_HT_39_11.mat at 22-May-2013 12:41:23 with 980.5246 MB in memory
+Skipping MultiAngle_HT_39_10_PH.mat at 22-May-2013 12:41:29
+Starting MultiAngle_HT_39_1.mat at 22-May-2013 12:41:34
+Finished MultiAngle_HT_26_3.mat at 22-May-2013 12:44:00 with 1026.322 MB in memory
+Skipping MultiAngle_HT_26_2_PH.mat at 22-May-2013 12:44:06
+Starting MultiAngle_HT_26_12.mat at 22-May-2013 12:44:13
+Finished MultiAngle_HT_5_10.mat at 22-May-2013 12:47:48 with 995.244 MB in memory
+Skipping MultiAngle_HT_5_1_PH.mat at 22-May-2013 12:47:53
+Starting MultiAngle_HT_59_9.mat at 22-May-2013 12:47:58
+Finished MultiAngle_HT_63_3.mat at 22-May-2013 12:53:26 with 1010.6579 MB in memory
+Skipping MultiAngle_HT_63_2_PH.mat at 22-May-2013 12:53:32
+Starting MultiAngle_HT_63_12.mat at 22-May-2013 12:53:38
+Error: Reference to non-existent field 'pix2_5noise0'. on MultiAngle_DT_63_12.mat
+Starting MultiAngle_HT_63_11.mat at 22-May-2013 13:15:53
+Finished MultiAngle_HT_32_1.mat at 22-May-2013 13:20:24 with 1014.3904 MB in memory
+Skipping MultiAngle_HT_31_9_PH.mat at 22-May-2013 13:20:29
+Starting MultiAngle_HT_31_8.mat at 22-May-2013 13:20:35
+Finished MultiAngle_HT_55_11.mat at 22-May-2013 13:52:27 with 967.645 MB in memory
+Skipping MultiAngle_HT_55_10_PH.mat at 22-May-2013 13:52:33
+Starting MultiAngle_HT_55_1.mat at 22-May-2013 13:52:39
+Finished MultiAngle_HT_13_8.mat at 22-May-2013 13:56:36 with 954.8524 MB in memory
+Skipping MultiAngle_HT_13_7_PH.mat at 22-May-2013 13:56:42
+Starting MultiAngle_HT_13_6.mat at 22-May-2013 13:56:48
+Finished MultiAngle_HT_4_5.mat at 22-May-2013 13:59:21 with 995.7135 MB in memory
+Skipping MultiAngle_HT_4_4_PH.mat at 22-May-2013 13:59:27
+Starting MultiAngle_HT_4_3.mat at 22-May-2013 13:59:33
+Finished MultiAngle_HT_1_12.mat at 22-May-2013 14:04:40 with 967.6518 MB in memory
+Skipping MultiAngle_HT_1_11_PH.mat at 22-May-2013 14:04:45
+Starting MultiAngle_HT_1_10.mat at 22-May-2013 14:04:51
+Finished MultiAngle_HT_44_4.mat at 22-May-2013 14:06:22 with 995.0962 MB in memory
+Skipping MultiAngle_HT_44_3_PH.mat at 22-May-2013 14:06:27
+Starting MultiAngle_HT_44_2.mat at 22-May-2013 14:06:33
+Finished MultiAngle_HT_39_1.mat at 22-May-2013 14:06:36 with 960.7659 MB in memory
+Skipping MultiAngle_HT_38_9_PH.mat at 22-May-2013 14:06:42
+Starting MultiAngle_HT_38_8.mat at 22-May-2013 14:06:47
+Finished MultiAngle_HT_26_12.mat at 22-May-2013 14:09:16 with 957.664 MB in memory
+Skipping MultiAngle_HT_26_11_PH.mat at 22-May-2013 14:09:22
+Starting MultiAngle_HT_26_10.mat at 22-May-2013 14:09:27
+Finished MultiAngle_HT_59_9.mat at 22-May-2013 14:14:42 with 951.4083 MB in memory
+Skipping MultiAngle_HT_59_8_PH.mat at 22-May-2013 14:14:48
+Starting MultiAngle_HT_59_7.mat at 22-May-2013 14:14:53
+Finished MultiAngle_HT_63_11.mat at 22-May-2013 14:45:10 with 1013.1892 MB in memory
+Skipping MultiAngle_HT_63_10_PH.mat at 22-May-2013 14:45:17
+Starting MultiAngle_HT_63_1.mat at 22-May-2013 14:45:22
+Finished MultiAngle_HT_31_8.mat at 22-May-2013 14:47:06 with 955.2411 MB in memory
+Skipping MultiAngle_HT_31_7_PH.mat at 22-May-2013 14:47:11
+Starting MultiAngle_HT_31_6.mat at 22-May-2013 14:47:17
+Finished MultiAngle_HT_55_1.mat at 22-May-2013 15:19:25 with 1000.7233 MB in memory
+Skipping MultiAngle_HT_54_9_PH.mat at 22-May-2013 15:19:30
+Starting MultiAngle_HT_54_8.mat at 22-May-2013 15:19:36
+Finished MultiAngle_HT_4_3.mat at 22-May-2013 15:23:22 with 988.603 MB in memory
+Skipping MultiAngle_HT_4_2_PH.mat at 22-May-2013 15:23:29
+Starting MultiAngle_HT_4_12.mat at 22-May-2013 15:23:34
+Finished MultiAngle_HT_13_6.mat at 22-May-2013 15:25:03 with 987.6242 MB in memory
+Skipping MultiAngle_HT_13_5_PH.mat at 22-May-2013 15:25:09
+Starting MultiAngle_HT_13_4.mat at 22-May-2013 15:25:14
+Finished MultiAngle_HT_1_10.mat at 22-May-2013 15:31:04 with 1020.6182 MB in memory
+Skipping MultiAngle_HT_1_1_PH.mat at 22-May-2013 15:31:10
+Starting MultiAngle_HT_19_9.mat at 22-May-2013 15:31:15
+Finished MultiAngle_HT_44_2.mat at 22-May-2013 15:34:24 with 966.6574 MB in memory
+Skipping MultiAngle_HT_44_11_PH.mat at 22-May-2013 15:34:30
+Starting MultiAngle_HT_44_10.mat at 22-May-2013 15:34:36
+Finished MultiAngle_HT_38_8.mat at 22-May-2013 15:35:08 with 1031.6955 MB in memory
+Skipping MultiAngle_HT_38_7_PH.mat at 22-May-2013 15:35:13
+Starting MultiAngle_HT_38_6.mat at 22-May-2013 15:35:19
+Finished MultiAngle_HT_26_10.mat at 22-May-2013 15:36:25 with 976.7268 MB in memory
+Skipping MultiAngle_HT_26_1_PH.mat at 22-May-2013 15:36:31
+Starting MultiAngle_HT_25_9.mat at 22-May-2013 15:36:36
+Finished MultiAngle_HT_59_7.mat at 22-May-2013 15:41:44 with 976.2068 MB in memory
+Skipping MultiAngle_HT_59_6_PH.mat at 22-May-2013 15:41:50
+Starting MultiAngle_HT_59_5.mat at 22-May-2013 15:41:55
+Finished MultiAngle_HT_63_1.mat at 22-May-2013 16:25:28 with 961.0206 MB in memory
+Finished MultiAngle_HT_31_6.mat at 22-May-2013 16:25:28 with 1000.0948 MB in memory
+Starting MultiAngle_HT_31_5.mat at 22-May-2013 16:25:34
+Skipping MultiAngle_HT_62_9_PH.mat at 22-May-2013 16:25:34
+Starting MultiAngle_HT_62_8.mat at 22-May-2013 16:25:43
+Finished MultiAngle_HT_54_8.mat at 22-May-2013 16:45:25 with 948.4459 MB in memory
+Skipping MultiAngle_HT_54_7_PH.mat at 22-May-2013 16:46:21
+Starting MultiAngle_HT_54_6.mat at 22-May-2013 16:46:31
+Finished MultiAngle_HT_4_12.mat at 22-May-2013 16:49:38 with 958.0541 MB in memory
+Skipping MultiAngle_HT_4_11_PH.mat at 22-May-2013 16:49:44
+Starting MultiAngle_HT_4_10.mat at 22-May-2013 16:57:02
+Finished MultiAngle_HT_13_4.mat at 22-May-2013 16:57:20 with 967.7147 MB in memory
+Skipping MultiAngle_HT_13_3_PH.mat at 22-May-2013 16:57:26
+Starting MultiAngle_HT_13_2.mat at 22-May-2013 17:08:50
+Finished MultiAngle_HT_19_9.mat at 22-May-2013 17:09:30 with 1011.9337 MB in memory
+Finished MultiAngle_HT_25_9.mat at 22-May-2013 17:09:29 with 989.9342 MB in memory
+Finished MultiAngle_HT_38_6.mat at 22-May-2013 17:09:34 with 969.8051 MB in memory
+Finished MultiAngle_HT_44_10.mat at 22-May-2013 17:09:35 with 996.2506 MB in memory
+Skipping MultiAngle_HT_25_8_PH.mat at 22-May-2013 17:11:45
+Skipping MultiAngle_HT_38_5_PH.mat at 22-May-2013 17:11:45
+Starting MultiAngle_HT_19_8.mat at 22-May-2013 17:11:45
+Skipping MultiAngle_HT_44_1_PH.mat at 22-May-2013 17:11:46
+Starting MultiAngle_HT_25_7.mat at 22-May-2013 17:11:51
+Starting MultiAngle_HT_38_4.mat at 22-May-2013 17:11:51
+Starting MultiAngle_HT_43_9.mat at 22-May-2013 17:11:53
+Finished MultiAngle_HT_59_5.mat at 22-May-2013 17:11:58 with 993.6743 MB in memory
+Skipping MultiAngle_HT_59_4_PH.mat at 22-May-2013 17:12:04
+Starting MultiAngle_HT_59_3.mat at 22-May-2013 17:12:10
+Finished MultiAngle_HT_62_8.mat at 22-May-2013 17:50:20 with 998.7371 MB in memory
+Skipping MultiAngle_HT_62_7_PH.mat at 22-May-2013 17:50:26
+Starting MultiAngle_HT_62_6.mat at 22-May-2013 17:50:31
+Finished MultiAngle_HT_31_5.mat at 22-May-2013 17:53:40 with 996.3967 MB in memory
+Skipping MultiAngle_HT_31_4_PH.mat at 22-May-2013 17:53:46
+Skipping MultiAngle_HT_31_3_PH.mat at 22-May-2013 17:53:52
+Starting MultiAngle_HT_31_2.mat at 22-May-2013 17:53:58

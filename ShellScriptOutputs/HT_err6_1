@@ -1,7 +1,0 @@
-{Error using matlabpool (line 126)
-Unable to checkout a license for the Parallel Computing Toolbox
-
-Error in HT_parallel1_6 (line 45)
-matlabpool local 10;
-} 
-

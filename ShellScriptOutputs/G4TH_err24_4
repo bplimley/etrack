@@ -1,0 +1,64 @@
+qsub: submit error (Job rejected by all possible destinations (check syntax, queue resources, ...) MSG=can not route job 972159.perceus-00.scs.lbl.gov)
+Error communicating with perceus-00.scs.lbl.gov(10.0.0.10)
+qsub: cannot connect to server perceus-00.scs.lbl.gov (errno=110) Connection timed out
+{Error using parallel_function (line 598)
+The session that parfor is using has shut down
+
+Error in G4THparallel (line 85)
+    parfor i = 1:length(flist)
+} 
+{The client lost connection to lab 4.
+This  might be due to network problems, or the interactive matlabpool job might
+have errored. This is causing: java.io.EOFException: EOF while reading from
+PlainConnection{fSocketChannel=java.nio.channels.SocketChannel[closed],
+fRemoteInstance=[Process: lab 4]}
+} 
+{Error using parallel_function (line 598)
+The session that parfor is using has shut down
+
+Error in G4THparallel (line 85)
+    parfor i = 1:length(flist)
+} 
+{The client lost connection to lab 1.
+This  might be due to network problems, or the interactive matlabpool job might
+have errored. This is causing: java.io.EOFException: EOF while reading from
+PlainConnection{fSocketChannel=java.nio.channels.SocketChannel[closed],
+fRemoteInstance=[Process: lab 1]}
+} 
+{Error using parallel_function (line 598)
+The session that parfor is using has shut down
+
+Error in G4THparallel (line 85)
+    parfor i = 1:length(flist)
+} 
+{The client lost connection to lab 2.
+This  might be due to network problems, or the interactive matlabpool job might
+have errored. This is causing: java.io.EOFException: EOF while reading from
+PlainConnection{fSocketChannel=java.nio.channels.SocketChannel[closed],
+fRemoteInstance=[Process: lab 2]}
+} 
+{Error using parallel_function (line 598)
+The session that parfor is using has shut down
+
+Error in G4THparallel (line 85)
+    parfor i = 1:length(flist)
+} 
+{The client lost connection to lab 3.
+This  might be due to network problems, or the interactive matlabpool job might
+have errored. This is causing: java.io.EOFException: EOF while reading from
+PlainConnection{fSocketChannel=java.nio.channels.SocketChannel[closed],
+fRemoteInstance=[Process: lab 3]}
+} 
+{Error using parallel_function (line 598)
+The session that parfor is using has shut down
+
+Error in G4THparallel (line 85)
+    parfor i = 1:length(flist)
+} 
+{The client lost connection to lab 4.
+This  might be due to network problems, or the interactive matlabpool job might
+have errored. This is causing: java.io.EOFException: EOF while reading from
+PlainConnection{fSocketChannel=java.nio.channels.SocketChannel[closed],
+fRemoteInstance=[Process: lab 4]}
+} 
+

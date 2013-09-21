@@ -1,7 +1,0 @@
-{Error using matlabpool (line 126)
-Unable to checkout a license for the Parallel Computing Toolbox
-
-Error in MultiAngleDiffuseScript_parallel1 (line 35)
-matlabpool local 8;
-} 
-
