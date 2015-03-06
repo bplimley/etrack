@@ -132,6 +132,7 @@ def run_directory(filepath, filepattern, savepattern, phpattern, save_subdir='',
     ind_str_length = 5
     flist = glob.glob(os.path.join(filepath,filepattern))
     # glob output includes path
+    flist.sort()
 
     print "Found", str(len(flist)), "files in",
     print os.path.join(filepath,filepattern), "at", time.ctime()
@@ -157,4 +158,4 @@ def run_directory(filepath, filepattern, savepattern, phpattern, save_subdir='',
         run_file(f,savefull)
         # remove placeholder
         os.remove(phfull)
-        print "Done with", f, "at", time.ctime()
+        print "Finished", f, "at", time.ctime()
