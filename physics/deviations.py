@@ -144,7 +144,7 @@ def run_directory(filepath, filepattern, savepattern, phpattern, save_subdir='',
         phfull = os.path.join(filepath,ph_subdir,ph)
         savename = construct_filename(savepattern, ind, ind_str_length)
         savefull = os.path.join(filepath,save_subdir,savename)
-        if os.path.isfile(savefull):
+        if os.path.isfile(savefull + '.npz'):
             continue
         if os.path.isfile(phfull):
             continue
