@@ -142,6 +142,10 @@ def run_directory(filepath, filepattern, savepattern, phpattern, save_subdir='',
         ind = get_file_index(fname)
         ph = construct_filename(phpattern, ind, ind_str_length)
         phfull = os.path.join(filepath,ph_subdir,ph)
+        savename = construct_filename(savepattern, ind, ind_str_length)
+        savefull = os.path.join(filepath,save_subdir,savename)
+        if os.path.isfile(savefull):
+            continue
         if os.path.isfile(phfull):
             continue
         # double check... try to avoid threads duplicating work
@@ -153,8 +157,6 @@ def run_directory(filepath, filepattern, savepattern, phpattern, save_subdir='',
         with open(phfull,'w') as phid:
             pass
         # operate on file
-        savename = construct_filename(savepattern, ind, ind_str_length)
-        savefull = os.path.join(filepath,save_subdir,savename)
         run_file(f,savefull)
         # remove placeholder
         os.remove(phfull)
