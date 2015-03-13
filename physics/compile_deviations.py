@@ -56,8 +56,8 @@ for d in dirlist:
     print 'Set up ' + str(n_batches) + ' batches in ' + d + ' at ' + time.ctime()
 
     for b in xrange(n_batches):
-        batchname = '_'.join('devbatch',str(b).zfill(4),
-                             fname[batch_start[b]][10:])
+        batchname = '_'.join(('devbatch',str(b).zfill(4),
+                              fname[batch_start[b]][10:]))
         batchfull = os.path.join(d,batchname)
         if os.path.isfile(batchfull): # already has *.npz suffix
             continue
@@ -75,9 +75,10 @@ for d in dirlist:
             # data['deviation_deg']
             if warn_switch and len(data['energy_keV']
                                   ) != elements_per_file:
-                raise RuntimeError(
-                    'Found '+str(len(data['energy_keV']))+
-                    ' elements per file, expected '+str(elements_per_file))
+                raise RuntimeError(' '.join((
+                    'Found',str(len(data['energy_keV'])),
+                    'elements per file, expected',str(elements_per_file)
+                        )))
             ind2 = ind + elements_per_file
             # b_energy_keV[ind:ind2] = data['energy_keV'].astype(int)
             b_energy_keV[ind:ind2] = get_energy_list()
@@ -96,9 +97,9 @@ for d in dirlist:
 
         unique_energies = np.unique(b_energy_keV)
         if len(unique_energies) != 30:
-            raise RuntimeError(
-                'Found '+str(len(unique_energies))+
-                ' energies instead of 30!')
+            raise RuntimeError(' '.join((
+                'Found',str(len(unique_energies)),
+                'energies instead of 30!')))
         bE_distance_mm = [[] for u in unique_energies]
         bE_deviation_deg = [[] for u in unique_energies]
 
@@ -120,9 +121,9 @@ for d in dirlist:
                 ind4 = ind3 + list_of_lengths[i]
                 bE_distance_mm[ind3:ind4] = list_of_distance[i]
                 bE_deviation_deg[ind3:ind4] = list_of_deviation[i]
-            bE_name = '_'.join('devbatch',str(b).zfill(4),
-                               'E',str(u).zfill(4),
-                               fname[batch_start[b]][10:])
+            bE_name = '_'.join(('devbatch',str(b).zfill(4),
+                                'E',str(u).zfill(4),
+                                fname[batch_start[b]][10:]))
             bE_full = os.path.join(d,bE_name)
             np.savez(bE_full,
                      energy_of_this_file = u,
