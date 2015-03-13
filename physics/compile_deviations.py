@@ -44,9 +44,10 @@ for d in dirlist:
         if os.path.isfile(batchfull): # already has *.npz suffix
             continue
 
-        b_energy_keV = np.zeros(batch_size*elements_per_file)
-        b_distance_mm = np.zeros(batch_size*elements_per_file)
-        b_deviation_deg = np.zeros(batch_size*elements_per_file)
+        datasize = xrange(batch_size*elements_per_file)
+        b_energy_keV = [0 for i in datasize]
+        b_distance_mm = [[] for i in datasize]
+        b_deviation_deg = [[] for i in datasize]
         ind = 0
 
         for f in flist[batch_start[b]:batch_stop[b]]:
