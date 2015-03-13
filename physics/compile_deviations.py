@@ -40,7 +40,7 @@ for d in dirlist:
     print 'Set up ' + str(n_batches) + ' batches in ' + d + ' at ' + time.ctime()
 
     for b in xrange(n_batches):
-        batchname = 'devbatch_' + str(b).zfill(4) + fname[batch_start[b]][10:]
+        batchname = 'devbatch_' + str(b).zfill(4) + '_' + fname[batch_start[b]][10:]
         batchfull = os.path.join(d,batchname)
         if os.path.isfile(batchfull): # already has *.npz suffix
             continue
