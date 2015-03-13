@@ -33,6 +33,9 @@ batch_size = 100
 elements_per_file = 300
 warn_switch = True
 
+skip_flag = False
+# True allows it to skip files that were already completed
+
 baseDir = '/global/scratch/bcplimley/electrons/parameterTests/'
 dirform = 'e_Si*'
 dirlist = glob.glob(os.path.join(baseDir,dirform))
@@ -59,7 +62,8 @@ for d in dirlist:
         batchname = '_'.join(('devbatch',str(b).zfill(4),
                               fname[batch_start[b]][10:]))
         batchfull = os.path.join(d,batchname)
-        if os.path.isfile(batchfull): # already has *.npz suffix
+        if os.path.isfile(batchfull) and skip_flag:
+            # already has *.npz suffix
             continue
 
         datasize = xrange(batch_size*elements_per_file)
@@ -105,13 +109,13 @@ for d in dirlist:
 
         for u in unique_energies:
             list_of_lengths = [len(b_distance_mm[i])
-                               for i in xrange(b_distance_mm)
+                               for i in xrange(len(b_distance_mm))
                                if b_energy_keV[i]==u]
             list_of_distance = [b_distance_mm[i]
-                                for i in xrange(b_distance_mm)
+                                for i in xrange(len(b_distance_mm))
                                 if b_energy_keV[i]==u]
             list_of_deviation = [b_deviation_deg[i]
-                                 for i in xrange(b_distance_mm)
+                                 for i in xrange(len(b_distance_mm))
                                  if b_energy_keV[i]==u]
             total_length = sum(list_of_lengths)
             bE_distance_mm = np.zeros(total_length)
