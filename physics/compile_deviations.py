@@ -14,7 +14,7 @@ import sys
 import time
 import datetime
 
-def get_energy_list:
+def get_energy_list():
     # calculating energy from geant4 is unreliable.
     # so use this list instead.
     energy_list1 = [20,30,40,50,60,70,80,90,100,
