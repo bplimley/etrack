@@ -121,7 +121,7 @@ for d in dirlist:
             bE_distance_mm = np.zeros(total_length)
             bE_deviation_deg = np.zeros(total_length)
             ind3 = 0
-            for i in xrange(list_of_lengths):
+            for i in xrange(len(list_of_lengths)):
                 ind4 = ind3 + list_of_lengths[i]
                 bE_distance_mm[ind3:ind4] = list_of_distance[i]
                 bE_deviation_deg[ind3:ind4] = list_of_deviation[i]
