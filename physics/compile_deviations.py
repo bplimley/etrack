@@ -31,7 +31,7 @@ for d in dirlist:
     flist = glob.glob(os.path.join(d,filepattern))
 
     # build batches
-    n_batches = np.ceil(len(flist) / np.float(batch_size))
+    n_batches = int(np.ceil(len(flist) / np.float(batch_size)))
     batch_start = range(0,len(flist),batch_size)
     batch_stop = range(batch_size,len(flist),batch_size)
     batch_stop.append(len(flist))
