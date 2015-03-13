@@ -29,6 +29,7 @@ for d in dirlist:
 
     filepattern = 'dev_*.npz'
     flist = glob.glob(os.path.join(d,filepattern))
+    fname = [os.path.basename(f) for f in flist]
 
     # build batches
     n_batches = int(np.ceil(len(flist) / np.float(batch_size)))
@@ -39,7 +40,7 @@ for d in dirlist:
     print 'Set up ' + str(n_batches) + ' batches in ' + d + ' at ' + time.ctime()
 
     for b in xrange(n_batches):
-        batchname = 'devbatch_' + str(b).zfill(4) + flist[batch_start[b]][10:]
+        batchname = 'devbatch_' + str(b).zfill(4) + fname[batch_start[b]][10:]
         batchfull = os.path.join(d,batchname)
         if os.path.isfile(batchfull): # already has *.npz suffix
             continue
