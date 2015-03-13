@@ -55,7 +55,7 @@ for d in dirlist:
             # data['radial_distance_mm']
             # data['deviation_deg']
             if warn_switch and len(data['energy_keV']
-                                  ) is not elements_per_file:
+                                  ) != elements_per_file:
                 raise RuntimeError(
                     'Incorrect number of elements per file!')
             ind2 = ind + elements_per_file
