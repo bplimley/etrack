@@ -50,19 +50,19 @@ for d in dirlist:
         ind = 0
 
         for f in flist[batch_start[b]:batch_stop[b]]:
-            with open(f) as data:
-                # data['energy_keV']
-                # data['radial_distance_mm']
-                # data['deviation_deg']
-                if warn_switch and len(data['energy_keV']
-                                      ) is not elements_per_file:
-                    raise RuntimeError(
-                        'Incorrect number of elements per file!')
-                ind2 = ind + elements_per_file
-                b_energy_keV[ind:ind2] = data['energy_keV']
-                b_distance_mm[ind:ind2] = data['radial_distance_mm']
-                b_deviation_deg[ind:ind2] = data['deviation_deg']
-                ind = ind2
+            data = np.load(f)
+            # data['energy_keV']
+            # data['radial_distance_mm']
+            # data['deviation_deg']
+            if warn_switch and len(data['energy_keV']
+                                  ) is not elements_per_file:
+                raise RuntimeError(
+                    'Incorrect number of elements per file!')
+            ind2 = ind + elements_per_file
+            b_energy_keV[ind:ind2] = data['energy_keV']
+            b_distance_mm[ind:ind2] = data['radial_distance_mm']
+            b_deviation_deg[ind:ind2] = data['deviation_deg']
+            ind = ind2
 
         np.savez(batchfull,
                  b_energy_keV=b_energy_keV,
