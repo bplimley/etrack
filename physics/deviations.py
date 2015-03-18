@@ -159,5 +159,6 @@ def run_directory(filepath, filepattern, savepattern, phpattern, save_subdir='',
         # operate on file
         run_file(f,savefull)
         # remove placeholder
-        os.remove(phfull)
+        if os.path.isfile(phfull):
+            os.remove(phfull)
         print "Finished", f, "at", time.ctime()
