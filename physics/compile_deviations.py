@@ -49,6 +49,7 @@ for d in dirlist:
 
     filepattern = 'dev_*.npz'
     flist = glob.glob(os.path.join(d,filepattern))
+    flist.sort()
     fname = [os.path.basename(f) for f in flist]
 
     # build batches
