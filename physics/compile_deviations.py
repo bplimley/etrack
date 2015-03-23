@@ -66,6 +66,7 @@ for d in dirlist:
             # already has *.npz suffix
             continue
 
+        batch_skip = False
         datasize = xrange(batch_size*elements_per_file)
         b_energy_keV = [0 for i in datasize]
         b_distance_mm = [[] for i in datasize]
@@ -79,10 +80,16 @@ for d in dirlist:
             # data['deviation_deg']
             if warn_switch and len(data['energy_keV']
                                   ) != elements_per_file:
-                raise RuntimeError(' '.join((
+                # raise RuntimeError(' '.join((
+                #     'Found',str(len(data['energy_keV'])),
+                #     'elements per file, expected',str(elements_per_file)
+                #         )))
+                print ' '.join((
                     'Found',str(len(data['energy_keV'])),
-                    'elements per file, expected',str(elements_per_file)
-                        )))
+                    'elements per file, expected',str(elements_per_file)))
+                batch_skip = True
+                break
+
             ind2 = ind + elements_per_file
             # b_energy_keV[ind:ind2] = data['energy_keV'].astype(int)
             b_energy_keV[ind:ind2] = get_energy_list()
@@ -90,6 +97,9 @@ for d in dirlist:
             b_deviation_deg[ind:ind2] = data['deviation_deg']
             ind = ind2
 
+        if batch_skip:
+            # next batch
+            continue
         np.savez(batchfull,
                  b_energy_keV=b_energy_keV,
                  b_distance_mm=b_distance_mm,
