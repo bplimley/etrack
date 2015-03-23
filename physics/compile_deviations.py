@@ -5,7 +5,8 @@
 # before: every Mat_* file has a dev_*.npz file with range and angles
 # after: make a file for every 100 input files, organized by energy
 
-# energy_keV is rounded to an INTEGER. because I have weird float values.
+# energy_keV is assumed from the geant4 run energies, because
+#   the initial energy is not given reliably in the data table.
 
 import numpy as np
 import glob
