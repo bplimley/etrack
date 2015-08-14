@@ -1,5 +1,5 @@
 # tabata.py
-# 
+#
 
 import numpy    # for log
 
@@ -116,7 +116,7 @@ def extrapolatedRange(Ekev,Z,A,I_EV,density,ref="2002"):
     density = float(density)
     refMode = getRefMode(ref)
     deviationFunction = getDeviationFunction(refMode)
-    
+
     E_Mev = Ekev / 1e3
     csdaRangeGCm2 = csdaRange(E_Mev, Z, A, I_EV)
     csdaRangeCm = csdaRangeGCm2 / density
@@ -132,7 +132,7 @@ def csdaRange(E_Mev, Z, A, I_EV):
     ELECTRON_REST_ENERGY_MEV = 0.510999
     I = I_EV / (1e6*ELECTRON_REST_ENERGY_MEV)
     t0 = E_Mev / ELECTRON_REST_ENERGY_MEV
-    
+
     # Tabata 1996a Table 2
     #   0th element is a placeholder, so that the others line up
     #   with the subscripts in Tabata's paper
@@ -167,7 +167,7 @@ def csdaRange(E_Mev, Z, A, I_EV):
     B = numpy.log((t0 / (I + c[7]*t0))**2) + numpy.log(1 + t0/2)
     # Tabata 1996a equation 11
     csdaRangeGCm2 = c[1] / B * (
-        numpy.log(1+c[2]*t0**c[3])/c[2] - 
+        numpy.log(1+c[2]*t0**c[3])/c[2] -
         c[4]*t0**c[5]/(1 + c[6]*t0)
         )
     return csdaRangeGCm2
@@ -175,3 +175,54 @@ def csdaRange(E_Mev, Z, A, I_EV):
 def extrapolatedRangeSi(E_kev,ref="2002"):
     E_kev = float(E_kev)
     return extrapolatedRange(E_kev, 14, 28.085, 171, 2.329, ref)
+
+def NIST_webbook_Xe_density(pressure_bar):
+    """
+    Lookup table of NIST WebBook's density listing for xenon at various
+    pressures.
+
+    Input:
+      pressure_bar
+
+    Output:
+      density_gcm3
+    """
+
+    density_table = {
+        '0.5':0.0013950,
+        '1':0.0027907,
+        '1.5':0.0041873,
+        '2':0.0055846,
+        '2.5':0.0069827,
+        '3':0.0083816,
+        '3.5':0.0097812,
+        '4':0.011182,
+        '4.5':0.012583,
+        '5':0.013985,
+        '10':0.028046,
+        '15':0.042183,
+        '20':0.056394,
+        '25':0.070677,
+        '30':0.085029}
+
+    if str(pressure_bar) in density_table:
+        return density_table[str(pressure_bar)]
+    else:
+        return np.nan
+
+def extrapolated_range_xe(E_kev,p_bar,ref="2002"):
+    E_kev = float(E_kev)
+    density = NIST_webbook_Xe_density(p_bar)
+    Z = 54
+    A = 131.29
+    I_EV = 482  # NIST ESTAR
+    return extrapolatedRange(E_kev, Z, A, I_EV, density, ref)
+
+
+def extrapolated_range_136xe(E_kev,p_bar,ref="2002"):
+    E_kev = float(E_kev)
+    density = NIST_webbook_Xe_density(p_bar)
+    Z = 54
+    A = 136     # enriched xenon assumed from NEXT simulations
+    I_EV = 482  # NIST ESTAR
+    return extrapolatedRange(E_kev, Z, A, I_EV, density, ref)
