@@ -1,0 +1,17 @@
+# .gitignore for python directory
+
+# ignore data files used locally for testing
+
+*.dat
+*.npz
+*.fits
+*.hdf5
+*.npy
+*.json
+
+# ignore doc files
+*.pdf
+*.html
+
+# ignore compiled python files
+*.pyc
