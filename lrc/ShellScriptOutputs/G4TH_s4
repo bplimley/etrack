@@ -1,0 +1,1262 @@
+
+We have been experiencing intermittent problems with our scheduling
+system.  We are working with the vendor to get them resolved as soon
+as possible.
+
+Please continue to use the system as normally as you can.  Feel free
+to follow our Google+ page and/or Twitter feed at the URLs below to
+keep up-to-date on the work as it progresses:
+
+  LBNL HPCS on Google+:  https://plus.google.com/b/114440445109302693549/
+  @LBNLHPCS on Twitter:  https://twitter.com/LBNLHPCS
+
+
+973746.perceus-00.scs.lbl.gov
+Warning: No window system found.  Java option 'MWT' ignored
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2011 The MathWorks, Inc.
+                    R2011b (7.13.0.31) 64-bit (glnxa64)
+                                May 24, 2011
+
+ 
+To get started, type one of these: helpwin, helpdesk, or demo.
+For product information, visit www.mathworks.com.
+ 
+Found 100 files in /global/scratch/bcplimley/multi_angle/G4batch01/ at 09-Jan-2013 17:52:17
+Skipping MultiAngle_DT_100_1_PH.mat at 09-Jan-2013 17:52:21
+Skipping MultiAngle_DT_100_2.mat at 09-Jan-2013 17:52:21
+Skipping MultiAngle_DT_100_3.mat at 09-Jan-2013 17:52:21
+Skipping MultiAngle_DT_100_4.mat at 09-Jan-2013 17:52:21
+Skipping MultiAngle_DT_100_5.mat at 09-Jan-2013 17:52:21
+Skipping MultiAngle_DT_100_6.mat at 09-Jan-2013 17:52:21
+Skipping MultiAngle_DT_100_7.mat at 09-Jan-2013 17:52:21
+Skipping MultiAngle_DT_100_8.mat at 09-Jan-2013 17:52:21
+Skipping MultiAngle_DT_100_9.mat at 09-Jan-2013 17:52:21
+Skipping MultiAngle_DT_100_10.mat at 09-Jan-2013 17:52:21
+Skipping MultiAngle_DT_100_11.mat at 09-Jan-2013 17:52:21
+Skipping MultiAngle_DT_100_12.mat at 09-Jan-2013 17:52:21
+Skipping MultiAngle_DT_10_1_PH.mat at 09-Jan-2013 17:52:25
+Skipping MultiAngle_DT_10_2.mat at 09-Jan-2013 17:52:25
+Skipping MultiAngle_DT_10_3.mat at 09-Jan-2013 17:52:25
+Skipping MultiAngle_DT_10_4.mat at 09-Jan-2013 17:52:25
+Skipping MultiAngle_DT_10_5.mat at 09-Jan-2013 17:52:25
+Skipping MultiAngle_DT_10_6.mat at 09-Jan-2013 17:52:25
+Skipping MultiAngle_DT_10_7.mat at 09-Jan-2013 17:52:25
+Skipping MultiAngle_DT_10_8.mat at 09-Jan-2013 17:52:25
+Skipping MultiAngle_DT_10_9.mat at 09-Jan-2013 17:52:25
+Skipping MultiAngle_DT_10_10.mat at 09-Jan-2013 17:52:25
+Skipping MultiAngle_DT_10_11.mat at 09-Jan-2013 17:52:25
+Skipping MultiAngle_DT_10_12.mat at 09-Jan-2013 17:52:25
+Skipping MultiAngle_DT_11_1.mat at 09-Jan-2013 17:52:30
+Skipping MultiAngle_DT_11_2.mat at 09-Jan-2013 17:52:30
+Skipping MultiAngle_DT_11_3_PH.mat at 09-Jan-2013 17:52:30
+Skipping MultiAngle_DT_11_4.mat at 09-Jan-2013 17:52:30
+Skipping MultiAngle_DT_11_5.mat at 09-Jan-2013 17:52:30
+Skipping MultiAngle_DT_11_6.mat at 09-Jan-2013 17:52:30
+Skipping MultiAngle_DT_11_7.mat at 09-Jan-2013 17:52:30
+Skipping MultiAngle_DT_11_8.mat at 09-Jan-2013 17:52:30
+Skipping MultiAngle_DT_11_9.mat at 09-Jan-2013 17:52:30
+Skipping MultiAngle_DT_11_10.mat at 09-Jan-2013 17:52:30
+Skipping MultiAngle_DT_11_11.mat at 09-Jan-2013 17:52:30
+Skipping MultiAngle_DT_11_12.mat at 09-Jan-2013 17:52:30
+Skipping MultiAngle_DT_12_1_PH.mat at 09-Jan-2013 17:52:34
+Skipping MultiAngle_DT_12_2_PH.mat at 09-Jan-2013 17:52:34
+Starting MultiAngle_DT_12_3.mat at 09-Jan-2013 17:52:34 with 686948979 bytes in memory
+Finished MultiAngle_DT_12_3.mat at 10-Jan-2013 01:13:45 with 1006597378 bytes in memory
+Skipping MultiAngle_DT_12_4.mat at 10-Jan-2013 01:13:45
+Skipping MultiAngle_DT_12_5.mat at 10-Jan-2013 01:13:45
+Skipping MultiAngle_DT_12_6.mat at 10-Jan-2013 01:13:45
+Skipping MultiAngle_DT_12_7.mat at 10-Jan-2013 01:13:45
+Skipping MultiAngle_DT_12_8.mat at 10-Jan-2013 01:13:45
+Skipping MultiAngle_DT_12_9.mat at 10-Jan-2013 01:13:45
+Skipping MultiAngle_DT_12_10_PH.mat at 10-Jan-2013 01:13:45
+Starting MultiAngle_DT_12_11.mat at 10-Jan-2013 01:13:45 with 1006597384 bytes in memory
+Finished MultiAngle_DT_12_11.mat at 10-Jan-2013 01:46:23 with 994062228 bytes in memory
+Skipping MultiAngle_DT_12_12.mat at 10-Jan-2013 01:46:23
+Skipping MultiAngle_DT_13_1_PH.mat at 10-Jan-2013 01:46:27
+Starting MultiAngle_DT_13_2.mat at 10-Jan-2013 01:46:27 with 664764875 bytes in memory
+Finished MultiAngle_DT_13_2.mat at 10-Jan-2013 02:12:45 with 968870830 bytes in memory
+Starting MultiAngle_DT_13_3.mat at 10-Jan-2013 02:12:45 with 968870830 bytes in memory
+Finished MultiAngle_DT_13_3.mat at 10-Jan-2013 02:46:59 with 975627223 bytes in memory
+Skipping MultiAngle_DT_13_4_PH.mat at 10-Jan-2013 02:46:59
+Starting MultiAngle_DT_13_5.mat at 10-Jan-2013 02:46:59 with 975627223 bytes in memory
+Finished MultiAngle_DT_13_5.mat at 10-Jan-2013 03:12:49 with 975875214 bytes in memory
+Skipping MultiAngle_DT_13_6_PH.mat at 10-Jan-2013 03:12:49
+Starting MultiAngle_DT_13_7.mat at 10-Jan-2013 03:12:59 with 975875214 bytes in memory
+Finished MultiAngle_DT_13_7.mat at 10-Jan-2013 03:41:11 with 972569579 bytes in memory
+Skipping MultiAngle_DT_13_8_PH.mat at 10-Jan-2013 03:41:12
+Skipping MultiAngle_DT_13_9_PH.mat at 10-Jan-2013 03:41:12
+Starting MultiAngle_DT_13_10.mat at 10-Jan-2013 03:41:12 with 972569585 bytes in memory
+Finished MultiAngle_DT_13_10.mat at 10-Jan-2013 04:41:02 with 962451341 bytes in memory
+Skipping MultiAngle_DT_13_11.mat at 10-Jan-2013 04:41:02
+Skipping MultiAngle_DT_14_1_PH.mat at 10-Jan-2013 04:41:06
+Skipping MultiAngle_DT_14_2.mat at 10-Jan-2013 04:41:06
+Skipping MultiAngle_DT_14_3.mat at 10-Jan-2013 04:41:06
+Skipping MultiAngle_DT_14_4.mat at 10-Jan-2013 04:41:06
+Skipping MultiAngle_DT_14_5.mat at 10-Jan-2013 04:41:06
+Skipping MultiAngle_DT_14_6.mat at 10-Jan-2013 04:41:06
+Skipping MultiAngle_DT_14_7.mat at 10-Jan-2013 04:41:06
+Skipping MultiAngle_DT_14_8_PH.mat at 10-Jan-2013 04:41:06
+Skipping MultiAngle_DT_14_9.mat at 10-Jan-2013 04:41:06
+Skipping MultiAngle_DT_14_10.mat at 10-Jan-2013 04:41:06
+Skipping MultiAngle_DT_14_11.mat at 10-Jan-2013 04:41:06
+Skipping MultiAngle_DT_14_12.mat at 10-Jan-2013 04:41:06
+Skipping MultiAngle_DT_15_1.mat at 10-Jan-2013 04:41:10
+Skipping MultiAngle_DT_15_2.mat at 10-Jan-2013 04:41:10
+Skipping MultiAngle_DT_15_3.mat at 10-Jan-2013 04:41:10
+Skipping MultiAngle_DT_15_4.mat at 10-Jan-2013 04:41:10
+Skipping MultiAngle_DT_15_5.mat at 10-Jan-2013 04:41:10
+Skipping MultiAngle_DT_15_6.mat at 10-Jan-2013 04:41:10
+Skipping MultiAngle_DT_15_7_PH.mat at 10-Jan-2013 04:41:10
+Skipping MultiAngle_DT_15_8.mat at 10-Jan-2013 04:41:10
+Skipping MultiAngle_DT_15_9.mat at 10-Jan-2013 04:41:10
+Skipping MultiAngle_DT_15_10.mat at 10-Jan-2013 04:41:10
+Skipping MultiAngle_DT_15_11.mat at 10-Jan-2013 04:41:10
+Skipping MultiAngle_DT_15_12.mat at 10-Jan-2013 04:41:10
+Skipping MultiAngle_DT_16_1.mat at 10-Jan-2013 04:41:14
+Skipping MultiAngle_DT_16_2.mat at 10-Jan-2013 04:41:14
+Skipping MultiAngle_DT_16_3.mat at 10-Jan-2013 04:41:14
+Skipping MultiAngle_DT_16_4.mat at 10-Jan-2013 04:41:14
+Skipping MultiAngle_DT_16_5_PH.mat at 10-Jan-2013 04:41:14
+Skipping MultiAngle_DT_16_6.mat at 10-Jan-2013 04:41:14
+Skipping MultiAngle_DT_16_7_PH.mat at 10-Jan-2013 04:41:14
+Skipping MultiAngle_DT_16_8.mat at 10-Jan-2013 04:41:14
+Skipping MultiAngle_DT_16_9.mat at 10-Jan-2013 04:41:14
+Skipping MultiAngle_DT_16_10.mat at 10-Jan-2013 04:41:14
+Skipping MultiAngle_DT_16_11.mat at 10-Jan-2013 04:41:14
+Skipping MultiAngle_DT_16_12.mat at 10-Jan-2013 04:41:14
+Skipping MultiAngle_DT_17_1.mat at 10-Jan-2013 04:41:19
+Skipping MultiAngle_DT_17_2.mat at 10-Jan-2013 04:41:19
+Skipping MultiAngle_DT_17_3.mat at 10-Jan-2013 04:41:19
+Skipping MultiAngle_DT_17_4_PH.mat at 10-Jan-2013 04:41:19
+Skipping MultiAngle_DT_17_5.mat at 10-Jan-2013 04:41:19
+Skipping MultiAngle_DT_17_6.mat at 10-Jan-2013 04:41:19
+Skipping MultiAngle_DT_17_7.mat at 10-Jan-2013 04:41:19
+Skipping MultiAngle_DT_17_8.mat at 10-Jan-2013 04:41:19
+Skipping MultiAngle_DT_17_9.mat at 10-Jan-2013 04:41:19
+Skipping MultiAngle_DT_17_10.mat at 10-Jan-2013 04:41:19
+Skipping MultiAngle_DT_17_11.mat at 10-Jan-2013 04:41:19
+Skipping MultiAngle_DT_17_12.mat at 10-Jan-2013 04:41:19
+Skipping MultiAngle_DT_18_1.mat at 10-Jan-2013 04:41:23
+Skipping MultiAngle_DT_18_2.mat at 10-Jan-2013 04:41:23
+Skipping MultiAngle_DT_18_3.mat at 10-Jan-2013 04:41:23
+Skipping MultiAngle_DT_18_4.mat at 10-Jan-2013 04:41:23
+Skipping MultiAngle_DT_18_5_PH.mat at 10-Jan-2013 04:41:23
+Skipping MultiAngle_DT_18_6.mat at 10-Jan-2013 04:41:23
+Skipping MultiAngle_DT_18_7.mat at 10-Jan-2013 04:41:23
+Skipping MultiAngle_DT_18_8.mat at 10-Jan-2013 04:41:23
+Skipping MultiAngle_DT_18_9_PH.mat at 10-Jan-2013 04:41:23
+Skipping MultiAngle_DT_18_10.mat at 10-Jan-2013 04:41:23
+Skipping MultiAngle_DT_18_11.mat at 10-Jan-2013 04:41:23
+Skipping MultiAngle_DT_18_12.mat at 10-Jan-2013 04:41:23
+Skipping MultiAngle_DT_19_1.mat at 10-Jan-2013 04:41:27
+Skipping MultiAngle_DT_19_2.mat at 10-Jan-2013 04:41:27
+Skipping MultiAngle_DT_19_3.mat at 10-Jan-2013 04:41:27
+Skipping MultiAngle_DT_19_4.mat at 10-Jan-2013 04:41:27
+Skipping MultiAngle_DT_19_5.mat at 10-Jan-2013 04:41:27
+Skipping MultiAngle_DT_19_6.mat at 10-Jan-2013 04:41:27
+Skipping MultiAngle_DT_19_7.mat at 10-Jan-2013 04:41:27
+Skipping MultiAngle_DT_19_8.mat at 10-Jan-2013 04:41:27
+Skipping MultiAngle_DT_19_9.mat at 10-Jan-2013 04:41:27
+Skipping MultiAngle_DT_19_10_PH.mat at 10-Jan-2013 04:41:27
+Skipping MultiAngle_DT_19_11.mat at 10-Jan-2013 04:41:27
+Skipping MultiAngle_DT_19_12_PH.mat at 10-Jan-2013 04:41:27
+Skipping MultiAngle_DT_1_1.mat at 10-Jan-2013 04:41:31
+Skipping MultiAngle_DT_1_2.mat at 10-Jan-2013 04:41:31
+Skipping MultiAngle_DT_1_3.mat at 10-Jan-2013 04:41:31
+Skipping MultiAngle_DT_1_4_PH.mat at 10-Jan-2013 04:41:31
+Skipping MultiAngle_DT_1_5_PH.mat at 10-Jan-2013 04:41:31
+Skipping MultiAngle_DT_1_6.mat at 10-Jan-2013 04:41:31
+Skipping MultiAngle_DT_1_7.mat at 10-Jan-2013 04:41:31
+Skipping MultiAngle_DT_1_8.mat at 10-Jan-2013 04:41:31
+Skipping MultiAngle_DT_1_9.mat at 10-Jan-2013 04:41:31
+Skipping MultiAngle_DT_1_10.mat at 10-Jan-2013 04:41:31
+Skipping MultiAngle_DT_1_11.mat at 10-Jan-2013 04:41:31
+Skipping MultiAngle_DT_1_12.mat at 10-Jan-2013 04:41:31
+Skipping MultiAngle_DT_20_1.mat at 10-Jan-2013 04:41:35
+Skipping MultiAngle_DT_20_2.mat at 10-Jan-2013 04:41:35
+Skipping MultiAngle_DT_20_3.mat at 10-Jan-2013 04:41:35
+Skipping MultiAngle_DT_20_4.mat at 10-Jan-2013 04:41:35
+Skipping MultiAngle_DT_20_5.mat at 10-Jan-2013 04:41:35
+Skipping MultiAngle_DT_20_6_PH.mat at 10-Jan-2013 04:41:35
+Skipping MultiAngle_DT_20_7.mat at 10-Jan-2013 04:41:35
+Skipping MultiAngle_DT_20_8.mat at 10-Jan-2013 04:41:35
+Skipping MultiAngle_DT_20_9.mat at 10-Jan-2013 04:41:35
+Skipping MultiAngle_DT_20_10.mat at 10-Jan-2013 04:41:35
+Skipping MultiAngle_DT_20_11.mat at 10-Jan-2013 04:41:35
+Skipping MultiAngle_DT_20_12.mat at 10-Jan-2013 04:41:35
+Skipping MultiAngle_DT_21_1.mat at 10-Jan-2013 04:41:39
+Skipping MultiAngle_DT_21_2.mat at 10-Jan-2013 04:41:39
+Skipping MultiAngle_DT_21_3_PH.mat at 10-Jan-2013 04:41:39
+Skipping MultiAngle_DT_21_4.mat at 10-Jan-2013 04:41:39
+Skipping MultiAngle_DT_21_5.mat at 10-Jan-2013 04:41:39
+Skipping MultiAngle_DT_21_6.mat at 10-Jan-2013 04:41:39
+Skipping MultiAngle_DT_21_7.mat at 10-Jan-2013 04:41:39
+Skipping MultiAngle_DT_21_8.mat at 10-Jan-2013 04:41:39
+Skipping MultiAngle_DT_21_9.mat at 10-Jan-2013 04:41:39
+Skipping MultiAngle_DT_21_10.mat at 10-Jan-2013 04:41:39
+Skipping MultiAngle_DT_21_11.mat at 10-Jan-2013 04:41:39
+Skipping MultiAngle_DT_21_12.mat at 10-Jan-2013 04:41:39
+Skipping MultiAngle_DT_22_1.mat at 10-Jan-2013 04:41:44
+Skipping MultiAngle_DT_22_2.mat at 10-Jan-2013 04:41:44
+Skipping MultiAngle_DT_22_3.mat at 10-Jan-2013 04:41:44
+Skipping MultiAngle_DT_22_4.mat at 10-Jan-2013 04:41:44
+Skipping MultiAngle_DT_22_5.mat at 10-Jan-2013 04:41:44
+Skipping MultiAngle_DT_22_6.mat at 10-Jan-2013 04:41:44
+Skipping MultiAngle_DT_22_7.mat at 10-Jan-2013 04:41:44
+Skipping MultiAngle_DT_22_8.mat at 10-Jan-2013 04:41:44
+Skipping MultiAngle_DT_22_9.mat at 10-Jan-2013 04:41:44
+Skipping MultiAngle_DT_22_10.mat at 10-Jan-2013 04:41:44
+Skipping MultiAngle_DT_22_11.mat at 10-Jan-2013 04:41:44
+Skipping MultiAngle_DT_22_12.mat at 10-Jan-2013 04:41:44
+Skipping MultiAngle_DT_23_1.mat at 10-Jan-2013 04:41:48
+Skipping MultiAngle_DT_23_2.mat at 10-Jan-2013 04:41:48
+Skipping MultiAngle_DT_23_3.mat at 10-Jan-2013 04:41:48
+Skipping MultiAngle_DT_23_4_PH.mat at 10-Jan-2013 04:41:48
+Skipping MultiAngle_DT_23_5.mat at 10-Jan-2013 04:41:48
+Skipping MultiAngle_DT_23_6.mat at 10-Jan-2013 04:41:48
+Skipping MultiAngle_DT_23_7.mat at 10-Jan-2013 04:41:48
+Skipping MultiAngle_DT_23_8.mat at 10-Jan-2013 04:41:48
+Skipping MultiAngle_DT_23_9.mat at 10-Jan-2013 04:41:48
+Skipping MultiAngle_DT_23_10_PH.mat at 10-Jan-2013 04:41:48
+Skipping MultiAngle_DT_23_11.mat at 10-Jan-2013 04:41:48
+Skipping MultiAngle_DT_23_12.mat at 10-Jan-2013 04:41:48
+Skipping MultiAngle_DT_24_1.mat at 10-Jan-2013 04:41:52
+Skipping MultiAngle_DT_24_2.mat at 10-Jan-2013 04:41:52
+Skipping MultiAngle_DT_24_3.mat at 10-Jan-2013 04:41:52
+Skipping MultiAngle_DT_24_4.mat at 10-Jan-2013 04:41:52
+Skipping MultiAngle_DT_24_5.mat at 10-Jan-2013 04:41:52
+Skipping MultiAngle_DT_24_6.mat at 10-Jan-2013 04:41:52
+Skipping MultiAngle_DT_24_7.mat at 10-Jan-2013 04:41:52
+Skipping MultiAngle_DT_24_8.mat at 10-Jan-2013 04:41:52
+Skipping MultiAngle_DT_24_9.mat at 10-Jan-2013 04:41:52
+Skipping MultiAngle_DT_24_10.mat at 10-Jan-2013 04:41:52
+Skipping MultiAngle_DT_24_11.mat at 10-Jan-2013 04:41:52
+Skipping MultiAngle_DT_24_12.mat at 10-Jan-2013 04:41:52
+Skipping MultiAngle_DT_25_1_PH.mat at 10-Jan-2013 04:41:56
+Starting MultiAngle_DT_25_2.mat at 10-Jan-2013 04:41:56 with 682523187 bytes in memory
+Finished MultiAngle_DT_25_2.mat at 10-Jan-2013 05:44:02 with 990748531 bytes in memory
+Starting MultiAngle_DT_25_3.mat at 10-Jan-2013 05:44:02 with 990748531 bytes in memory
+Finished MultiAngle_DT_25_3.mat at 10-Jan-2013 06:36:52 with 987544856 bytes in memory
+Starting MultiAngle_DT_25_4.mat at 10-Jan-2013 06:36:52 with 987544856 bytes in memory
+Finished MultiAngle_DT_25_4.mat at 10-Jan-2013 07:30:56 with 993874031 bytes in memory
+Skipping MultiAngle_DT_25_5_PH.mat at 10-Jan-2013 07:30:56
+Starting MultiAngle_DT_25_6.mat at 10-Jan-2013 07:30:56 with 993874031 bytes in memory
+Finished MultiAngle_DT_25_6.mat at 10-Jan-2013 08:13:00 with 1001786528 bytes in memory
+Skipping MultiAngle_DT_25_7_PH.mat at 10-Jan-2013 08:13:00
+Starting MultiAngle_DT_25_8.mat at 10-Jan-2013 08:13:00 with 1001786528 bytes in memory
+Finished MultiAngle_DT_25_8.mat at 10-Jan-2013 08:39:30 with 986049901 bytes in memory
+Skipping MultiAngle_DT_25_9_PH.mat at 10-Jan-2013 08:39:30
+Starting MultiAngle_DT_25_10.mat at 10-Jan-2013 08:39:30 with 986049907 bytes in memory
+Error: Unable to write file /global/scratch/bcplimley/multi_angle/DTbatch01/MultiAngle_DT_25_10.mat: No such file or directory. on Mat_MultiAngle_CCD_eTracks_662_500k_25_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_26_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_27_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_28_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_29_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_2_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_30_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_31_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_32_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_33_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_34_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_35_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_36_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_37_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_38_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_39_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_3_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_40_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_41_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_42_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_43_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_44_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_45_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_46_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_47_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_48_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_49_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_4_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_50_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_51_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_52_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_53_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_54_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_55_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_56_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_57_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_58_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_59_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_5_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_60_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_61_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_62_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_63_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_64_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_65_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_66_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_67_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_68_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_69_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_6_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_70_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_71_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_72_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_73_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_74_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_75_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_76_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_77_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_78_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_79_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_7_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_80_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_81_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_82_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_83_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_84_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_85_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_86_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_87_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_88_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_89_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_8_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_90_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_91_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_92_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_93_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_94_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_95_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_96_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_97_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_98_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_99_TRK.mat
+Error: /global/scratch/bcplimley/multi_angle/MatlabScripts/G4THworker.m: Can't open file. on Mat_MultiAngle_CCD_eTracks_662_500k_9_TRK.mat
+Found 0 files in /global/scratch/bcplimley/multi_angle/G4batch02/ at 10-Jan-2013 09:38:47
+Found 0 files in /global/scratch/bcplimley/multi_angle/G4batch03/ at 10-Jan-2013 09:38:47
+Found 0 files in /global/scratch/bcplimley/multi_angle/G4batch04/ at 10-Jan-2013 09:38:47
+Found 0 files in /global/scratch/bcplimley/multi_angle/G4batch05/ at 10-Jan-2013 09:38:47
+Found 0 files in /global/scratch/bcplimley/multi_angle/G4batch06/ at 10-Jan-2013 09:38:47
+Found 0 files in /global/scratch/bcplimley/multi_angle/G4batch07/ at 10-Jan-2013 09:38:47
+Found 0 files in /global/scratch/bcplimley/multi_angle/G4batch08/ at 10-Jan-2013 09:38:47
+>> 
+We have been experiencing intermittent problems with our scheduling
+system.  We are working with the vendor to get them resolved as soon
+as possible.
+
+Please continue to use the system as normally as you can.  Feel free
+to follow our Google+ page and/or Twitter feed at the URLs below to
+keep up-to-date on the work as it progresses:
+
+  LBNL HPCS on Google+:  https://plus.google.com/b/114440445109302693549/
+  @LBNLHPCS on Twitter:  https://twitter.com/LBNLHPCS
+
+
+Warning: No window system found.  Java option 'MWT' ignored
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2011 The MathWorks, Inc.
+                    R2011b (7.13.0.31) 64-bit (glnxa64)
+                                May 24, 2011
+
+ 
+To get started, type one of these: helpwin, helpdesk, or demo.
+For product information, visit www.mathworks.com.
+ 
+Found 100 files in /global/scratch/bcplimley/multi_angle/G4batch01/ at 15-Jan-2013 19:43:13
+Skipping MultiAngle_DT_100_1.mat at 15-Jan-2013 19:43:18
+Skipping MultiAngle_DT_100_2.mat at 15-Jan-2013 19:43:18
+Skipping MultiAngle_DT_100_3.mat at 15-Jan-2013 19:43:18
+Skipping MultiAngle_DT_100_4.mat at 15-Jan-2013 19:43:18
+Skipping MultiAngle_DT_100_5.mat at 15-Jan-2013 19:43:18
+Skipping MultiAngle_DT_100_6.mat at 15-Jan-2013 19:43:18
+Skipping MultiAngle_DT_100_7.mat at 15-Jan-2013 19:43:18
+Skipping MultiAngle_DT_100_8.mat at 15-Jan-2013 19:43:18
+Skipping MultiAngle_DT_100_9.mat at 15-Jan-2013 19:43:18
+Skipping MultiAngle_DT_100_10.mat at 15-Jan-2013 19:43:18
+Skipping MultiAngle_DT_100_11.mat at 15-Jan-2013 19:43:18
+Skipping MultiAngle_DT_100_12.mat at 15-Jan-2013 19:43:18
+Skipping MultiAngle_DT_10_1.mat at 15-Jan-2013 19:43:24
+Skipping MultiAngle_DT_10_2.mat at 15-Jan-2013 19:43:24
+Skipping MultiAngle_DT_10_3.mat at 15-Jan-2013 19:43:24
+Skipping MultiAngle_DT_10_4.mat at 15-Jan-2013 19:43:24
+Skipping MultiAngle_DT_10_5.mat at 15-Jan-2013 19:43:24
+Skipping MultiAngle_DT_10_6.mat at 15-Jan-2013 19:43:24
+Skipping MultiAngle_DT_10_7.mat at 15-Jan-2013 19:43:24
+Skipping MultiAngle_DT_10_8.mat at 15-Jan-2013 19:43:24
+Skipping MultiAngle_DT_10_9.mat at 15-Jan-2013 19:43:24
+Skipping MultiAngle_DT_10_10.mat at 15-Jan-2013 19:43:24
+Skipping MultiAngle_DT_10_11.mat at 15-Jan-2013 19:43:24
+Skipping MultiAngle_DT_10_12.mat at 15-Jan-2013 19:43:24
+Skipping MultiAngle_DT_11_1.mat at 15-Jan-2013 19:43:28
+Skipping MultiAngle_DT_11_2.mat at 15-Jan-2013 19:43:28
+Skipping MultiAngle_DT_11_3.mat at 15-Jan-2013 19:43:28
+Skipping MultiAngle_DT_11_4.mat at 15-Jan-2013 19:43:28
+Skipping MultiAngle_DT_11_5.mat at 15-Jan-2013 19:43:28
+Skipping MultiAngle_DT_11_6.mat at 15-Jan-2013 19:43:28
+Skipping MultiAngle_DT_11_7.mat at 15-Jan-2013 19:43:28
+Skipping MultiAngle_DT_11_8.mat at 15-Jan-2013 19:43:28
+Skipping MultiAngle_DT_11_9.mat at 15-Jan-2013 19:43:28
+Skipping MultiAngle_DT_11_10.mat at 15-Jan-2013 19:43:28
+Skipping MultiAngle_DT_11_11.mat at 15-Jan-2013 19:43:28
+Skipping MultiAngle_DT_11_12.mat at 15-Jan-2013 19:43:28
+Skipping MultiAngle_DT_12_1.mat at 15-Jan-2013 19:43:32
+Skipping MultiAngle_DT_12_2.mat at 15-Jan-2013 19:43:32
+Skipping MultiAngle_DT_12_3.mat at 15-Jan-2013 19:43:32
+Skipping MultiAngle_DT_12_4.mat at 15-Jan-2013 19:43:32
+Skipping MultiAngle_DT_12_5.mat at 15-Jan-2013 19:43:32
+Skipping MultiAngle_DT_12_6.mat at 15-Jan-2013 19:43:32
+Skipping MultiAngle_DT_12_7.mat at 15-Jan-2013 19:43:32
+Skipping MultiAngle_DT_12_8.mat at 15-Jan-2013 19:43:32
+Skipping MultiAngle_DT_12_9.mat at 15-Jan-2013 19:43:32
+Skipping MultiAngle_DT_12_10.mat at 15-Jan-2013 19:43:32
+Skipping MultiAngle_DT_12_11.mat at 15-Jan-2013 19:43:32
+Skipping MultiAngle_DT_12_12.mat at 15-Jan-2013 19:43:33
+Skipping MultiAngle_DT_13_1.mat at 15-Jan-2013 19:43:37
+Skipping MultiAngle_DT_13_2.mat at 15-Jan-2013 19:43:37
+Skipping MultiAngle_DT_13_3.mat at 15-Jan-2013 19:43:37
+Skipping MultiAngle_DT_13_4.mat at 15-Jan-2013 19:43:37
+Skipping MultiAngle_DT_13_5.mat at 15-Jan-2013 19:43:37
+Skipping MultiAngle_DT_13_6.mat at 15-Jan-2013 19:43:37
+Skipping MultiAngle_DT_13_7.mat at 15-Jan-2013 19:43:37
+Skipping MultiAngle_DT_13_8.mat at 15-Jan-2013 19:43:37
+Skipping MultiAngle_DT_13_9.mat at 15-Jan-2013 19:43:37
+Skipping MultiAngle_DT_13_10.mat at 15-Jan-2013 19:43:37
+Skipping MultiAngle_DT_13_11.mat at 15-Jan-2013 19:43:37
+Skipping MultiAngle_DT_14_1.mat at 15-Jan-2013 19:43:41
+Skipping MultiAngle_DT_14_2.mat at 15-Jan-2013 19:43:41
+Skipping MultiAngle_DT_14_3.mat at 15-Jan-2013 19:43:41
+Skipping MultiAngle_DT_14_4.mat at 15-Jan-2013 19:43:41
+Skipping MultiAngle_DT_14_5.mat at 15-Jan-2013 19:43:41
+Skipping MultiAngle_DT_14_6.mat at 15-Jan-2013 19:43:41
+Skipping MultiAngle_DT_14_7.mat at 15-Jan-2013 19:43:41
+Skipping MultiAngle_DT_14_8.mat at 15-Jan-2013 19:43:41
+Skipping MultiAngle_DT_14_9.mat at 15-Jan-2013 19:43:41
+Skipping MultiAngle_DT_14_10.mat at 15-Jan-2013 19:43:41
+Skipping MultiAngle_DT_14_11.mat at 15-Jan-2013 19:43:41
+Skipping MultiAngle_DT_14_12.mat at 15-Jan-2013 19:43:41
+Skipping MultiAngle_DT_15_1.mat at 15-Jan-2013 19:43:46
+Skipping MultiAngle_DT_15_2.mat at 15-Jan-2013 19:43:46
+Skipping MultiAngle_DT_15_3.mat at 15-Jan-2013 19:43:46
+Skipping MultiAngle_DT_15_4.mat at 15-Jan-2013 19:43:46
+Skipping MultiAngle_DT_15_5.mat at 15-Jan-2013 19:43:46
+Skipping MultiAngle_DT_15_6.mat at 15-Jan-2013 19:43:46
+Skipping MultiAngle_DT_15_7.mat at 15-Jan-2013 19:43:46
+Skipping MultiAngle_DT_15_8.mat at 15-Jan-2013 19:43:46
+Skipping MultiAngle_DT_15_9.mat at 15-Jan-2013 19:43:46
+Skipping MultiAngle_DT_15_10.mat at 15-Jan-2013 19:43:46
+Skipping MultiAngle_DT_15_11.mat at 15-Jan-2013 19:43:46
+Skipping MultiAngle_DT_15_12.mat at 15-Jan-2013 19:43:46
+Skipping MultiAngle_DT_16_1.mat at 15-Jan-2013 19:43:50
+Skipping MultiAngle_DT_16_2.mat at 15-Jan-2013 19:43:50
+Skipping MultiAngle_DT_16_3.mat at 15-Jan-2013 19:43:50
+Skipping MultiAngle_DT_16_4.mat at 15-Jan-2013 19:43:50
+Skipping MultiAngle_DT_16_5.mat at 15-Jan-2013 19:43:50
+Skipping MultiAngle_DT_16_6.mat at 15-Jan-2013 19:43:50
+Skipping MultiAngle_DT_16_7.mat at 15-Jan-2013 19:43:50
+Skipping MultiAngle_DT_16_8.mat at 15-Jan-2013 19:43:50
+Skipping MultiAngle_DT_16_9.mat at 15-Jan-2013 19:43:50
+Skipping MultiAngle_DT_16_10.mat at 15-Jan-2013 19:43:50
+Skipping MultiAngle_DT_16_11.mat at 15-Jan-2013 19:43:50
+Skipping MultiAngle_DT_16_12.mat at 15-Jan-2013 19:43:50
+Skipping MultiAngle_DT_17_1.mat at 15-Jan-2013 19:43:54
+Skipping MultiAngle_DT_17_2.mat at 15-Jan-2013 19:43:54
+Skipping MultiAngle_DT_17_3.mat at 15-Jan-2013 19:43:54
+Skipping MultiAngle_DT_17_4.mat at 15-Jan-2013 19:43:54
+Skipping MultiAngle_DT_17_5.mat at 15-Jan-2013 19:43:54
+Skipping MultiAngle_DT_17_6.mat at 15-Jan-2013 19:43:54
+Skipping MultiAngle_DT_17_7.mat at 15-Jan-2013 19:43:54
+Skipping MultiAngle_DT_17_8.mat at 15-Jan-2013 19:43:54
+Skipping MultiAngle_DT_17_9.mat at 15-Jan-2013 19:43:54
+Skipping MultiAngle_DT_17_10.mat at 15-Jan-2013 19:43:54
+Skipping MultiAngle_DT_17_11.mat at 15-Jan-2013 19:43:54
+Skipping MultiAngle_DT_17_12.mat at 15-Jan-2013 19:43:54
+Skipping MultiAngle_DT_18_1.mat at 15-Jan-2013 19:44:26
+Skipping MultiAngle_DT_18_2.mat at 15-Jan-2013 19:44:26
+Skipping MultiAngle_DT_18_3.mat at 15-Jan-2013 19:44:26
+Skipping MultiAngle_DT_18_4.mat at 15-Jan-2013 19:44:26
+Skipping MultiAngle_DT_18_5.mat at 15-Jan-2013 19:44:26
+Skipping MultiAngle_DT_18_6.mat at 15-Jan-2013 19:44:26
+Skipping MultiAngle_DT_18_7.mat at 15-Jan-2013 19:44:26
+Skipping MultiAngle_DT_18_8.mat at 15-Jan-2013 19:44:26
+Skipping MultiAngle_DT_18_9.mat at 15-Jan-2013 19:44:26
+Skipping MultiAngle_DT_18_10.mat at 15-Jan-2013 19:44:26
+Skipping MultiAngle_DT_18_11.mat at 15-Jan-2013 19:44:26
+Skipping MultiAngle_DT_18_12.mat at 15-Jan-2013 19:44:26
+Skipping MultiAngle_DT_19_1.mat at 15-Jan-2013 19:44:31
+Skipping MultiAngle_DT_19_2.mat at 15-Jan-2013 19:44:31
+Skipping MultiAngle_DT_19_3.mat at 15-Jan-2013 19:44:31
+Skipping MultiAngle_DT_19_4.mat at 15-Jan-2013 19:44:31
+Skipping MultiAngle_DT_19_5.mat at 15-Jan-2013 19:44:31
+Skipping MultiAngle_DT_19_6.mat at 15-Jan-2013 19:44:31
+Skipping MultiAngle_DT_19_7.mat at 15-Jan-2013 19:44:31
+Skipping MultiAngle_DT_19_8.mat at 15-Jan-2013 19:44:31
+Skipping MultiAngle_DT_19_9.mat at 15-Jan-2013 19:44:31
+Skipping MultiAngle_DT_19_10.mat at 15-Jan-2013 19:44:31
+Skipping MultiAngle_DT_19_11.mat at 15-Jan-2013 19:44:31
+Skipping MultiAngle_DT_19_12_PH.mat at 15-Jan-2013 19:44:31
+Skipping MultiAngle_DT_1_1.mat at 15-Jan-2013 19:44:36
+Skipping MultiAngle_DT_1_2.mat at 15-Jan-2013 19:44:36
+Skipping MultiAngle_DT_1_3.mat at 15-Jan-2013 19:44:36
+Skipping MultiAngle_DT_1_4_PH.mat at 15-Jan-2013 19:44:36
+Skipping MultiAngle_DT_1_5_PH.mat at 15-Jan-2013 19:44:36
+Skipping MultiAngle_DT_1_6.mat at 15-Jan-2013 19:44:36
+Skipping MultiAngle_DT_1_7.mat at 15-Jan-2013 19:44:36
+Skipping MultiAngle_DT_1_8.mat at 15-Jan-2013 19:44:36
+Skipping MultiAngle_DT_1_9.mat at 15-Jan-2013 19:44:36
+Skipping MultiAngle_DT_1_10.mat at 15-Jan-2013 19:44:36
+Skipping MultiAngle_DT_1_11.mat at 15-Jan-2013 19:44:36
+Skipping MultiAngle_DT_1_12.mat at 15-Jan-2013 19:44:36
+Skipping MultiAngle_DT_20_1.mat at 15-Jan-2013 19:44:40
+Skipping MultiAngle_DT_20_2.mat at 15-Jan-2013 19:44:40
+Skipping MultiAngle_DT_20_3.mat at 15-Jan-2013 19:44:40
+Skipping MultiAngle_DT_20_4.mat at 15-Jan-2013 19:44:40
+Skipping MultiAngle_DT_20_5.mat at 15-Jan-2013 19:44:40
+Skipping MultiAngle_DT_20_6_PH.mat at 15-Jan-2013 19:44:40
+Skipping MultiAngle_DT_20_7.mat at 15-Jan-2013 19:44:40
+Skipping MultiAngle_DT_20_8.mat at 15-Jan-2013 19:44:40
+Skipping MultiAngle_DT_20_9.mat at 15-Jan-2013 19:44:40
+Skipping MultiAngle_DT_20_10.mat at 15-Jan-2013 19:44:40
+Skipping MultiAngle_DT_20_11.mat at 15-Jan-2013 19:44:40
+Skipping MultiAngle_DT_20_12.mat at 15-Jan-2013 19:44:40
+Skipping MultiAngle_DT_21_1.mat at 15-Jan-2013 19:44:44
+Skipping MultiAngle_DT_21_2.mat at 15-Jan-2013 19:44:44
+Skipping MultiAngle_DT_21_3_PH.mat at 15-Jan-2013 19:44:44
+Skipping MultiAngle_DT_21_4.mat at 15-Jan-2013 19:44:44
+Skipping MultiAngle_DT_21_5.mat at 15-Jan-2013 19:44:44
+Skipping MultiAngle_DT_21_6.mat at 15-Jan-2013 19:44:44
+Skipping MultiAngle_DT_21_7.mat at 15-Jan-2013 19:44:44
+Skipping MultiAngle_DT_21_8.mat at 15-Jan-2013 19:44:44
+Skipping MultiAngle_DT_21_9.mat at 15-Jan-2013 19:44:44
+Skipping MultiAngle_DT_21_10.mat at 15-Jan-2013 19:44:44
+Skipping MultiAngle_DT_21_11.mat at 15-Jan-2013 19:44:44
+Skipping MultiAngle_DT_21_12.mat at 15-Jan-2013 19:44:44
+Skipping MultiAngle_DT_22_1.mat at 15-Jan-2013 19:44:49
+Skipping MultiAngle_DT_22_2.mat at 15-Jan-2013 19:44:49
+Skipping MultiAngle_DT_22_3.mat at 15-Jan-2013 19:44:49
+Skipping MultiAngle_DT_22_4.mat at 15-Jan-2013 19:44:49
+Skipping MultiAngle_DT_22_5.mat at 15-Jan-2013 19:44:49
+Skipping MultiAngle_DT_22_6.mat at 15-Jan-2013 19:44:49
+Skipping MultiAngle_DT_22_7.mat at 15-Jan-2013 19:44:49
+Skipping MultiAngle_DT_22_8.mat at 15-Jan-2013 19:44:49
+Skipping MultiAngle_DT_22_9.mat at 15-Jan-2013 19:44:49
+Skipping MultiAngle_DT_22_10.mat at 15-Jan-2013 19:44:49
+Skipping MultiAngle_DT_22_11.mat at 15-Jan-2013 19:44:49
+Skipping MultiAngle_DT_22_12.mat at 15-Jan-2013 19:44:49
+Skipping MultiAngle_DT_23_1.mat at 15-Jan-2013 19:44:53
+Skipping MultiAngle_DT_23_2.mat at 15-Jan-2013 19:44:53
+Skipping MultiAngle_DT_23_3.mat at 15-Jan-2013 19:44:53
+Skipping MultiAngle_DT_23_4_PH.mat at 15-Jan-2013 19:44:53
+Skipping MultiAngle_DT_23_5.mat at 15-Jan-2013 19:44:53
+Skipping MultiAngle_DT_23_6.mat at 15-Jan-2013 19:44:53
+Skipping MultiAngle_DT_23_7.mat at 15-Jan-2013 19:44:53
+Skipping MultiAngle_DT_23_8.mat at 15-Jan-2013 19:44:53
+Skipping MultiAngle_DT_23_9.mat at 15-Jan-2013 19:44:53
+Skipping MultiAngle_DT_23_10_PH.mat at 15-Jan-2013 19:44:53
+Skipping MultiAngle_DT_23_11.mat at 15-Jan-2013 19:44:53
+Skipping MultiAngle_DT_23_12.mat at 15-Jan-2013 19:44:53
+Skipping MultiAngle_DT_24_1.mat at 15-Jan-2013 19:44:57
+Skipping MultiAngle_DT_24_2.mat at 15-Jan-2013 19:44:57
+Skipping MultiAngle_DT_24_3.mat at 15-Jan-2013 19:44:57
+Skipping MultiAngle_DT_24_4.mat at 15-Jan-2013 19:44:57
+Skipping MultiAngle_DT_24_5.mat at 15-Jan-2013 19:44:57
+Skipping MultiAngle_DT_24_6.mat at 15-Jan-2013 19:44:57
+Skipping MultiAngle_DT_24_7.mat at 15-Jan-2013 19:44:57
+Skipping MultiAngle_DT_24_8.mat at 15-Jan-2013 19:44:57
+Skipping MultiAngle_DT_24_9.mat at 15-Jan-2013 19:44:57
+Skipping MultiAngle_DT_24_10.mat at 15-Jan-2013 19:44:57
+Skipping MultiAngle_DT_24_11.mat at 15-Jan-2013 19:44:57
+Skipping MultiAngle_DT_24_12.mat at 15-Jan-2013 19:44:57
+Skipping MultiAngle_DT_25_1.mat at 15-Jan-2013 19:45:02
+Skipping MultiAngle_DT_25_2.mat at 15-Jan-2013 19:45:02
+Skipping MultiAngle_DT_25_3.mat at 15-Jan-2013 19:45:02
+Skipping MultiAngle_DT_25_4.mat at 15-Jan-2013 19:45:02
+Skipping MultiAngle_DT_25_5.mat at 15-Jan-2013 19:45:02
+Skipping MultiAngle_DT_25_6.mat at 15-Jan-2013 19:45:02
+Skipping MultiAngle_DT_25_7.mat at 15-Jan-2013 19:45:02
+Skipping MultiAngle_DT_25_8.mat at 15-Jan-2013 19:45:02
+Skipping MultiAngle_DT_25_9.mat at 15-Jan-2013 19:45:02
+Skipping MultiAngle_DT_25_10.mat at 15-Jan-2013 19:45:02
+Skipping MultiAngle_DT_25_11.mat at 15-Jan-2013 19:45:02
+Skipping MultiAngle_DT_25_12.mat at 15-Jan-2013 19:45:02
+Skipping MultiAngle_DT_26_1.mat at 15-Jan-2013 19:45:06
+Skipping MultiAngle_DT_26_2.mat at 15-Jan-2013 19:45:06
+Skipping MultiAngle_DT_26_3.mat at 15-Jan-2013 19:45:06
+Skipping MultiAngle_DT_26_4.mat at 15-Jan-2013 19:45:06
+Skipping MultiAngle_DT_26_5.mat at 15-Jan-2013 19:45:06
+Skipping MultiAngle_DT_26_6.mat at 15-Jan-2013 19:45:06
+Skipping MultiAngle_DT_26_7.mat at 15-Jan-2013 19:45:06
+Skipping MultiAngle_DT_26_8.mat at 15-Jan-2013 19:45:06
+Skipping MultiAngle_DT_26_9.mat at 15-Jan-2013 19:45:06
+Skipping MultiAngle_DT_26_10.mat at 15-Jan-2013 19:45:06
+Skipping MultiAngle_DT_26_11.mat at 15-Jan-2013 19:45:06
+Skipping MultiAngle_DT_26_12.mat at 15-Jan-2013 19:45:06
+Skipping MultiAngle_DT_27_1.mat at 15-Jan-2013 19:45:10
+Skipping MultiAngle_DT_27_2.mat at 15-Jan-2013 19:45:10
+Skipping MultiAngle_DT_27_3.mat at 15-Jan-2013 19:45:10
+Skipping MultiAngle_DT_27_4_PH.mat at 15-Jan-2013 19:45:10
+Skipping MultiAngle_DT_27_5.mat at 15-Jan-2013 19:45:10
+Skipping MultiAngle_DT_27_6.mat at 15-Jan-2013 19:45:10
+Skipping MultiAngle_DT_27_7.mat at 15-Jan-2013 19:45:10
+Skipping MultiAngle_DT_27_8.mat at 15-Jan-2013 19:45:10
+Skipping MultiAngle_DT_27_9.mat at 15-Jan-2013 19:45:10
+Skipping MultiAngle_DT_27_10.mat at 15-Jan-2013 19:45:10
+Skipping MultiAngle_DT_27_11_PH.mat at 15-Jan-2013 19:45:10
+Skipping MultiAngle_DT_27_12.mat at 15-Jan-2013 19:45:10
+Skipping MultiAngle_DT_28_1.mat at 15-Jan-2013 19:45:14
+Skipping MultiAngle_DT_28_2.mat at 15-Jan-2013 19:45:14
+Skipping MultiAngle_DT_28_3.mat at 15-Jan-2013 19:45:14
+Skipping MultiAngle_DT_28_4.mat at 15-Jan-2013 19:45:14
+Skipping MultiAngle_DT_28_5.mat at 15-Jan-2013 19:45:14
+Skipping MultiAngle_DT_28_6.mat at 15-Jan-2013 19:45:14
+Skipping MultiAngle_DT_28_7.mat at 15-Jan-2013 19:45:14
+Skipping MultiAngle_DT_28_8.mat at 15-Jan-2013 19:45:14
+Skipping MultiAngle_DT_28_9.mat at 15-Jan-2013 19:45:14
+Starting MultiAngle_DT_28_10.mat at 15-Jan-2013 19:45:14 with 677003393 bytes in memory
+Finished MultiAngle_DT_28_10.mat at 16-Jan-2013 01:59:31 with 990129159 bytes in memory
+Skipping MultiAngle_DT_28_11.mat at 16-Jan-2013 01:59:31
+Skipping MultiAngle_DT_28_12.mat at 16-Jan-2013 01:59:31
+Skipping MultiAngle_DT_29_1.mat at 16-Jan-2013 01:59:36
+Skipping MultiAngle_DT_29_2.mat at 16-Jan-2013 01:59:36
+Skipping MultiAngle_DT_29_3.mat at 16-Jan-2013 01:59:36
+Skipping MultiAngle_DT_29_4.mat at 16-Jan-2013 01:59:36
+Skipping MultiAngle_DT_29_5.mat at 16-Jan-2013 01:59:36
+Skipping MultiAngle_DT_29_6.mat at 16-Jan-2013 01:59:36
+Skipping MultiAngle_DT_29_7.mat at 16-Jan-2013 01:59:36
+Skipping MultiAngle_DT_29_8.mat at 16-Jan-2013 01:59:36
+Skipping MultiAngle_DT_29_9.mat at 16-Jan-2013 01:59:36
+Skipping MultiAngle_DT_29_10.mat at 16-Jan-2013 01:59:36
+Skipping MultiAngle_DT_29_11.mat at 16-Jan-2013 01:59:36
+Skipping MultiAngle_DT_2_1.mat at 16-Jan-2013 01:59:40
+Skipping MultiAngle_DT_2_2.mat at 16-Jan-2013 01:59:40
+Skipping MultiAngle_DT_2_3.mat at 16-Jan-2013 01:59:40
+Skipping MultiAngle_DT_2_4.mat at 16-Jan-2013 01:59:40
+Skipping MultiAngle_DT_2_5.mat at 16-Jan-2013 01:59:40
+Skipping MultiAngle_DT_2_6.mat at 16-Jan-2013 01:59:40
+Skipping MultiAngle_DT_2_7.mat at 16-Jan-2013 01:59:40
+Skipping MultiAngle_DT_2_8.mat at 16-Jan-2013 01:59:40
+Skipping MultiAngle_DT_2_9.mat at 16-Jan-2013 01:59:40
+Skipping MultiAngle_DT_2_10.mat at 16-Jan-2013 01:59:40
+Skipping MultiAngle_DT_2_11.mat at 16-Jan-2013 01:59:40
+Skipping MultiAngle_DT_2_12.mat at 16-Jan-2013 01:59:40
+Skipping MultiAngle_DT_30_1.mat at 16-Jan-2013 01:59:44
+Skipping MultiAngle_DT_30_2.mat at 16-Jan-2013 01:59:44
+Skipping MultiAngle_DT_30_3.mat at 16-Jan-2013 01:59:44
+Skipping MultiAngle_DT_30_4_PH.mat at 16-Jan-2013 01:59:44
+Skipping MultiAngle_DT_30_5.mat at 16-Jan-2013 01:59:44
+Skipping MultiAngle_DT_30_6.mat at 16-Jan-2013 01:59:44
+Skipping MultiAngle_DT_30_7.mat at 16-Jan-2013 01:59:44
+Skipping MultiAngle_DT_30_8.mat at 16-Jan-2013 01:59:44
+Skipping MultiAngle_DT_30_9.mat at 16-Jan-2013 01:59:44
+Skipping MultiAngle_DT_30_10_PH.mat at 16-Jan-2013 01:59:44
+Skipping MultiAngle_DT_30_11.mat at 16-Jan-2013 01:59:44
+Skipping MultiAngle_DT_31_1.mat at 16-Jan-2013 01:59:49
+Skipping MultiAngle_DT_31_2.mat at 16-Jan-2013 01:59:49
+Skipping MultiAngle_DT_31_3.mat at 16-Jan-2013 01:59:49
+Skipping MultiAngle_DT_31_4_PH.mat at 16-Jan-2013 01:59:49
+Skipping MultiAngle_DT_31_5.mat at 16-Jan-2013 01:59:49
+Skipping MultiAngle_DT_31_6.mat at 16-Jan-2013 01:59:49
+Skipping MultiAngle_DT_31_7.mat at 16-Jan-2013 01:59:49
+Skipping MultiAngle_DT_31_8.mat at 16-Jan-2013 01:59:49
+Skipping MultiAngle_DT_31_9.mat at 16-Jan-2013 01:59:49
+Skipping MultiAngle_DT_31_10.mat at 16-Jan-2013 01:59:49
+Skipping MultiAngle_DT_31_11.mat at 16-Jan-2013 01:59:49
+Skipping MultiAngle_DT_31_12.mat at 16-Jan-2013 01:59:49
+Skipping MultiAngle_DT_32_1.mat at 16-Jan-2013 01:59:53
+Skipping MultiAngle_DT_32_2.mat at 16-Jan-2013 01:59:53
+Skipping MultiAngle_DT_32_3.mat at 16-Jan-2013 01:59:53
+Skipping MultiAngle_DT_32_4.mat at 16-Jan-2013 01:59:53
+Skipping MultiAngle_DT_32_5.mat at 16-Jan-2013 01:59:53
+Skipping MultiAngle_DT_32_6.mat at 16-Jan-2013 01:59:53
+Skipping MultiAngle_DT_32_7_PH.mat at 16-Jan-2013 01:59:53
+Skipping MultiAngle_DT_32_8.mat at 16-Jan-2013 01:59:53
+Skipping MultiAngle_DT_32_9.mat at 16-Jan-2013 01:59:53
+Skipping MultiAngle_DT_32_10_PH.mat at 16-Jan-2013 01:59:53
+Skipping MultiAngle_DT_32_11.mat at 16-Jan-2013 01:59:53
+Skipping MultiAngle_DT_32_12.mat at 16-Jan-2013 01:59:53
+Skipping MultiAngle_DT_33_1.mat at 16-Jan-2013 01:59:58
+Skipping MultiAngle_DT_33_2_PH.mat at 16-Jan-2013 01:59:58
+Skipping MultiAngle_DT_33_3.mat at 16-Jan-2013 01:59:58
+Skipping MultiAngle_DT_33_4.mat at 16-Jan-2013 01:59:58
+Skipping MultiAngle_DT_33_5.mat at 16-Jan-2013 01:59:58
+Skipping MultiAngle_DT_33_6.mat at 16-Jan-2013 01:59:58
+Skipping MultiAngle_DT_33_7.mat at 16-Jan-2013 01:59:58
+Skipping MultiAngle_DT_33_8.mat at 16-Jan-2013 01:59:58
+Skipping MultiAngle_DT_33_9.mat at 16-Jan-2013 01:59:58
+Skipping MultiAngle_DT_33_10.mat at 16-Jan-2013 01:59:58
+Skipping MultiAngle_DT_33_11.mat at 16-Jan-2013 01:59:58
+Skipping MultiAngle_DT_33_12.mat at 16-Jan-2013 01:59:58
+Skipping MultiAngle_DT_34_1.mat at 16-Jan-2013 02:00:03
+Skipping MultiAngle_DT_34_2.mat at 16-Jan-2013 02:00:03
+Skipping MultiAngle_DT_34_3.mat at 16-Jan-2013 02:00:03
+Skipping MultiAngle_DT_34_4_PH.mat at 16-Jan-2013 02:00:03
+Skipping MultiAngle_DT_34_5.mat at 16-Jan-2013 02:00:03
+Skipping MultiAngle_DT_34_6.mat at 16-Jan-2013 02:00:03
+Skipping MultiAngle_DT_34_7.mat at 16-Jan-2013 02:00:03
+Skipping MultiAngle_DT_34_8.mat at 16-Jan-2013 02:00:03
+Skipping MultiAngle_DT_34_9.mat at 16-Jan-2013 02:00:03
+Skipping MultiAngle_DT_34_10.mat at 16-Jan-2013 02:00:03
+Skipping MultiAngle_DT_34_11.mat at 16-Jan-2013 02:00:03
+Skipping MultiAngle_DT_34_12.mat at 16-Jan-2013 02:00:03
+Skipping MultiAngle_DT_35_1.mat at 16-Jan-2013 02:00:08
+Skipping MultiAngle_DT_35_2.mat at 16-Jan-2013 02:00:08
+Skipping MultiAngle_DT_35_3.mat at 16-Jan-2013 02:00:08
+Skipping MultiAngle_DT_35_4.mat at 16-Jan-2013 02:00:08
+Skipping MultiAngle_DT_35_5.mat at 16-Jan-2013 02:00:08
+Skipping MultiAngle_DT_35_6.mat at 16-Jan-2013 02:00:08
+Skipping MultiAngle_DT_35_7.mat at 16-Jan-2013 02:00:08
+Skipping MultiAngle_DT_35_8.mat at 16-Jan-2013 02:00:08
+Skipping MultiAngle_DT_35_9.mat at 16-Jan-2013 02:00:08
+Skipping MultiAngle_DT_35_10.mat at 16-Jan-2013 02:00:08
+Skipping MultiAngle_DT_35_11.mat at 16-Jan-2013 02:00:08
+Skipping MultiAngle_DT_35_12.mat at 16-Jan-2013 02:00:08
+Skipping MultiAngle_DT_36_1.mat at 16-Jan-2013 02:00:12
+Skipping MultiAngle_DT_36_2.mat at 16-Jan-2013 02:00:12
+Skipping MultiAngle_DT_36_3.mat at 16-Jan-2013 02:00:12
+Skipping MultiAngle_DT_36_4.mat at 16-Jan-2013 02:00:12
+Skipping MultiAngle_DT_36_5.mat at 16-Jan-2013 02:00:12
+Skipping MultiAngle_DT_36_6.mat at 16-Jan-2013 02:00:12
+Skipping MultiAngle_DT_36_7.mat at 16-Jan-2013 02:00:12
+Skipping MultiAngle_DT_36_8.mat at 16-Jan-2013 02:00:12
+Skipping MultiAngle_DT_36_9.mat at 16-Jan-2013 02:00:12
+Skipping MultiAngle_DT_36_10.mat at 16-Jan-2013 02:00:12
+Skipping MultiAngle_DT_36_11.mat at 16-Jan-2013 02:00:12
+Skipping MultiAngle_DT_36_12.mat at 16-Jan-2013 02:00:12
+Skipping MultiAngle_DT_37_1.mat at 16-Jan-2013 02:00:17
+Skipping MultiAngle_DT_37_2.mat at 16-Jan-2013 02:00:17
+Skipping MultiAngle_DT_37_3.mat at 16-Jan-2013 02:00:17
+Skipping MultiAngle_DT_37_4.mat at 16-Jan-2013 02:00:17
+Skipping MultiAngle_DT_37_5.mat at 16-Jan-2013 02:00:17
+Skipping MultiAngle_DT_37_6.mat at 16-Jan-2013 02:00:17
+Skipping MultiAngle_DT_37_7.mat at 16-Jan-2013 02:00:17
+Skipping MultiAngle_DT_37_8.mat at 16-Jan-2013 02:00:17
+Skipping MultiAngle_DT_37_9_PH.mat at 16-Jan-2013 02:00:17
+Skipping MultiAngle_DT_37_10.mat at 16-Jan-2013 02:00:17
+Skipping MultiAngle_DT_37_11.mat at 16-Jan-2013 02:00:17
+Skipping MultiAngle_DT_37_12.mat at 16-Jan-2013 02:00:17
+Skipping MultiAngle_DT_38_1.mat at 16-Jan-2013 02:00:21
+Skipping MultiAngle_DT_38_2.mat at 16-Jan-2013 02:00:21
+Skipping MultiAngle_DT_38_3.mat at 16-Jan-2013 02:00:21
+Skipping MultiAngle_DT_38_4.mat at 16-Jan-2013 02:00:21
+Skipping MultiAngle_DT_38_5.mat at 16-Jan-2013 02:00:21
+Skipping MultiAngle_DT_38_6.mat at 16-Jan-2013 02:00:21
+Skipping MultiAngle_DT_38_7.mat at 16-Jan-2013 02:00:21
+Skipping MultiAngle_DT_38_8.mat at 16-Jan-2013 02:00:21
+Skipping MultiAngle_DT_38_9.mat at 16-Jan-2013 02:00:21
+Skipping MultiAngle_DT_38_10.mat at 16-Jan-2013 02:00:21
+Skipping MultiAngle_DT_38_11.mat at 16-Jan-2013 02:00:21
+Skipping MultiAngle_DT_38_12.mat at 16-Jan-2013 02:00:21
+Skipping MultiAngle_DT_39_1.mat at 16-Jan-2013 02:00:26
+Skipping MultiAngle_DT_39_2.mat at 16-Jan-2013 02:00:26
+Skipping MultiAngle_DT_39_3.mat at 16-Jan-2013 02:00:26
+Skipping MultiAngle_DT_39_4.mat at 16-Jan-2013 02:00:26
+Skipping MultiAngle_DT_39_5.mat at 16-Jan-2013 02:00:26
+Skipping MultiAngle_DT_39_6.mat at 16-Jan-2013 02:00:26
+Skipping MultiAngle_DT_39_7.mat at 16-Jan-2013 02:00:26
+Skipping MultiAngle_DT_39_8.mat at 16-Jan-2013 02:00:26
+Skipping MultiAngle_DT_39_9.mat at 16-Jan-2013 02:00:26
+Skipping MultiAngle_DT_39_10.mat at 16-Jan-2013 02:00:26
+Skipping MultiAngle_DT_39_11.mat at 16-Jan-2013 02:00:26
+Skipping MultiAngle_DT_39_12.mat at 16-Jan-2013 02:00:26
+Skipping MultiAngle_DT_3_1.mat at 16-Jan-2013 02:00:30
+Skipping MultiAngle_DT_3_2.mat at 16-Jan-2013 02:00:30
+Skipping MultiAngle_DT_3_3.mat at 16-Jan-2013 02:00:30
+Skipping MultiAngle_DT_3_4.mat at 16-Jan-2013 02:00:30
+Skipping MultiAngle_DT_3_5.mat at 16-Jan-2013 02:00:30
+Skipping MultiAngle_DT_3_6.mat at 16-Jan-2013 02:00:30
+Skipping MultiAngle_DT_3_7.mat at 16-Jan-2013 02:00:30
+Skipping MultiAngle_DT_3_8.mat at 16-Jan-2013 02:00:30
+Skipping MultiAngle_DT_3_9.mat at 16-Jan-2013 02:00:30
+Skipping MultiAngle_DT_3_10.mat at 16-Jan-2013 02:00:30
+Skipping MultiAngle_DT_3_11.mat at 16-Jan-2013 02:00:30
+Skipping MultiAngle_DT_3_12.mat at 16-Jan-2013 02:00:30
+Skipping MultiAngle_DT_40_1.mat at 16-Jan-2013 02:00:35
+Skipping MultiAngle_DT_40_2.mat at 16-Jan-2013 02:00:35
+Skipping MultiAngle_DT_40_3.mat at 16-Jan-2013 02:00:35
+Skipping MultiAngle_DT_40_4.mat at 16-Jan-2013 02:00:35
+Skipping MultiAngle_DT_40_5.mat at 16-Jan-2013 02:00:35
+Skipping MultiAngle_DT_40_6.mat at 16-Jan-2013 02:00:35
+Skipping MultiAngle_DT_40_7.mat at 16-Jan-2013 02:00:35
+Skipping MultiAngle_DT_40_8.mat at 16-Jan-2013 02:00:35
+Skipping MultiAngle_DT_40_9_PH.mat at 16-Jan-2013 02:00:35
+Skipping MultiAngle_DT_40_10_PH.mat at 16-Jan-2013 02:00:35
+Skipping MultiAngle_DT_40_11.mat at 16-Jan-2013 02:00:35
+Skipping MultiAngle_DT_40_12.mat at 16-Jan-2013 02:00:35
+Skipping MultiAngle_DT_41_1.mat at 16-Jan-2013 02:00:39
+Skipping MultiAngle_DT_41_2.mat at 16-Jan-2013 02:00:39
+Skipping MultiAngle_DT_41_3.mat at 16-Jan-2013 02:00:39
+Skipping MultiAngle_DT_41_4.mat at 16-Jan-2013 02:00:39
+Skipping MultiAngle_DT_41_5.mat at 16-Jan-2013 02:00:39
+Skipping MultiAngle_DT_41_6.mat at 16-Jan-2013 02:00:39
+Skipping MultiAngle_DT_41_7.mat at 16-Jan-2013 02:00:39
+Skipping MultiAngle_DT_41_8.mat at 16-Jan-2013 02:00:39
+Skipping MultiAngle_DT_41_9.mat at 16-Jan-2013 02:00:39
+Skipping MultiAngle_DT_41_10.mat at 16-Jan-2013 02:00:39
+Skipping MultiAngle_DT_41_11.mat at 16-Jan-2013 02:00:39
+Skipping MultiAngle_DT_41_12.mat at 16-Jan-2013 02:00:39
+Skipping MultiAngle_DT_42_1.mat at 16-Jan-2013 02:00:45
+Skipping MultiAngle_DT_42_2.mat at 16-Jan-2013 02:00:45
+Skipping MultiAngle_DT_42_3.mat at 16-Jan-2013 02:00:45
+Skipping MultiAngle_DT_42_4.mat at 16-Jan-2013 02:00:45
+Skipping MultiAngle_DT_42_5.mat at 16-Jan-2013 02:00:45
+Skipping MultiAngle_DT_42_6.mat at 16-Jan-2013 02:00:45
+Skipping MultiAngle_DT_42_7.mat at 16-Jan-2013 02:00:45
+Skipping MultiAngle_DT_42_8.mat at 16-Jan-2013 02:00:45
+Skipping MultiAngle_DT_42_9.mat at 16-Jan-2013 02:00:45
+Skipping MultiAngle_DT_42_10.mat at 16-Jan-2013 02:00:45
+Skipping MultiAngle_DT_42_11.mat at 16-Jan-2013 02:00:45
+Skipping MultiAngle_DT_42_12.mat at 16-Jan-2013 02:00:45
+Skipping MultiAngle_DT_43_1.mat at 16-Jan-2013 02:00:49
+Skipping MultiAngle_DT_43_2.mat at 16-Jan-2013 02:00:49
+Skipping MultiAngle_DT_43_3.mat at 16-Jan-2013 02:00:49
+Skipping MultiAngle_DT_43_4.mat at 16-Jan-2013 02:00:49
+Skipping MultiAngle_DT_43_5.mat at 16-Jan-2013 02:00:49
+Skipping MultiAngle_DT_43_6.mat at 16-Jan-2013 02:00:49
+Skipping MultiAngle_DT_43_7.mat at 16-Jan-2013 02:00:49
+Skipping MultiAngle_DT_43_8_PH.mat at 16-Jan-2013 02:00:49
+Skipping MultiAngle_DT_43_9.mat at 16-Jan-2013 02:00:49
+Skipping MultiAngle_DT_43_10.mat at 16-Jan-2013 02:00:49
+Skipping MultiAngle_DT_43_11_PH.mat at 16-Jan-2013 02:00:49
+Skipping MultiAngle_DT_43_12.mat at 16-Jan-2013 02:00:49
+Skipping MultiAngle_DT_44_1.mat at 16-Jan-2013 02:00:53
+Skipping MultiAngle_DT_44_2.mat at 16-Jan-2013 02:00:53
+Skipping MultiAngle_DT_44_3.mat at 16-Jan-2013 02:00:53
+Skipping MultiAngle_DT_44_4.mat at 16-Jan-2013 02:00:53
+Skipping MultiAngle_DT_44_5.mat at 16-Jan-2013 02:00:53
+Skipping MultiAngle_DT_44_6.mat at 16-Jan-2013 02:00:53
+Skipping MultiAngle_DT_44_7.mat at 16-Jan-2013 02:00:53
+Skipping MultiAngle_DT_44_8.mat at 16-Jan-2013 02:00:53
+Skipping MultiAngle_DT_44_9.mat at 16-Jan-2013 02:00:53
+Skipping MultiAngle_DT_44_10.mat at 16-Jan-2013 02:00:53
+Skipping MultiAngle_DT_44_11.mat at 16-Jan-2013 02:00:53
+Skipping MultiAngle_DT_45_1.mat at 16-Jan-2013 02:00:58
+Skipping MultiAngle_DT_45_2.mat at 16-Jan-2013 02:00:58
+Skipping MultiAngle_DT_45_3.mat at 16-Jan-2013 02:00:58
+Skipping MultiAngle_DT_45_4.mat at 16-Jan-2013 02:00:58
+Skipping MultiAngle_DT_45_5.mat at 16-Jan-2013 02:00:58
+Skipping MultiAngle_DT_45_6.mat at 16-Jan-2013 02:00:58
+Skipping MultiAngle_DT_45_7.mat at 16-Jan-2013 02:00:58
+Skipping MultiAngle_DT_45_8.mat at 16-Jan-2013 02:00:58
+Skipping MultiAngle_DT_45_9.mat at 16-Jan-2013 02:00:58
+Skipping MultiAngle_DT_45_10.mat at 16-Jan-2013 02:00:58
+Skipping MultiAngle_DT_45_11.mat at 16-Jan-2013 02:00:58
+Skipping MultiAngle_DT_45_12.mat at 16-Jan-2013 02:00:58
+Skipping MultiAngle_DT_46_1.mat at 16-Jan-2013 02:01:02
+Skipping MultiAngle_DT_46_2.mat at 16-Jan-2013 02:01:02
+Skipping MultiAngle_DT_46_3.mat at 16-Jan-2013 02:01:02
+Skipping MultiAngle_DT_46_4.mat at 16-Jan-2013 02:01:02
+Skipping MultiAngle_DT_46_5.mat at 16-Jan-2013 02:01:02
+Skipping MultiAngle_DT_46_6.mat at 16-Jan-2013 02:01:02
+Skipping MultiAngle_DT_46_7.mat at 16-Jan-2013 02:01:02
+Skipping MultiAngle_DT_46_8_PH.mat at 16-Jan-2013 02:01:02
+Skipping MultiAngle_DT_46_9.mat at 16-Jan-2013 02:01:02
+Skipping MultiAngle_DT_46_10.mat at 16-Jan-2013 02:01:02
+Skipping MultiAngle_DT_46_11.mat at 16-Jan-2013 02:01:02
+Skipping MultiAngle_DT_46_12.mat at 16-Jan-2013 02:01:02
+Skipping MultiAngle_DT_47_1_PH.mat at 16-Jan-2013 02:01:07
+Skipping MultiAngle_DT_47_2.mat at 16-Jan-2013 02:01:07
+Skipping MultiAngle_DT_47_3.mat at 16-Jan-2013 02:01:07
+Skipping MultiAngle_DT_47_4.mat at 16-Jan-2013 02:01:07
+Skipping MultiAngle_DT_47_5.mat at 16-Jan-2013 02:01:07
+Skipping MultiAngle_DT_47_6.mat at 16-Jan-2013 02:01:07
+Skipping MultiAngle_DT_47_7.mat at 16-Jan-2013 02:01:07
+Skipping MultiAngle_DT_47_8_PH.mat at 16-Jan-2013 02:01:07
+Skipping MultiAngle_DT_47_9.mat at 16-Jan-2013 02:01:07
+Skipping MultiAngle_DT_47_10.mat at 16-Jan-2013 02:01:07
+Skipping MultiAngle_DT_47_11.mat at 16-Jan-2013 02:01:07
+Skipping MultiAngle_DT_47_12.mat at 16-Jan-2013 02:01:07
+Skipping MultiAngle_DT_48_1.mat at 16-Jan-2013 02:01:11
+Skipping MultiAngle_DT_48_2.mat at 16-Jan-2013 02:01:11
+Skipping MultiAngle_DT_48_3.mat at 16-Jan-2013 02:01:11
+Skipping MultiAngle_DT_48_4.mat at 16-Jan-2013 02:01:11
+Skipping MultiAngle_DT_48_5.mat at 16-Jan-2013 02:01:11
+Skipping MultiAngle_DT_48_6.mat at 16-Jan-2013 02:01:11
+Skipping MultiAngle_DT_48_7_PH.mat at 16-Jan-2013 02:01:11
+Skipping MultiAngle_DT_48_8.mat at 16-Jan-2013 02:01:11
+Skipping MultiAngle_DT_48_9.mat at 16-Jan-2013 02:01:11
+Skipping MultiAngle_DT_48_10.mat at 16-Jan-2013 02:01:11
+Skipping MultiAngle_DT_48_11.mat at 16-Jan-2013 02:01:11
+Skipping MultiAngle_DT_48_12.mat at 16-Jan-2013 02:01:11
+Skipping MultiAngle_DT_49_1.mat at 16-Jan-2013 02:01:16
+Skipping MultiAngle_DT_49_2.mat at 16-Jan-2013 02:01:16
+Skipping MultiAngle_DT_49_3.mat at 16-Jan-2013 02:01:16
+Skipping MultiAngle_DT_49_4.mat at 16-Jan-2013 02:01:16
+Skipping MultiAngle_DT_49_5_PH.mat at 16-Jan-2013 02:01:16
+Skipping MultiAngle_DT_49_6.mat at 16-Jan-2013 02:01:16
+Skipping MultiAngle_DT_49_7.mat at 16-Jan-2013 02:01:16
+Skipping MultiAngle_DT_49_8.mat at 16-Jan-2013 02:01:16
+Skipping MultiAngle_DT_49_9.mat at 16-Jan-2013 02:01:16
+Skipping MultiAngle_DT_49_10.mat at 16-Jan-2013 02:01:16
+Skipping MultiAngle_DT_49_11.mat at 16-Jan-2013 02:01:16
+Skipping MultiAngle_DT_49_12.mat at 16-Jan-2013 02:01:16
+Skipping MultiAngle_DT_4_1.mat at 16-Jan-2013 02:01:20
+Skipping MultiAngle_DT_4_2.mat at 16-Jan-2013 02:01:20
+Skipping MultiAngle_DT_4_3.mat at 16-Jan-2013 02:01:20
+Skipping MultiAngle_DT_4_4.mat at 16-Jan-2013 02:01:20
+Skipping MultiAngle_DT_4_5.mat at 16-Jan-2013 02:01:20
+Skipping MultiAngle_DT_4_6.mat at 16-Jan-2013 02:01:20
+Skipping MultiAngle_DT_4_7.mat at 16-Jan-2013 02:01:20
+Skipping MultiAngle_DT_4_8.mat at 16-Jan-2013 02:01:20
+Skipping MultiAngle_DT_4_9.mat at 16-Jan-2013 02:01:20
+Skipping MultiAngle_DT_4_10.mat at 16-Jan-2013 02:01:20
+Skipping MultiAngle_DT_4_11.mat at 16-Jan-2013 02:01:20
+Skipping MultiAngle_DT_4_12.mat at 16-Jan-2013 02:01:20
+Skipping MultiAngle_DT_50_1.mat at 16-Jan-2013 02:01:31
+Skipping MultiAngle_DT_50_2.mat at 16-Jan-2013 02:01:31
+Skipping MultiAngle_DT_50_3.mat at 16-Jan-2013 02:01:31
+Skipping MultiAngle_DT_50_4.mat at 16-Jan-2013 02:01:31
+Skipping MultiAngle_DT_50_5.mat at 16-Jan-2013 02:01:31
+Skipping MultiAngle_DT_50_6.mat at 16-Jan-2013 02:01:31
+Skipping MultiAngle_DT_50_7.mat at 16-Jan-2013 02:01:31
+Skipping MultiAngle_DT_50_8.mat at 16-Jan-2013 02:01:31
+Skipping MultiAngle_DT_50_9.mat at 16-Jan-2013 02:01:31
+Skipping MultiAngle_DT_50_10.mat at 16-Jan-2013 02:01:31
+Skipping MultiAngle_DT_50_11.mat at 16-Jan-2013 02:01:31
+Skipping MultiAngle_DT_51_1.mat at 16-Jan-2013 02:01:36
+Skipping MultiAngle_DT_51_2_PH.mat at 16-Jan-2013 02:01:36
+Skipping MultiAngle_DT_51_3.mat at 16-Jan-2013 02:01:36
+Skipping MultiAngle_DT_51_4.mat at 16-Jan-2013 02:01:36
+Skipping MultiAngle_DT_51_5.mat at 16-Jan-2013 02:01:36
+Skipping MultiAngle_DT_51_6.mat at 16-Jan-2013 02:01:36
+Skipping MultiAngle_DT_51_7.mat at 16-Jan-2013 02:01:36
+Skipping MultiAngle_DT_51_8.mat at 16-Jan-2013 02:01:36
+Skipping MultiAngle_DT_51_9.mat at 16-Jan-2013 02:01:36
+Skipping MultiAngle_DT_51_10.mat at 16-Jan-2013 02:01:36
+Skipping MultiAngle_DT_51_11.mat at 16-Jan-2013 02:01:36
+Skipping MultiAngle_DT_51_12.mat at 16-Jan-2013 02:01:36
+Skipping MultiAngle_DT_52_1.mat at 16-Jan-2013 02:01:40
+Skipping MultiAngle_DT_52_2.mat at 16-Jan-2013 02:01:40
+Skipping MultiAngle_DT_52_3.mat at 16-Jan-2013 02:01:40
+Skipping MultiAngle_DT_52_4.mat at 16-Jan-2013 02:01:40
+Skipping MultiAngle_DT_52_5.mat at 16-Jan-2013 02:01:40
+Skipping MultiAngle_DT_52_6.mat at 16-Jan-2013 02:01:40
+Skipping MultiAngle_DT_52_7.mat at 16-Jan-2013 02:01:40
+Skipping MultiAngle_DT_52_8.mat at 16-Jan-2013 02:01:40
+Skipping MultiAngle_DT_52_9.mat at 16-Jan-2013 02:01:40
+Skipping MultiAngle_DT_52_10_PH.mat at 16-Jan-2013 02:01:40
+Skipping MultiAngle_DT_52_11.mat at 16-Jan-2013 02:01:40
+Skipping MultiAngle_DT_52_12.mat at 16-Jan-2013 02:01:40
+Skipping MultiAngle_DT_53_1.mat at 16-Jan-2013 02:01:45
+Skipping MultiAngle_DT_53_2.mat at 16-Jan-2013 02:01:45
+Skipping MultiAngle_DT_53_3.mat at 16-Jan-2013 02:01:45
+Skipping MultiAngle_DT_53_4.mat at 16-Jan-2013 02:01:45
+Skipping MultiAngle_DT_53_5.mat at 16-Jan-2013 02:01:45
+Skipping MultiAngle_DT_53_6_PH.mat at 16-Jan-2013 02:01:45
+Skipping MultiAngle_DT_53_7.mat at 16-Jan-2013 02:01:45
+Skipping MultiAngle_DT_53_8.mat at 16-Jan-2013 02:01:45
+Skipping MultiAngle_DT_53_9.mat at 16-Jan-2013 02:01:45
+Skipping MultiAngle_DT_53_10.mat at 16-Jan-2013 02:01:45
+Skipping MultiAngle_DT_53_11.mat at 16-Jan-2013 02:01:45
+Skipping MultiAngle_DT_53_12.mat at 16-Jan-2013 02:01:45
+Skipping MultiAngle_DT_54_1.mat at 16-Jan-2013 02:01:49
+Skipping MultiAngle_DT_54_2.mat at 16-Jan-2013 02:01:49
+Skipping MultiAngle_DT_54_3.mat at 16-Jan-2013 02:01:49
+Skipping MultiAngle_DT_54_4.mat at 16-Jan-2013 02:01:49
+Skipping MultiAngle_DT_54_5.mat at 16-Jan-2013 02:01:49
+Skipping MultiAngle_DT_54_6.mat at 16-Jan-2013 02:01:49
+Skipping MultiAngle_DT_54_7.mat at 16-Jan-2013 02:01:49
+Skipping MultiAngle_DT_54_8.mat at 16-Jan-2013 02:01:49
+Skipping MultiAngle_DT_54_9.mat at 16-Jan-2013 02:01:49
+Skipping MultiAngle_DT_54_10.mat at 16-Jan-2013 02:01:49
+Skipping MultiAngle_DT_54_11.mat at 16-Jan-2013 02:01:49
+Skipping MultiAngle_DT_54_12.mat at 16-Jan-2013 02:01:49
+Skipping MultiAngle_DT_55_1.mat at 16-Jan-2013 02:01:54
+Skipping MultiAngle_DT_55_2.mat at 16-Jan-2013 02:01:54
+Skipping MultiAngle_DT_55_3.mat at 16-Jan-2013 02:01:54
+Skipping MultiAngle_DT_55_4.mat at 16-Jan-2013 02:01:54
+Skipping MultiAngle_DT_55_5.mat at 16-Jan-2013 02:01:54
+Skipping MultiAngle_DT_55_6.mat at 16-Jan-2013 02:01:54
+Skipping MultiAngle_DT_55_7.mat at 16-Jan-2013 02:01:54
+Skipping MultiAngle_DT_55_8.mat at 16-Jan-2013 02:01:54
+Skipping MultiAngle_DT_55_9.mat at 16-Jan-2013 02:01:54
+Skipping MultiAngle_DT_55_10.mat at 16-Jan-2013 02:01:54
+Skipping MultiAngle_DT_55_11.mat at 16-Jan-2013 02:01:54
+Skipping MultiAngle_DT_55_12.mat at 16-Jan-2013 02:01:54
+Skipping MultiAngle_DT_56_1.mat at 16-Jan-2013 02:01:58
+Skipping MultiAngle_DT_56_2.mat at 16-Jan-2013 02:01:58
+Skipping MultiAngle_DT_56_3.mat at 16-Jan-2013 02:01:58
+Skipping MultiAngle_DT_56_4.mat at 16-Jan-2013 02:01:58
+Skipping MultiAngle_DT_56_5.mat at 16-Jan-2013 02:01:58
+Skipping MultiAngle_DT_56_6.mat at 16-Jan-2013 02:01:58
+Skipping MultiAngle_DT_56_7.mat at 16-Jan-2013 02:01:58
+Skipping MultiAngle_DT_56_8.mat at 16-Jan-2013 02:01:58
+Skipping MultiAngle_DT_56_9.mat at 16-Jan-2013 02:01:58
+Skipping MultiAngle_DT_56_10.mat at 16-Jan-2013 02:01:58
+Skipping MultiAngle_DT_56_11.mat at 16-Jan-2013 02:01:58
+Skipping MultiAngle_DT_56_12.mat at 16-Jan-2013 02:01:58
+Skipping MultiAngle_DT_57_1.mat at 16-Jan-2013 02:02:03
+Skipping MultiAngle_DT_57_2.mat at 16-Jan-2013 02:02:03
+Skipping MultiAngle_DT_57_3.mat at 16-Jan-2013 02:02:03
+Skipping MultiAngle_DT_57_4.mat at 16-Jan-2013 02:02:03
+Skipping MultiAngle_DT_57_5.mat at 16-Jan-2013 02:02:03
+Skipping MultiAngle_DT_57_6.mat at 16-Jan-2013 02:02:03
+Skipping MultiAngle_DT_57_7.mat at 16-Jan-2013 02:02:03
+Skipping MultiAngle_DT_57_8.mat at 16-Jan-2013 02:02:03
+Skipping MultiAngle_DT_57_9.mat at 16-Jan-2013 02:02:03
+Skipping MultiAngle_DT_57_10.mat at 16-Jan-2013 02:02:03
+Skipping MultiAngle_DT_57_11.mat at 16-Jan-2013 02:02:03
+Skipping MultiAngle_DT_57_12.mat at 16-Jan-2013 02:02:03
+Skipping MultiAngle_DT_58_1.mat at 16-Jan-2013 02:02:07
+Skipping MultiAngle_DT_58_2.mat at 16-Jan-2013 02:02:07
+Skipping MultiAngle_DT_58_3.mat at 16-Jan-2013 02:02:07
+Skipping MultiAngle_DT_58_4.mat at 16-Jan-2013 02:02:07
+Skipping MultiAngle_DT_58_5.mat at 16-Jan-2013 02:02:07
+Skipping MultiAngle_DT_58_6.mat at 16-Jan-2013 02:02:07
+Skipping MultiAngle_DT_58_7.mat at 16-Jan-2013 02:02:07
+Skipping MultiAngle_DT_58_8.mat at 16-Jan-2013 02:02:07
+Skipping MultiAngle_DT_58_9.mat at 16-Jan-2013 02:02:07
+Skipping MultiAngle_DT_58_10.mat at 16-Jan-2013 02:02:07
+Skipping MultiAngle_DT_58_11.mat at 16-Jan-2013 02:02:07
+Skipping MultiAngle_DT_58_12.mat at 16-Jan-2013 02:02:07
+Skipping MultiAngle_DT_59_1.mat at 16-Jan-2013 02:02:14
+Skipping MultiAngle_DT_59_2.mat at 16-Jan-2013 02:02:14
+Skipping MultiAngle_DT_59_3.mat at 16-Jan-2013 02:02:14
+Skipping MultiAngle_DT_59_4.mat at 16-Jan-2013 02:02:14
+Skipping MultiAngle_DT_59_5.mat at 16-Jan-2013 02:02:14
+Skipping MultiAngle_DT_59_6.mat at 16-Jan-2013 02:02:14
+Skipping MultiAngle_DT_59_7.mat at 16-Jan-2013 02:02:14
+Skipping MultiAngle_DT_59_8.mat at 16-Jan-2013 02:02:14
+Skipping MultiAngle_DT_59_9_PH.mat at 16-Jan-2013 02:02:14
+Skipping MultiAngle_DT_59_10.mat at 16-Jan-2013 02:02:14
+Skipping MultiAngle_DT_59_11.mat at 16-Jan-2013 02:02:14
+Skipping MultiAngle_DT_5_1.mat at 16-Jan-2013 02:02:18
+Skipping MultiAngle_DT_5_2_PH.mat at 16-Jan-2013 02:02:18
+Skipping MultiAngle_DT_5_3.mat at 16-Jan-2013 02:02:18
+Skipping MultiAngle_DT_5_4.mat at 16-Jan-2013 02:02:18
+Skipping MultiAngle_DT_5_5.mat at 16-Jan-2013 02:02:18
+Skipping MultiAngle_DT_5_6.mat at 16-Jan-2013 02:02:18
+Skipping MultiAngle_DT_5_7.mat at 16-Jan-2013 02:02:18
+Skipping MultiAngle_DT_5_8.mat at 16-Jan-2013 02:02:18
+Skipping MultiAngle_DT_5_9.mat at 16-Jan-2013 02:02:18
+Skipping MultiAngle_DT_5_10.mat at 16-Jan-2013 02:02:18
+Skipping MultiAngle_DT_5_11.mat at 16-Jan-2013 02:02:18
+Skipping MultiAngle_DT_5_12_PH.mat at 16-Jan-2013 02:02:18
+Skipping MultiAngle_DT_60_1.mat at 16-Jan-2013 02:02:23
+Skipping MultiAngle_DT_60_2.mat at 16-Jan-2013 02:02:23
+Skipping MultiAngle_DT_60_3.mat at 16-Jan-2013 02:02:23
+Skipping MultiAngle_DT_60_4.mat at 16-Jan-2013 02:02:23
+Skipping MultiAngle_DT_60_5.mat at 16-Jan-2013 02:02:23
+Skipping MultiAngle_DT_60_6.mat at 16-Jan-2013 02:02:23
+Skipping MultiAngle_DT_60_7.mat at 16-Jan-2013 02:02:23
+Skipping MultiAngle_DT_60_8.mat at 16-Jan-2013 02:02:23
+Skipping MultiAngle_DT_60_9.mat at 16-Jan-2013 02:02:23
+Skipping MultiAngle_DT_60_10.mat at 16-Jan-2013 02:02:23
+Skipping MultiAngle_DT_60_11.mat at 16-Jan-2013 02:02:23
+Skipping MultiAngle_DT_60_12.mat at 16-Jan-2013 02:02:23
+Skipping MultiAngle_DT_61_1.mat at 16-Jan-2013 02:02:27
+Skipping MultiAngle_DT_61_2.mat at 16-Jan-2013 02:02:27
+Skipping MultiAngle_DT_61_3.mat at 16-Jan-2013 02:02:27
+Skipping MultiAngle_DT_61_4.mat at 16-Jan-2013 02:02:27
+Skipping MultiAngle_DT_61_5.mat at 16-Jan-2013 02:02:27
+Skipping MultiAngle_DT_61_6.mat at 16-Jan-2013 02:02:27
+Skipping MultiAngle_DT_61_7.mat at 16-Jan-2013 02:02:27
+Skipping MultiAngle_DT_61_8.mat at 16-Jan-2013 02:02:27
+Skipping MultiAngle_DT_61_9.mat at 16-Jan-2013 02:02:27
+Skipping MultiAngle_DT_61_10.mat at 16-Jan-2013 02:02:27
+Skipping MultiAngle_DT_61_11.mat at 16-Jan-2013 02:02:27
+Skipping MultiAngle_DT_61_12.mat at 16-Jan-2013 02:02:27
+Skipping MultiAngle_DT_62_1.mat at 16-Jan-2013 02:02:31
+Skipping MultiAngle_DT_62_2.mat at 16-Jan-2013 02:02:31
+Skipping MultiAngle_DT_62_3.mat at 16-Jan-2013 02:02:31
+Skipping MultiAngle_DT_62_4.mat at 16-Jan-2013 02:02:31
+Skipping MultiAngle_DT_62_5.mat at 16-Jan-2013 02:02:31
+Skipping MultiAngle_DT_62_6.mat at 16-Jan-2013 02:02:31
+Skipping MultiAngle_DT_62_7.mat at 16-Jan-2013 02:02:31
+Skipping MultiAngle_DT_62_8.mat at 16-Jan-2013 02:02:31
+Skipping MultiAngle_DT_62_9.mat at 16-Jan-2013 02:02:31
+Skipping MultiAngle_DT_62_10.mat at 16-Jan-2013 02:02:31
+Skipping MultiAngle_DT_62_11.mat at 16-Jan-2013 02:02:31
+Skipping MultiAngle_DT_62_12.mat at 16-Jan-2013 02:02:31
+Skipping MultiAngle_DT_63_1.mat at 16-Jan-2013 02:02:36
+Skipping MultiAngle_DT_63_2.mat at 16-Jan-2013 02:02:36
+Skipping MultiAngle_DT_63_3.mat at 16-Jan-2013 02:02:36
+Skipping MultiAngle_DT_63_4.mat at 16-Jan-2013 02:02:36
+Skipping MultiAngle_DT_63_5.mat at 16-Jan-2013 02:02:36
+Skipping MultiAngle_DT_63_6.mat at 16-Jan-2013 02:02:36
+Skipping MultiAngle_DT_63_7.mat at 16-Jan-2013 02:02:36
+Skipping MultiAngle_DT_63_8.mat at 16-Jan-2013 02:02:36
+Skipping MultiAngle_DT_63_9.mat at 16-Jan-2013 02:02:36
+Skipping MultiAngle_DT_63_10.mat at 16-Jan-2013 02:02:36
+Skipping MultiAngle_DT_63_11.mat at 16-Jan-2013 02:02:36
+Skipping MultiAngle_DT_63_12.mat at 16-Jan-2013 02:02:36
+Skipping MultiAngle_DT_64_1.mat at 16-Jan-2013 02:02:41
+Skipping MultiAngle_DT_64_2.mat at 16-Jan-2013 02:02:41
+Skipping MultiAngle_DT_64_3.mat at 16-Jan-2013 02:02:41
+Skipping MultiAngle_DT_64_4.mat at 16-Jan-2013 02:02:41
+Skipping MultiAngle_DT_64_5.mat at 16-Jan-2013 02:02:41
+Skipping MultiAngle_DT_64_6.mat at 16-Jan-2013 02:02:41
+Skipping MultiAngle_DT_64_7.mat at 16-Jan-2013 02:02:41
+Skipping MultiAngle_DT_64_8.mat at 16-Jan-2013 02:02:41
+Skipping MultiAngle_DT_64_9.mat at 16-Jan-2013 02:02:41
+Skipping MultiAngle_DT_64_10.mat at 16-Jan-2013 02:02:41
+Skipping MultiAngle_DT_64_11_PH.mat at 16-Jan-2013 02:02:41
+Skipping MultiAngle_DT_64_12.mat at 16-Jan-2013 02:02:41
+Skipping MultiAngle_DT_65_1.mat at 16-Jan-2013 02:02:45
+Skipping MultiAngle_DT_65_2.mat at 16-Jan-2013 02:02:45
+Skipping MultiAngle_DT_65_3.mat at 16-Jan-2013 02:02:45
+Skipping MultiAngle_DT_65_4.mat at 16-Jan-2013 02:02:45
+Skipping MultiAngle_DT_65_5.mat at 16-Jan-2013 02:02:45
+Skipping MultiAngle_DT_65_6.mat at 16-Jan-2013 02:02:45
+Skipping MultiAngle_DT_65_7.mat at 16-Jan-2013 02:02:45
+Skipping MultiAngle_DT_65_8.mat at 16-Jan-2013 02:02:45
+Skipping MultiAngle_DT_65_9.mat at 16-Jan-2013 02:02:45
+Skipping MultiAngle_DT_65_10.mat at 16-Jan-2013 02:02:45
+Skipping MultiAngle_DT_65_11.mat at 16-Jan-2013 02:02:45
+Skipping MultiAngle_DT_65_12.mat at 16-Jan-2013 02:02:45
+Skipping MultiAngle_DT_66_1.mat at 16-Jan-2013 02:02:49
+Skipping MultiAngle_DT_66_2.mat at 16-Jan-2013 02:02:49
+Skipping MultiAngle_DT_66_3.mat at 16-Jan-2013 02:02:49
+Skipping MultiAngle_DT_66_4.mat at 16-Jan-2013 02:02:49
+Skipping MultiAngle_DT_66_5.mat at 16-Jan-2013 02:02:49
+Skipping MultiAngle_DT_66_6.mat at 16-Jan-2013 02:02:49
+Skipping MultiAngle_DT_66_7.mat at 16-Jan-2013 02:02:49
+Skipping MultiAngle_DT_66_8.mat at 16-Jan-2013 02:02:49
+Skipping MultiAngle_DT_66_9.mat at 16-Jan-2013 02:02:49
+Skipping MultiAngle_DT_66_10.mat at 16-Jan-2013 02:02:49
+Skipping MultiAngle_DT_66_11.mat at 16-Jan-2013 02:02:49
+Skipping MultiAngle_DT_66_12.mat at 16-Jan-2013 02:02:49
+Skipping MultiAngle_DT_67_1.mat at 16-Jan-2013 02:02:54
+Skipping MultiAngle_DT_67_2.mat at 16-Jan-2013 02:02:54
+Skipping MultiAngle_DT_67_3.mat at 16-Jan-2013 02:02:54
+Skipping MultiAngle_DT_67_4.mat at 16-Jan-2013 02:02:54
+Skipping MultiAngle_DT_67_5.mat at 16-Jan-2013 02:02:54
+Skipping MultiAngle_DT_67_6_PH.mat at 16-Jan-2013 02:02:54
+Skipping MultiAngle_DT_67_7.mat at 16-Jan-2013 02:02:54
+Skipping MultiAngle_DT_67_8.mat at 16-Jan-2013 02:02:54
+Skipping MultiAngle_DT_67_9.mat at 16-Jan-2013 02:02:54
+Skipping MultiAngle_DT_67_10.mat at 16-Jan-2013 02:02:54
+Skipping MultiAngle_DT_67_11_PH.mat at 16-Jan-2013 02:02:54
+Skipping MultiAngle_DT_67_12.mat at 16-Jan-2013 02:02:54
+Skipping MultiAngle_DT_68_1.mat at 16-Jan-2013 02:02:58
+Skipping MultiAngle_DT_68_2.mat at 16-Jan-2013 02:02:58
+Skipping MultiAngle_DT_68_3.mat at 16-Jan-2013 02:02:59
+Starting MultiAngle_DT_68_4.mat at 16-Jan-2013 02:02:59 with 668555739 bytes in memory
+Warning: encountered error "Cannot find the photon interaction for this primary electron" in Mat_MultiAngle_CCD_eTracks_662_500k_68_TRK.mat event # 3691
+Finished MultiAngle_DT_68_4.mat at 16-Jan-2013 03:01:40 with 974227018 bytes in memory
+Starting MultiAngle_DT_68_5.mat at 16-Jan-2013 03:01:40 with 974227018 bytes in memory
+Finished MultiAngle_DT_68_5.mat at 16-Jan-2013 03:56:02 with 973342597 bytes in memory
+Starting MultiAngle_DT_68_6.mat at 16-Jan-2013 03:56:02 with 973342597 bytes in memory
+Finished MultiAngle_DT_68_6.mat at 16-Jan-2013 04:50:50 with 980709913 bytes in memory
+Starting MultiAngle_DT_68_7.mat at 16-Jan-2013 04:50:50 with 980709913 bytes in memory
+Finished MultiAngle_DT_68_7.mat at 16-Jan-2013 05:46:34 with 983325636 bytes in memory
+Starting MultiAngle_DT_68_8.mat at 16-Jan-2013 05:46:34 with 983325636 bytes in memory
+Finished MultiAngle_DT_68_8.mat at 16-Jan-2013 06:49:14 with 965318168 bytes in memory
+Starting MultiAngle_DT_68_9.mat at 16-Jan-2013 06:49:14 with 965318168 bytes in memory
+Finished MultiAngle_DT_68_9.mat at 16-Jan-2013 07:27:39 with 978700486 bytes in memory
+Starting MultiAngle_DT_68_10.mat at 16-Jan-2013 07:27:39 with 978700492 bytes in memory
+Finished MultiAngle_DT_68_10.mat at 16-Jan-2013 08:12:04 with 977328099 bytes in memory
+Starting MultiAngle_DT_68_11.mat at 16-Jan-2013 08:12:04 with 977328099 bytes in memory
+Finished MultiAngle_DT_68_11.mat at 16-Jan-2013 09:29:57 with 984215547 bytes in memory
+Starting MultiAngle_DT_68_12.mat at 16-Jan-2013 09:29:57 with 984215547 bytes in memory
+Finished MultiAngle_DT_68_12.mat at 16-Jan-2013 09:46:42 with 979663502 bytes in memory
+Starting MultiAngle_DT_69_1.mat at 16-Jan-2013 09:46:47 with 676863059 bytes in memory
+Finished MultiAngle_DT_69_1.mat at 16-Jan-2013 11:06:45 with 987955048 bytes in memory
+Skipping MultiAngle_DT_69_2.mat at 16-Jan-2013 11:06:45
+Skipping MultiAngle_DT_69_3_PH.mat at 16-Jan-2013 11:06:45
+Starting MultiAngle_DT_69_4.mat at 16-Jan-2013 11:06:45 with 987955048 bytes in memory
+Finished MultiAngle_DT_69_4.mat at 16-Jan-2013 11:35:20 with 980326802 bytes in memory
+Skipping MultiAngle_DT_69_5_PH.mat at 16-Jan-2013 11:35:20
+Starting MultiAngle_DT_69_6.mat at 16-Jan-2013 11:35:20 with 980326802 bytes in memory
+Finished MultiAngle_DT_69_6.mat at 16-Jan-2013 12:09:13 with 987809312 bytes in memory
+Skipping MultiAngle_DT_69_7_PH.mat at 16-Jan-2013 12:09:13
+Starting MultiAngle_DT_69_8.mat at 16-Jan-2013 12:09:13 with 987809312 bytes in memory
+Finished MultiAngle_DT_69_8.mat at 16-Jan-2013 13:37:36 with 977895468 bytes in memory
+Skipping MultiAngle_DT_69_9.mat at 16-Jan-2013 13:37:36
+Skipping MultiAngle_DT_69_10_PH.mat at 16-Jan-2013 13:37:36
+Starting MultiAngle_DT_69_11.mat at 16-Jan-2013 13:37:36 with 977895474 bytes in memory
+Finished MultiAngle_DT_69_11.mat at 16-Jan-2013 14:04:41 with 974919450 bytes in memory
+Starting MultiAngle_DT_69_12.mat at 16-Jan-2013 14:04:41 with 974919450 bytes in memory
+Finished MultiAngle_DT_69_12.mat at 16-Jan-2013 14:08:16 with 975453170 bytes in memory
+Skipping MultiAngle_DT_6_1.mat at 16-Jan-2013 14:08:20
+Skipping MultiAngle_DT_6_2.mat at 16-Jan-2013 14:08:20
+Skipping MultiAngle_DT_6_3_PH.mat at 16-Jan-2013 14:08:20
+Skipping MultiAngle_DT_6_4_PH.mat at 16-Jan-2013 14:08:20
+Skipping MultiAngle_DT_6_5.mat at 16-Jan-2013 14:08:20
+Skipping MultiAngle_DT_6_6_PH.mat at 16-Jan-2013 14:08:20
+Starting MultiAngle_DT_6_7.mat at 16-Jan-2013 14:08:20 with 680379093 bytes in memory
+Finished MultiAngle_DT_6_7.mat at 16-Jan-2013 14:41:07 with 979240919 bytes in memory
+Starting MultiAngle_DT_6_8.mat at 16-Jan-2013 14:41:11 with 979240919 bytes in memory
+Finished MultiAngle_DT_6_8.mat at 16-Jan-2013 15:56:12 with 979304669 bytes in memory
+Skipping MultiAngle_DT_6_9_PH.mat at 16-Jan-2013 15:56:12
+Starting MultiAngle_DT_6_10.mat at 16-Jan-2013 15:56:12 with 979304675 bytes in memory
+Finished MultiAngle_DT_6_10.mat at 16-Jan-2013 16:42:16 with 990405362 bytes in memory
+Skipping MultiAngle_DT_6_11_PH.mat at 16-Jan-2013 16:42:16
+Starting MultiAngle_DT_6_12.mat at 16-Jan-2013 16:42:16 with 990405362 bytes in memory
+Finished MultiAngle_DT_6_12.mat at 16-Jan-2013 16:53:59 with 986345576 bytes in memory
+Skipping MultiAngle_DT_70_1.mat at 16-Jan-2013 16:54:14
+Skipping MultiAngle_DT_70_2.mat at 16-Jan-2013 16:54:14
+Skipping MultiAngle_DT_70_3.mat at 16-Jan-2013 16:54:14
+Skipping MultiAngle_DT_70_4_PH.mat at 16-Jan-2013 16:54:14
+Skipping MultiAngle_DT_70_5.mat at 16-Jan-2013 16:54:14
+Skipping MultiAngle_DT_70_6.mat at 16-Jan-2013 16:54:14
+Skipping MultiAngle_DT_70_7.mat at 16-Jan-2013 16:54:14
+Skipping MultiAngle_DT_70_8.mat at 16-Jan-2013 16:54:14
+Skipping MultiAngle_DT_70_9.mat at 16-Jan-2013 16:54:14
+Skipping MultiAngle_DT_70_10.mat at 16-Jan-2013 16:54:14
+Skipping MultiAngle_DT_70_11.mat at 16-Jan-2013 16:54:14
+Skipping MultiAngle_DT_70_12.mat at 16-Jan-2013 16:54:14
+Skipping MultiAngle_DT_71_1.mat at 16-Jan-2013 16:54:18
+Skipping MultiAngle_DT_71_2.mat at 16-Jan-2013 16:54:18
+Skipping MultiAngle_DT_71_3_PH.mat at 16-Jan-2013 16:54:18
+Skipping MultiAngle_DT_71_4.mat at 16-Jan-2013 16:54:18
+Skipping MultiAngle_DT_71_5.mat at 16-Jan-2013 16:54:18
+Skipping MultiAngle_DT_71_6.mat at 16-Jan-2013 16:54:18
+Skipping MultiAngle_DT_71_7.mat at 16-Jan-2013 16:54:18
+Skipping MultiAngle_DT_71_8.mat at 16-Jan-2013 16:54:18
+Skipping MultiAngle_DT_71_9.mat at 16-Jan-2013 16:54:18
+Skipping MultiAngle_DT_71_10.mat at 16-Jan-2013 16:54:18
+Skipping MultiAngle_DT_71_11.mat at 16-Jan-2013 16:54:18
+Skipping MultiAngle_DT_71_12.mat at 16-Jan-2013 16:54:18
+Skipping MultiAngle_DT_72_1.mat at 16-Jan-2013 16:54:32
+Skipping MultiAngle_DT_72_2.mat at 16-Jan-2013 16:54:32
+Skipping MultiAngle_DT_72_3.mat at 16-Jan-2013 16:54:32
+Skipping MultiAngle_DT_72_4.mat at 16-Jan-2013 16:54:32
+Skipping MultiAngle_DT_72_5.mat at 16-Jan-2013 16:54:32
+Skipping MultiAngle_DT_72_6_PH.mat at 16-Jan-2013 16:54:32
+Skipping MultiAngle_DT_72_7.mat at 16-Jan-2013 16:54:32
+Skipping MultiAngle_DT_72_8.mat at 16-Jan-2013 16:54:32
+Skipping MultiAngle_DT_72_9.mat at 16-Jan-2013 16:54:32
+Skipping MultiAngle_DT_72_10.mat at 16-Jan-2013 16:54:32
+Skipping MultiAngle_DT_72_11.mat at 16-Jan-2013 16:54:32
+Skipping MultiAngle_DT_72_12.mat at 16-Jan-2013 16:54:32
+Skipping MultiAngle_DT_73_1.mat at 16-Jan-2013 16:54:45
+Skipping MultiAngle_DT_73_2.mat at 16-Jan-2013 16:54:45
+Skipping MultiAngle_DT_73_3.mat at 16-Jan-2013 16:54:45
+Skipping MultiAngle_DT_73_4.mat at 16-Jan-2013 16:54:45
+Skipping MultiAngle_DT_73_5_PH.mat at 16-Jan-2013 16:54:45
+Skipping MultiAngle_DT_73_6.mat at 16-Jan-2013 16:54:45
+Skipping MultiAngle_DT_73_7.mat at 16-Jan-2013 16:54:45
+Skipping MultiAngle_DT_73_8.mat at 16-Jan-2013 16:54:45
+Skipping MultiAngle_DT_73_9.mat at 16-Jan-2013 16:54:45
+Skipping MultiAngle_DT_73_10.mat at 16-Jan-2013 16:54:45
+Skipping MultiAngle_DT_73_11.mat at 16-Jan-2013 16:54:45
+Skipping MultiAngle_DT_73_12.mat at 16-Jan-2013 16:54:45
+Skipping MultiAngle_DT_74_1.mat at 16-Jan-2013 16:55:03
+Skipping MultiAngle_DT_74_2.mat at 16-Jan-2013 16:55:03
+Skipping MultiAngle_DT_74_3.mat at 16-Jan-2013 16:55:03
+Skipping MultiAngle_DT_74_4.mat at 16-Jan-2013 16:55:03
+Skipping MultiAngle_DT_74_5.mat at 16-Jan-2013 16:55:03
+Skipping MultiAngle_DT_74_6.mat at 16-Jan-2013 16:55:03
+Skipping MultiAngle_DT_74_7.mat at 16-Jan-2013 16:55:03
+Skipping MultiAngle_DT_74_8.mat at 16-Jan-2013 16:55:03
+Skipping MultiAngle_DT_74_9.mat at 16-Jan-2013 16:55:03
+Skipping MultiAngle_DT_74_10.mat at 16-Jan-2013 16:55:03
+Skipping MultiAngle_DT_74_11.mat at 16-Jan-2013 16:55:03
+Skipping MultiAngle_DT_74_12.mat at 16-Jan-2013 16:55:03
+Skipping MultiAngle_DT_75_1.mat at 16-Jan-2013 16:55:13
+Skipping MultiAngle_DT_75_2.mat at 16-Jan-2013 16:55:13
+Skipping MultiAngle_DT_75_3.mat at 16-Jan-2013 16:55:13
+Skipping MultiAngle_DT_75_4.mat at 16-Jan-2013 16:55:13
+Skipping MultiAngle_DT_75_5.mat at 16-Jan-2013 16:55:13
+Skipping MultiAngle_DT_75_6.mat at 16-Jan-2013 16:55:13
+Skipping MultiAngle_DT_75_7.mat at 16-Jan-2013 16:55:13
+Skipping MultiAngle_DT_75_8.mat at 16-Jan-2013 16:55:13
+Skipping MultiAngle_DT_75_9.mat at 16-Jan-2013 16:55:13
+Skipping MultiAngle_DT_75_10.mat at 16-Jan-2013 16:55:13
+Skipping MultiAngle_DT_75_11.mat at 16-Jan-2013 16:55:13
+Skipping MultiAngle_DT_75_12.mat at 16-Jan-2013 16:55:13
+Starting MultiAngle_DT_76_1.mat at 16-Jan-2013 16:55:24 with 670158267 bytes in memory
+Finished MultiAngle_DT_76_1.mat at 16-Jan-2013 17:23:13 with 978538245 bytes in memory
+Starting MultiAngle_DT_76_2.mat at 16-Jan-2013 17:23:14 with 978538245 bytes in memory
+Finished MultiAngle_DT_76_2.mat at 16-Jan-2013 19:40:54 with 978636153 bytes in memory
+Starting MultiAngle_DT_76_3.mat at 16-Jan-2013 19:40:54 with 978636153 bytes in memory

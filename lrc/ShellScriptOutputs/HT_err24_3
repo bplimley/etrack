@@ -1,0 +1,25 @@
+{Error using matlabpool (line 126)
+Unable to checkout a license for the Parallel Computing Toolbox
+
+Error in HTparallel (line 81)
+matlabpool local 10;
+} 
+{Error using matlabpool (line 126)
+Unable to checkout a license for the Parallel Computing Toolbox
+
+Error in HTparallel (line 81)
+matlabpool local 10;
+} 
+{Error using matlabpool (line 126)
+Unable to checkout a license for the Parallel Computing Toolbox
+
+Error in HTparallel (line 81)
+matlabpool local 10;
+} 
+{Error using matlabpool (line 126)
+Unable to checkout a license for the Parallel Computing Toolbox
+
+Error in HTparallel (line 81)
+matlabpool local 10;
+} 
+

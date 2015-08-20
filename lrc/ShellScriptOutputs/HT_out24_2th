@@ -1,0 +1,484 @@
+Warning: No window system found.  Java option 'MWT' ignored
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2011 The MathWorks, Inc.
+                    R2011b (7.13.0.31) 64-bit (glnxa64)
+                                May 24, 2011
+
+ 
+To get started, type one of these: helpwin, helpdesk, or demo.
+For product information, visit www.mathworks.com.
+ 
+{Warning: Found 1 pre-existing parallel job(s) created by matlabpool that are
+running.
+You can use   'matlabpool close force local'    or create a configuration for
+the distcomp.localscheduler object and use   'matlabpool close force
+<configurationName>'    to remove all jobs created by matlabpool.} 
+{> In distcomp.interactiveclient.pRemoveOldJobs at 55
+  In distcomp.interactiveclient.start at 58
+  In MatlabpoolHelper>MatlabpoolHelper.doOpen at 250
+  In MatlabpoolHelper>MatlabpoolHelper.doMatlabpool at 102
+  In matlabpool at 131
+  In HTthreshparallel at 83} 
+Starting matlabpool using the 'local' configuration ... connected to 10 labs.
+Found 1157 files in /global/scratch/bcplimley/multi_angle/DTbatch01/ at 22-May-2013 18:03:32
+Skipping MultiAngle_HTthreshtest_15_4_PH.mat at 22-May-2013 18:03:38
+Skipping MultiAngle_HTthreshtest_21_11_PH.mat at 22-May-2013 18:03:38
+Skipping MultiAngle_HTthreshtest_27_9_PH.mat at 22-May-2013 18:03:38
+Skipping MultiAngle_HTthreshtest_34_1_PH.mat at 22-May-2013 18:03:38
+Skipping MultiAngle_HTthreshtest_3_6_PH.mat at 22-May-2013 18:03:38
+Skipping MultiAngle_HTthreshtest_46_11_PH.mat at 22-May-2013 18:03:38
+Skipping MultiAngle_HTthreshtest_51_3_PH.mat at 22-May-2013 18:03:38
+Skipping MultiAngle_HTthreshtest_56_8_PH.mat at 22-May-2013 18:03:38
+Skipping MultiAngle_HTthreshtest_60_7_PH.mat at 22-May-2013 18:03:38
+Skipping MultiAngle_HTthreshtest_65_10_PH.mat at 22-May-2013 18:03:39
+Starting MultiAngle_HTthreshtest_21_10.mat at 22-May-2013 18:03:43
+Starting MultiAngle_HTthreshtest_33_9.mat at 22-May-2013 18:03:43
+Starting MultiAngle_HTthreshtest_46_10.mat at 22-May-2013 18:03:43
+Starting MultiAngle_HTthreshtest_51_12.mat at 22-May-2013 18:03:43
+Starting MultiAngle_HTthreshtest_56_7.mat at 22-May-2013 18:03:43
+Starting MultiAngle_HTthreshtest_15_3.mat at 22-May-2013 18:03:44
+Starting MultiAngle_HTthreshtest_27_8.mat at 22-May-2013 18:03:44
+Starting MultiAngle_HTthreshtest_3_5.mat at 22-May-2013 18:03:44
+Starting MultiAngle_HTthreshtest_60_6.mat at 22-May-2013 18:03:44
+Starting MultiAngle_HTthreshtest_65_1.mat at 22-May-2013 18:03:44
+Finished MultiAngle_HTthreshtest_65_1.mat at 22-May-2013 19:26:18 with 969.7389 MB in memory
+Starting MultiAngle_HTthreshtest_64_9.mat at 22-May-2013 19:26:24
+Finished MultiAngle_HTthreshtest_60_6.mat at 22-May-2013 19:29:10 with 971.4628 MB in memory
+Skipping MultiAngle_HTthreshtest_60_5_PH.mat at 22-May-2013 19:29:15
+Finished MultiAngle_HTthreshtest_21_10.mat at 22-May-2013 19:29:21 with 996.8478 MB in memory
+Starting MultiAngle_HTthreshtest_60_4.mat at 22-May-2013 19:29:21
+Skipping MultiAngle_HTthreshtest_21_1_PH.mat at 22-May-2013 19:29:27
+Finished MultiAngle_HTthreshtest_27_8.mat at 22-May-2013 19:29:27 with 987.7898 MB in memory
+Starting MultiAngle_HTthreshtest_20_9.mat at 22-May-2013 19:29:33
+Starting MultiAngle_HTthreshtest_27_7.mat at 22-May-2013 19:29:33
+Finished MultiAngle_HTthreshtest_3_5.mat at 22-May-2013 19:29:54 with 980.6682 MB in memory
+Starting MultiAngle_HTthreshtest_3_4.mat at 22-May-2013 19:30:00
+Finished MultiAngle_HTthreshtest_51_12.mat at 22-May-2013 19:30:34 with 986.5309 MB in memory
+Starting MultiAngle_HTthreshtest_51_11.mat at 22-May-2013 19:30:40
+Finished MultiAngle_HTthreshtest_46_10.mat at 22-May-2013 19:30:56 with 988.3818 MB in memory
+Skipping MultiAngle_HTthreshtest_46_1_PH.mat at 22-May-2013 19:31:02
+Finished MultiAngle_HTthreshtest_56_7.mat at 22-May-2013 19:31:04 with 989.2232 MB in memory
+Starting MultiAngle_HTthreshtest_45_9.mat at 22-May-2013 19:31:07
+Finished MultiAngle_HTthreshtest_33_9.mat at 22-May-2013 19:31:09 with 999.1805 MB in memory
+Skipping MultiAngle_HTthreshtest_56_6_PH.mat at 22-May-2013 19:31:09
+Skipping MultiAngle_HTthreshtest_33_8_PH.mat at 22-May-2013 19:31:15
+Starting MultiAngle_HTthreshtest_56_5.mat at 22-May-2013 19:31:15
+Starting MultiAngle_HTthreshtest_33_7.mat at 22-May-2013 19:31:22
+Finished MultiAngle_HTthreshtest_15_3.mat at 22-May-2013 19:32:06 with 992.2856 MB in memory
+Skipping MultiAngle_HTthreshtest_15_2_PH.mat at 22-May-2013 19:32:12
+Starting MultiAngle_HTthreshtest_15_12.mat at 22-May-2013 19:32:18
+Finished MultiAngle_HTthreshtest_64_9.mat at 22-May-2013 20:51:05 with 962.9364 MB in memory
+Skipping MultiAngle_HTthreshtest_64_8_PH.mat at 22-May-2013 20:51:11
+Starting MultiAngle_HTthreshtest_64_7.mat at 22-May-2013 20:51:16
+Finished MultiAngle_HTthreshtest_20_9.mat at 22-May-2013 20:54:13 with 992.4946 MB in memory
+Starting MultiAngle_HTthreshtest_20_8.mat at 22-May-2013 20:54:19
+Finished MultiAngle_HTthreshtest_51_11.mat at 22-May-2013 20:55:25 with 956.2606 MB in memory
+Skipping MultiAngle_HTthreshtest_51_10_PH.mat at 22-May-2013 20:55:31
+Starting MultiAngle_HTthreshtest_51_1.mat at 22-May-2013 20:55:38
+Finished MultiAngle_HTthreshtest_33_7.mat at 22-May-2013 20:56:01 with 983.0619 MB in memory
+Finished MultiAngle_HTthreshtest_27_7.mat at 22-May-2013 20:56:04 with 1017.519 MB in memory
+Skipping MultiAngle_HTthreshtest_33_6_PH.mat at 22-May-2013 20:56:07
+Finished MultiAngle_HTthreshtest_3_4.mat at 22-May-2013 20:56:09 with 983.7065 MB in memory
+Skipping MultiAngle_HTthreshtest_27_6.mat at 22-May-2013 20:56:10
+Starting MultiAngle_HTthreshtest_33_5.mat at 22-May-2013 20:56:12
+Skipping MultiAngle_HTthreshtest_3_3.mat at 22-May-2013 20:56:15
+Skipping MultiAngle_HTthreshtest_27_5_PH.mat at 22-May-2013 20:56:15
+Starting MultiAngle_HTthreshtest_27_4.mat at 22-May-2013 20:56:21
+Skipping MultiAngle_HTthreshtest_3_2_PH.mat at 22-May-2013 20:56:20
+Starting MultiAngle_HTthreshtest_3_12.mat at 22-May-2013 20:56:25
+Finished MultiAngle_HTthreshtest_45_9.mat at 22-May-2013 20:56:41 with 969.5045 MB in memory
+Skipping MultiAngle_HTthreshtest_45_8_PH.mat at 22-May-2013 20:56:47
+Starting MultiAngle_HTthreshtest_45_7.mat at 22-May-2013 20:56:53
+Finished MultiAngle_HTthreshtest_56_5.mat at 22-May-2013 20:59:00 with 978.0237 MB in memory
+Finished MultiAngle_HTthreshtest_60_4.mat at 22-May-2013 20:59:04 with 993.0663 MB in memory
+Skipping MultiAngle_HTthreshtest_56_4_PH.mat at 22-May-2013 20:59:06
+Finished MultiAngle_HTthreshtest_15_12.mat at 22-May-2013 20:59:07 with 1007.654 MB in memory
+Skipping MultiAngle_HTthreshtest_60_3_PH.mat at 22-May-2013 20:59:11
+Starting MultiAngle_HTthreshtest_56_3.mat at 22-May-2013 20:59:11
+Skipping MultiAngle_HTthreshtest_15_11_PH.mat at 22-May-2013 20:59:13
+Starting MultiAngle_HTthreshtest_60_2.mat at 22-May-2013 20:59:16
+Starting MultiAngle_HTthreshtest_15_10.mat at 22-May-2013 20:59:19
+Finished MultiAngle_HTthreshtest_64_7.mat at 22-May-2013 22:16:19 with 979.4483 MB in memory
+Skipping MultiAngle_HTthreshtest_64_6_PH.mat at 22-May-2013 22:16:24
+Starting MultiAngle_HTthreshtest_64_5.mat at 22-May-2013 22:16:30
+Finished MultiAngle_HTthreshtest_51_1.mat at 22-May-2013 22:19:01 with 986.6975 MB in memory
+Skipping MultiAngle_HTthreshtest_50_9_PH.mat at 22-May-2013 22:19:09
+Starting MultiAngle_HTthreshtest_50_8.mat at 22-May-2013 22:19:14
+Finished MultiAngle_HTthreshtest_27_4.mat at 22-May-2013 22:19:56 with 993.4629 MB in memory
+Starting MultiAngle_HTthreshtest_27_3.mat at 22-May-2013 22:20:01
+Finished MultiAngle_HTthreshtest_20_8.mat at 22-May-2013 22:20:05 with 960.1993 MB in memory
+Skipping MultiAngle_HTthreshtest_20_7.mat at 22-May-2013 22:20:11
+Skipping MultiAngle_HTthreshtest_20_5_PH.mat at 22-May-2013 22:20:17
+Starting MultiAngle_HTthreshtest_20_4.mat at 22-May-2013 22:20:22
+Finished MultiAngle_HTthreshtest_33_5.mat at 22-May-2013 22:21:21 with 949.063 MB in memory
+Starting MultiAngle_HTthreshtest_33_4.mat at 22-May-2013 22:21:27
+Finished MultiAngle_HTthreshtest_3_12.mat at 22-May-2013 22:22:10 with 993.6988 MB in memory
+Starting MultiAngle_HTthreshtest_3_11.mat at 22-May-2013 22:22:15
+Finished MultiAngle_HTthreshtest_45_7.mat at 22-May-2013 22:24:00 with 965.3559 MB in memory
+Skipping MultiAngle_HTthreshtest_45_6_PH.mat at 22-May-2013 22:24:06
+Starting MultiAngle_HTthreshtest_45_5.mat at 22-May-2013 22:24:12
+Finished MultiAngle_HTthreshtest_56_3.mat at 22-May-2013 22:24:52 with 931.2955 MB in memory
+Skipping MultiAngle_HTthreshtest_56_2_PH.mat at 22-May-2013 22:24:58
+Starting MultiAngle_HTthreshtest_56_12.mat at 22-May-2013 22:25:03
+Finished MultiAngle_HTthreshtest_15_10.mat at 22-May-2013 22:25:41 with 989.418 MB in memory
+Skipping MultiAngle_HTthreshtest_15_1_PH.mat at 22-May-2013 22:25:47
+Starting MultiAngle_HTthreshtest_14_9.mat at 22-May-2013 22:25:52
+Finished MultiAngle_HTthreshtest_60_2.mat at 22-May-2013 22:28:06 with 992.1664 MB in memory
+Skipping MultiAngle_HTthreshtest_60_12_PH.mat at 22-May-2013 22:28:11
+Starting MultiAngle_HTthreshtest_60_11.mat at 22-May-2013 22:28:17
+Error: Reference to non-existent field 'pix2_5noise0'. on MultiAngle_DT_45_5.mat
+Starting MultiAngle_HTthreshtest_45_4.mat at 22-May-2013 23:12:01
+Finished MultiAngle_HTthreshtest_64_5.mat at 22-May-2013 23:43:30 with 1005.1714 MB in memory
+Skipping MultiAngle_HTthreshtest_64_4_PH.mat at 22-May-2013 23:43:35
+Starting MultiAngle_HTthreshtest_64_3.mat at 22-May-2013 23:43:41
+Finished MultiAngle_HTthreshtest_27_3.mat at 22-May-2013 23:45:10 with 952.992 MB in memory
+Skipping MultiAngle_HTthreshtest_27_2_PH.mat at 22-May-2013 23:45:16
+Starting MultiAngle_HTthreshtest_27_12.mat at 22-May-2013 23:45:22
+Finished MultiAngle_HTthreshtest_50_8.mat at 22-May-2013 23:45:34 with 1014.8598 MB in memory
+Skipping MultiAngle_HTthreshtest_50_7_PH.mat at 22-May-2013 23:45:40
+Starting MultiAngle_HTthreshtest_50_6.mat at 22-May-2013 23:45:46
+Finished MultiAngle_HTthreshtest_20_4.mat at 22-May-2013 23:46:49 with 989.7592 MB in memory
+Starting MultiAngle_HTthreshtest_20_3.mat at 22-May-2013 23:46:55
+Finished MultiAngle_HTthreshtest_33_4.mat at 22-May-2013 23:47:34 with 1007.2232 MB in memory
+Skipping MultiAngle_HTthreshtest_33_3_PH.mat at 22-May-2013 23:47:39
+Starting MultiAngle_HTthreshtest_33_12.mat at 22-May-2013 23:47:45
+Finished MultiAngle_HTthreshtest_56_12.mat at 22-May-2013 23:49:32 with 999.6983 MB in memory
+Skipping MultiAngle_HTthreshtest_56_11_PH.mat at 22-May-2013 23:49:37
+Starting MultiAngle_HTthreshtest_56_10.mat at 22-May-2013 23:49:43
+Finished MultiAngle_HTthreshtest_3_11.mat at 22-May-2013 23:50:39 with 982.146 MB in memory
+Skipping MultiAngle_HTthreshtest_3_10.mat at 22-May-2013 23:50:45
+Starting MultiAngle_HTthreshtest_3_1.mat at 22-May-2013 23:50:50
+Finished MultiAngle_HTthreshtest_14_9.mat at 22-May-2013 23:54:24 with 1021.727 MB in memory
+Skipping MultiAngle_HTthreshtest_14_8_PH.mat at 22-May-2013 23:54:29
+Starting MultiAngle_HTthreshtest_14_7.mat at 22-May-2013 23:54:35
+Finished MultiAngle_HTthreshtest_60_11.mat at 22-May-2013 23:55:12 with 1005.653 MB in memory
+Skipping MultiAngle_HTthreshtest_60_10_PH.mat at 22-May-2013 23:55:17
+Starting MultiAngle_HTthreshtest_60_1.mat at 22-May-2013 23:55:23
+Error: Reference to non-existent field 'pix2_5noise0'. on MultiAngle_DT_50_6.mat
+Skipping MultiAngle_HTthreshtest_50_5_PH.mat at 22-May-2013 23:58:32
+Starting MultiAngle_HTthreshtest_50_4.mat at 22-May-2013 23:58:39
+Finished MultiAngle_HTthreshtest_45_4.mat at 23-May-2013 00:37:10 with 964.8034 MB in memory
+Skipping MultiAngle_HTthreshtest_45_3_PH.mat at 23-May-2013 00:37:16
+Starting MultiAngle_HTthreshtest_45_2.mat at 23-May-2013 00:37:21
+Finished MultiAngle_HTthreshtest_64_3.mat at 23-May-2013 01:10:52 with 1000.1347 MB in memory
+Skipping MultiAngle_HTthreshtest_64_2_PH.mat at 23-May-2013 01:10:57
+Starting MultiAngle_HTthreshtest_64_12.mat at 23-May-2013 01:10:59
+Finished MultiAngle_HTthreshtest_33_12.mat at 23-May-2013 01:12:15 with 992.5673 MB in memory
+Skipping MultiAngle_HTthreshtest_33_11_PH.mat at 23-May-2013 01:12:21
+Starting MultiAngle_HTthreshtest_33_10.mat at 23-May-2013 01:12:26
+Finished MultiAngle_HTthreshtest_27_12.mat at 23-May-2013 01:13:01 with 990.0457 MB in memory
+Skipping MultiAngle_HTthreshtest_27_11_PH.mat at 23-May-2013 01:13:07
+Starting MultiAngle_HTthreshtest_27_10.mat at 23-May-2013 01:13:12
+Finished MultiAngle_HTthreshtest_56_10.mat at 23-May-2013 01:14:03 with 997.3119 MB in memory
+Skipping MultiAngle_HTthreshtest_56_1_PH.mat at 23-May-2013 01:14:08
+Starting MultiAngle_HTthreshtest_55_9.mat at 23-May-2013 01:14:14
+Finished MultiAngle_HTthreshtest_20_3.mat at 23-May-2013 01:14:21 with 976.0975 MB in memory
+Skipping MultiAngle_HTthreshtest_20_2.mat at 23-May-2013 01:14:27
+Skipping MultiAngle_HTthreshtest_20_12.mat at 23-May-2013 01:14:27
+Skipping MultiAngle_HTthreshtest_20_11_PH.mat at 23-May-2013 01:14:33
+Starting MultiAngle_HTthreshtest_20_10.mat at 23-May-2013 01:14:38
+Finished MultiAngle_HTthreshtest_3_1.mat at 23-May-2013 01:20:02 with 1042.9272 MB in memory
+Skipping MultiAngle_HTthreshtest_39_9.mat at 23-May-2013 01:20:08
+Skipping MultiAngle_HTthreshtest_39_8_PH.mat at 23-May-2013 01:20:14
+Starting MultiAngle_HTthreshtest_39_7.mat at 23-May-2013 01:20:19
+Finished MultiAngle_HTthreshtest_14_7.mat at 23-May-2013 01:22:31 with 988.2804 MB in memory
+Skipping MultiAngle_HTthreshtest_14_6_PH.mat at 23-May-2013 01:22:36
+Starting MultiAngle_HTthreshtest_14_5.mat at 23-May-2013 01:22:42
+Finished MultiAngle_HTthreshtest_60_1.mat at 23-May-2013 01:24:44 with 999.7599 MB in memory
+Skipping MultiAngle_HTthreshtest_5_9_PH.mat at 23-May-2013 01:24:49
+Starting MultiAngle_HTthreshtest_5_8.mat at 23-May-2013 01:24:55
+Finished MultiAngle_HTthreshtest_50_4.mat at 23-May-2013 01:26:30 with 967.8408 MB in memory
+Skipping MultiAngle_HTthreshtest_50_3_PH.mat at 23-May-2013 01:26:36
+Starting MultiAngle_HTthreshtest_50_2.mat at 23-May-2013 01:26:43
+Finished MultiAngle_HTthreshtest_64_12.mat at 23-May-2013 01:29:37 with 203.5313 MB in memory
+Skipping MultiAngle_HTthreshtest_64_10_PH.mat at 23-May-2013 01:29:42
+Starting MultiAngle_HTthreshtest_64_1.mat at 23-May-2013 01:29:48
+Finished MultiAngle_HTthreshtest_45_2.mat at 23-May-2013 02:07:26 with 1019.2837 MB in memory
+Skipping MultiAngle_HTthreshtest_45_12_PH.mat at 23-May-2013 02:07:32
+Starting MultiAngle_HTthreshtest_45_11.mat at 23-May-2013 02:07:38
+Finished MultiAngle_HTthreshtest_55_9.mat at 23-May-2013 02:38:08 with 1022.0154 MB in memory
+Skipping MultiAngle_HTthreshtest_55_8_PH.mat at 23-May-2013 02:38:14
+Finished MultiAngle_HTthreshtest_33_10.mat at 23-May-2013 02:38:19 with 1002.1511 MB in memory
+Starting MultiAngle_HTthreshtest_55_7.mat at 23-May-2013 02:38:20
+Skipping MultiAngle_HTthreshtest_33_1_PH.mat at 23-May-2013 02:38:25
+Starting MultiAngle_HTthreshtest_32_9.mat at 23-May-2013 02:38:31
+Finished MultiAngle_HTthreshtest_20_10.mat at 23-May-2013 02:38:41 with 973.4643 MB in memory
+Starting MultiAngle_HTthreshtest_20_1.mat at 23-May-2013 02:38:47
+Finished MultiAngle_HTthreshtest_27_10.mat at 23-May-2013 02:40:37 with 1010.9899 MB in memory
+Skipping MultiAngle_HTthreshtest_27_1_PH.mat at 23-May-2013 02:40:43
+Starting MultiAngle_HTthreshtest_26_9.mat at 23-May-2013 02:40:48
+Finished MultiAngle_HTthreshtest_39_7.mat at 23-May-2013 02:45:27 with 990.487 MB in memory
+Starting MultiAngle_HTthreshtest_39_6.mat at 23-May-2013 02:45:32
+Finished MultiAngle_HTthreshtest_14_5.mat at 23-May-2013 02:50:41 with 976.7092 MB in memory
+Skipping MultiAngle_HTthreshtest_14_4_PH.mat at 23-May-2013 02:50:47
+Starting MultiAngle_HTthreshtest_14_3.mat at 23-May-2013 02:50:52
+Finished MultiAngle_HTthreshtest_5_8.mat at 23-May-2013 02:52:54 with 992.2533 MB in memory
+Skipping MultiAngle_HTthreshtest_5_7_PH.mat at 23-May-2013 02:53:00
+Starting MultiAngle_HTthreshtest_5_6.mat at 23-May-2013 02:53:05
+Finished MultiAngle_HTthreshtest_50_2.mat at 23-May-2013 02:55:26 with 985.5385 MB in memory
+Skipping MultiAngle_HTthreshtest_50_11_PH.mat at 23-May-2013 02:55:31
+Starting MultiAngle_HTthreshtest_50_10.mat at 23-May-2013 02:55:37
+Finished MultiAngle_HTthreshtest_64_1.mat at 23-May-2013 02:56:00 with 977.039 MB in memory
+Skipping MultiAngle_HTthreshtest_63_9_PH.mat at 23-May-2013 02:56:06
+Starting MultiAngle_HTthreshtest_63_8.mat at 23-May-2013 02:56:11
+Finished MultiAngle_HTthreshtest_45_11.mat at 23-May-2013 03:35:30 with 997.5174 MB in memory
+Skipping MultiAngle_HTthreshtest_45_10_PH.mat at 23-May-2013 03:35:36
+Starting MultiAngle_HTthreshtest_45_1.mat at 23-May-2013 03:35:41
+Finished MultiAngle_HTthreshtest_20_1.mat at 23-May-2013 04:02:18 with 960.2948 MB in memory
+Skipping MultiAngle_HTthreshtest_1_9_PH.mat at 23-May-2013 04:02:24
+Starting MultiAngle_HTthreshtest_1_8.mat at 23-May-2013 04:02:30
+Finished MultiAngle_HTthreshtest_55_7.mat at 23-May-2013 04:04:42 with 1023.768 MB in memory
+Skipping MultiAngle_HTthreshtest_55_6_PH.mat at 23-May-2013 04:04:47
+Starting MultiAngle_HTthreshtest_55_5.mat at 23-May-2013 04:04:53
+Finished MultiAngle_HTthreshtest_32_9.mat at 23-May-2013 04:05:01 with 963.1571 MB in memory
+Skipping MultiAngle_HTthreshtest_32_8_PH.mat at 23-May-2013 04:05:07
+Starting MultiAngle_HTthreshtest_32_6.mat at 23-May-2013 04:05:12
+Finished MultiAngle_HTthreshtest_26_9.mat at 23-May-2013 04:05:38 with 971.4923 MB in memory
+Skipping MultiAngle_HTthreshtest_26_8_PH.mat at 23-May-2013 04:05:44
+Starting MultiAngle_HTthreshtest_26_7.mat at 23-May-2013 04:05:50
+Finished MultiAngle_HTthreshtest_39_6.mat at 23-May-2013 04:13:25 with 997.4059 MB in memory
+Skipping MultiAngle_HTthreshtest_39_5_PH.mat at 23-May-2013 04:13:30
+Starting MultiAngle_HTthreshtest_39_4.mat at 23-May-2013 04:13:35
+Finished MultiAngle_HTthreshtest_14_3.mat at 23-May-2013 04:17:41 with 993.5283 MB in memory
+Skipping MultiAngle_HTthreshtest_14_2_PH.mat at 23-May-2013 04:17:47
+Starting MultiAngle_HTthreshtest_14_12.mat at 23-May-2013 04:17:52
+Finished MultiAngle_HTthreshtest_5_6.mat at 23-May-2013 04:18:43 with 986.949 MB in memory
+Skipping MultiAngle_HTthreshtest_5_5_PH.mat at 23-May-2013 04:18:49
+Starting MultiAngle_HTthreshtest_5_4.mat at 23-May-2013 04:18:54
+Finished MultiAngle_HTthreshtest_50_10.mat at 23-May-2013 04:22:38 with 974.5036 MB in memory
+Skipping MultiAngle_HTthreshtest_50_1_PH.mat at 23-May-2013 04:22:44
+Starting MultiAngle_HTthreshtest_4_9.mat at 23-May-2013 04:22:51
+Finished MultiAngle_HTthreshtest_63_8.mat at 23-May-2013 04:23:59 with 1001.0095 MB in memory
+Skipping MultiAngle_HTthreshtest_63_7_PH.mat at 23-May-2013 04:24:05
+Starting MultiAngle_HTthreshtest_63_6.mat at 23-May-2013 04:24:11
+Finished MultiAngle_HTthreshtest_45_1.mat at 23-May-2013 05:01:43 with 959.2777 MB in memory
+Skipping MultiAngle_HTthreshtest_44_9_PH.mat at 23-May-2013 05:01:49
+Starting MultiAngle_HTthreshtest_44_8.mat at 23-May-2013 05:01:54
+Finished MultiAngle_HTthreshtest_1_8.mat at 23-May-2013 05:28:51 with 956.22 MB in memory
+Skipping MultiAngle_HTthreshtest_1_7_PH.mat at 23-May-2013 05:28:57
+Starting MultiAngle_HTthreshtest_1_6.mat at 23-May-2013 05:29:03
+Finished MultiAngle_HTthreshtest_32_6.mat at 23-May-2013 05:31:37 with 995.5488 MB in memory
+Skipping MultiAngle_HTthreshtest_32_5.mat at 23-May-2013 05:31:44
+Finished MultiAngle_HTthreshtest_26_7.mat at 23-May-2013 05:31:45 with 999.1434 MB in memory
+Skipping MultiAngle_HTthreshtest_32_4_PH.mat at 23-May-2013 05:31:49
+Skipping MultiAngle_HTthreshtest_26_6_PH.mat at 23-May-2013 05:31:51
+Starting MultiAngle_HTthreshtest_32_3.mat at 23-May-2013 05:31:54
+Finished MultiAngle_HTthreshtest_55_5.mat at 23-May-2013 05:31:56 with 984.5847 MB in memory
+Starting MultiAngle_HTthreshtest_26_5.mat at 23-May-2013 05:31:57
+Skipping MultiAngle_HTthreshtest_55_4_PH.mat at 23-May-2013 05:32:02
+Starting MultiAngle_HTthreshtest_55_3.mat at 23-May-2013 05:32:07
+Finished MultiAngle_HTthreshtest_39_4.mat at 23-May-2013 05:39:06 with 959.2923 MB in memory
+Skipping MultiAngle_HTthreshtest_39_3_PH.mat at 23-May-2013 05:39:11
+Starting MultiAngle_HTthreshtest_39_2.mat at 23-May-2013 05:39:17
+Finished MultiAngle_HTthreshtest_14_12.mat at 23-May-2013 05:44:52 with 998.7928 MB in memory
+Skipping MultiAngle_HTthreshtest_14_11_PH.mat at 23-May-2013 05:44:57
+Starting MultiAngle_HTthreshtest_14_10.mat at 23-May-2013 05:45:03
+Finished MultiAngle_HTthreshtest_5_4.mat at 23-May-2013 05:46:41 with 1000.0744 MB in memory
+Skipping MultiAngle_HTthreshtest_5_3_PH.mat at 23-May-2013 05:46:47
+Starting MultiAngle_HTthreshtest_5_11.mat at 23-May-2013 05:46:52
+Finished MultiAngle_HTthreshtest_4_9.mat at 23-May-2013 05:50:07 with 954.0443 MB in memory
+Skipping MultiAngle_HTthreshtest_4_8_PH.mat at 23-May-2013 05:50:12
+Starting MultiAngle_HTthreshtest_4_7.mat at 23-May-2013 05:50:19
+Finished MultiAngle_HTthreshtest_63_6.mat at 23-May-2013 05:50:26 with 973.2737 MB in memory
+Skipping MultiAngle_HTthreshtest_63_5_PH.mat at 23-May-2013 05:50:32
+Starting MultiAngle_HTthreshtest_63_4.mat at 23-May-2013 05:50:38
+Error: Reference to non-existent field 'pix2_5noise0'. on MultiAngle_DT_32_3.mat
+Starting MultiAngle_HTthreshtest_32_2.mat at 23-May-2013 06:05:37
+Error: Reference to non-existent field 'pix2_5noise0'. on MultiAngle_DT_32_2.mat
+Starting MultiAngle_HTthreshtest_32_12.mat at 23-May-2013 06:07:58
+Finished MultiAngle_HTthreshtest_32_12.mat at 23-May-2013 06:24:53 with 213.1481 MB in memory
+Starting MultiAngle_HTthreshtest_32_11.mat at 23-May-2013 06:25:00
+Finished MultiAngle_HTthreshtest_44_8.mat at 23-May-2013 06:27:36 with 961.3958 MB in memory
+Skipping MultiAngle_HTthreshtest_44_7_PH.mat at 23-May-2013 06:27:42
+Starting MultiAngle_HTthreshtest_44_6.mat at 23-May-2013 06:27:48
+Finished MultiAngle_HTthreshtest_1_6.mat at 23-May-2013 06:53:15 with 974.0787 MB in memory
+Skipping MultiAngle_HTthreshtest_1_4_PH.mat at 23-May-2013 06:53:21
+Starting MultiAngle_HTthreshtest_1_3.mat at 23-May-2013 06:53:27
+Finished MultiAngle_HTthreshtest_55_3.mat at 23-May-2013 06:55:55 with 995.1749 MB in memory
+Skipping MultiAngle_HTthreshtest_55_2_PH.mat at 23-May-2013 06:56:01
+Starting MultiAngle_HTthreshtest_55_12.mat at 23-May-2013 06:56:06
+Finished MultiAngle_HTthreshtest_26_5.mat at 23-May-2013 06:59:18 with 1006.7624 MB in memory
+Skipping MultiAngle_HTthreshtest_26_4_PH.mat at 23-May-2013 06:59:23
+Starting MultiAngle_HTthreshtest_26_3.mat at 23-May-2013 06:59:29
+Finished MultiAngle_HTthreshtest_39_2.mat at 23-May-2013 07:05:48 with 975.7064 MB in memory
+Skipping MultiAngle_HTthreshtest_39_12_PH.mat at 23-May-2013 07:05:53
+Starting MultiAngle_HTthreshtest_39_11.mat at 23-May-2013 07:05:59
+Finished MultiAngle_HTthreshtest_14_10.mat at 23-May-2013 07:09:59 with 966.0111 MB in memory
+Skipping MultiAngle_HTthreshtest_14_1_PH.mat at 23-May-2013 07:10:05
+Starting MultiAngle_HTthreshtest_13_9.mat at 23-May-2013 07:10:10
+Finished MultiAngle_HTthreshtest_5_11.mat at 23-May-2013 07:13:41 with 982.0836 MB in memory
+Skipping MultiAngle_HTthreshtest_5_10_PH.mat at 23-May-2013 07:13:47
+Starting MultiAngle_HTthreshtest_5_1.mat at 23-May-2013 07:13:52
+Finished MultiAngle_HTthreshtest_4_7.mat at 23-May-2013 07:15:10 with 986.6014 MB in memory
+Skipping MultiAngle_HTthreshtest_4_6_PH.mat at 23-May-2013 07:15:16
+Starting MultiAngle_HTthreshtest_4_5.mat at 23-May-2013 07:15:23
+Finished MultiAngle_HTthreshtest_63_4.mat at 23-May-2013 07:17:26 with 983.1501 MB in memory
+Skipping MultiAngle_HTthreshtest_63_3_PH.mat at 23-May-2013 07:17:32
+Starting MultiAngle_HTthreshtest_63_2.mat at 23-May-2013 07:17:38
+Finished MultiAngle_HTthreshtest_32_11.mat at 23-May-2013 07:52:59 with 977.3878 MB in memory
+Skipping MultiAngle_HTthreshtest_32_1_PH.mat at 23-May-2013 07:53:05
+Starting MultiAngle_HTthreshtest_31_9.mat at 23-May-2013 07:53:11
+Finished MultiAngle_HTthreshtest_44_6.mat at 23-May-2013 07:53:57 with 988.8102 MB in memory
+Skipping MultiAngle_HTthreshtest_44_5_PH.mat at 23-May-2013 07:54:03
+Starting MultiAngle_HTthreshtest_44_4.mat at 23-May-2013 07:54:08
+Finished MultiAngle_HTthreshtest_1_3.mat at 23-May-2013 08:16:10 with 952.78 MB in memory
+Skipping MultiAngle_HTthreshtest_1_2_PH.mat at 23-May-2013 08:16:16
+Starting MultiAngle_HTthreshtest_1_12.mat at 23-May-2013 08:16:22
+Finished MultiAngle_HTthreshtest_55_12.mat at 23-May-2013 08:17:52 with 967.6334 MB in memory
+Skipping MultiAngle_HTthreshtest_55_11_PH.mat at 23-May-2013 08:17:58
+Starting MultiAngle_HTthreshtest_55_10.mat at 23-May-2013 08:18:04
+Finished MultiAngle_HTthreshtest_26_3.mat at 23-May-2013 08:27:06 with 1026.322 MB in memory
+Skipping MultiAngle_HTthreshtest_26_2_PH.mat at 23-May-2013 08:27:12
+Starting MultiAngle_HTthreshtest_26_12.mat at 23-May-2013 08:27:17
+Finished MultiAngle_HTthreshtest_39_11.mat at 23-May-2013 08:32:07 with 980.5246 MB in memory
+Skipping MultiAngle_HTthreshtest_39_10_PH.mat at 23-May-2013 08:32:13
+Starting MultiAngle_HTthreshtest_39_1.mat at 23-May-2013 08:32:18
+Finished MultiAngle_HTthreshtest_13_9.mat at 23-May-2013 08:36:12 with 992.1865 MB in memory
+Skipping MultiAngle_HTthreshtest_13_8_PH.mat at 23-May-2013 08:36:18
+Starting MultiAngle_HTthreshtest_13_7.mat at 23-May-2013 08:36:23
+Finished MultiAngle_HTthreshtest_5_1.mat at 23-May-2013 08:39:27 with 963.9176 MB in memory
+Skipping MultiAngle_HTthreshtest_59_9_PH.mat at 23-May-2013 08:39:32
+Starting MultiAngle_HTthreshtest_59_8.mat at 23-May-2013 08:39:38
+Finished MultiAngle_HTthreshtest_63_2.mat at 23-May-2013 08:40:26 with 992.5099 MB in memory
+Skipping MultiAngle_HTthreshtest_63_12_PH.mat at 23-May-2013 08:40:32
+Skipping MultiAngle_HTthreshtest_63_11_PH.mat at 23-May-2013 08:40:37
+Starting MultiAngle_HTthreshtest_63_10.mat at 23-May-2013 08:40:43
+Finished MultiAngle_HTthreshtest_4_5.mat at 23-May-2013 08:41:14 with 995.7136 MB in memory
+Skipping MultiAngle_HTthreshtest_4_4_PH.mat at 23-May-2013 08:41:19
+Starting MultiAngle_HTthreshtest_4_3.mat at 23-May-2013 08:41:26
+Finished MultiAngle_HTthreshtest_31_9.mat at 23-May-2013 09:18:31 with 1000.0038 MB in memory
+Skipping MultiAngle_HTthreshtest_31_8_PH.mat at 23-May-2013 09:18:37
+Starting MultiAngle_HTthreshtest_31_7.mat at 23-May-2013 09:18:43
+Finished MultiAngle_HTthreshtest_44_4.mat at 23-May-2013 09:21:21 with 995.0963 MB in memory
+Skipping MultiAngle_HTthreshtest_44_3_PH.mat at 23-May-2013 09:21:27
+Starting MultiAngle_HTthreshtest_44_2.mat at 23-May-2013 09:21:33
+Finished MultiAngle_HTthreshtest_1_12.mat at 23-May-2013 09:41:27 with 967.6519 MB in memory
+Skipping MultiAngle_HTthreshtest_1_11_PH.mat at 23-May-2013 09:41:33
+Starting MultiAngle_HTthreshtest_1_10.mat at 23-May-2013 09:41:39
+Finished MultiAngle_HTthreshtest_55_10.mat at 23-May-2013 09:42:13 with 992.5843 MB in memory
+Skipping MultiAngle_HTthreshtest_55_1_PH.mat at 23-May-2013 09:42:19
+Starting MultiAngle_HTthreshtest_54_9.mat at 23-May-2013 09:42:24
+Finished MultiAngle_HTthreshtest_26_12.mat at 23-May-2013 09:50:55 with 957.6641 MB in memory
+Skipping MultiAngle_HTthreshtest_26_11_PH.mat at 23-May-2013 09:51:01
+Starting MultiAngle_HTthreshtest_26_10.mat at 23-May-2013 09:51:06
+Finished MultiAngle_HTthreshtest_39_1.mat at 23-May-2013 09:58:26 with 960.766 MB in memory
+Skipping MultiAngle_HTthreshtest_38_9_PH.mat at 23-May-2013 09:58:32
+Starting MultiAngle_HTthreshtest_38_8.mat at 23-May-2013 09:58:38
+Finished MultiAngle_HTthreshtest_13_7.mat at 23-May-2013 10:01:25 with 985.8115 MB in memory
+Skipping MultiAngle_HTthreshtest_13_6_PH.mat at 23-May-2013 10:01:30
+Starting MultiAngle_HTthreshtest_13_5.mat at 23-May-2013 10:01:36
+Finished MultiAngle_HTthreshtest_59_8.mat at 23-May-2013 10:06:04 with 974.0895 MB in memory
+Skipping MultiAngle_HTthreshtest_59_7_PH.mat at 23-May-2013 10:06:10
+Starting MultiAngle_HTthreshtest_59_6.mat at 23-May-2013 10:06:15
+Finished MultiAngle_HTthreshtest_63_10.mat at 23-May-2013 10:06:47 with 1028.3178 MB in memory
+Finished MultiAngle_HTthreshtest_4_3.mat at 23-May-2013 10:06:52 with 988.603 MB in memory
+Starting MultiAngle_HTthreshtest_63_1.mat at 23-May-2013 10:06:53
+Skipping MultiAngle_HTthreshtest_4_2_PH.mat at 23-May-2013 10:06:58
+Starting MultiAngle_HTthreshtest_4_12.mat at 23-May-2013 10:07:04
+Finished MultiAngle_HTthreshtest_31_7.mat at 23-May-2013 10:48:18 with 987.7851 MB in memory
+Skipping MultiAngle_HTthreshtest_31_6_PH.mat at 23-May-2013 10:48:24
+Starting MultiAngle_HTthreshtest_31_5.mat at 23-May-2013 10:48:30
+Finished MultiAngle_HTthreshtest_44_2.mat at 23-May-2013 10:48:49 with 966.6574 MB in memory
+Skipping MultiAngle_HTthreshtest_44_11_PH.mat at 23-May-2013 10:48:55
+Starting MultiAngle_HTthreshtest_44_10.mat at 23-May-2013 10:49:00
+Finished MultiAngle_HTthreshtest_1_10.mat at 23-May-2013 11:07:40 with 1020.6183 MB in memory
+Skipping MultiAngle_HTthreshtest_1_1_PH.mat at 23-May-2013 11:07:46
+Finished MultiAngle_HTthreshtest_54_9.mat at 23-May-2013 11:07:48 with 975.7373 MB in memory
+Starting MultiAngle_HTthreshtest_19_9.mat at 23-May-2013 11:07:52
+Skipping MultiAngle_HTthreshtest_54_8_PH.mat at 23-May-2013 11:07:54
+Starting MultiAngle_HTthreshtest_54_7.mat at 23-May-2013 11:08:00
+Finished MultiAngle_HTthreshtest_26_10.mat at 23-May-2013 11:15:58 with 976.7268 MB in memory
+Skipping MultiAngle_HTthreshtest_26_1_PH.mat at 23-May-2013 11:16:03
+Skipping MultiAngle_HTthreshtest_25_9_PH.mat at 23-May-2013 11:16:12
+Starting MultiAngle_HTthreshtest_25_8.mat at 23-May-2013 11:16:17
+Finished MultiAngle_HTthreshtest_38_8.mat at 23-May-2013 11:28:12 with 1031.6956 MB in memory
+Skipping MultiAngle_HTthreshtest_38_7_PH.mat at 23-May-2013 11:28:18
+Starting MultiAngle_HTthreshtest_38_6.mat at 23-May-2013 11:28:23
+Finished MultiAngle_HTthreshtest_13_5.mat at 23-May-2013 11:28:25 with 1005.7838 MB in memory
+Skipping MultiAngle_HTthreshtest_13_4_PH.mat at 23-May-2013 11:28:31
+Starting MultiAngle_HTthreshtest_13_3.mat at 23-May-2013 11:28:36
+Finished MultiAngle_HTthreshtest_63_1.mat at 23-May-2013 11:31:56 with 961.0206 MB in memory
+Skipping MultiAngle_HTthreshtest_62_9_PH.mat at 23-May-2013 11:32:01
+Starting MultiAngle_HTthreshtest_62_8.mat at 23-May-2013 11:32:07
+Finished MultiAngle_HTthreshtest_59_6.mat at 23-May-2013 11:32:44 with 935.8004 MB in memory
+Skipping MultiAngle_HTthreshtest_59_5_PH.mat at 23-May-2013 11:32:50
+Starting MultiAngle_HTthreshtest_59_4.mat at 23-May-2013 11:32:55
+Finished MultiAngle_HTthreshtest_4_12.mat at 23-May-2013 11:33:02 with 958.0542 MB in memory
+Skipping MultiAngle_HTthreshtest_4_11_PH.mat at 23-May-2013 11:33:08
+Starting MultiAngle_HTthreshtest_4_10.mat at 23-May-2013 11:33:14
+Warning: No window system found.  Java option 'MWT' ignored
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2011 The MathWorks, Inc.
+                    R2011b (7.13.0.31) 64-bit (glnxa64)
+                                May 24, 2011
+
+ 
+To get started, type one of these: helpwin, helpdesk, or demo.
+For product information, visit www.mathworks.com.
+ 
+{Warning: Found 2 pre-existing parallel job(s) created by matlabpool that are
+running.
+You can use   'matlabpool close force local'    or create a configuration for
+the distcomp.localscheduler object and use   'matlabpool close force
+<configurationName>'    to remove all jobs created by matlabpool.} 
+{> In distcomp.interactiveclient.pRemoveOldJobs at 55
+  In distcomp.interactiveclient.start at 58
+  In MatlabpoolHelper>MatlabpoolHelper.doOpen at 250
+  In MatlabpoolHelper>MatlabpoolHelper.doMatlabpool at 102
+  In matlabpool at 131
+  In HTthreshparallel at 83} 
+Starting matlabpool using the 'local' configuration ... connected to 11 labs.
+Found 1157 files in /global/scratch/bcplimley/multi_angle/DTbatch01/ at 23-May-2013 11:56:10
+Starting MultiAngle_HTthreshtest_61_10.mat at 23-May-2013 11:56:19
+Starting MultiAngle_HTthreshtest_14_9.mat at 23-May-2013 11:56:19
+Starting MultiAngle_HTthreshtest_1_9.mat at 23-May-2013 11:56:19
+Skipping MultiAngle_HTthreshtest_26_11_PH.mat at 23-May-2013 11:56:19
+Starting MultiAngle_HTthreshtest_31_3.mat at 23-May-2013 11:56:19
+Starting MultiAngle_HTthreshtest_37_6.mat at 23-May-2013 11:56:19
+Skipping MultiAngle_HTthreshtest_42_6_PH.mat at 23-May-2013 11:56:19
+Starting MultiAngle_HTthreshtest_48_4.mat at 23-May-2013 11:56:19
+Starting MultiAngle_HTthreshtest_53_1.mat at 23-May-2013 11:56:19
+Skipping MultiAngle_HTthreshtest_57_6_PH.mat at 23-May-2013 11:56:19
+Starting MultiAngle_HTthreshtest_65_1.mat at 23-May-2013 11:56:19
+Starting MultiAngle_HTthreshtest_26_10.mat at 23-May-2013 11:56:24
+Starting MultiAngle_HTthreshtest_42_5.mat at 23-May-2013 11:56:24
+Starting MultiAngle_HTthreshtest_57_5.mat at 23-May-2013 11:56:25
+Finished MultiAngle_HTthreshtest_65_1.mat at 23-May-2013 15:27:03 with 2133.6536 MB in memory
+Skipping MultiAngle_HTthreshtest_64_9_PH.mat at 23-May-2013 15:27:10
+Starting MultiAngle_HTthreshtest_64_8.mat at 23-May-2013 15:27:15
+Finished MultiAngle_HTthreshtest_61_10.mat at 23-May-2013 15:31:04 with 2134.9385 MB in memory
+Skipping MultiAngle_HTthreshtest_61_1_PH.mat at 23-May-2013 15:31:10
+Starting MultiAngle_HTthreshtest_60_9.mat at 23-May-2013 15:31:16
+Finished MultiAngle_HTthreshtest_31_3.mat at 23-May-2013 15:31:35 with 2183.0474 MB in memory
+Skipping MultiAngle_HTthreshtest_31_2_PH.mat at 23-May-2013 15:31:43
+Starting MultiAngle_HTthreshtest_31_12.mat at 23-May-2013 15:31:48
+Finished MultiAngle_HTthreshtest_26_10.mat at 23-May-2013 15:31:51 with 2157.1402 MB in memory
+Starting MultiAngle_HTthreshtest_26_1.mat at 23-May-2013 15:31:59
+Finished MultiAngle_HTthreshtest_53_1.mat at 23-May-2013 15:33:02 with 2211.2213 MB in memory
+Skipping MultiAngle_HTthreshtest_52_9_PH.mat at 23-May-2013 15:33:08
+Finished MultiAngle_HTthreshtest_48_4.mat at 23-May-2013 15:33:13 with 2209.5207 MB in memory
+Starting MultiAngle_HTthreshtest_52_8.mat at 23-May-2013 15:33:14
+Skipping MultiAngle_HTthreshtest_48_3.mat at 23-May-2013 15:33:20
+Finished MultiAngle_HTthreshtest_57_5.mat at 23-May-2013 15:33:22 with 2190.6093 MB in memory
+Skipping MultiAngle_HTthreshtest_48_2_PH.mat at 23-May-2013 15:33:26
+Starting MultiAngle_HTthreshtest_57_4.mat at 23-May-2013 15:33:29
+Starting MultiAngle_HTthreshtest_48_12.mat at 23-May-2013 15:33:31
+Finished MultiAngle_HTthreshtest_37_6.mat at 23-May-2013 15:36:49 with 2208.2918 MB in memory
+Skipping MultiAngle_HTthreshtest_37_5_PH.mat at 23-May-2013 15:36:56
+Starting MultiAngle_HTthreshtest_37_4.mat at 23-May-2013 15:37:01
+Finished MultiAngle_HTthreshtest_1_9.mat at 23-May-2013 15:39:17 with 2260.4027 MB in memory
+Skipping MultiAngle_HTthreshtest_1_8.mat at 23-May-2013 15:39:23
+Skipping MultiAngle_HTthreshtest_1_7_PH.mat at 23-May-2013 15:39:29
+Starting MultiAngle_HTthreshtest_1_6.mat at 23-May-2013 15:39:34
+Finished MultiAngle_HTthreshtest_42_5.mat at 23-May-2013 15:39:37 with 2149.962 MB in memory
+Skipping MultiAngle_HTthreshtest_42_4_PH.mat at 23-May-2013 15:39:44
+Starting MultiAngle_HTthreshtest_42_3.mat at 23-May-2013 15:39:49
+Finished MultiAngle_HTthreshtest_14_9.mat at 23-May-2013 15:42:07 with 2264.1109 MB in memory
+Skipping MultiAngle_HTthreshtest_14_8.mat at 23-May-2013 15:42:14
+Skipping MultiAngle_HTthreshtest_14_7_PH.mat at 23-May-2013 15:42:20
+Starting MultiAngle_HTthreshtest_14_6.mat at 23-May-2013 15:42:27
+Error: Reference to non-existent field 'pix2_5noise0'. on MultiAngle_DT_26_1.mat
+Skipping MultiAngle_HTthreshtest_25_9_PH.mat at 23-May-2013 16:07:34
+Starting MultiAngle_HTthreshtest_25_8.mat at 23-May-2013 16:07:41
