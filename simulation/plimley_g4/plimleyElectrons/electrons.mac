@@ -1,0 +1,82 @@
+#
+/control/verbose 0
+/run/verbose 0
+/tracking/verbose 0
+#
+/testem/phys/addPhysics  emlivermore
+/testem/phys/setCuts 1 um
+#
+/run/initialize
+#/testem/det/update      # goes with setSourcePosition I think.
+/testem/stepMax/absorber 1 100 nm   # 100 or 1000 nm? need this at least for the interactive display of tracks.
+#
+/SimulationOutput/FileLocation /home/plimley/Documents/geant4/temp/
+/SimulationOutput/FileName electrons_varEnergy_10each.dat
+#
+#/gun/particle e-
+#/gun/direction 1.0 0.0 0.0
+/gun/position 0.0 0.0 0.0 mm
+#
+#/testem/event/printModulo 100
+#
+/gun/energy 20 keV
+/run/beamOn 10
+/gun/energy 30 keV
+/run/beamOn 10
+/gun/energy 40 keV
+/run/beamOn 10
+/gun/energy 50 keV
+/run/beamOn 10
+/gun/energy 60 keV
+/run/beamOn 10
+/gun/energy 70 keV
+/run/beamOn 10
+/gun/energy 80 keV
+/run/beamOn 10
+/gun/energy 90 keV
+/run/beamOn 10
+/gun/energy 100 keV
+/run/beamOn 10
+/gun/energy 120 keV
+/run/beamOn 10
+/gun/energy 140 keV
+/run/beamOn 10
+/gun/energy 160 keV
+/run/beamOn 10
+/gun/energy 180 keV
+/run/beamOn 10
+/gun/energy 200 keV
+/run/beamOn 10
+/gun/energy 250 keV
+/run/beamOn 10
+/gun/energy 300 keV
+/run/beamOn 10
+/gun/energy 350 keV
+/run/beamOn 10
+/gun/energy 400 keV
+/run/beamOn 10
+/gun/energy 450 keV
+/run/beamOn 10
+/gun/energy 500 keV
+/run/beamOn 10
+/gun/energy 600 keV
+/run/beamOn 10
+/gun/energy 700 keV
+/run/beamOn 10
+/gun/energy 800 keV
+/run/beamOn 10
+/gun/energy 900 keV
+/run/beamOn 10
+/gun/energy 1000 keV
+/run/beamOn 10
+/gun/energy 1200 keV
+/run/beamOn 10
+/gun/energy 1400 keV
+/run/beamOn 10
+/gun/energy 1600 keV
+/run/beamOn 10
+/gun/energy 1800 keV
+/run/beamOn 10
+/gun/energy 2000 keV
+/run/beamOn 10
+
