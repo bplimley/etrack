@@ -36,6 +36,8 @@ def computeDeviationFactor1996a(E_Mev,Z):
     # Tabata 1996a equation 2
     deviationFactor = 1 / (a[1] + a[2]/(1 + a[3]/t0**a[4] + a[5]*t0**a[6]))
     return deviationFactor
+
+
 def computeDeviationFactor2002(E_Mev,Z):
     E_Mev = float(E_Mev)
     ELECTRON_REST_ENERGY_MEV = 0.510999
@@ -70,8 +72,11 @@ def computeDeviationFactor2002(E_Mev,Z):
     # Tabata 2002 equation 8 (identical to 1996a eq 2)
     deviationFactor = 1 / (a[1] + a[2]/(1 + a[3]/t0**a[4] + a[5]*t0**a[6]))
     return deviationFactor
+
+
 def returnUnity(E_Mev,Z):
     return 1.0
+    
 
 def extrapolatedRange(Ekev,Z,A,I_EV,density,ref="2002"):
     def getRefMode(ref):
