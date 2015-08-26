@@ -1,7 +1,7 @@
 # tabata.py
 #
 
-import numpy    # for log
+import numpy as np    # for log
 
 def computeDeviationFactor1996a(E_Mev,Z):
     E_Mev = float(E_Mev)
@@ -28,9 +28,9 @@ def computeDeviationFactor1996a(E_Mev,Z):
     a = (0.0,                            # (0)
         B[1] * Z**B[2],                  # 1
         B[3] + B[4]*Z,                   # 2
-        B[5] * Z**(B[6] - B[7]*numpy.log(Z)),  # 3
+        B[5] * Z**(B[6] - B[7]*np.log(Z)),  # 3
         B[8] / Z**(B[9]),                # 4
-        B[10]*Z**(B[11] - B[12]*numpy.log(Z)), # 5
+        B[10]*Z**(B[11] - B[12]*np.log(Z)), # 5
         B[13] * Z**B[14],                # 6
         )
     # Tabata 1996a equation 2
@@ -63,10 +63,10 @@ def computeDeviationFactor2002(E_Mev,Z):
     # Tabata 2002 equations 9--14
     a = (0.0,                                   # (0)
         B[1] * Z**B[2],                         # 1
-        B[3] * Z**(-B[4] + B[5]*numpy.log(Z)),  # 2
-        B[6] * Z**(-B[7] + B[8]*numpy.log(Z)),  # 3
+        B[3] * Z**(-B[4] + B[5]*np.log(Z)),  # 2
+        B[6] * Z**(-B[7] + B[8]*np.log(Z)),  # 3
         B[9] * Z**(B[10]),                      # 4
-        B[11] * Z**(-B[12]+B[13]*numpy.log(Z)), # 5
+        B[11] * Z**(-B[12]+B[13]*np.log(Z)), # 5
         B[14] * Z**B[15],                       # 6
         )
     # Tabata 2002 equation 8 (identical to 1996a eq 2)
@@ -76,7 +76,7 @@ def computeDeviationFactor2002(E_Mev,Z):
 
 def returnUnity(E_Mev,Z):
     return 1.0
-    
+
 
 def extrapolatedRange(Ekev,Z,A,I_EV,density,ref="2002"):
     def getRefMode(ref):
@@ -169,10 +169,10 @@ def csdaRange(E_Mev, Z, A, I_EV):
         D[13]*Z**D[14],    # 7
         )
     # Tabata 1996a equation 12
-    B = numpy.log((t0 / (I + c[7]*t0))**2) + numpy.log(1 + t0/2)
+    B = np.log((t0 / (I + c[7]*t0))**2) + np.log(1 + t0/2)
     # Tabata 1996a equation 11
     csdaRangeGCm2 = c[1] / B * (
-        numpy.log(1+c[2]*t0**c[3])/c[2] -
+        np.log(1+c[2]*t0**c[3])/c[2] -
         c[4]*t0**c[5]/(1 + c[6]*t0)
         )
     return csdaRangeGCm2
