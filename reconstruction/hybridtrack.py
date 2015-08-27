@@ -1,6 +1,7 @@
 #!/bin/python
 
 import numpy as np
+import ipdb as pdb
 
 import dedxref
 
@@ -23,7 +24,7 @@ def reconstruct(original_image_kev,
     options = ReconstructionOptions(pixel_size_um)
 
     # add buffer of zeros around image
-    track_energy_kev, prepared_image_kev, options = prepare_image(
+    track_energy_kev, prepared_image_kev = prepare_image(
         original_image_kev, options)
 
     # low threshold, thinning, identify ends
@@ -48,8 +49,7 @@ def reconstruct(original_image_kev,
 
 
 class ReconstructionOptions():
-    """
-    Reconstruction options for HybridTrack algorithm.
+    """Reconstruction options for HybridTrack algorithm.
 
     Everything is set to defaults (based on pixel size) upon initialization.
     """
@@ -124,7 +124,7 @@ class ReconstructionOptions():
         cut0_y = np.arange(-self.cut_total_length_pix/2,
                           self.cut_total_length_pix/2+1e-3, # includes endpoint
                           self.cut_sampling_interval_pix)
-        cut0_x = np.zeros_like(cut0y)
+        cut0_x = np.zeros_like(cut0_y)
         cut0_xy = np.array([cut0_x,cut0_y]).T
         # rotation matrices
         R = [np.array([[np.cos(th), np.sin(th)], [-np.sin(th), np.cos(th)]])
@@ -149,7 +149,7 @@ class ReconstructionOptions():
                                             self.pixel_area_scaling_factor)
 
         # distance threshold for catching an infinite loop
-        self.infinite_loop_threshold_pix = self.position_step_size / 2
+        self.infinite_loop_threshold_pix = self.position_step_size_pix / 2
 
     def set_measurement_options(self):
         """Options for calculating alpha and beta after the ridge following.
@@ -167,16 +167,40 @@ class ReconstructionOptions():
         self.measurement_func = np.median
 
 
-def prepare_image(original_image_kev, options):
+def prepare_image(image_kev, options):
+    """Add a buffer of zeros around the original image.
     """
-    """
-    pass
+
+    # imageEdgeBuffer does not need to handle the cutTotalLength/2 in any direction.
+    #   it only needs to handle the ridge points going off the edge.
+
+    # TODO: reduce buffer_width to... one pixel?
+
+    buffer_width_um = 0.55 * options.cut_total_length_pix
+    buffer_width_pix = np.ceil(buffer_width_um / options.pixel_size_um)
+    orig_size = np.array(np.shape(image_kev))
+    new_image_size = (orig_size + 2*buffer_width_pix*np.ones(2))
+    new_image_kev = np.zeros(new_image_size)
+
+    indices_of_original = [
+                           [int(it) + int(buffer_width_pix)
+                            for it in range(orig_size[dim])]
+                           for dim in [0,1]]
+    # pdb.set_trace()
+    new_image_kev[np.ix_(indices_of_original[0], indices_of_original[1])
+                  ] = image_kev
+
+    track_energy_kev = np.sum(np.sum(image_kev))
+
+    return track_energy_kev, new_image_kev
 
 
-def choose_initial_end(prepared_image_kev, options):
+def choose_initial_end(image_kev, options):
     """
     """
-    pass
+
+    
+
 
 
 class EdgeSegments():
