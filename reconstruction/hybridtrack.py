@@ -199,7 +199,35 @@ def choose_initial_end(image_kev, options):
     """
     """
 
-    
+    ends_xy = locate_all_ends(image_kev, options)
+    measure_energies()
+    get_starting_point()
+
+    def locate_all_ends(image_kev, options):
+        """
+        """
+        ends_xy = []
+        current_threshold = options.low_threshold_kev
+        connectivity = np.ones((3,3))
+
+        # normally this while loop only runs once.
+        # if the track is a loop and so no ends are found, then increase the
+        #   threshold until an end is found.
+        # TODO: does this actually work?
+
+        while (not ends_xy) and (
+                current_threshold <= 10*options.low_threshold_kev):
+            
+
+    def measure_energies():
+        """
+        """
+        pass
+
+    def get_starting_point():
+        """
+        """
+        pass
 
 
 
