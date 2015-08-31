@@ -4,19 +4,20 @@ import ipdb as pdb
 def thin(image,n_iterations=np.inf):
     """
     Replicate MATLAB Image Processing Toolbox bwmorph(image, 'thin', inf).
+    The input image variable is not modified in memory.
 
     See codes/lawrencium/lrc_codes_may2013/f/bwmorph.m
 
     See paper: Guo 1989, "Parallel thinning with two-subiteration algorithms"
     """
 
-    image = np.array(image)
+    image = np.array(image.copy())
     current_img = image
     new_img = current_img.copy()
 
     n=0
     while n < n_iterations:
-        new_img = thin_iteration(new_img)
+        thin_iteration(new_img)
         if np.array_equal(current_img, new_img):
             # nothing changed
             break
@@ -26,17 +27,21 @@ def thin(image,n_iterations=np.inf):
     return new_img
 
 def thin_iteration(image):
-    """
+    """One full iteration of thinning.
+
+    The input image variable IS modified in memory, as well as returned.
     """
 
-    image = thin_subiteration(image,1)
-    image = thin_subiteration(image,2)
+    thin_subiteration(image,1)
+    thin_subiteration(image,2)
 
     return image
 
 
 def thin_subiteration(image,subit):
     """Perform one subiteration of thinning.
+
+    The input image variable IS modified in memory, as well as returned
 
     subit is either 1 or 2.
     """
@@ -444,10 +449,12 @@ def test_G3a(img,x):
 
 def test_subit1(img):
     """Test first subiteration of thinning.
+
+    Input image is not modified in memory.
     """
 
     matlab_subit1 = test_make_subit1()
-    python_subit1 = thin_subiteration(img,1)
+    python_subit1 = thin_subiteration(img.copy(),1)
     assert np.array_equal(matlab_subit1, python_subit1), 'subit1 failed'
 
 def test_G3b(img,x):
@@ -460,10 +467,12 @@ def test_G3b(img,x):
 
 def test_it1(img):
     """Test first complete iteration of thinning.
+
+    Input image is not modified in memory.
     """
 
     matlab_it1 = test_make_it1()
-    python_it1 = thin_iteration(img)
+    python_it1 = thin_iteration(img.copy())
     assert np.array_equal(matlab_it1, python_it1), 'it1 failed'
 
 
@@ -480,16 +489,15 @@ if __name__ == "__main__":
     test_G1(image,x)
     test_G2(image,x)
     test_G3a(image,x)
-    test_subit1(image.copy())
+    test_subit1(image)
 
     image2 = thin_subiteration(image.copy(),1)
     x2 = make_x(image2)
 
     test_G3b(image2,x2)
 
-    test_it1(image.copy())
+    test_it1(image)
 
-    image = test_input()    # reset binding of image variable
     matlab_output_array = test_matlab_output()
     python_output_array = thin(image,n_iterations=np.inf)
 
