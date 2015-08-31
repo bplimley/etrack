@@ -12,96 +12,124 @@ def thin(image,n_iterations=np.inf):
 
     image = np.array(image)
     current_img = image
-    new_img = current_img
-    img_size = np.shape(image)
+    new_img = current_img.copy()
 
     n=0
     while n < n_iterations:
-        new_img = thin_iteration(new_img, img_size)
+        new_img = thin_iteration(new_img)
         if np.array_equal(current_img, new_img):
             # nothing changed
             break
-        current_img = new_img
+        current_img = new_img.copy()
         n+=1
 
     return new_img
 
-def thin_iteration(image, img_size):
+def thin_iteration(image):
     """
     """
 
-    def G1(img, x):
-        """Condition G1 of Guo 1989 A2
+    image = thin_subiteration(image,1)
+    image = thin_subiteration(image,2)
 
-        G1: X_H = 1
-          where
-        X_H = sum(i=1:4)(b_i)
-        b_i = (not x_(2i-1)) and (x_(2i) or x_(2i+1))
-        """
+    return image
 
-        X_H = np.zeros(np.shape(img))
-        b = np.zeros(np.shape(img)+(5,))    # 1-indexed
 
-        for i in xrange(1,5):
-            b[...,i] = np.logical_and(
-                np.logical_not(x[2*i-1]),
-                np.logical_or(x[2*i], x[2*i+1]))
-        X_H = np.sum(b,2)
+def thin_subiteration(image,subit):
+    """Perform one subiteration of thinning.
 
-        return X_H == 1
+    subit is either 1 or 2.
+    """
 
-    def G2(img, x):
-        """Condition G2 of Guo 1989 A2
+    x = make_x(image)
+    if subit==1:
+        delete_pixels = np.logical_and(
+            G1(image,x), np.logical_and(G2(image,x), G3a(image,x)))
+    elif subit==2:
+        delete_pixels = np.logical_and(
+            G1(image,x), np.logical_and(G2(image,x), G3b(image,x)))
+    image[delete_pixels] = 0
 
-        G2: 2 <= min(n1,n2) <= 3
-          where
-        n1 = sum(i=1:4)(x_(2i-1) || x_(2i))
-        n2 = sum(i=1:4)(x_(2i) || x_(2i+1))
+    return image
 
-        """
 
-        temp1 = np.zeros(np.shape(img) + (5,))  # 1-indexed
-        temp2 = np.zeros(np.shape(img) + (5,))  # 1-indexed
-        for i in xrange(1,5):
-            temp1[...,i] = np.logical_or(x[2*i-1], x[2*i])
-            temp2[...,i] = np.logical_or(x[2*i], x[2*i+1])
-        n1 = np.sum(temp1,2)
-        n2 = np.sum(temp2,2)
+def G1(img, x):
+    """Condition G1 of Guo 1989 A2
 
-        return np.logical_and(
-            np.minimum(n1,n2) >= 2,
-            np.minimum(n1,n2) <= 3)
+    G1: X_H = 1
+      where
+    X_H = sum(i=1:4)(b_i)
+    b_i = (not x_(2i-1)) and (x_(2i) or x_(2i+1))
+    """
 
-    def G3a(img, x):
-        """Condition G3a of Guo 1989 A2
+    X_H = np.zeros(np.shape(img))
+    b = np.zeros(np.shape(img)+(5,))    # 1-indexed
 
-        G3a: (x_2 | x_3 | ~x_8) & x_1 == false
-        """
+    for i in xrange(1,5):
+        b[...,i] = np.logical_and(
+            np.logical_not(x[2*i-1]),
+            np.logical_or(x[2*i], x[2*i+1]))
+    X_H = np.sum(b,2)
 
-        return np.logical_not(
-            np.logical_and(
-                np.logical_or(
-                    np.logical_or(x[2],x[3]),
-                    np.logical_not(x[8])),
-                x[1]))
+    return X_H == 1
 
-    def G3b(img,x):
-        """Condition G3b of Guo 1989 A2
+def G2(img, x):
+    """Condition G2 of Guo 1989 A2
 
-        G3b: (x_6 | x_7 | ~x_4) & x_5 == false
-        """
+    G2: 2 <= min(n1,n2) <= 3
+      where
+    n1 = sum(i=1:4)(x_(2i-1) || x_(2i))
+    n2 = sum(i=1:4)(x_(2i) || x_(2i+1))
 
-        return np.logical_not(
-            np.logical_and(
-                np.logical_or(
-                    np.logical_or(x[6],x[7]),
-                    np.logical_not(x[4])),
-                x[5]))
+    """
 
-    # generate neighbor matrix, x, in order to perform all comparisons
-    #   matrix-wide instead of looping through elements and doing i+1's
-    #   everywhere.
-    # (x is its name in MATLAB docs)
+    temp1 = np.zeros(np.shape(img) + (5,))  # 1-indexed
+    temp2 = np.zeros(np.shape(img) + (5,))  # 1-indexed
+    for i in xrange(1,5):
+        temp1[...,i] = np.logical_or(x[2*i-1], x[2*i])
+        temp2[...,i] = np.logical_or(x[2*i], x[2*i+1])
+    n1 = np.sum(temp1,2)
+    n2 = np.sum(temp2,2)
+
+    return np.logical_and(
+        np.minimum(n1,n2) >= 2,
+        np.minimum(n1,n2) <= 3)
+
+def G3a(img, x):
+    """Condition G3a of Guo 1989 A2
+
+    G3a: (x_2 | x_3 | ~x_8) & x_1 == false
+    """
+
+    return np.logical_not(
+        np.logical_and(
+            np.logical_or(
+                np.logical_or(x[2],x[3]),
+                np.logical_not(x[8])),
+            x[1]))
+
+def G3b(img,x):
+    """Condition G3b of Guo 1989 A2
+
+    G3b: (x_6 | x_7 | ~x_4) & x_5 == false
+    """
+
+    return np.logical_not(
+        np.logical_and(
+            np.logical_or(
+                np.logical_or(x[6],x[7]),
+                np.logical_not(x[4])),
+            x[5]))
+
+def make_x(img):
+    """Generate neighbor matrix, x.
+
+    This is in order to perform all comparisons matrix-wide instead of
+    looping through elements and doing i+1's everywhere.
+    (x is its name in MATLAB docs)
+    """
+
+    img_size = np.shape(img)
     x = [[] for __ in xrange(10)]
     # use 1-indexing to match MATLAB, also wrap around x[9]==x[1]
     #
@@ -118,7 +146,7 @@ def thin_iteration(image, img_size):
 
     # buffer with false
     temp_image = np.zeros(np.array(img_size)+(2,2))
-    temp_image[1:-1,1:-1] = image
+    temp_image[1:-1,1:-1] = img
 
     x[1] = temp_image[1:-1, 2:]     # E neighbor: shift in -y direction
     x[2] = temp_image[:-2,  2:]     # NE: shift +x, -y
@@ -130,22 +158,16 @@ def thin_iteration(image, img_size):
     x[8] = temp_image[2:,   2:]     # SE
     x[9] = x[1]
 
-    # pdb.set_trace()
-    # first subiteration (uses G3a)
-    delete_pixels = np.logical_and(
-        G1(image, x), np.logical_and(G2(image, x), G3a(image, x)))
-    image[delete_pixels] = 0
+    return x
 
-    # second subiteration (uses G3b)
-    delete_pixels = np.logical_and(
-        G1(image, x), np.logical_and(G2(image, x), G3b(image, x)))
-    image[delete_pixels] = 0
 
-    return image
+# # # # # # # # # # # # # # # # # # # #
+#           Unit test stuff           #
+# # # # # # # # # # # # # # # # # # # #
 
-if __name__ == "__main__":
-    """
-    Run test of thin, based on MATLAB's exact output.
+
+def test_input():
+    """Generate binary track image to test thinning with.
     """
 
     # this is a track:
@@ -174,6 +196,12 @@ if __name__ == "__main__":
         [0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
 
+    return np.array(input_array)
+
+def test_matlab_output():
+    """Generate binary track image, which is the result of MATLAB's thinning.
+    """
+
     # MATLAB>> matlab_output_array = bwmorph(input_array,'thin',inf);
     matlab_output_array = [
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -198,9 +226,272 @@ if __name__ == "__main__":
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
 
-    python_output_array = thin(input_array,n_iterations=np.inf)
+    return np.array(matlab_output_array)
 
-    if np.all(python_output_array == matlab_output_array):
-        print("'thin' passes test")
-    else:
-        print("*** 'thin' fails test!")
+def test_make_G1():
+    """First iteration of G1 on input image. From MATLAB.
+    """
+
+    G1 = [
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
+        [0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1],
+        [0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [0,0,1,1,1,1,1,1,1,1,0,0,0,0,1,0,1,1,1,1,1,0,1,1,0,1,1],
+        [0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
+        [0,0,1,1,0,0,0,0,0,1,0,0,0,0,1,1,1,0,0,0,1,1,1,1,1,1,1],
+        [0,0,1,1,1,1,1,1,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,1,1,1,0,0,1,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0],
+        [0,1,1,1,1,1,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,1,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,1,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+    return np.array(G1)
+
+def test_make_G2():
+    """First iteration of G2 on input image. From MATLAB.
+    """
+
+    G2 = [
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
+        [0,0,0,0,0,0,0,0,0,0,0,1,1,0,1,0,1,1,1,1,1,0,0,1,1,1,1],
+        [0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0,1,1,0,1,1],
+        [0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0],
+        [0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,1,0,0],
+        [0,0,0,1,1,1,1,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,1,1,1,1,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,1,1,1,1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,1,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,1,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+    return np.array(G2)
+
+def test_make_G3a():
+    """First iteration of G3a on input image. From MATLAB.
+    """
+
+    G3a = [
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1],
+        [1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1],
+        [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1],
+        [1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,0,0,0,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+    return np.array(G3a)
+
+def test_make_G3b():
+    """First iteration of G3b on input image. From MATLAB.
+    """
+
+    G3b = [
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],
+        [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1],
+        [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,1,1,1],
+        [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,0,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+    return np.array(G3b)
+
+def test_make_subit1():
+    """First complete subiteration on input image. From MATLAB.
+    """
+
+    subit1 = [
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+        [0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,0],
+        [0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,0,0],
+        [0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,1,1,1,1,1,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+    return np.array(subit1)
+
+def test_make_it1():
+    """First complete iteration (subit's 1 and 2) on input image. From MATLAB.
+    """
+
+    it1 = [
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,0,0],
+        [0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,0,0,0],
+        [0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,1,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+    return np.array(it1)
+
+
+def test_make_x(img):
+    """Test that x matrix truly represents the neighbors of the image.
+    """
+
+    x = make_x(img)
+
+    # test all neighbors for all image pixels except the edge pixels.
+    for i in range(np.shape(img)[0])[1:-1]:
+        for j in range(np.shape(img)[1])[1:-1]:
+            msg = ' failed at ({i},{j})'.format(i=i,j=j)
+            # pdb.set_trace()
+            assert img[i+1,j-1]==x[6][i,j], "x[6]" + msg
+            assert img[i+1,j]  ==x[7][i,j], "x[7]" + msg
+            assert img[i+1,j+1]==x[8][i,j], "x[8]" + msg
+            assert img[i,  j+1]==x[9][i,j], "x[9]" + msg
+            assert img[i,  j+1]==x[1][i,j], "x[1]" + msg
+            assert img[i-1,j+1]==x[2][i,j], "x[2]" + msg
+            assert img[i-1,j]  ==x[3][i,j], "x[3]" + msg
+            assert img[i-1,j-1]==x[4][i,j], "x[4]" + msg
+            assert img[i,  j-1]==x[5][i,j], "x[5]" + msg
+
+def test_G1(img,x):
+    """Test condition G1 of thinning.
+    """
+
+    matlab_G1 = test_make_G1()
+    python_G1 = G1(img,x)
+    assert np.array_equal(matlab_G1, python_G1), 'G1 failed'
+
+def test_G2(img,x):
+    """Test condition G2 of thinning.
+    """
+
+    matlab_G2 = test_make_G2()
+    python_G2 = G2(img,x)
+    assert np.array_equal(matlab_G2, python_G2), 'G2 failed'
+
+def test_G3a(img,x):
+    """Test condition G3a of thinning.
+    """
+
+    matlab_G3a = test_make_G3a()
+    python_G3a = G3a(img,x)
+    assert np.array_equal(matlab_G3a, python_G3a), 'G3a failed'
+
+def test_subit1(img):
+    """Test first subiteration of thinning.
+    """
+
+    matlab_subit1 = test_make_subit1()
+    python_subit1 = thin_subiteration(img,1)
+    assert np.array_equal(matlab_subit1, python_subit1), 'subit1 failed'
+
+def test_G3b(img,x):
+    """Test condition G3b of thinning.
+    """
+
+    matlab_G3b = test_make_G3b()
+    python_G3b = G3b(img,x)
+    assert np.array_equal(matlab_G3b, python_G3b), 'G3b failed'
+
+def test_it1(img):
+    """Test first complete iteration of thinning.
+    """
+
+    matlab_it1 = test_make_it1()
+    python_it1 = thin_iteration(img)
+    assert np.array_equal(matlab_it1, python_it1), 'it1 failed'
+
+
+if __name__ == "__main__":
+    """
+    Run test of thin, based on MATLAB's exact output.
+    """
+
+    image = test_input()
+
+    test_make_x(image)
+
+    x = make_x(image)
+    test_G1(image,x)
+    test_G2(image,x)
+    test_G3a(image,x)
+    test_subit1(image.copy())
+
+    image2 = thin_subiteration(image.copy(),1)
+    x2 = make_x(image2)
+
+    test_G3b(image2,x2)
+
+    test_it1(image.copy())
+
+    image = test_input()    # reset binding of image variable
+    matlab_output_array = test_matlab_output()
+    python_output_array = thin(image,n_iterations=np.inf)
+
+    assert np.array_equal(matlab_output_array,
+                          python_output_array), 'full thinning failed'
