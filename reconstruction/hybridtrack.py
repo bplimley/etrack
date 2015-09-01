@@ -2,8 +2,11 @@
 
 import numpy as np
 import ipdb as pdb
+import scipy.ndimage
 
 import dedxref
+import thinning
+
 
 
 def reconstruct(original_image_kev,
@@ -217,7 +220,23 @@ def choose_initial_end(image_kev, options):
 
         while (not ends_xy) and (
                 current_threshold <= 10*options.low_threshold_kev):
-            
+            binary_image = image_kev > current_threshold
+            thinned_image = thinning.thin(binary_image)+0
+            num_neighbors_image = scipy.ndimage.convolve(
+                thinned_image, np.ones((3,3)),mode='constant',cval=0.0)
+            num_neighbors_image = num_neighbors_image * thinned_image
+            ends_image = num_neighbors_image==1
+
+            if np.all(np.logical_not(ends_image)):
+                # increase threshold to attempt to break loop.
+                current_threshold += options.low_threshold_kev
+
+        if np.all(np.logical_not(ends_image)):
+            # still no ends.
+            raise something
+
+        #
+
 
     def measure_energies():
         """
