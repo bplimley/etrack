@@ -3,6 +3,7 @@
 import numpy as np
 import ipdb as pdb
 import scipy.ndimage
+import scipy.interpolate
 
 import dedxref
 import thinning
@@ -277,10 +278,7 @@ def choose_initial_end(image_kev, options, info):
             info.ends_xy = ends_xy
         else:
             # still no ends.
-            # Rather than raising an exception here, allow this to return.
-            info.threshold_used = np.nan
-            info.ends_xy = [[],[]]
-            info.error = 'no ends found'
+            raise NoEndsFound
 
 
     def measure_energies(image_kev, options, info):
@@ -336,15 +334,35 @@ def choose_initial_end(image_kev, options, info):
 
     # main
     locate_all_ends(image_kev, options, info)
-    if info.error == 'no ends found':
-        raise NoEndsFound
 
     measure_energies(image_kev, options, info)
     get_starting_point(options, info)
 
 
+def ridge_follow(image, options, info):
+    """
+    """
+    ridge = Ridge()
+    ridge.position.append(info.start_coordinates)
+    ridge.direction_ind.append(info.start_direction_ind)
 
-def ridge_follow(prepared_image_kev, edge_segments, options):
+    size = np.shape(image)
+    info.interp = scipy.interpolate,interp2d(
+        range(size[0]), range(size[1]), image,
+        kind='linear')
+
+    is_end_of_track = False
+    is_infinite_loop = False
+    while not is_end_of_track
+        ridge_step(image, options, ridge)
+        here = ridge.position[-1]
+        is_end_of_track = (info.interp(here[0],here[1]) <
+                           options.track_end_low_threshold)
+
+
+
+
+def ridge_step(image, options, ridge):
     """
     """
     pass
@@ -356,7 +374,8 @@ class Ridge():
 
     def __init__(self):
         # ?
-        pass
+        self.position = []  # pixels
+        self.direction_ind = []
 
 
 def compute_direction(track_energy_kev, ridge, options):
@@ -365,7 +384,7 @@ def compute_direction(track_energy_kev, ridge, options):
     pass
 
 
-def set_output(prepared_image_kev, edge_segments, ridge, measureemnt, options):
+def set_output(image, options, info):
     """
     """
     pass
@@ -437,4 +456,3 @@ if __name__ == '__main__':
         print('start_direction_deg:')
         print(info.start_direction_deg)
         print('')
-    
