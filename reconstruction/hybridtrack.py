@@ -347,17 +347,18 @@ def ridge_follow(image, options, info):
     ridge.direction_ind.append(info.start_direction_ind)
 
     size = np.shape(image)
-    info.interp = scipy.interpolate,interp2d(
-        range(size[0]), range(size[1]), image,
-        kind='linear')
+    # the interp object seems to switch x and y.
+    info.interp = scipy.interpolate.interp2d(
+        range(size[1]), range(size[0]), image, kind='linear')
+    # consider using RectBivariateSpline for speed...
 
     is_end_of_track = False
-    is_infinite_loop = False
-    while not is_end_of_track
+    while not is_end_of_track:
         ridge_step(image, options, ridge)
         here = ridge.position[-1]
-        is_end_of_track = (info.interp(here[0],here[1]) <
-                           options.track_end_low_threshold)
+        # the interp object seems to switch x and y.
+        is_end_of_track = (info.interp(here[1],here[0]) <
+                           options.track_end_low_threshold_kev)
 
 
 
