@@ -107,11 +107,11 @@ class ReconstructionOptions():
         # TODO: this could be smaller for smaller pixel sizes, depending on
         #   the position_step_size
         search_angle_deg = 48   # must be a multiple of 2*angle_increment_deg
-        self.search_angle_indices = (search_angle_deg /
-                                     self.angle_increment_deg)
+        self.search_angle_ind = (search_angle_deg /
+                                 self.angle_increment_deg)
 
         pi_deg = 180
-        self.pi_indices = pi_deg / self.angle_increment_deg
+        self.pi_ind = pi_deg / self.angle_increment_deg
 
         # all possible cut angles, for pre-calculating cuts
         #   *different from MATLAB code: starts with 0 instead of angle_incr
@@ -342,9 +342,6 @@ def choose_initial_end(image_kev, options, info):
 def ridge_follow(image, options, info):
     """
     """
-    ridge = Ridge()
-    ridge.position.append(info.start_coordinates)
-    ridge.direction_ind.append(info.start_direction_ind)
 
     size = np.shape(image)
     # the interp object seems to switch x and y.
@@ -352,31 +349,96 @@ def ridge_follow(image, options, info):
         range(size[1]), range(size[0]), image, kind='linear')
     # consider using RectBivariateSpline for speed...
 
-    is_end_of_track = False
-    while not is_end_of_track:
-        ridge_step(image, options, ridge)
-        here = ridge.position[-1]
-        # the interp object seems to switch x and y.
-        is_end_of_track = (info.interp(here[1],here[0]) <
-                           options.track_end_low_threshold_kev)
+    ridge = [RidgePoint(info.start_coordinates, info.start_direction_ind,
+        info, options)]
+
+    while not ridge[-1].is_end:
+        ridge.append(ridge[-1].step())
+
+        # # the interp object seems to switch x and y.
+        # is_end_of_track = (info.interp(here[1],here[0]) <
+        #                    options.track_end_low_threshold_kev)
 
 
 
-
-def ridge_step(image, options, ridge):
-    """
-    """
-    pass
-
-
-class Ridge():
+class RidgePoint():
     """
     """
 
-    def __init__(self):
-        # ?
-        self.position = []  # pixels
-        self.direction_ind = []
+    def __init__(self, xy, est_direction_ind, info, options):
+        """Initialize a RidgePoint:
+
+        1. save a reference to info and options
+        2. put in estimated position and direction
+        3. interpolate energy and check end condition
+        4. placeholder variables
+        """
+
+        # store a reference to info and options objects for future reference
+        self.info = info
+        self.options = options
+
+        # basic parameters needed to have a RidgePoint
+        self.est_position_pix = xy
+        self.est_direction_ind = est_direction_ind
+
+        # finally, get interpolated energy at this point and check threshold
+        self.est_energy_kev = self.info.interp(self.est_position_pix[1],
+                                               self.est_position_pix[0])
+        self.is_end = (self.est_energy_kev <
+                       self.options.track_end_low_threshold_kev)
+
+        # placeholders
+        self.all_cuts = []
+        self.chosen_cut = []
+        self.final_direction_deg = []
+        self.dedx_kevum = []
+        self.fwhm_um = []
+
+
+    def step(self):
+        """Figure out the next ridge point, and return it.
+        """
+
+        self.generate_all_cuts()
+        self.choose_best_cut()
+
+
+
+        next_point = RidgePoint(some_xy)
+        next_point.asdf
+
+        return next_point
+
+    def generate_all_cuts(self):
+        """Cuts go into self.all_cuts.... as what?
+        """
+
+        these_indices = range(
+            self.est_direction_ind - self.options.search_angle_ind/2,
+            self.est_direction_ind + self.options.search_angle_ind/2)
+        these_indices(these_indices<0) = (these_indices(these_indices<0) +
+                                          2*self.options.pi_ind)
+        these_indices(these_indices >= 2*self.options.pi_ind) = (
+            these_indices(these_indices >= 2*self.options.pi_ind) -
+            2*self.options.pi_ind)
+
+
+        #
+        #
+
+
+    def choose_best_cut(self):
+        """
+        """
+        pass
+
+    def measure_fwhm(self):
+        pass
+
+    def measure_dedx(self):
+        pass
+
 
 
 def compute_direction(track_energy_kev, ridge, options):
