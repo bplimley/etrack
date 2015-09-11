@@ -129,11 +129,11 @@ class ReconstructionOptions():
                           self.cut_total_length_pix/2+1e-3, # includes endpoint
                           self.cut_sampling_interval_pix)
         cut0_x = np.zeros_like(cut0_y)
-        cut0_xy = np.array([cut0_x,cut0_y]).T
+        cut0_xy = zip(tuple(cut0_x), tuple(cut0_y))
         # rotation matrices
         R = [np.array([[np.cos(th), np.sin(th)], [-np.sin(th), np.cos(th)]])
              for th in self.cut_angle_rad]
-        self.cut_xy = [cut0_xy.dot(Ri) for Ri in R]     # matrix multiplication
+        self.cut_xy = [np.array(cut0_xy).dot(Ri) for Ri in R]
         # cut_distance_from_center is used for the width metric
         self.cut_distance_from_center_pix = np.abs(cut0_y)
         # cut_distance_coordinate is used for ???
@@ -411,7 +411,7 @@ class RidgePoint():
         return next_point
 
     def generate_all_cuts(self):
-        """Cuts go into self.all_cuts.... as what?
+        """
         """
 
         these_indices = range(
@@ -423,7 +423,8 @@ class RidgePoint():
             these_indices(these_indices >= 2*self.options.pi_ind) -
             2*self.options.pi_ind)
 
-
+        cuts = [Cut(self.info.interp, self.options, self.est_position_pix,
+                    angle_ind) for angle_ind in these_indices]
         #
         #
 
@@ -439,6 +440,45 @@ class RidgePoint():
     def measure_dedx(self):
         pass
 
+class Cut():
+    """One cut for ridge following
+    """
+
+    def __init__(self, interp, options, position_pix, angle_ind):
+        """Define all properties of the cut here.
+        """
+
+        self.angle_ind = angle_ind
+        self.center = position_pix
+        self.set_coordinates(self, options.cut_xy[self.angle_ind])
+        self.energy_kev = interp(self.coordinates_pix[1,:],
+                                 self.coordinates_pix[0,:])
+        self.measure_fwhm(self)
+        self.measure_dedx(self, options)
+        self.find_centroid(self)
+        #
+
+    def set_coordinates(self, cut_xy):
+        """
+        """
+        x_cut, y_cut = zip(*cut_xy)
+        x0, y0 = self.center
+        self.coordinates_pix = zip(x0 + np.array(x_cut), y0 + np.array(y_cut))
+
+    def measure_fwhm(self):
+        """
+        """
+        pass
+
+    def measure_dedx(self, options):
+        """
+        """
+        pass
+
+    def find_centroid(self):
+        """
+        """
+        pass
 
 
 def compute_direction(track_energy_kev, ridge, options):
