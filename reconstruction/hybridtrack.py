@@ -136,7 +136,7 @@ class ReconstructionOptions():
         self.cut_xy = [np.array(cut0_xy).dot(Ri) for Ri in R]
         # cut_distance_from_center is used for the width metric
         self.cut_distance_from_center_pix = np.abs(cut0_y)
-        # cut_distance_coordinate is used for ???
+        # cut_distance_coordinate is used for excluding points
         self.cut_distance_coordinate_pix = cut0_y
 
         # cut sample points with energy below cut_low_threshold, and beyond,
@@ -361,7 +361,7 @@ def ridge_follow(image, options, info):
 
 
 
-class RidgePoint():
+class RidgePoint(object):
     """
     """
 
@@ -423,7 +423,7 @@ class RidgePoint():
             these_indices(these_indices >= 2*self.options.pi_ind) -
             2*self.options.pi_ind)
 
-        cuts = [Cut(self.info.interp, self.options, self.est_position_pix,
+        self.cuts = [Cut(self.info.interp, self.options, self.est_position_pix,
                     angle_ind) for angle_ind in these_indices]
         #
         #
@@ -432,20 +432,19 @@ class RidgePoint():
     def choose_best_cut(self):
         """
         """
-        pass
+        width = [cut.width_metric for cut in self.cuts]
+        self.best_ind = np.argmin(width)
+        best_cut = self.cuts[self.best_ind]
+        self.fwhm_um = best_cut.measure_fwhm()
+        self.dedx_kevum = best_cut.measure_dedx(self.options)
 
-    def measure_fwhm(self):
-        pass
 
-    def measure_dedx(self):
-        pass
-
-class Cut():
+class Cut(object):
     """One cut for ridge following
     """
 
     def __init__(self, interp, options, position_pix, angle_ind):
-        """Define all properties of the cut here.
+        """Define properties of the cut here.
         """
 
         self.angle_ind = angle_ind
@@ -453,9 +452,11 @@ class Cut():
         self.set_coordinates(self, options.cut_xy[self.angle_ind])
         self.energy_kev = interp(self.coordinates_pix[1,:],
                                  self.coordinates_pix[0,:])
-        self.measure_fwhm(self)
-        self.measure_dedx(self, options)
-        self.find_centroid(self)
+        self.exclude_points(options)
+        self.measure_width_metric(options)
+        # self.measure_fwhm(self)
+        # self.measure_dedx(self, options)
+        # self.find_centroid(self)
         #
 
     def set_coordinates(self, cut_xy):
@@ -465,15 +466,64 @@ class Cut():
         x0, y0 = self.center
         self.coordinates_pix = zip(x0 + np.array(x_cut), y0 + np.array(y_cut))
 
+    def exclude_points(self, options):
+        """
+        """
+        thresh = options.cut_low_threshold_kev
+        halves = [f(self.cut_distance_coordinate_pix,0)
+            for f in [np.greater,np.less]]
+        energy_halves = [self.energy_kev[half] for half in halves]
+
+        below_threshold = [energy < thresh
+            for energy in energy_halves]
+        if np.any(below_threshold[0]):
+            # first [0]: first half. second [0]: first (only) dimension.
+            list_of_indices_below_threshold = np.nonzero(below_threshold[0])[0]
+            # first index to keep comes after last index below threshold
+            first_index_to_keep = list_of_indices_below_threshold[-1] + 1
+        else:
+            first_index_to_keep = 0
+        if np.any(below_threshold[1]):
+            # [1]: second half. [0]: first (only) dimension.
+            list_of_indices_below_threshold = np.nonzero(below_threshold[1])[0]
+            first_index_to_lose = list_of_indices_below_threshold[0]
+        else:
+            first_index_to_lose = len(below_threshold[1])
+        # in either case, first_index_to_lose is indexed for the half, instead
+        #   of the whole cut.
+        first_index_to_lose += len(halves[0])
+
+        self.coordinates_pix = self.coordinates_pix[
+            first_index_to_keep:first_index_to_lose]
+        self.energy_kev = self.energy_kev[
+            first_index_to_keep:first_index_to_lose]
+
+        self.first_index_to_keep = first_index_to_keep
+        self.first_index_to_lose = first_index_to_lose
+
+
+    def measure_width_metric(self, options):
+        """
+        """
+        distance_cropped = options.cut_distance_from_center_pix[
+            self.first_index_to_keep:self.first_index_to_lose]
+        self.width_metric = (distance_cropped * self.energy_kev)
+
     def measure_fwhm(self):
         """
         """
-        pass
+        # placeholder
+        self.fwhm_um = None
+
+        return self.fwhm_um
 
     def measure_dedx(self, options):
         """
         """
-        pass
+        # placeholder
+        self.dedx_kevum = None
+
+        return self.dedx_kevum
 
     def find_centroid(self):
         """
