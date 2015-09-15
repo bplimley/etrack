@@ -414,14 +414,16 @@ class RidgePoint(object):
         """
         """
 
-        these_indices = range(
-            self.est_direction_ind - self.options.search_angle_ind/2,
+        angle_start = int(
+            self.est_direction_ind - self.options.search_angle_ind/2)
+        angle_end = int(
             self.est_direction_ind + self.options.search_angle_ind/2)
-        these_indices(these_indices<0) = (these_indices(these_indices<0) +
-                                          2*self.options.pi_ind)
-        these_indices(these_indices >= 2*self.options.pi_ind) = (
-            these_indices(these_indices >= 2*self.options.pi_ind) -
-            2*self.options.pi_ind)
+        these_indices = np.arange(angle_start, angle_end)
+        # wrap around, 0 to 2pi
+        below_zero = these_indices[these_indices<0]
+        below_zero += 2*self.options.pi_ind
+        over_2pi = these_indices[these_indices >= 2*self.options.pi_ind]
+        over_2pi -= 2*self.options.pi_ind
 
         self.cuts = [Cut(self.info.interp, self.options, self.est_position_pix,
                     angle_ind) for angle_ind in these_indices]
@@ -449,9 +451,14 @@ class Cut(object):
 
         self.angle_ind = angle_ind
         self.center = position_pix
-        self.set_coordinates(self, options.cut_xy[self.angle_ind])
-        self.energy_kev = interp(self.coordinates_pix[1,:],
-                                 self.coordinates_pix[0,:])
+        self.set_coordinates(options.cut_xy[self.angle_ind])
+
+        # interp2d object is supposed to take x and y vectors and make a 2D grid
+        #   which is not what I wanted... but it gives an input error if x and
+        #   y are vectors.
+        self.energy_kev = np.array(
+            [float(interp(y,x)) for x,y in self.coordinates_pix])
+
         self.exclude_points(options)
         self.measure_width_metric(options)
         # self.measure_fwhm(self)
@@ -470,8 +477,8 @@ class Cut(object):
         """
         """
         thresh = options.cut_low_threshold_kev
-        halves = [f(self.cut_distance_coordinate_pix,0)
-            for f in [np.greater,np.less]]
+        halves = [f(options.cut_distance_coordinate_pix,0)
+            for f in [np.less,np.greater]]
         energy_halves = [self.energy_kev[half] for half in halves]
 
         below_threshold = [energy < thresh
@@ -507,7 +514,7 @@ class Cut(object):
         """
         distance_cropped = options.cut_distance_from_center_pix[
             self.first_index_to_keep:self.first_index_to_lose]
-        self.width_metric = (distance_cropped * self.energy_kev)
+        self.width_metric = np.sum(distance_cropped * self.energy_kev)
 
     def measure_fwhm(self):
         """
