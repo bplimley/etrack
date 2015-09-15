@@ -350,9 +350,10 @@ def ridge_follow(image, options, info):
     # consider using RectBivariateSpline for speed...
 
     ridge = [RidgePoint(info.start_coordinates, info.start_direction_ind,
-        info, options)]
+        info=info, options=options)]
 
     while not ridge[-1].is_end:
+        print(len(ridge))
         ridge.append(ridge[-1].step())
 
         # # the interp object seems to switch x and y.
@@ -365,7 +366,8 @@ class RidgePoint(object):
     """
     """
 
-    def __init__(self, xy, est_direction_ind, info, options):
+    def __init__(self, xy, est_direction_ind,
+                 previous=None, info=None, options=None):
         """Initialize a RidgePoint:
 
         1. save a reference to info and options
@@ -375,8 +377,19 @@ class RidgePoint(object):
         """
 
         # store a reference to info and options objects for future reference
-        self.info = info
-        self.options = options
+        if previous is None and (info is not None and options is not None):
+            # case 1: beginning of ridge
+            self.previous = None
+            self.info = info
+            self.options = options
+        elif (info is None and options is None) and previous is not None:
+            # case 2: copy info, options from previous ridge point
+            self.info = previous.info
+            self.options = previous.options
+            self.previous = previous
+        else:
+            # case 3: problem
+            raise ValueError('RidgePoint needs more information')
 
         # basic parameters needed to have a RidgePoint
         self.est_position_pix = xy
@@ -389,11 +402,14 @@ class RidgePoint(object):
                        self.options.track_end_low_threshold_kev)
 
         # placeholders
-        self.all_cuts = []
-        self.chosen_cut = []
+        self.position_pix = []
+        self.energy_kev = []
+        self.cuts = []
+        self.best_ind = []
         self.final_direction_deg = []
         self.dedx_kevum = []
         self.fwhm_um = []
+        self.step_alpha_deg = []
 
 
     def step(self):
@@ -402,13 +418,13 @@ class RidgePoint(object):
 
         self.generate_all_cuts()
         self.choose_best_cut()
+        self.adjust_to_centroid()
+        self.measure_step_alpha()
+        next_xy, next_dir_ind = self.estimate_next_step()
 
+        self.next = RidgePoint(next_xy, next_dir_ind, self)
 
-
-        next_point = RidgePoint(some_xy)
-        next_point.asdf
-
-        return next_point
+        return self.next
 
     def generate_all_cuts(self):
         """
@@ -427,18 +443,50 @@ class RidgePoint(object):
 
         self.cuts = [Cut(self.info.interp, self.options, self.est_position_pix,
                     angle_ind) for angle_ind in these_indices]
-        #
-        #
 
 
     def choose_best_cut(self):
-        """
+        """Identify minimum width metric, save it, also measure FWHM and dE/dx.
         """
         width = [cut.width_metric for cut in self.cuts]
         self.best_ind = np.argmin(width)
         best_cut = self.cuts[self.best_ind]
         self.fwhm_um = best_cut.measure_fwhm()
         self.dedx_kevum = best_cut.measure_dedx(self.options)
+
+
+    def adjust_to_centroid(self):
+        """Save position of best cut's centroid, and the energy there.
+        """
+        # final position and energy
+        self.position_pix = self.cuts[self.best_ind].find_centroid()
+        self.energy_kev = self.info.interp(self.position_pix[1],
+                                           self.position_pix[0])
+
+    def measure_step_alpha(self):
+        """Measure the direction from previous ridge point to this one.
+        """
+        if self.previous is None:
+            # first point
+            self.step_alpha_deg = None
+        else:
+            # all subsequent points
+            dpos = self.position_pix - self.previous.position_pix
+            self.step_alpha_deg = 180/np.pi * np.arctan2(dpos[1], dpos[0])
+
+    def estimate_next_step(self):
+        """Estimate the direction and position for the next step, in indices.
+        """
+        # from MATLAB code: next step is based on best angle index, not the
+        #   position difference
+        next_direction_ind = self.cuts[self.best_ind].angle_ind
+        next_direction_rad = (next_direction_ind * np.pi/180 *
+            self.options.angle_increment_deg)
+        next_coordinates_pix = (self.position_pix +
+            self.options.position_step_size_pix * np.array(
+            [np.cos(next_direction_rad), np.sin(next_direction_rad)]))
+
+        return next_coordinates_pix, next_direction_ind
 
 
 class Cut(object):
@@ -535,7 +583,10 @@ class Cut(object):
     def find_centroid(self):
         """
         """
-        pass
+        self.centroid_pix = np.average(np.transpose(self.coordinates_pix),
+            weights=self.energy_kev, axis=1)
+
+        return self.centroid_pix
 
 
 def compute_direction(track_energy_kev, ridge, options):
