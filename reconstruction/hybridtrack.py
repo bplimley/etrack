@@ -356,10 +356,7 @@ def ridge_follow(image, options, info):
         print(len(ridge))
         ridge.append(ridge[-1].step())
 
-        # # the interp object seems to switch x and y.
-        # is_end_of_track = (info.interp(here[1],here[0]) <
-        #                    options.track_end_low_threshold_kev)
-
+    return ridge # or do something with it
 
 
 class RidgePoint(object):
@@ -451,7 +448,7 @@ class RidgePoint(object):
         width = [cut.width_metric for cut in self.cuts]
         self.best_ind = np.argmin(width)
         best_cut = self.cuts[self.best_ind]
-        self.fwhm_um = best_cut.measure_fwhm()
+        self.fwhm_um = best_cut.measure_fwhm(self.options)
         self.dedx_kevum = best_cut.measure_dedx(self.options)
 
 
@@ -564,11 +561,40 @@ class Cut(object):
             self.first_index_to_keep:self.first_index_to_lose]
         self.width_metric = np.sum(distance_cropped * self.energy_kev)
 
-    def measure_fwhm(self):
+    def measure_fwhm(self, options):
         """
         """
-        # placeholder
-        self.fwhm_um = None
+        # MATLAB code uses HtFitCopy, not a real fit
+        # just find the half-max on either side
+
+        half_max = np.max(self.energy_kev) / 2
+        max_index = np.argmax(self.energy_kev)
+
+        # for each side, find the crossing point and interpolate linearly
+        left_side_under = np.nonzero(self.energy_kev[:max_index] < half_max)[0]
+        if len(left_side_under) > 0:
+            left = left_side_under[-1]
+            left_half_max = (left +
+                (half_max - self.energy_kev[left]) /
+                (self.energy_kev[left+1] - self.energy_kev[left]))
+        else:
+            # nothing under threshold - this is unusual
+            left_half_max = 0
+
+        right_side_under = np.nonzero(
+            self.energy_kev[max_index+1:] < half_max)[0]
+        if len(right_side_under) > 0:
+            right = right_side_under[0]
+            right_half_max = (right -
+                (half_max - self.energy_kev[right]) /
+                (self.energy_kev[right-1] - self.energy_kev[right]))
+            right_half_max += max_index+1
+        else:
+            # nothing under threshold - this is unusual
+            right_half_max = len(self.energy_kev)
+
+        self.fwhm_um = ((right_half_max - left_half_max) *
+            options.cut_sampling_interval_pix * options.pixel_size_um)
 
         return self.fwhm_um
 
@@ -592,6 +618,15 @@ class Cut(object):
 def compute_direction(track_energy_kev, ridge, options):
     """
     """
+    # reverse indices
+    # 1. Measure width of track so we know how many points to skip
+    # 2. Get measurement selection range, assuming beta==0 and no diffusion
+    # 3. Get measurement selection range, for a given beta, and no diffusion
+    # 4. First estimate, using beta=45
+    # 5. Next selection calculation
+    # 6. Second (final) estimate of beta, using beta==beta1
+    # 7. Measure alpha
+    # 8. construct output?
     pass
 
 
