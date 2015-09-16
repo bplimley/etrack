@@ -562,7 +562,7 @@ class Cut(object):
         self.width_metric = np.sum(distance_cropped * self.energy_kev)
 
     def measure_fwhm(self, options):
-        """
+        """Measure the FWHM of the cut (only the best cut of each step)
         """
         # MATLAB code uses HtFitCopy, not a real fit
         # just find the half-max on either side
@@ -599,10 +599,11 @@ class Cut(object):
         return self.fwhm_um
 
     def measure_dedx(self, options):
+        """Measure the dE/dx implied by this cut (only the best cut of the step)
         """
-        """
-        # placeholder
-        self.dedx_kevum = None
+        self.dedx_kevum = (np.sum(self.energy_kev) *
+            options.cut_sampling_interval_pix /
+            options.pixel_size_um)
 
         return self.dedx_kevum
 
