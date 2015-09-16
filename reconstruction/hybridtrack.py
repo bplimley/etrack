@@ -353,10 +353,11 @@ def ridge_follow(image, options, info):
         info=info, options=options)]
 
     while not ridge[-1].is_end:
-        print(len(ridge))
         ridge.append(ridge[-1].step())
 
-    return ridge # or do something with it
+    ridge.reverse()     # now 0 is the beginning of the track
+
+    info.ridge = ridge
 
 
 class RidgePoint(object):
@@ -469,7 +470,13 @@ class RidgePoint(object):
         else:
             # all subsequent points
             dpos = self.position_pix - self.previous.position_pix
-            self.step_alpha_deg = 180/np.pi * np.arctan2(dpos[1], dpos[0])
+            self.step_alpha_deg = 180/np.pi * np.arctan2(-dpos[1], -dpos[0])
+            # the minus signs rotate 180 degrees.
+            # Thus, step_alpha_deg is pointing backward, i.e. along the
+            #   electron's motion, as opposed to toward the start of the track.
+            # This does not require handling anywhere else, because
+            #   estimate_next_step uses best_ind, not step_alpha_deg, for
+            #   direction to the next step.
 
     def estimate_next_step(self):
         """Estimate the direction and position for the next step, in indices.
@@ -616,10 +623,34 @@ class Cut(object):
         return self.centroid_pix
 
 
-def compute_direction(track_energy_kev, ridge, options):
+def compute_direction(energy_kev, options, info):
     """
     """
-    # reverse indices
+
+    def measure_track_dedx(ridge, options, start, end):
+        """
+        """
+
+        dedx_values = [r.dedx_kevum for r in ridge[start:end]]
+        measured_dedx_kevum = options.measurement_func(dedx_values)
+
+        return measured_dedx_kevum
+
+    def measure_track_alpha(ridge, options, start, end):
+        """
+        """
+
+        alpha_values = [r.step_alpha_deg for r in ridge[start:end]]
+        alpha_deg = options.measurement_func(alpha_values)
+
+        return alpha_deg
+
+
+    # This part of the algorithm is a mess and should be re-written.
+    # But until then, let's not change what has already been extensively
+    #   evaluated and benchmarked...
+
+    # 0. reverse indices (performed in ridge_follow)
     # 1. Measure width of track so we know how many points to skip
     # 2. Get measurement selection range, assuming beta==0 and no diffusion
     # 3. Get measurement selection range, for a given beta, and no diffusion
@@ -628,7 +659,99 @@ def compute_direction(track_energy_kev, ridge, options):
     # 6. Second (final) estimate of beta, using beta==beta1
     # 7. Measure alpha
     # 8. construct output?
-    pass
+
+    dedx_ref = dedxref.dedx(energy_kev)
+
+    # first estimate of beta, using initial guess of beta = 45
+    start, end = select_measurement_points(info.ridge, options, energy_kev,
+        beta_deg=options.initial_beta_guess_deg)
+    dedx_meas = measure_track_dedx(info.ridge, options, start, end)
+    first_cosbeta_estimate = np.minimum(dedx_ref / dedx_meas, 1) # 1 is the max
+
+    # second and final estimate of beta, using first estimate of beta
+    start, end = select_measurement_points(info.ridge, options, energy_kev,
+        cos_beta=first_cosbeta_estimate)
+    dedx_meas = measure_track_dedx(info.ridge, options, start, end)
+    cos_beta = np.minimum(dedx_ref / dedx_meas, 1) # 1 is the max
+    beta_deg = np.arccos(cos_beta) * 180/np.pi
+
+    # measure alpha
+    alpha_deg = measure_track_alpha(info.ridge, options, start, end)
+
+    # outputs
+    info.dedx_meas_kevum = dedx_meas
+    info.dedx_ref_kevum = dedx_ref
+    info.measurement_start_pt = start
+    info.measurement_end_pt = end
+    info.alpha_deg = alpha_deg
+    info.beta_deg = beta_deg
+
+
+def select_measurement_points(ridge, options, energy_kev, beta_deg=None,
+        cos_beta=None):
+    """
+    """
+
+    def diffusion_skip_points(ridge, options):
+        """Measure track width over a few points, and calculate points to skip due
+        to diffusion at the beginning of the track.
+        """
+
+        # points over which to measure width
+        width_meas_length_pts = np.round(
+            options.width_measurement_len_pix / options.position_step_size_pix)
+        width_meas_length_pts = np.maximum(width_meas_length_pts, 1)
+        width_meas_length_pts = np.minimum(width_meas_length_pts, len(ridge))
+        width_meas_length_pts = int(width_meas_length_pts)  # used as index
+        width_values = [r.fwhm_um for r in ridge[:width_meas_length_pts]]
+
+        # measure width
+        measured_width_um = options.measurement_func(width_values)
+
+        # number of points to skip from diffusion (from logbook, 10/29/2009)
+        n_points_to_skip_from_diffusion = (
+            (measured_width_um - options.pixel_size_um) /
+            (options.pixel_size_um * options.position_step_size_pix))
+        n_points_to_skip_from_diffusion = np.maximum(0,
+            n_points_to_skip_from_diffusion)
+
+        return n_points_to_skip_from_diffusion
+
+    def base_measurement_points(energy_kev):
+        """Base measurement point selection assumes beta=0 and no diffusion.
+        """
+
+        # equivalent of HtSelectMeasurementPoints in MATLAB code.
+        # reference: node 1875 on the old bearing.berkeley.edu website
+        start = np.sqrt(0.0825 * energy_kev + 15.814) - 3.4
+        start -= 1      # change in which point each step is associated with
+        start -= 1      # python is 0-based, MATLAB is 1-based
+        start = np.maximum(start, 0)
+        end = start * 2 + 3.4
+        end -= 1        # change in which point each step is associated with
+        end -= 1        # python is 0-based, MATLAB is 1-based
+        end = np.maximum(end, 0)
+
+        return start, end
+
+
+    # start main code
+    if beta_deg is None and cos_beta is None:
+        raise ValueError('select_measurement_points needs more information')
+    if cos_beta is None:
+        cos_beta = np.cos(np.pi/180 * beta_deg)
+
+    n_points_to_skip_from_diffusion = diffusion_skip_points(ridge, options)
+    base_start, base_end = base_measurement_points(energy_kev)
+
+    start = np.ceil(base_start * cos_beta + n_points_to_skip_from_diffusion)
+    end   = np.ceil(base_end   * cos_beta + n_points_to_skip_from_diffusion)
+    start = np.minimum(start, len(ridge))
+    end   = np.minimum(end,   len(ridge))
+    start = np.maximum(start, 0)
+    end   = np.maximum(end,   0)
+
+    return int(start), int(end)     # these become indices
 
 
 def set_output(image, options, info):
@@ -702,4 +825,16 @@ if __name__ == '__main__':
     if True:
         print('start_direction_deg:')
         print(info.start_direction_deg)
+        print('')
+    if True:
+        print('dedx_meas, dedx_ref:')
+        print(info.dedx_meas_kevum, info.dedx_ref_kevum)
+        print('')
+    if True:
+        print('measurement start and end:')
+        print(info.measurement_start_pt, info.measurement_end_pt)
+        print('')
+    if True:
+        print('measured alpha, beta:')
+        print(info.alpha_deg, info.beta_deg)
         print('')
