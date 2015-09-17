@@ -4,10 +4,10 @@ import numpy as np
 import ipdb as pdb
 import scipy.ndimage
 import scipy.interpolate
-import matplotlib.pyplot as plt
 
 import dedxref
 import thinning
+import trackplot
 
 
 def reconstruct(original_image_kev, pixel_size_um=10.5):
@@ -39,6 +39,7 @@ def reconstruct(original_image_kev, pixel_size_um=10.5):
 
     compute_direction(track_energy_kev, options, info)
 
+    info.prepared_image_kev = prepared_image_kev
     output = None   # temp
     return output, info
     # return set_output(prepared_image_kev, edge_segments, ridge, measurement,
@@ -383,8 +384,8 @@ def check_for_infinite_loop(ridge, options):
     # And skip the point neighboring it, because centroid-adjust could
     #   possibly bring it too close.
     previous = np.array([r.coordinates_pix for r in ridge[:-3]])
-    distance_square = (previous[:, 0] - coordinates[0])**2 +
-                      (previous[:, 1] - coordinates[1])**2
+    distance_square = ((previous[:, 0] - coordinates[0])**2 +
+                       (previous[:, 1] - coordinates[1])**2)
     if np.any(distance_square < options.infinite_loop_threshold_pix**2):
         raise InfiniteLoop
     else:
@@ -789,6 +790,7 @@ def set_output(image, options, info):
     """
     pass
 
+
 # # # # # # # # # # # # # # # # # # # #
 #           Unit test stuff           #
 # # # # # # # # # # # # # # # # # # # #
@@ -872,3 +874,6 @@ if __name__ == '__main__':
         print('measured alpha, beta:')
         print('{:.2f}, {:.2f}'.format(info.alpha_deg, info.beta_deg))
         print('')
+
+    if True:
+        plot_track_image(info.prepared_image_kev)
