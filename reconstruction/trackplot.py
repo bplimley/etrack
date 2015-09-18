@@ -1,3 +1,4 @@
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors
 
@@ -25,12 +26,12 @@ def plot_ridgepoints(ax, ridge_points, fmtstring='c.', **kwargs):
     ymin, ymax = plt.ylim()
 
     if len(ridge_points) > 1:
-        coordinates = zip([r.coordinates_pix for r in ridge_points])
+        coordinates = np.array([r.coordinates_pix for r in ridge_points])
     else:
         coordinates = ridge_points.coordinates_pix
 
-    pts = plt.plot(coordinates[1],
-                  coordinates[0],
+    pts = plt.plot(coordinates[:,1],
+                  coordinates[:,0],
                   fmtstring,
                   axes=ax,
                   **kwargs)
@@ -46,8 +47,9 @@ def plot_best_cut(ax, ridge_point, fmtstring='c', **kwargs):
     """
 
     best_cut = ridge_point.cuts[ridge_point.best_ind]
-    plot_cut(ax, best_cut, fmtstring, **kwargs)
+    c = plot_cut(ax, best_cut, fmtstring, **kwargs)
 
+    return c
 
 def plot_cut(ax, cut, fmtstring='c', **kwargs):
     """
@@ -56,9 +58,9 @@ def plot_cut(ax, cut, fmtstring='c', **kwargs):
     xmin, xmax = plt.xlim()
     ymin, ymax = plt.ylim()
 
-    coordinates_zip = zip(cut.coordinates_pix)
-    c = plt.plot(coordinates_zip[0],
-                 coordinates_zip[1],
+    coordinates = np.array(cut.coordinates_pix)
+    c = plt.plot(coordinates[:,1],
+                 coordinates[:,0],
                  fmtstring,
                  axes=ax,
                  **kwargs)

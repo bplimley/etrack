@@ -366,6 +366,7 @@ def ridge_follow(image, options, info):
             # until this length, not worth the time
             check_for_infinite_loop(ridge, options)
 
+    __ = ridge.pop()    # remove last item
     ridge.reverse()     # now 0 is the beginning of the track
 
     info.ridge = ridge
@@ -580,7 +581,7 @@ class Cut(object):
             first_index_to_lose = len(below_threshold[1])
         # in either case, first_index_to_lose is indexed for the half, instead
         #   of the whole cut.
-        first_index_to_lose += len(halves[0])
+        first_index_to_lose += len(energy_halves[0]) + 1
 
         self.coordinates_pix = self.coordinates_pix[
             first_index_to_keep:first_index_to_lose]
@@ -756,15 +757,15 @@ def select_measurement_points(ridge, options, energy_kev, beta_deg=None,
         # reference: node 1875 on the old bearing.berkeley.edu website
         start = np.sqrt(0.0825 * energy_kev + 15.814) - 3.4
         start -= 1      # change in which point each step is associated with
-        start -= 1      # python is 0-based, MATLAB is 1-based
         start = np.maximum(start, 0)
         end = start * 2 + 3.4
         end -= 1        # change in which point each step is associated with
-        end -= 1        # python is 0-based, MATLAB is 1-based
         end = np.maximum(end, 0)
 
+        start -= 1      # python is 0-based, MATLAB is 1-based
+        # end doesn't change:
+        #   python is 0-based, MATLAB is 1-based, BUT python excludes endpoint
         return start, end
-
 
     # start main code
     if beta_deg is None and cos_beta is None:
@@ -861,6 +862,16 @@ if __name__ == '__main__':
         print('start_direction_deg:')
         print(info.start_direction_deg)
         print('')
+    if False:
+        print('ridge point coordinates:')
+        for r in info.ridge:
+            print('({:.4f}, {:.4f})').format(*r.coordinates_pix)
+        print('')
+    if True:
+        print('steps alpha:')
+        for r in info.ridge:
+            print('{:.4f}'.format(r.step_alpha_deg))
+        print('')
     if True:
         print('dedx_meas, dedx_ref:')
         print('{:.4f}, {:.4f}'.format(
@@ -875,5 +886,5 @@ if __name__ == '__main__':
         print('{:.2f}, {:.2f}'.format(info.alpha_deg, info.beta_deg))
         print('')
 
-    if True:
-        plot_track_image(info.prepared_image_kev)
+    if False:
+        trackplot.plot_track_image(info.prepared_image_kev)
