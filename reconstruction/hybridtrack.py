@@ -466,10 +466,9 @@ class RidgePoint(object):
             self.est_direction_ind + self.options.search_angle_ind/2)
         these_indices = np.arange(angle_start, angle_end)
         # wrap around, 0 to 2pi
-        below_zero = these_indices[these_indices < 0]
-        below_zero += 2*self.options.pi_ind
-        over_2pi = these_indices[these_indices >= 2*self.options.pi_ind]
-        over_2pi -= 2*self.options.pi_ind
+        these_indices[these_indices < 0] += 2*self.options.pi_ind
+        these_indices[these_indices >= 2*self.options.pi_ind] -= (
+            2*self.options.pi_ind)
 
         self.cuts = [Cut(self.info.interp, self.options,
                      self.est_coordinates_pix, angle_ind)
@@ -496,9 +495,10 @@ class RidgePoint(object):
         """Measure the direction from previous ridge point to this one.
         """
         if self.previous is None:
-            # first point
-            self.step_alpha_deg = None
-        else:
+            # first point. (this behavior matches MATLAB)
+            self.step_alpha_deg = (self.cuts[self.best_ind].angle_ind *
+                self.options.angle_increment_deg)
+        elif False:
             # all subsequent points
             dpos = self.coordinates_pix - self.previous.coordinates_pix
             self.step_alpha_deg = 180/np.pi * np.arctan2(-dpos[1], -dpos[0])
@@ -508,6 +508,13 @@ class RidgePoint(object):
             # This does not require handling anywhere else, because
             #   estimate_next_step uses best_ind, not step_alpha_deg, for
             #   direction to the next step.
+        else:
+            # to match MATLAB calculation:
+            # ignore centroid adjustment, i.e. just use the best cut direction.
+            self.step_alpha_deg = (self.cuts[self.best_ind].angle_ind *
+                self.options.angle_increment_deg) + 180
+            if self.step_alpha_deg > 360:
+                self.step_alpha_deg -= 360
 
     def estimate_next_step(self):
         """Estimate the direction and position for the next step, in indices.
@@ -672,7 +679,13 @@ def compute_direction(energy_kev, options, info):
         """
 
         alpha_values = [r.step_alpha_deg for r in ridge[start:end]]
+        # take care about the end of the circle...
+        if np.any(alpha_values > 270) and np.any(alpha_values < 90):
+            alpha_values[alpha_values < 90] +=360
+
         alpha_deg = options.measurement_func(alpha_values)
+        if alpha_deg > 360:
+            alpha_deg -= 360
 
         return alpha_deg
 
@@ -773,15 +786,16 @@ def select_measurement_points(ridge, options, energy_kev, beta_deg=None,
     if cos_beta is None:
         cos_beta = np.cos(np.pi/180 * beta_deg)
 
+    # pdb.set_trace()
     n_points_to_skip_from_diffusion = diffusion_skip_points(ridge, options)
     base_start, base_end = base_measurement_points(energy_kev)
 
     start = np.ceil(base_start * cos_beta + n_points_to_skip_from_diffusion)
     end   = np.ceil(base_end   * cos_beta + n_points_to_skip_from_diffusion)
-    start = np.minimum(start, len(ridge))
+    start = np.minimum(start, len(ridge)-1)
     end   = np.minimum(end,   len(ridge))
     start = np.maximum(start, 0)
-    end   = np.maximum(end,   0)
+    end   = np.maximum(end,   start+1)
 
     return int(start), int(end)     # these become indices
 
@@ -870,7 +884,10 @@ if __name__ == '__main__':
     if True:
         print('steps alpha:')
         for r in info.ridge:
-            print('{:.4f}'.format(r.step_alpha_deg))
+            if r.step_alpha_deg is not None:
+                print('{:.4f}'.format(r.step_alpha_deg))
+            else:
+                print('None')
         print('')
     if True:
         print('dedx_meas, dedx_ref:')
