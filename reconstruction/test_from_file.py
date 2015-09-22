@@ -28,7 +28,7 @@ pbar = progressbar.ProgressBar(
 pbar.start()
 
 # for i in range(len(h5file)):
-for i in range(100):
+for i in range(1000):
     eventname = 'event{:05d}'.format(i)
     if eventname in h5file:
         event = h5file[eventname]
