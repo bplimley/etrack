@@ -246,99 +246,102 @@ def prepare_image(image_kev, options):
     return track_energy_kev, new_image_kev
 
 
+def locate_all_ends(image_kev, options, info):
+    """Apply threshold, perform thinning, identify ends.
+    """
+    ends_image = [False]
+    current_threshold = options.low_threshold_kev
+    connectivity = np.ones((3, 3))
+
+    # normally this while loop only runs once.
+    # if the track is a loop and so no ends are found, then increase the
+    #   threshold until an end is found.
+    # TODO: does this actually work?
+
+    while np.all(np.logical_not(ends_image)) and (
+            current_threshold <= 10*options.low_threshold_kev):
+        binary_image = image_kev > current_threshold
+        thinned_image = thinning.thin(binary_image)+0
+        num_neighbors_image = scipy.ndimage.convolve(
+            thinned_image, np.ones((3, 3)), mode='constant', cval=0.0) - 1
+        num_neighbors_image = num_neighbors_image * thinned_image
+        ends_image = num_neighbors_image==1
+
+        if np.all(np.logical_not(ends_image)):
+            # increase threshold to attempt to break loop.
+            current_threshold += options.low_threshold_kev
+
+    info.binary_image = binary_image
+    info.thinned_image = thinned_image
+
+    if np.any(ends_image):
+        ends_xy = np.where(ends_image)  # tuple of two lists (x and y)
+        ends_xy = np.array(ends_xy).T   # list of coordinate pairs
+        info.threshold_used = current_threshold
+        info.ends_xy = ends_xy
+    else:
+        # still no ends.
+        raise NoEndsFound
+
+
+def measure_energies(image_kev, options, info):
+    """Compute energies using a kernel, for each end.
+    """
+
+    kernel = options.energy_kernel
+    energy_convolved_image = scipy.ndimage.convolve(
+        image_kev, kernel, mode='constant', cval=0.0)
+    ends_energy = []
+    for (x, y) in info.ends_xy:
+        ends_energy.append(energy_convolved_image[x, y])
+
+    info.ends_energy = np.array(ends_energy)
+
+
+def get_starting_point(options, info):
+    """
+    Select minimum-energy end, walk up 40um, mark coordinates & direction.
+    """
+    min_index = info.ends_energy.argmin()
+    n_steps_pix = int(np.ceil(
+        options.ridge_starting_distance_from_track_end_um /
+        options.pixel_size_um))
+    xy = info.ends_xy[min_index]  # current position
+    temp_image = info.thinned_image.copy()
+
+    for i in range(n_steps_pix):
+        temp_image[xy[0], xy[1]] = 0
+        neighborhood = temp_image[xy[0]-1:xy[0]+2, xy[1]-1:xy[1]+2]
+        n_neighbors = np.sum(neighborhood)      # center already removed
+        if n_neighbors == 1:
+            # step along the track
+            step_xy = np.where(neighborhood)
+            step_xy = np.array([step_xy[0][0], step_xy[1][0]])
+            step_xy = step_xy - 1   # now represents a delta position
+            xy = xy + step_xy
+        elif n_neighbors > 1:
+            # at an intersection. back up one.
+            xy = xy - step_xy
+            break
+        elif n_neighbors == 0:
+            # end of track
+            break
+
+    info.start_coordinates = xy
+    info.start_direction_deg = (180/np.pi *
+        np.arctan2(-step_xy[1], -step_xy[0]))
+    if info.start_direction_deg < 0:
+        info.start_direction_deg += 360
+    info.start_direction_ind = (info.start_direction_deg /
+                                options.angle_increment_deg)
+
+
 def choose_initial_end(image_kev, options, info):
     """
     locate_all_ends
     measure_energies
     get_starting_point
     """
-
-    def locate_all_ends(image_kev, options, info):
-        """Apply threshold, perform thinning, identify ends.
-        """
-        ends_image = [False]
-        current_threshold = options.low_threshold_kev
-        connectivity = np.ones((3, 3))
-
-        # normally this while loop only runs once.
-        # if the track is a loop and so no ends are found, then increase the
-        #   threshold until an end is found.
-        # TODO: does this actually work?
-
-        while np.all(np.logical_not(ends_image)) and (
-                current_threshold <= 10*options.low_threshold_kev):
-            binary_image = image_kev > current_threshold
-            thinned_image = thinning.thin(binary_image)+0
-            num_neighbors_image = scipy.ndimage.convolve(
-                thinned_image, np.ones((3, 3)), mode='constant', cval=0.0) - 1
-            num_neighbors_image = num_neighbors_image * thinned_image
-            ends_image = num_neighbors_image==1
-
-            if np.all(np.logical_not(ends_image)):
-                # increase threshold to attempt to break loop.
-                current_threshold += options.low_threshold_kev
-
-        info.binary_image = binary_image
-        info.thinned_image = thinned_image
-
-        if np.any(ends_image):
-            ends_xy = np.where(ends_image)  # tuple of two lists (x and y)
-            ends_xy = np.array(ends_xy).T   # list of coordinate pairs
-            info.threshold_used = current_threshold
-            info.ends_xy = ends_xy
-        else:
-            # still no ends.
-            raise NoEndsFound
-
-    def measure_energies(image_kev, options, info):
-        """Compute energies using a kernel, for each end.
-        """
-
-        kernel = options.energy_kernel
-        energy_convolved_image = scipy.ndimage.convolve(
-            image_kev, kernel, mode='constant', cval=0.0)
-        ends_energy = []
-        for (x, y) in info.ends_xy:
-            ends_energy.append(energy_convolved_image[x, y])
-
-        info.ends_energy = np.array(ends_energy)
-
-    def get_starting_point(options, info):
-        """
-        Select minimum-energy end, walk up 40um, mark coordinates & direction.
-        """
-        min_index = info.ends_energy.argmin()
-        n_steps_pix = int(np.ceil(
-            options.ridge_starting_distance_from_track_end_um /
-            options.pixel_size_um))
-        xy = info.ends_xy[min_index]  # current position
-        temp_image = info.thinned_image.copy()
-
-        for i in range(n_steps_pix):
-            temp_image[xy[0], xy[1]] = 0
-            neighborhood = temp_image[xy[0]-1:xy[0]+2, xy[1]-1:xy[1]+2]
-            n_neighbors = np.sum(neighborhood)      # center already removed
-            if n_neighbors == 1:
-                # step along the track
-                step_xy = np.where(neighborhood)
-                step_xy = np.array([step_xy[0][0], step_xy[1][0]])
-                step_xy = step_xy - 1   # now represents a delta position
-                xy = xy + step_xy
-            elif n_neighbors > 1:
-                # at an intersection. back up one.
-                xy = xy - step_xy
-                break
-            elif n_neighbors == 0:
-                # end of track
-                break
-
-        info.start_coordinates = xy
-        info.start_direction_deg = (180/np.pi *
-            np.arctan2(-step_xy[1], -step_xy[0]))
-        if info.start_direction_deg < 0:
-            info.start_direction_deg += 360
-        info.start_direction_ind = (info.start_direction_deg /
-                                    options.angle_increment_deg)
 
     # main
     locate_all_ends(image_kev, options, info)
@@ -660,34 +663,35 @@ class Cut(object):
         return self.centroid_pix
 
 
+def measure_track_dedx(ridge, options, start, end):
+    """
+    """
+
+    dedx_values = [r.dedx_kevum for r in ridge[start:end]]
+    measured_dedx_kevum = options.measurement_func(dedx_values)
+
+    return measured_dedx_kevum
+
+
+def measure_track_alpha(ridge, options, start, end):
+    """
+    """
+
+    alpha_values = [r.step_alpha_deg for r in ridge[start:end]]
+    # take care about the end of the circle...
+    if np.any(alpha_values > 270) and np.any(alpha_values < 90):
+        alpha_values[alpha_values < 90] +=360
+
+    alpha_deg = options.measurement_func(alpha_values)
+    if alpha_deg > 360:
+        alpha_deg -= 360
+
+    return alpha_deg
+
+
 def compute_direction(energy_kev, options, info):
     """
     """
-
-    def measure_track_dedx(ridge, options, start, end):
-        """
-        """
-
-        dedx_values = [r.dedx_kevum for r in ridge[start:end]]
-        measured_dedx_kevum = options.measurement_func(dedx_values)
-
-        return measured_dedx_kevum
-
-    def measure_track_alpha(ridge, options, start, end):
-        """
-        """
-
-        alpha_values = [r.step_alpha_deg for r in ridge[start:end]]
-        # take care about the end of the circle...
-        if np.any(alpha_values > 270) and np.any(alpha_values < 90):
-            alpha_values[alpha_values < 90] +=360
-
-        alpha_deg = options.measurement_func(alpha_values)
-        if alpha_deg > 360:
-            alpha_deg -= 360
-
-        return alpha_deg
-
 
     # This part of the algorithm is a mess and should be re-written.
     # But until then, let's not change what has already been extensively
@@ -731,55 +735,56 @@ def compute_direction(energy_kev, options, info):
     info.beta_deg = beta_deg
 
 
+def diffusion_skip_points(ridge, options):
+    """Measure track width over a few points, and calculate points to skip due
+    to diffusion at the beginning of the track.
+    """
+
+    # points over which to measure width
+    width_meas_length_pts = np.round(
+        options.width_measurement_len_pix / options.position_step_size_pix)
+    width_meas_length_pts = np.maximum(width_meas_length_pts, 1)
+    width_meas_length_pts = np.minimum(width_meas_length_pts, len(ridge))
+    width_meas_length_pts = int(width_meas_length_pts)  # used as index
+    width_values = [r.fwhm_um for r in ridge[:width_meas_length_pts]]
+
+    # measure width
+    measured_width_um = options.measurement_func(width_values)
+
+    # number of points to skip from diffusion (from logbook, 10/29/2009)
+    n_points_to_skip_from_diffusion = (
+        (measured_width_um - options.pixel_size_um) /
+        (options.pixel_size_um * options.position_step_size_pix))
+    n_points_to_skip_from_diffusion = np.maximum(0,
+        n_points_to_skip_from_diffusion)
+
+    return n_points_to_skip_from_diffusion
+
+
+def base_measurement_points(energy_kev):
+    """Base measurement point selection assumes beta=0 and no diffusion.
+    """
+
+    # equivalent of HtSelectMeasurementPoints in MATLAB code.
+    # reference: node 1875 on the old bearing.berkeley.edu website
+    start = np.sqrt(0.0825 * energy_kev + 15.814) - 3.4
+    start -= 1      # change in which point each step is associated with
+    start = np.maximum(start, 0)
+    end = start * 2 + 3.4
+    end -= 1        # change in which point each step is associated with
+    end = np.maximum(end, 0)
+
+    start -= 1      # python is 0-based, MATLAB is 1-based
+    # end doesn't change:
+    #   python is 0-based, MATLAB is 1-based, BUT python excludes endpoint
+    return start, end
+
+
 def select_measurement_points(ridge, options, energy_kev, beta_deg=None,
         cos_beta=None):
     """
     """
 
-    def diffusion_skip_points(ridge, options):
-        """Measure track width over a few points, and calculate points to skip due
-        to diffusion at the beginning of the track.
-        """
-
-        # points over which to measure width
-        width_meas_length_pts = np.round(
-            options.width_measurement_len_pix / options.position_step_size_pix)
-        width_meas_length_pts = np.maximum(width_meas_length_pts, 1)
-        width_meas_length_pts = np.minimum(width_meas_length_pts, len(ridge))
-        width_meas_length_pts = int(width_meas_length_pts)  # used as index
-        width_values = [r.fwhm_um for r in ridge[:width_meas_length_pts]]
-
-        # measure width
-        measured_width_um = options.measurement_func(width_values)
-
-        # number of points to skip from diffusion (from logbook, 10/29/2009)
-        n_points_to_skip_from_diffusion = (
-            (measured_width_um - options.pixel_size_um) /
-            (options.pixel_size_um * options.position_step_size_pix))
-        n_points_to_skip_from_diffusion = np.maximum(0,
-            n_points_to_skip_from_diffusion)
-
-        return n_points_to_skip_from_diffusion
-
-    def base_measurement_points(energy_kev):
-        """Base measurement point selection assumes beta=0 and no diffusion.
-        """
-
-        # equivalent of HtSelectMeasurementPoints in MATLAB code.
-        # reference: node 1875 on the old bearing.berkeley.edu website
-        start = np.sqrt(0.0825 * energy_kev + 15.814) - 3.4
-        start -= 1      # change in which point each step is associated with
-        start = np.maximum(start, 0)
-        end = start * 2 + 3.4
-        end -= 1        # change in which point each step is associated with
-        end = np.maximum(end, 0)
-
-        start -= 1      # python is 0-based, MATLAB is 1-based
-        # end doesn't change:
-        #   python is 0-based, MATLAB is 1-based, BUT python excludes endpoint
-        return start, end
-
-    # start main code
     if beta_deg is None and cos_beta is None:
         raise ValueError('select_measurement_points needs more information')
     if cos_beta is None:
