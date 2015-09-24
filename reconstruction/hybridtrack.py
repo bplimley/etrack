@@ -481,15 +481,15 @@ class RidgePoint(object):
         """
         width = [cut.width_metric for cut in self.cuts]
         self.best_ind = np.argmin(width)
-        best_cut = self.cuts[self.best_ind]
-        self.fwhm_um = best_cut.measure_fwhm(self.options)
-        self.dedx_kevum = best_cut.measure_dedx(self.options)
+        self.best_cut = self.cuts[self.best_ind]
+        self.fwhm_um = self.best_cut.measure_fwhm(self.options)
+        self.dedx_kevum = self.best_cut.measure_dedx(self.options)
 
     def adjust_to_centroid(self):
         """Save position of best cut's centroid, and the energy there.
         """
         # final position and energy
-        self.coordinates_pix = self.cuts[self.best_ind].find_centroid()
+        self.coordinates_pix = self.best_cut.find_centroid()
         self.energy_kev = self.info.interp(self.coordinates_pix[0],
                                            self.coordinates_pix[1])
 
@@ -498,7 +498,7 @@ class RidgePoint(object):
         """
         if self.previous is None:
             # first point. (this behavior matches MATLAB)
-            self.step_alpha_deg = (self.cuts[self.best_ind].angle_ind *
+            self.step_alpha_deg = (self.best_cut.angle_ind *
                 self.options.angle_increment_deg) + 180
         elif False:     # this is the correct way to do it, but not MATLAB's
             # all subsequent points
@@ -513,7 +513,8 @@ class RidgePoint(object):
         else:
             # to match MATLAB calculation:
             # ignore centroid adjustment, i.e. just use the best cut direction.
-            self.step_alpha_deg = (self.cuts[self.best_ind].angle_ind *
+            self.step_alpha_deg = (
+                self.previous.best_cut.angle_ind *
                 self.options.angle_increment_deg) + 180
         if self.step_alpha_deg > 360:
             self.step_alpha_deg -= 360
@@ -523,7 +524,7 @@ class RidgePoint(object):
         """
         # from MATLAB code: next step is based on best angle index, not the
         #   position difference
-        next_direction_ind = self.cuts[self.best_ind].angle_ind
+        next_direction_ind = self.best_cut.angle_ind
         next_direction_rad = (next_direction_ind * np.pi/180 *
             self.options.angle_increment_deg)
         next_coordinates_pix = (self.coordinates_pix +
@@ -631,11 +632,10 @@ class Cut(object):
         right_side_under = np.nonzero(
             self.energy_kev[max_index+1:] < half_max)[0]
         if len(right_side_under) > 0:
-            right = right_side_under[0]
+            right = right_side_under[0] + max_index + 1
             right_half_max = (right -
                 (half_max - self.energy_kev[right]) /
                 (self.energy_kev[right-1] - self.energy_kev[right]))
-            right_half_max += max_index+1
         else:
             # nothing under threshold - this is unusual
             right_half_max = len(self.energy_kev)
