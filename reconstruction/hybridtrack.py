@@ -40,7 +40,7 @@ def reconstruct(original_image_kev, pixel_size_um=10.5):
     compute_direction(track_energy_kev, options, info)
 
     info.prepared_image_kev = prepared_image_kev
-    output = None   # temp
+    output = options   # temp
     return output, info
     # return set_output(prepared_image_kev, edge_segments, ridge, measurement,
     #                   options)
@@ -462,7 +462,7 @@ class RidgePoint(object):
         angle_start = int(
             self.est_direction_ind - self.options.search_angle_ind/2)
         angle_end = int(
-            self.est_direction_ind + self.options.search_angle_ind/2)
+            self.est_direction_ind + self.options.search_angle_ind/2 + 1)
         these_indices = np.arange(angle_start, angle_end)
         # wrap around, 0 to 2pi
         these_indices[these_indices < 0] += 2*self.options.pi_ind
@@ -496,8 +496,8 @@ class RidgePoint(object):
         if self.previous is None:
             # first point. (this behavior matches MATLAB)
             self.step_alpha_deg = (self.cuts[self.best_ind].angle_ind *
-                self.options.angle_increment_deg)
-        elif False:
+                self.options.angle_increment_deg) + 180
+        elif False:     # this is the correct way to do it, but not MATLAB's
             # all subsequent points
             dpos = self.coordinates_pix - self.previous.coordinates_pix
             self.step_alpha_deg = 180/np.pi * np.arctan2(-dpos[1], -dpos[0])
@@ -512,8 +512,8 @@ class RidgePoint(object):
             # ignore centroid adjustment, i.e. just use the best cut direction.
             self.step_alpha_deg = (self.cuts[self.best_ind].angle_ind *
                 self.options.angle_increment_deg) + 180
-            if self.step_alpha_deg > 360:
-                self.step_alpha_deg -= 360
+        if self.step_alpha_deg > 360:
+            self.step_alpha_deg -= 360
 
     def estimate_next_step(self):
         """Estimate the direction and position for the next step, in indices.
