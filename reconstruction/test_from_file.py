@@ -30,7 +30,8 @@ pbar = progressbar.ProgressBar(
 pbar.start()
 
 info = [[] for __ in range(len(h5file))]
-alpha = np.zeros(len(h5file))
+py_alpha = np.zeros(len(h5file))
+mat_alpha = np.zeros(len(h5file))
 
 for i in range(len(h5file)):
     eventname = 'event{:05d}'.format(i)
@@ -43,11 +44,14 @@ for i in range(len(h5file)):
             this_image_object = event[trackname]
             this_image = np.zeros(this_image_object.shape)
             this_image_object.read_direct(this_image)
+            aname = 'matlab_alpha'
+            if aname in event[trackname].attrs:
+                mat_alpha[i] = event[trackname].attrs[aname]
             try:
                 # reverse the transpose MATLAB did during h5create
                 __, info[i] = hybridtrack.reconstruct(this_image.T,
                     pixel_size_um=2.5)
-                alpha[i] = info[i].alpha_deg
+                py_alpha[i] = info[i].alpha_deg
             except hybridtrack.InfiniteLoop:
                 print('Infinite loop on event #{}, track #{}'.format(i,j))
             except hybridtrack.NoEndsFound:
