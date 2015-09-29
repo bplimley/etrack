@@ -6,6 +6,15 @@ import matplotlib.colors
 import hybridtrack
 
 
+def oneplot(img, ridge):
+    """
+    """
+
+    ax, im = plot_track_image(img)
+    plot_ridgepoints(ax, ridge)
+    tmp = [plot_best_cut(ax,r) for r in ridge]
+
+
 def plot_track_image(img):
     """
     """
