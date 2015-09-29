@@ -501,6 +501,7 @@ class RidgePoint(object):
             self.step_alpha_deg = (self.best_cut.angle_ind *
                 self.options.angle_increment_deg) + 180
         elif False:     # this is the correct way to do it, but not MATLAB's
+            # TODO: make this True
             # all subsequent points
             dpos = self.coordinates_pix - self.previous.coordinates_pix
             self.step_alpha_deg = 180/np.pi * np.arctan2(-dpos[1], -dpos[0])
@@ -748,6 +749,9 @@ def diffusion_skip_points(ridge, options):
     width_meas_length_pts = int(width_meas_length_pts)  # used as index
     width_values = [r.fwhm_um for r in ridge[:width_meas_length_pts]]
 
+    # TODO: remove this MATLAB bug
+    width_values[0] = 0
+
     # measure width
     measured_width_um = options.measurement_func(width_values)
 
@@ -794,14 +798,51 @@ def select_measurement_points(ridge, options, energy_kev, beta_deg=None,
     n_points_to_skip_from_diffusion = diffusion_skip_points(ridge, options)
     base_start, base_end = base_measurement_points(energy_kev)
 
-    start = np.ceil(base_start * cos_beta + n_points_to_skip_from_diffusion)
-    end   = np.ceil(base_end   * cos_beta + n_points_to_skip_from_diffusion)
+    start = np.ceil((base_start + 1) * cos_beta +
+        n_points_to_skip_from_diffusion) - 1
+    end   = np.ceil(base_end * cos_beta + n_points_to_skip_from_diffusion)
     start = np.minimum(start, len(ridge)-1)
     end   = np.minimum(end,   len(ridge))
     start = np.maximum(start, 0)
     end   = np.maximum(end,   start+1)
 
     return int(start), int(end)     # these become indices
+
+
+def measurement_debug(options, info, verbosity=1, MATLAB=False):
+    """
+    """
+    energy = np.sum(info.prepared_image_kev)
+    beta0 = options.initial_beta_guess_deg
+    dedx_ref = info.dedx_ref_kevum
+    print(' ')
+    if not MATLAB:
+        print('Ridge length: {}'.format(len(info.ridge)))
+        if verbosity > 0:
+            print('Diffusion skip points: {:.4f}'.format(
+                diffusion_skip_points(info.ridge, options)))
+            print('Base measurement points: ({:.4f}, {:.4f})'.format(
+                *base_measurement_points(energy)))
+        start, end = select_measurement_points(
+            info.ridge, options, energy, beta_deg=beta0)
+        print('First selection: ({:d}, {:d})'.format(start, end))
+        dedx1 = measure_track_dedx(info.ridge, options, start, end)
+        cb = np.minimum(dedx_ref/dedx1, 1)
+        if verbosity > 0:
+            print('dE/dx estimate: {:.4f}'.format(dedx1))
+            print('Cos(beta) estimate: {:.4f}'.format(cb))
+        start, end = select_measurement_points(
+            info.ridge, options, energy, cos_beta=cb)
+        print('Second selection: ({:d}, {:d})'.format(start, end))
+        if verbosity > 0:
+            print('Alpha values:')
+            for i,r in enumerate(info.ridge[start:end]):
+                print('  Step {}: {:d}'.format(i+start,r.step_alpha_deg))
+        print('Alpha measurement: {:.1f}'.format(info.alpha_deg))
+        print('Beta measurement: {:.4f}'.format(info.beta_deg))
+    else:
+        # MATLAB
+        pass
 
 
 def set_output(image, options, info):
