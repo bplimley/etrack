@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/python
 
 import numpy as np
 import ipdb as pdb
