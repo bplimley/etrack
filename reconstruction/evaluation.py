@@ -2,6 +2,7 @@
 
 import numpy as np
 import lmfit
+import ipdb as pdb
 
 
 def delta_alpha(alpha1_deg, alpha2_deg):
@@ -40,7 +41,6 @@ def adjust_dalpha(dalpha):
             dalpha -= 360
         while dalpha <= -180:
             dalpha += 360
-
 
 
 def delta_beta(beta_true_deg, beta_alg_deg):
@@ -88,8 +88,8 @@ class AlgorithmUncertainty(object):
     def __init__(self, dalpha=None, beta_true=None, beta_meas=None,
                  mode=2, alpha_mode=None, beta_mode=None):
         if dalpha is None and beta_true is None and beta_meas is None:
-            raise RuntimeError('AlgorithmUncertainty requires ' +
-                'either dalpha, or both beta_true and beta_meas')
+            raise RuntimeError('AlgorithmUncertainty requires either' +
+                               ' dalpha, or both beta_true and beta_meas')
         elif np.logical_xor(beta_true is None, beta_meas is None):
             raise RuntimeError('Both beta_true and beta_meas must be provided')
         if alpha_mode is None:
@@ -99,10 +99,14 @@ class AlgorithmUncertainty(object):
 
         if dalpha is not None:
             alpha_result = fit_alpha(dalpha, mode=alpha_mode)
+            # TODO: make this more robust and organized
+            self.a_FWHM = alpha_result.params['fwhm'].value
+            self.a_f = alpha_result.params['f'].value
+            self.a_frandom = alpha_result.params['f_random'].value
 
         if beta_true is not None:
             beta_result = fit_beta(beta_true=beta_true, beta_meas=beta_meas,
-                mode=beta_mode)
+                                   mode=beta_mode)
 
 
 
@@ -125,11 +129,11 @@ def fit_alpha(dalpha, mode=2):
         raise DataWarning('Inf values in dalpha')
         dalpha = dalpha(not np.isinf(dalpha))
     adjust_dalpha(dalpha)
-    dalpha = np.abs(dalpha.flatten)
+    dalpha = np.abs(dalpha.flatten())
 
     n_values = len(dalpha)
-    resolution = np.minimum(100 * 180 / n_values, 15)   # from MATLAB
-    n_bins = 180 / resolution
+    resolution = np.minimum(100.0 * 180.0 / n_values, 15)   # from MATLAB
+    n_bins = np.ceil(180 / resolution)
     nhist, edges = np.histogram(dalpha, bins=n_bins, range=(0.0,180.0))
     bin_centers = (edges[:-1] + edges[1:]) / 2
 
@@ -137,7 +141,7 @@ def fit_alpha(dalpha, mode=2):
     n_max = np.max(nhist)
     n_min = np.min(nhist)
     halfmax = (n_max - n_min)/2
-    crossing_ind = np.nonzero(nhist > halfmax)[-1]
+    crossing_ind = np.nonzero(nhist > halfmax)[0][-1]
     halfwidth = (bin_centers[crossing_ind] +
         (bin_centers[crossing_ind+1] - bin_centers[crossing_ind]) *
         (halfmax - nhist[crossing_ind]) / (nhist[crossing_ind+1] -
@@ -159,13 +163,18 @@ def fit_alpha(dalpha, mode=2):
         params = model.make_params(**init_values)
         params['center'].vary = False
         fit = model.fit(nhist, x=bin_centers, params=params)
-
+        # TODO: make this more robust
+        peak_fraction = (fit.params['amplitude'].value / 2 / resolution /
+            n_values)
+        fit.params.add('f', vary=False, value=peak_fraction)
+        random_fraction = fit.params['c'].value * 180 / resolution / n_values
+        fit.params.add('f_random', vary=False, value=random_fraction)
 
     elif mode == 3:
         # constant + forward peak + backscatter
         model = (lmfit.models.ConstantModel() +
-                 lmfit.models.GaussianModel(prefix='fwd_')) +
-                 lmfit.models.GaussianModel(prefix='bk_')) +
+                 lmfit.models.GaussianModel(prefix='fwd_') +
+                 lmfit.models.GaussianModel(prefix='bk_'))
         init_values = {'c': np.min(nhist),
                        'fwd_center': 0,
                        'fwd_amplitude': np.max(nhist[:mid]) - np.min(nhist),
@@ -210,6 +219,8 @@ def test_dalpha():
     a1 = [-170, 0, 170]
     a2 = [170.5, 30.5, 150.5]
     assert np.all(delta_alpha(a1, a2) == np.array([-19.5, 30.5, -19.5]))
+
+    return None
 
 
 def test_dbeta():
