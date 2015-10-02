@@ -10,7 +10,8 @@ import hybridtrack
 
 # loadpath = '/mnt/data/MATLAB/data/Electron Track/geant4/'
 # loadfile = 'Mat_CCD_SPEC_500k_49_TRK.h5'
-loadpath = '/mnt/data/MATLAB/data/Electron Track/algorithms/results/2013sep binned'
+loadpath = ('/mnt/data/MATLAB/data/Electron Track/algorithms/' +
+            'results/2013sep binned')
 loadfile = 'MultiAngle_HT_100_1.h5'
 
 # widgets = [pbar.Percentage(), ' ', pbar.Bar(), ' ', pbar.ETA()]
@@ -22,11 +23,11 @@ loadfile = 'MultiAngle_HT_100_1.h5'
 #     pb.update(i+1)
 # pb.finish()
 
-h5file = h5py.File(os.path.join(loadpath,loadfile),'r')
+h5file = h5py.File(os.path.join(loadpath, loadfile), 'r')
 
 pbar = progressbar.ProgressBar(
     widgets=[progressbar.Percentage(), ' ', progressbar.Bar(), ' ',
-    progressbar.ETA()], maxval = len(h5file))
+             progressbar.ETA()], maxval=len(h5file))
 pbar.start()
 
 info = [[] for __ in range(len(h5file))]
@@ -50,17 +51,17 @@ for i in range(len(h5file)):
             try:
                 # reverse the transpose MATLAB did during h5create
                 __, info[i] = hybridtrack.reconstruct(this_image.T,
-                    pixel_size_um=2.5)
+                                                      pixel_size_um=2.5)
                 py_alpha[i] = info[i].alpha_deg
             except hybridtrack.InfiniteLoop:
-                print('Infinite loop on event #{}, track #{}'.format(i,j))
+                print('Infinite loop on event #{}'.format(i))
             except hybridtrack.NoEndsFound:
-                print('No ends found on event #{}, track #{}'.format(i,j))
-            except err:
+                print('No ends found on event #{}'.format(i))
+            except Exception:
                 print('Other error:')
-                print(err)
+                print(Exception)
 
     pbar.update(i)
 pbar.finish()
 
-np.savez('alpha2.5.npz',py_alpha=py_alpha, mat_alpha=mat_alpha)
+np.savez('alpha2.5.npz', py_alpha=py_alpha, mat_alpha=mat_alpha)

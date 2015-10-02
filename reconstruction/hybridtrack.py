@@ -263,9 +263,9 @@ def locate_all_ends(image_kev, options, info):
         binary_image = image_kev > current_threshold
         thinned_image = thinning.thin(binary_image)+0
         num_neighbors_image = scipy.ndimage.convolve(
-            thinned_image, np.ones((3, 3)), mode='constant', cval=0.0) - 1
+            thinned_image, connectivity, mode='constant', cval=0.0) - 1
         num_neighbors_image = num_neighbors_image * thinned_image
-        ends_image = num_neighbors_image==1
+        ends_image = num_neighbors_image == 1
 
         if np.all(np.logical_not(ends_image)):
             # increase threshold to attempt to break loop.
@@ -547,11 +547,11 @@ class Cut(object):
         self.center = coordinates_pix
         self.set_coordinates(options.cut_coordinates[self.angle_ind])
 
-        # interp2d object is supposed to take x and y vectors and make a 2D grid
-        #   which is not what I wanted... but it gives an input error if x and
-        #   y are vectors.
+        # interp2d object is supposed to take x and y vectors
+        #   and make a 2D grid. which is not what I wanted... but it gives
+        #   an input error if x and y are vectors.
         self.energy_kev = np.array(
-            [float(interp(x,y)) for x,y in self.coordinates_pix])
+            [float(interp(x, y)) for x, y in self.coordinates_pix])
 
         self.exclude_points(options)
         self.measure_width_metric(options)
@@ -571,8 +571,8 @@ class Cut(object):
         """
         """
         thresh = options.cut_low_threshold_kev
-        halves = [f(options.cut_distance_coordinate_pix,0)
-            for f in [np.less,np.greater]]
+        halves = [f(options.cut_distance_coordinate_pix, 0)
+            for f in [np.less, np.greater]]
         energy_halves = [self.energy_kev[half] for half in halves]
 
         below_threshold = [energy < thresh
@@ -601,7 +601,6 @@ class Cut(object):
 
         self.first_index_to_keep = first_index_to_keep
         self.first_index_to_lose = first_index_to_lose
-
 
     def measure_width_metric(self, options):
         """
@@ -681,7 +680,7 @@ def measure_track_alpha(ridge, options, start, end):
     alpha_values = [r.step_alpha_deg for r in ridge[start:end]]
     # take care about the end of the circle...
     if np.any(alpha_values > 270) and np.any(alpha_values < 90):
-        alpha_values[alpha_values < 90] +=360
+        alpha_values[alpha_values < 90] += 360
 
     alpha_deg = options.measurement_func(alpha_values)
     if alpha_deg > 360:
@@ -714,13 +713,13 @@ def compute_direction(energy_kev, options, info):
     start, end = select_measurement_points(info.ridge, options, energy_kev,
         beta_deg=options.initial_beta_guess_deg)
     dedx_meas = measure_track_dedx(info.ridge, options, start, end)
-    first_cosbeta_estimate = np.minimum(dedx_ref / dedx_meas, 1) # 1 is the max
+    first_cosbeta_estimate = np.minimum(dedx_ref / dedx_meas, 1)
 
     # second and final estimate of beta, using first estimate of beta
     start, end = select_measurement_points(info.ridge, options, energy_kev,
         cos_beta=first_cosbeta_estimate)
     dedx_meas = measure_track_dedx(info.ridge, options, start, end)
-    cos_beta = np.minimum(dedx_ref / dedx_meas, 1) # 1 is the max
+    cos_beta = np.minimum(dedx_ref / dedx_meas, 1)
     beta_deg = np.arccos(cos_beta) * 180/np.pi
 
     # measure alpha
@@ -785,7 +784,7 @@ def base_measurement_points(energy_kev):
 
 
 def select_measurement_points(ridge, options, energy_kev, beta_deg=None,
-        cos_beta=None):
+                              cos_beta=None):
     """
     """
 
@@ -836,8 +835,8 @@ def measurement_debug(options, info, verbosity=1, MATLAB=False):
         print('Second selection: ({:d}, {:d})'.format(start, end))
         if verbosity > 0:
             print('Alpha values:')
-            for i,r in enumerate(info.ridge[start:end]):
-                print('  Step {}: {:d}'.format(i+start,r.step_alpha_deg))
+            for i, r in enumerate(info.ridge[start:end]):
+                print('  Step {}: {:d}'.format(i+start, r.step_alpha_deg))
         print('Alpha measurement: {:.1f}'.format(info.alpha_deg))
         print('Beta measurement: {:.4f}'.format(info.beta_deg))
     else:

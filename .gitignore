@@ -5,7 +5,7 @@
 *.dat
 *.npz
 *.fits
-*.hdf5
+*.h5
 *.npy
 *.json
 *.pkl
