@@ -5,6 +5,118 @@ import lmfit
 import ipdb as pdb
 
 
+class AlgorithmResults(object):
+    """
+    Object containing the results of the algorithm on modeled data.
+
+    Contains:
+      alpha_true
+      alpha_meas
+      beta_true
+      beta_meas
+      Etot
+      Edep
+      depth
+    """
+
+    def __init__(self,
+                 alpha_true_deg=None, alpha_meas_deg=None,
+                 beta_true_deg=None, beta_meas_deg=None,
+                 energy_tot_kev=None, energy_dep_kev=None,
+                 depth_um=None, is_contained=None):
+        """
+        Should be called by a classmethod constructor instead...
+        """
+
+        self.alpha_true_deg = alpha_true_deg
+        self.alpha_meas_deg = alpha_meas_deg
+        self.beta_true_deg = beta_true_deg
+        self.beta_meas_deg = beta_meas_deg
+        self.energy_tot_kev = energy_tot_kev
+        self.energy_dep_kev = energy_dep_kev
+        self.depth_um = depth_um
+        self.is_contained = is_contained
+
+        self.data_length = len(alpha_true_deg)
+
+    @classmethod
+    def from_pixelsize(cls, h5file, fieldname):
+        """
+        Construct AlgorithmResults instance from an h5file of pixelsize data.
+        """
+
+        # . . .
+
+        instance = cls(
+            alpha_true_deg=alpha_true_deg, alpha_meas_deg=alpha_meas_deg,
+            beta_true_deg=beta_true_deg, beta_meas_deg=beta_meas_deg,
+            energy_tot_kev=energy_tot_kev, energy_dep_kev=energy_dep_kev,
+            depth_um=depth_um, is_contained=is_contained)
+
+        return instance
+
+
+class DataSelection(object):
+    """
+    Object containing data selection for an AlgorithmResults instance.
+    """
+
+    def __init__(self, results, **conditions):
+        """
+        Construct data selection
+
+        Required input:
+          results: an AlgorithmResults object
+
+        Optional input(s):
+          **conditions: key-value pairs can include the following:
+          beta_min
+          beta_max
+          energy_min
+          energy_max
+          depth_min
+          depth_max
+          is_contained
+        """
+
+        self.results = results
+
+        # start with all true
+        selection = (np.ones(self.data_length) > 0)
+
+        for kw in conditions.keys():
+            if kw == 'beta_min':
+                param = results.beta_true_deg
+                comparator = np.greater
+            elif kw == 'beta_max':
+                param = results.beta_true_deg
+                comparator = np.less
+            elif kw == 'energy_min':
+                param = results.energy_tot_kev
+                comparator = np.greater
+            elif kw == 'energy_max':
+                param = results.energy_tot_kev
+                comparator = np.less
+            elif kw == 'depth_min':
+                param = results.depth_um
+                comparator = np.greater
+            elif kw == 'depth_max':
+                param = results.depth_um
+                comparator = np.less
+            elif kw == 'is_contained':
+                param = results.is_contained
+                comparator = np.equal
+            else:
+                raise RuntimeError(
+                    'Condition keyword not found: {}'.format(kw))
+
+            selection = np.logical_and(
+                selection, comparator(param, conditions[kw]))
+            self.selection = selection
+
+    # def __call__(self):
+
+
 def delta_alpha(alpha_true_deg, alpha_meas_deg):
     """
     Compute alpha_meas - alpha_true, returning value on (-180, +180].
