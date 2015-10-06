@@ -5,9 +5,9 @@ import lmfit
 import ipdb as pdb
 
 
-def delta_alpha(alpha1_deg, alpha2_deg):
+def delta_alpha(alpha_true_deg, alpha_meas_deg):
     """
-    Compute alpha2 - alpha1, returning value on (-180, +180].
+    Compute alpha_meas - alpha_true, returning value on (-180, +180].
 
     scalar, scalar: return a scalar
     vector, scalar: return a vector (each vector value compared to scalar)
@@ -15,10 +15,10 @@ def delta_alpha(alpha1_deg, alpha2_deg):
     """
 
     # type conversion... also copies the data to avoid modifying the inputs
-    alpha1_deg = np.array(alpha1_deg)
-    alpha2_deg = np.array(alpha2_deg)
+    alpha_true_deg = np.array(alpha_true_deg)
+    alpha_meas_deg = np.array(alpha_meas_deg)
 
-    dalpha = alpha2_deg - alpha1_deg
+    dalpha = alpha_meas_deg - alpha_true_deg
     adjust_dalpha(dalpha)
 
     return dalpha
@@ -109,8 +109,6 @@ class AlgorithmUncertainty(object):
                                    mode=beta_mode)
 
 
-
-
 def fit_alpha(dalpha, mode=2):
     """
     Return a metric for alpha uncertainty.
@@ -134,7 +132,7 @@ def fit_alpha(dalpha, mode=2):
     n_values = len(dalpha)
     resolution = np.minimum(100.0 * 180.0 / n_values, 15)   # from MATLAB
     n_bins = np.ceil(180 / resolution)
-    nhist, edges = np.histogram(dalpha, bins=n_bins, range=(0.0,180.0))
+    nhist, edges = np.histogram(dalpha, bins=n_bins, range=(0.0, 180.0))
     bin_centers = (edges[:-1] + edges[1:]) / 2
 
     # manual estimate
@@ -142,10 +140,11 @@ def fit_alpha(dalpha, mode=2):
     n_min = np.min(nhist)
     halfmax = (n_max - n_min)/2
     crossing_ind = np.nonzero(nhist > halfmax)[0][-1]
-    halfwidth = (bin_centers[crossing_ind] +
-        (bin_centers[crossing_ind+1] - bin_centers[crossing_ind]) *
-        (halfmax - nhist[crossing_ind]) / (nhist[crossing_ind+1] -
-         nhist[crossing_ind]))
+    halfwidth = (
+        bin_centers[crossing_ind] +
+        (bin_centers[crossing_ind + 1] - bin_centers[crossing_ind]) *
+        (halfmax - nhist[crossing_ind]) / (nhist[crossing_ind + 1] -
+                                           nhist[crossing_ind]))
     fwhm_estimate = 2*halfwidth
 
     mid = int(round(len(nhist)/2))
@@ -164,8 +163,8 @@ def fit_alpha(dalpha, mode=2):
         params['center'].vary = False
         fit = model.fit(nhist, x=bin_centers, params=params)
         # TODO: make this more robust
-        peak_fraction = (fit.params['amplitude'].value / 2 / resolution /
-            n_values)
+        peak_fraction = (
+            fit.params['amplitude'].value / 2 / resolution / n_values)
         fit.params.add('f', vary=False, value=peak_fraction)
         random_fraction = fit.params['c'].value * 180 / resolution / n_values
         fit.params.add('f_random', vary=False, value=random_fraction)
@@ -188,6 +187,7 @@ def fit_alpha(dalpha, mode=2):
         fit = model.fit(nhist, x=bin_centers, params=params)
 
     return fit
+
 
 def test_dalpha():
     """

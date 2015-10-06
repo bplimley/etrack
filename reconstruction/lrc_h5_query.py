@@ -61,5 +61,8 @@ true_alpha = true_alpha[:n]
 matlab_alpha['2.5'] = matlab_alpha['2.5'][:n]
 matlab_alpha['10.5'] = matlab_alpha['10.5'][:n]
 
-np.savez('lrc_h5_query_2.5.npz', true_alpha=true_alpha,
-    matlab_alpha_2=matlab_alpha['2.5'], matlab_alpha_10=matlab_alpha['10.5'])
+np.savez(
+    'lrc_h5_query_2.5.npz',
+    true_alpha=true_alpha,
+    matlab_alpha_2=matlab_alpha['2.5'],
+    matlab_alpha_10=matlab_alpha['10.5'])

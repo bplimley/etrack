@@ -91,7 +91,7 @@ class ReconstructionOptions():
         # A smaller value might give a more accurate measurement of alpha.
         # [larger = faster]
         self.angle_increment_deg = 3
-        self.angle_increment_rad = self.angle_increment_deg * np.pi/180
+        self.angle_increment_rad = self.angle_increment_deg * np.pi / 180
         # angle_increment_deg is used as the base unit for all the other
         #   angular variables.
         # In other words, all variables ending in "indices" are in units of
@@ -115,8 +115,8 @@ class ReconstructionOptions():
 
         # all possible cut angles, for pre-calculating cuts
         #   *different from MATLAB code: starts with 0 instead of angle_incr
-        self.cut_angle_rad = np.arange(0, 2*np.pi, self.angle_increment_rad)
-        self.cut_angle_deg = np.arange(0, 2*pi_deg, self.angle_increment_deg)
+        self.cut_angle_rad = np.arange(0, 2 * np.pi, self.angle_increment_rad)
+        self.cut_angle_deg = np.arange(0, 2 * pi_deg, self.angle_increment_deg)
 
         # other methods include ... what in python?
         self.cut_interpolation_method = 'linear'
@@ -125,8 +125,8 @@ class ReconstructionOptions():
         #   and rotate to all possible angle increments.
         # The 0-degree cut is along the y-axis because the electron ridge is
         #   along the x-axis.
-        cut0_y = np.arange(-self.cut_total_length_pix/2,
-                           self.cut_total_length_pix/2+1e-3,  # with endpoint
+        cut0_y = np.arange(-self.cut_total_length_pix / 2,
+                           self.cut_total_length_pix / 2 + 1e-3,  # with endpt
                            self.cut_sampling_interval_pix)
         cut0_x = np.zeros_like(cut0_y)
         cut0_coordinates = zip(tuple(cut0_x), tuple(cut0_y))
@@ -211,9 +211,10 @@ def construct_energy_kernel(radius_um, pixel_size_um):
 
     radius_pix = radius_um / pixel_size_um
     ceil_radius_pix = int(np.ceil(radius_pix) - 1)
-    coordinates = range(-ceil_radius_pix, ceil_radius_pix+1)
-    kernel = [[0+(x**2+y**2 < radius_pix**2) for x in coordinates]
-                                             for y in coordinates]
+    coordinates = range(-ceil_radius_pix, ceil_radius_pix + 1)
+    kernel = [
+        [0 + (x**2 + y**2 < radius_pix**2) for x in coordinates]
+        for y in coordinates]
     return np.array(kernel)
 
 
@@ -230,13 +231,12 @@ def prepare_image(image_kev, options):
     buffer_width_um = 0.55 * options.cut_total_length_pix
     buffer_width_pix = np.ceil(buffer_width_um / options.pixel_size_um)
     orig_size = np.array(np.shape(image_kev))
-    new_image_size = (orig_size + 2*buffer_width_pix*np.ones(2))
+    new_image_size = (orig_size + 2 * buffer_width_pix * np.ones(2))
     new_image_kev = np.zeros(new_image_size)
 
     indices_of_original = [
-                           [int(it) + int(buffer_width_pix)
-                            for it in range(orig_size[dim])]
-                           for dim in [0, 1]]
+        [int(it) + int(buffer_width_pix) for it in range(orig_size[dim])]
+        for dim in [0, 1]]
     # pdb.set_trace()
     new_image_kev[np.ix_(indices_of_original[0], indices_of_original[1])
                   ] = image_kev
@@ -259,9 +259,9 @@ def locate_all_ends(image_kev, options, info):
     # TODO: does this actually work?
 
     while np.all(np.logical_not(ends_image)) and (
-            current_threshold <= 10*options.low_threshold_kev):
+            current_threshold <= 10 * options.low_threshold_kev):
         binary_image = image_kev > current_threshold
-        thinned_image = thinning.thin(binary_image)+0
+        thinned_image = thinning.thin(binary_image) + 0
         num_neighbors_image = scipy.ndimage.convolve(
             thinned_image, connectivity, mode='constant', cval=0.0) - 1
         num_neighbors_image = num_neighbors_image * thinned_image
@@ -328,8 +328,8 @@ def get_starting_point(options, info):
             break
 
     info.start_coordinates = xy
-    info.start_direction_deg = (180/np.pi *
-        np.arctan2(-step_xy[1], -step_xy[0]))
+    info.start_direction_deg = (
+        180/np.pi * np.arctan2(-step_xy[1], -step_xy[0]))
     if info.start_direction_deg < 0:
         info.start_direction_deg += 360
     info.start_direction_ind = (info.start_direction_deg /
@@ -368,7 +368,7 @@ def ridge_follow(image, options, info):
             # until this length, not worth the time
             check_for_infinite_loop(ridge, options)
 
-    __ = ridge.pop()    # remove last item
+    ridge.pop()    # remove last item
     ridge.reverse()     # now 0 is the beginning of the track
 
     info.ridge = ridge
@@ -463,9 +463,9 @@ class RidgePoint(object):
         """
 
         angle_start = int(
-            self.est_direction_ind - self.options.search_angle_ind/2)
+            self.est_direction_ind - self.options.search_angle_ind / 2)
         angle_end = int(
-            self.est_direction_ind + self.options.search_angle_ind/2 + 1)
+            self.est_direction_ind + self.options.search_angle_ind / 2 + 1)
         these_indices = np.arange(angle_start, angle_end)
         # wrap around, 0 to 2pi
         these_indices[these_indices < 0] += 2*self.options.pi_ind
@@ -498,8 +498,9 @@ class RidgePoint(object):
         """
         if self.previous is None:
             # first point. (this behavior matches MATLAB)
-            self.step_alpha_deg = (self.best_cut.angle_ind *
-                self.options.angle_increment_deg) + 180
+            self.step_alpha_deg = ((
+                self.best_cut.angle_ind * self.options.angle_increment_deg) +
+                180)
         elif False:     # this is the correct way to do it, but not MATLAB's
             # TODO: make this True
             # all subsequent points
@@ -526,11 +527,12 @@ class RidgePoint(object):
         # from MATLAB code: next step is based on best angle index, not the
         #   position difference
         next_direction_ind = self.best_cut.angle_ind
-        next_direction_rad = (next_direction_ind * np.pi/180 *
-            self.options.angle_increment_deg)
-        next_coordinates_pix = (self.coordinates_pix +
+        next_direction_rad = (
+            next_direction_ind * np.pi/180 * self.options.angle_increment_deg)
+        next_coordinates_pix = (
+            self.coordinates_pix +
             self.options.position_step_size_pix * np.array(
-            [np.cos(next_direction_rad), np.sin(next_direction_rad)]))
+                [np.cos(next_direction_rad), np.sin(next_direction_rad)]))
 
         return next_coordinates_pix, next_direction_ind
 
@@ -571,12 +573,12 @@ class Cut(object):
         """
         """
         thresh = options.cut_low_threshold_kev
-        halves = [f(options.cut_distance_coordinate_pix, 0)
+        halves = [
+            f(options.cut_distance_coordinate_pix, 0)
             for f in [np.less, np.greater]]
         energy_halves = [self.energy_kev[half] for half in halves]
 
-        below_threshold = [energy < thresh
-            for energy in energy_halves]
+        below_threshold = [energy < thresh for energy in energy_halves]
         if np.any(below_threshold[0]):
             # first [0]: first half. second [0]: first (only) dimension.
             list_of_indices_below_threshold = np.nonzero(below_threshold[0])[0]
@@ -622,7 +624,8 @@ class Cut(object):
         left_side_under = np.nonzero(self.energy_kev[:max_index] < half_max)[0]
         if len(left_side_under) > 0:
             left = left_side_under[-1]
-            left_half_max = (left +
+            left_half_max = (
+                left +
                 (half_max - self.energy_kev[left]) /
                 (self.energy_kev[left+1] - self.energy_kev[left]))
         else:
@@ -633,14 +636,16 @@ class Cut(object):
             self.energy_kev[max_index+1:] < half_max)[0]
         if len(right_side_under) > 0:
             right = right_side_under[0] + max_index + 1
-            right_half_max = (right -
+            right_half_max = (
+                right -
                 (half_max - self.energy_kev[right]) /
                 (self.energy_kev[right-1] - self.energy_kev[right]))
         else:
             # nothing under threshold - this is unusual
             right_half_max = len(self.energy_kev)
 
-        self.fwhm_um = ((right_half_max - left_half_max) *
+        self.fwhm_um = (
+            (right_half_max - left_half_max) *
             options.cut_sampling_interval_pix * options.pixel_size_um)
 
         return self.fwhm_um
@@ -648,8 +653,8 @@ class Cut(object):
     def measure_dedx(self, options):
         """Measure the dE/dx implied by this cut (only the best cut of the step)
         """
-        self.dedx_kevum = (np.sum(self.energy_kev) *
-            options.cut_sampling_interval_pix /
+        self.dedx_kevum = (
+            np.sum(self.energy_kev) * options.cut_sampling_interval_pix /
             options.pixel_size_um)
 
         return self.dedx_kevum
@@ -657,8 +662,10 @@ class Cut(object):
     def find_centroid(self):
         """
         """
-        self.centroid_pix = np.average(np.transpose(self.coordinates_pix),
-            weights=self.energy_kev, axis=1)
+        self.centroid_pix = np.average(
+            np.transpose(self.coordinates_pix),
+            weights=self.energy_kev,
+            axis=1)
 
         return self.centroid_pix
 
@@ -710,13 +717,15 @@ def compute_direction(energy_kev, options, info):
     dedx_ref = dedxref.dedx(energy_kev)
 
     # first estimate of beta, using initial guess of beta = 45
-    start, end = select_measurement_points(info.ridge, options, energy_kev,
+    start, end = select_measurement_points(
+        info.ridge, options, energy_kev,
         beta_deg=options.initial_beta_guess_deg)
     dedx_meas = measure_track_dedx(info.ridge, options, start, end)
     first_cosbeta_estimate = np.minimum(dedx_ref / dedx_meas, 1)
 
     # second and final estimate of beta, using first estimate of beta
-    start, end = select_measurement_points(info.ridge, options, energy_kev,
+    start, end = select_measurement_points(
+        info.ridge, options, energy_kev,
         cos_beta=first_cosbeta_estimate)
     dedx_meas = measure_track_dedx(info.ridge, options, start, end)
     cos_beta = np.minimum(dedx_ref / dedx_meas, 1)
@@ -758,8 +767,8 @@ def diffusion_skip_points(ridge, options):
     n_points_to_skip_from_diffusion = (
         (measured_width_um - options.pixel_size_um) /
         (options.pixel_size_um * options.position_step_size_pix))
-    n_points_to_skip_from_diffusion = np.maximum(0,
-        n_points_to_skip_from_diffusion)
+    n_points_to_skip_from_diffusion = np.maximum(
+        0, n_points_to_skip_from_diffusion)
 
     return n_points_to_skip_from_diffusion
 
@@ -797,13 +806,13 @@ def select_measurement_points(ridge, options, energy_kev, beta_deg=None,
     n_points_to_skip_from_diffusion = diffusion_skip_points(ridge, options)
     base_start, base_end = base_measurement_points(energy_kev)
 
-    start = np.ceil((base_start + 1) * cos_beta +
-        n_points_to_skip_from_diffusion) - 1
-    end   = np.ceil(base_end * cos_beta + n_points_to_skip_from_diffusion)
-    start = np.minimum(start, len(ridge)-1)
-    end   = np.minimum(end,   len(ridge))
+    start = np.ceil(
+        (base_start + 1) * cos_beta + n_points_to_skip_from_diffusion) - 1
+    end = np.ceil(base_end * cos_beta + n_points_to_skip_from_diffusion)
+    start = np.minimum(start, len(ridge) - 1)
+    end = np.minimum(end, len(ridge))
     start = np.maximum(start, 0)
-    end   = np.maximum(end,   start+1)
+    end = np.maximum(end, start + 1)
 
     return int(start), int(end)     # these become indices
 
@@ -826,7 +835,7 @@ def measurement_debug(options, info, verbosity=1, MATLAB=False):
             info.ridge, options, energy, beta_deg=beta0)
         print('First selection: ({:d}, {:d})'.format(start, end))
         dedx1 = measure_track_dedx(info.ridge, options, start, end)
-        cb = np.minimum(dedx_ref/dedx1, 1)
+        cb = np.minimum(dedx_ref / dedx1, 1)
         if verbosity > 0:
             print('dE/dx estimate: {:.4f}'.format(dedx1))
             print('Cos(beta) estimate: {:.4f}'.format(cb))
@@ -861,27 +870,64 @@ def test_input():
     # Mat_CCD_SPEC_500k_49_TRK_truncated.mat, Event 8
 
     image = [
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-0.0051609,0.053853,0.095667,-0.0033475],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.021966,0.69575,0.75888,0.048261],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-0.033524,0.28492,1.9392,1.0772,0.056027],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-0.018537,1.0306,3.7651,1.0724,0.020338],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0072011,0.98876,3.4822,0.89705,0.018026],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.022901,0.45766,1.9979,0.71425,0.046171],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.19834,1.4178,1.1684,0.10283],
-        [0,0,0,0,0,0,0,0,0,0.065909,0.056041,0.080346,0.033988,0.011497,0.026686,0.058919,0.053537,0.10681,0.13619,0.14899,0.062984,0.0047364,-0.0017255,0.10294,1.3059,1.5101,0.14706],
-        [0,0,0,0,0.0053918,0.0035012,0.021259,0.066659,0.19352,0.48743,0.91541,1.0855,0.92411,0.52781,0.44985,0.73201,1.1867,1.406,1.7395,2.4826,1.3234,0.62977,0.29166,0.26536,2.1381,2.0943,0.16611],
-        [0,0,0.010123,0.11812,0.41158,0.63741,0.82542,1.1754,1.9752,2.9183,3.7162,4.472,4.9214,3.8307,2.4756,2.0333,1.6727,1.4002,1.8243,2.5997,1.9335,1.8506,1.6702,1.7379,3.2162,1.9279,0.080845],
-        [0,0,0.0094986,0.84334,3.1883,4.4307,5.1898,5.8549,5.6754,4.5784,4.2334,5.1794,6.554,5.0217,2.0617,0.67738,0.20441,0.13334,0.11854,0.26303,0.30459,0.55708,1.1594,2.2099,2.844,0.91984,-0.0042292],
-        [0,0,0.063279,1.1166,4.1508,5.491,5.7499,5.6155,3.743,1.6617,1.0403,1.47,2.8975,2.7051,0.93501,0.1143,0.0035993,0,0,0,0.0051778,0.032716,0.06831,0.27357,0.38092,0.072979,0.035218],
-        [0,0,0.0081916,0.23584,0.93687,1.3889,1.3397,1.0887,0.57792,0.32439,0.55854,1.261,2.1775,1.9507,0.65327,0.10457,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0.024259,0.022813,0.041052,0.077169,0.13036,0.38906,1.1307,2.0968,2.6917,2.5884,1.5493,0.35102,0.026962,0,0,0,0,0,0,0,0,0,0,0],
-        [0,0.013108,0.037261,0.060011,0.035246,0.073982,0.2227,0.60201,1.4271,2.7482,3.4362,3.0109,1.6935,0.6734,0.12314,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0.018483,0.19417,0.86795,1.1453,0.75306,0.55931,1.0736,1.9404,2.6781,3.1387,2.4657,1.3213,0.47934,0.12477,0.002662,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0.13897,1.829,6.6556,8.0879,4.4295,2.3569,2.599,2.9012,2.559,1.6695,0.80228,0.23316,0.072496,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0.42121,4.9934,16.3581,17.7758,8.5629,3.489,2.5868,2.0779,1.1432,0.43788,0.095359,0.029513,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0.34745,3.7962,12.1618,12.3907,5.4372,1.9508,1.0099,0.59748,0.22756,0.081068,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0.093006,0.81449,2.6296,2.5491,1.0871,0.35421,0.15411,0.0413,0.015189,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0.020778,0.038066,0.17076,0.1381,0.056419,-0.0060239,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            -0.0051609, 0.053853, 0.095667, -0.0033475],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0.021966, 0.69575, 0.75888, 0.048261],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            -0.033524, 0.28492, 1.9392, 1.0772, 0.056027],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            -0.018537, 1.0306, 3.7651, 1.0724, 0.020338],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0.0072011, 0.98876, 3.4822, 0.89705, 0.018026],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0.022901, 0.45766, 1.9979, 0.71425, 0.046171],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0.19834, 1.4178, 1.1684, 0.10283],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0.065909, 0.056041, 0.080346, 0.033988,
+            0.011497, 0.026686, 0.058919, 0.053537, 0.10681, 0.13619, 0.14899,
+            0.062984, 0.0047364, -0.0017255, 0.10294, 1.3059, 1.5101, 0.14706],
+        [0, 0, 0, 0, 0.0053918, 0.0035012, 0.021259, 0.066659, 0.19352,
+            0.48743, 0.91541, 1.0855, 0.92411, 0.52781, 0.44985, 0.73201,
+            1.1867, 1.406, 1.7395, 2.4826, 1.3234, 0.62977, 0.29166, 0.26536,
+            2.1381, 2.0943, 0.16611],
+        [0, 0, 0.010123, 0.11812, 0.41158, 0.63741, 0.82542, 1.1754, 1.9752,
+            2.9183, 3.7162, 4.472, 4.9214, 3.8307, 2.4756, 2.0333, 1.6727,
+            1.4002, 1.8243, 2.5997, 1.9335, 1.8506, 1.6702, 1.7379, 3.2162,
+            1.9279, 0.080845],
+        [0, 0, 0.0094986, 0.84334, 3.1883, 4.4307, 5.1898, 5.8549, 5.6754,
+            4.5784, 4.2334, 5.1794, 6.554, 5.0217, 2.0617, 0.67738, 0.20441,
+            0.13334, 0.11854, 0.26303, 0.30459, 0.55708, 1.1594, 2.2099, 2.844,
+            0.91984, -0.0042292],
+        [0, 0, 0.063279, 1.1166, 4.1508, 5.491, 5.7499, 5.6155, 3.743, 1.6617,
+            1.0403, 1.47, 2.8975, 2.7051, 0.93501, 0.1143, 0.0035993, 0, 0, 0,
+            0.0051778, 0.032716, 0.06831, 0.27357, 0.38092, 0.072979,
+            0.035218],
+        [0, 0, 0.0081916, 0.23584, 0.93687, 1.3889, 1.3397, 1.0887, 0.57792,
+            0.32439, 0.55854, 1.261, 2.1775, 1.9507, 0.65327, 0.10457, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0.024259, 0.022813, 0.041052, 0.077169, 0.13036, 0.38906,
+            1.1307, 2.0968, 2.6917, 2.5884, 1.5493, 0.35102, 0.026962, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0.013108, 0.037261, 0.060011, 0.035246, 0.073982, 0.2227, 0.60201,
+            1.4271, 2.7482, 3.4362, 3.0109, 1.6935, 0.6734, 0.12314, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0.018483, 0.19417, 0.86795, 1.1453, 0.75306, 0.55931, 1.0736, 1.9404,
+            2.6781, 3.1387, 2.4657, 1.3213, 0.47934, 0.12477, 0.002662, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0.13897, 1.829, 6.6556, 8.0879, 4.4295, 2.3569, 2.599, 2.9012, 2.559,
+            1.6695, 0.80228, 0.23316, 0.072496, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0],
+        [0.42121, 4.9934, 16.3581, 17.7758, 8.5629, 3.489, 2.5868, 2.0779,
+            1.1432, 0.43788, 0.095359, 0.029513, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0],
+        [0.34745, 3.7962, 12.1618, 12.3907, 5.4372, 1.9508, 1.0099, 0.59748,
+            0.22756, 0.081068, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0],
+        [0.093006, 0.81449, 2.6296, 2.5491, 1.0871, 0.35421, 0.15411, 0.0413,
+            0.015189, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0.020778, 0.038066, 0.17076, 0.1381, 0.056419, -0.0060239, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
     return np.array(image)
 
 
@@ -902,11 +948,11 @@ if __name__ == '__main__':
         print('Low threshold used: {}'.format(info.threshold_used))
     if False:
         print('Binary image:')
-        print(info.binary_image+0)
+        print(info.binary_image + 0)
         print('')
     if False:
         print('Thinned image:')
-        print(info.thinned_image+0)
+        print(info.thinned_image + 0)
         print('')
     if False:
         print('ends_xy:')
