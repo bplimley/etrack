@@ -27,45 +27,81 @@ class AlgorithmResults(object):
       depth
     """
 
-    def __init__(self,
-                 alpha_true_deg=None, alpha_meas_deg=None,
-                 beta_true_deg=None, beta_meas_deg=None,
-                 energy_tot_kev=None, energy_dep_kev=None,
-                 depth_um=None, is_contained=None):
+    def __init__(self, parent=None, filename=None, **kwargs):
         """
         Should be called by a classmethod constructor instead...
         """
 
-        self.has_alpha = (alpha_true_deg is not None)
-        self.has_beta = (beta_true_deg is not None)
+        self.parent = parent
+        self.filename = filename
 
-        self.alpha_true_deg = alpha_true_deg
-        self.alpha_meas_deg = alpha_meas_deg
-        self.beta_true_deg = beta_true_deg
-        self.beta_meas_deg = beta_meas_deg
-        self.energy_tot_kev = energy_tot_kev
-        self.energy_dep_kev = energy_dep_kev
-        self.depth_um = depth_um
-        self.is_contained = is_contained
+        for attr in self.data_attrs():
+            if attr in kwargs.keys():
+                setattr(self, attr, kwargs[attr])
+            else:
+                setattr(self, attr, None)
+
+        self.has_alpha = (self.alpha_true_deg is not None)
+        self.has_beta = (self.beta_true_deg is not None)
 
         self.measure_data_length()
         self.input_error_check()
 
+    @classmethod
+    def data_attrs(cls):
+        """
+        List all the data attributes available to the AlgorithmResults class.
+
+        These attributes, if not None, should all be of the same length.
+        (i.e. doesn't include parent, filename, has_alpha, has_beta)
+        """
+
+        attr_list = (
+            'alpha_true_deg',
+            'alpha_meas_deg',
+            'beta_true_deg',
+            'beta_meas_deg',
+            'energy_tot_kev',
+            'energy_dep_kev',
+            'depth_um',
+            'is_contained')
+
+        return attr_list
+
     def measure_data_length(self):
-        if self.has_alpha:
-            self.data_length = len(self.alpha_true_deg)
-        elif self.has_beta:
-            self.data_length = len(self.beta_true_deg)
-        elif self.energy_tot_kev is not None:
-            self.data_length = len(self.energy_tot_kev)
-        elif self.depth_um is not None:
-            self.data_length = len(self.depth_um)
-        elif self.is_contained is not None:
-            self.data_length = len(self.is_contained)
+        """
+        Data length is taken from the first non-None attribute,
+        in order of the data_attrs() list.
+        """
+
+        for attr in self.data_attrs():
+            if getattr(self, attr) is not None:
+                self.data_length = len(getattr(self, attr))
+                break
         else:
             raise RuntimeError('AlgorithmResults object requires data')
 
     def input_error_check(self):
+        # type checks
+        if (self.parent is not None and
+                type(self.parent) is not AlgorithmResults):
+            raise RuntimeError(
+                'Parent should be an instance of AlgorithmResults')
+        if (self.filename is not None and
+                type(self.filename) is not str and
+                type(self.filename) is not list or
+                type(self.filename[0]) is not str):
+            raise RuntimeError(
+                'Filename should be a string or a list of strings')
+
+        # type conversion
+        for attr in self.data_attrs():
+            if attr.startswith('is_'):
+                setattr(self, attr, bool(getattr(self, attr)))
+            else:
+                setattr(self, attr, np.array(getattr(self, attr)))
+
+        # related data
         if np.logical_xor(self.alpha_true_deg is None,
                           self.alpha_meas_deg is None):
             raise RuntimeError(
@@ -74,27 +110,12 @@ class AlgorithmResults(object):
                           self.beta_meas_deg is None):
             raise RuntimeError(
                 'Beta results require both beta_true and beta_meas')
-        if (self.alpha_meas_deg is not None and
-                len(self.alpha_meas_deg) != self.data_length):
-            raise RuntimeError('alpha_true and alpha_meas length mismatch')
-        if (self.beta_meas_deg is not None and
-                len(self.beta_meas_deg) != self.data_length):
-            raise RuntimeError('beta_true and beta_meas length mismatch')
-        if (self.has_alpha and self.has_beta and
-                len(self.alpha_true_deg) != len(self.beta_true_deg)):
-            raise RuntimeError('alpha vs. beta length mismatch')
-        if (self.energy_tot_kev is not None and
-                len(self.energy_tot_kev) != self.data_length):
-            raise RuntimeError('energy_tot length mismatch')
-        if (self.energy_dep_kev is not None and
-                len(self.energy_dep_kev) != self.data_length):
-            raise RuntimeError('energy_dep length mismatch')
-        if (self.depth_um is not None and
-                len(self.depth_um) != self.data_length):
-            raise RuntimeError('depth_um length mismatch')
-        if (self.is_contained is not None and
-                len(self.is_contained) != self.data_length):
-            raise RuntimeError('is_contained length mismatch')
+
+        # data length mismatches
+        for attr in self.data_attrs():
+            if (getattr(self, attr) is not None and
+                    len(getattr(self, attr)) != self.data_length):
+                raise RuntimeError(attr + ' length mismatch')
 
     @classmethod
     def from_h5initial(cls, fieldname, filename=None, h5file=None):
@@ -117,11 +138,94 @@ class AlgorithmResults(object):
                                'either filename or h5file as input')
         if h5file is None:
             h5file = h5py.File(filename, 'r')
+        else:
+            filename = h5file.filename
 
-        prop10, prop2 = properties_from_h5_initial(h5file, fieldname)
-        results10, results2 = cls(**prop10), cls(**prop2)
+        n = 0
+        tracks = {'10.5': [[] for _ in len(h5file)],
+                  '2.5': [[] for _ in len(h5file)]}
+
+        for evt in h5file:
+            if 'Etot' not in evt.attrs or 'Edep' not in evt.attrs:
+                continue
+            if 'cheat_alpha' not in evt.attrs:
+                continue
+            if fieldname not in evt:
+                continue
+
+            if 'pix10_5noise0' in evt.keys() and 'pix2_5noise0' in evt.keys():
+                pix10 = evt['pix10_5noise0']
+                pix2 = evt['pix2_5noise0']
+                g4track = trackdata.G4Track.from_h5initial(evt)
+                tracks['10.5'][n] = trackdata.Track.from_h5initial_one(
+                    pix10, g4track)
+                tracks['2.5'][n] = trackdata.Track.from_h5initial_one(
+                    pix2, g4track)
+                n += 1
+
+        results10 = cls.from_track_array(tracks['10.5'])
+        results2 = cls.from_track_array(tracks['2.5'])
 
         return results10, results2
+
+    @classmethod
+    def from_track_array(cls, tracks,
+                         alg_name='matlab HT v1.5', filename=None):
+        """
+        Construct AlgorithmResults instance from an array of trackdata.Track
+        objects.
+
+        Inputs:
+          tracks: list of trackdata.Track objects with algorithm outputs
+          alg_name: name of algorithm to take results from
+            [default 'matlab HT v1.5']
+        """
+
+        alpha_true_deg = np.zeros(len(tracks))
+        alpha_meas_deg = np.zeros(len(tracks))
+        beta_true_deg = np.zeros(len(tracks))
+        beta_meas_deg = np.zeros(len(tracks))
+        energy_tot_kev = np.zeros(len(tracks))
+        energy_dep_kev = np.zeros(len(tracks))
+        depth_um = np.zeros(len(tracks))
+        is_contained = np.zeros(len(tracks))
+
+        for i, track in enumerate(tracks):
+            alpha_true_deg[i] = track.g4track.alpha_deg
+            beta_true_deg[i] = track.g4track.beta_deg
+            alpha_meas_deg[i] = track[alg_name].alpha_deg
+            beta_meas_deg[i] = track[alg_name].beta_deg
+            energy_tot_kev[i] = track.g4track.energy_tot_kev
+            energy_dep_kev[i] = track.g4track.energy_dep_kev
+            depth_um[i] = track.g4track.depth_um
+            is_contained[i] = track.g4track.is_contained
+
+        results = cls(
+            alg_name=alg_name, filename=filename,
+            alpha_true_deg=alpha_true_deg, alpha_meas_deg=alpha_meas_deg,
+            beta_true_deg=beta_true_deg, beta_meas_deg=beta_meas_deg,
+            energy_tot_kev=energy_tot_kev, energy_dep_kev=energy_dep_kev,
+            depth_um=depth_um, is_contained=is_contained)
+
+        return results
+
+    def select(self, **conditions):
+        """
+        Construct a new AlgorithmResults object by selecting events out of
+        this one.
+
+        New AlgorithmResults has this AlgorithmResults as its .parent
+
+        Input(s):
+          **conditions: key-value pairs can include the following:
+          beta_min
+          beta_max
+          energy_min
+          energy_max
+          depth_min
+          depth_max
+          is_contained
+        """
 
     def __len__(self):
         """
@@ -130,76 +234,17 @@ class AlgorithmResults(object):
 
         return self.data_length
 
+    def __add__(self, new):
+        """
+        combine two AlgorithmResults objects by concatenating data
+        """
 
-def properties_from_h5_initial(h5file, fieldname):
-    """
-    Get algorithm results parameters from an h5file object.
-    """
-
-    n = 0
-    tracks = {'10.5': [[] for _ in len(h5file)],
-              '2.5': [[] for _ in len(h5file)]}
-
-    for evt in h5file:
-        if 'Etot' not in evt.attrs or 'Edep' not in evt.attrs:
-            continue
-        if 'cheat_alpha' not in evt.attrs:
-            continue
-        if fieldname not in evt:
-            continue
-
-        if 'pix10_5noise0' in evt.keys() and 'pix2_5noise0' in evt.keys():
-            pix10 = evt['pix10_5noise0']
-            pix2 = evt['pix2_5noise0']
-            g4track = trackdata.G4Track.from_h5initial(evt)
-            tracks['10.5'][n] = trackdata.Track.from_h5initial_one(
-                pix10, g4track)
-            tracks['2.5'][n] = trackdata.Track.from_h5initial_one(
-                pix2, g4track)
-            n += 1
-
-    prop10 = properties_from_track_array(tracks['10.5'])
-    prop2 = properties_from_track_array(tracks['2.5'])
-
-    return prop10, prop2
+        data_attrs =
+        for attname in data_attrs:
+            if np.logical_xor(getattr(self, attname), getattr(new, attname)):
+                raise Warning('asymmetric concatenation of ' + attname)
 
 
-def properties_from_track_array(tracks):
-    """
-    Get algorithm results parameters from an array of Track objects.
-    """
-
-    alg_name = 'matlab HT v1.5'
-    # alg_name comes from trackdata.Track.from_h5initial_one()
-
-    alpha_true_deg = np.zeros(len(tracks))
-    alpha_meas_deg = np.zeros(len(tracks))
-    beta_true_deg = np.zeros(len(tracks))
-    beta_meas_deg = np.zeros(len(tracks))
-    energy_tot_kev = np.zeros(len(tracks))
-    energy_dep_kev = np.zeros(len(tracks))
-    depth_um = np.zeros(len(tracks))
-    is_contained = np.zeros(len(tracks))
-
-    for i, track in enumerate(tracks):
-        alpha_true_deg[i] = track.g4track.alpha_deg
-        beta_true_deg[i] = track.g4track.beta_deg
-        alpha_meas_deg[i] = track[alg_name].alpha_deg
-        beta_meas_deg[i] = track[alg_name].beta_deg
-        energy_tot_kev[i] = track.g4track.energy_tot_kev
-        energy_dep_kev[i] = track.g4track.energy_dep_kev
-        depth_um[i] = None
-        is_contained[i] = None
-
-    output = {'alpha_true_deg': alpha_true_deg,
-              'alpha_meas_deg': alpha_meas_deg,
-              'beta_true_deg': beta_true_deg,
-              'beta_meas_deg': beta_meas_deg,
-              'energy_tot_kev': energy_tot_kev,
-              'energy_dep_kev': energy_dep_kev,
-              }
-
-    return output
 
 
 ##############################################################################
@@ -363,7 +408,7 @@ class AlgorithmUncertainty(object):
     """
     Produce and store the alpha and beta uncertainty metrics.
 
-    Minimum input: dalpha OR (beta_true AND beta_meas)
+    Input: AlgorithmResults object
 
     mode: sets both alpha_mode and beta_mode simultaneously.
       (default: mode=2)
@@ -379,8 +424,10 @@ class AlgorithmUncertainty(object):
       3: zero fraction, ???
     """
 
-    def __init__(self, dalpha=None, beta_true=None, beta_meas=None,
-                 mode=2, alpha_mode=None, beta_mode=None):
+    def __init__(self, alg_results):
+        # dalpha=None, beta_true=None, beta_meas=None,
+        # mode=2, alpha_mode=None, beta_mode=None):
+
         if dalpha is None and beta_true is None and beta_meas is None:
             raise RuntimeError('AlgorithmUncertainty requires either' +
                                ' dalpha, or both beta_true and beta_meas')
@@ -402,6 +449,12 @@ class AlgorithmUncertainty(object):
             beta_result = fit_beta(beta_true=beta_true, beta_meas=beta_meas,
                                    mode=beta_mode)
             # TODO: beta
+
+
+class AlphaUncertainty():
+    """
+    """
+    pass
 
 
 def fit_alpha(dalpha, mode=2):
