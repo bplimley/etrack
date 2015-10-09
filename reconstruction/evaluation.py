@@ -8,6 +8,11 @@ import ipdb as pdb
 import trackdata
 
 
+##############################################################################
+#                        Algorithm Results class                             #
+##############################################################################
+
+
 class AlgorithmResults(object):
     """
     Object containing the results of the algorithm on modeled data.
@@ -31,6 +36,9 @@ class AlgorithmResults(object):
         Should be called by a classmethod constructor instead...
         """
 
+        self.has_alpha = (alpha_true_deg is not None)
+        self.has_beta = (beta_true_deg is not None)
+
         self.alpha_true_deg = alpha_true_deg
         self.alpha_meas_deg = alpha_meas_deg
         self.beta_true_deg = beta_true_deg
@@ -44,9 +52,9 @@ class AlgorithmResults(object):
         self.input_error_check()
 
     def measure_data_length(self):
-        if self.alpha_true_deg is not None:
+        if self.has_alpha:
             self.data_length = len(self.alpha_true_deg)
-        elif self.beta_true_deg is not None:
+        elif self.has_beta:
             self.data_length = len(self.beta_true_deg)
         elif self.energy_tot_kev is not None:
             self.data_length = len(self.energy_tot_kev)
@@ -72,8 +80,7 @@ class AlgorithmResults(object):
         if (self.beta_meas_deg is not None and
                 len(self.beta_meas_deg) != self.data_length):
             raise RuntimeError('beta_true and beta_meas length mismatch')
-        if (self.alpha_true_deg is not None and
-                self.beta_true_deg is not None and
+        if (self.has_alpha and self.has_beta and
                 len(self.alpha_true_deg) != len(self.beta_true_deg)):
             raise RuntimeError('alpha vs. beta length mismatch')
         if (self.energy_tot_kev is not None and
@@ -195,6 +202,11 @@ def properties_from_track_array(tracks):
     return output
 
 
+##############################################################################
+#                        Data Selection class                                #
+##############################################################################
+
+
 class DataSelection(object):
     """
     Object containing data selection for an AlgorithmResults instance.
@@ -221,9 +233,23 @@ class DataSelection(object):
         self.results = results
 
         # start with all true
-        selection = (np.ones(self.data_length) > 0)
+        selection = (np.ones(len(results)) > 0)
 
         for kw in conditions.keys():
+            if kw.starts_with('beta') and not results.has_beta:
+                raise RuntimeError(
+                    'Cannot select using beta when beta does not exist')
+            elif kw.starts_with('energy') and results.energy_tot_kev is None:
+                raise RuntimeError(
+                    'Cannot select using energy when energy does not exist')
+            elif kw.starts_with('depth') and results.depth_um is None:
+                raise RuntimeError(
+                    'Cannot select using depth when depth does not exist')
+            elif kw == 'is_contained' and results.is_contained is None:
+                raise RuntimeError(
+                    'Cannot select using is_contained when is_contained '
+                    'does not exist')
+
             if kw == 'beta_min':
                 param = results.beta_true_deg
                 comparator = np.greater
@@ -252,12 +278,20 @@ class DataSelection(object):
             selection = np.logical_and(
                 selection, comparator(param, conditions[kw]))
         self.selection = selection
+        self.length = np.sum(selection)
 
     def __call__(self):
         """
         If called as a function, return the boolean array of selection.
         """
         return self.selection
+
+    def __len__(self):
+        """
+        The length of the data selection is the number of True values.
+        """
+
+        return self.length
 
 
 def delta_alpha(alpha_true_deg, alpha_meas_deg):
@@ -318,6 +352,11 @@ def delta_beta(beta_true_deg, beta_alg_deg):
 
 class DataWarning(UserWarning):
     pass
+
+
+##############################################################################
+#                        Algorithm Uncertainty class                         #
+##############################################################################
 
 
 class AlgorithmUncertainty(object):
@@ -445,6 +484,18 @@ def fit_alpha(dalpha, mode=2):
     return fit
 
 
+def fit_beta():
+    """
+    """
+    raise NotImplementedError('fit_beta has not been implemented yet')
+    pass
+
+
+##############################################################################
+#                                  Testing                                   #
+##############################################################################
+
+
 def test_dalpha():
     """
     """
@@ -487,8 +538,27 @@ def test_dbeta():
     print('test_dbeta not implemented yet')
 
 
+def test_alg_results():
+    """
+    Test AlgorithmResults class.
+    """
+
+    # TODO
+    pass
+
+
+def test_alg_uncertainty():
+    """
+    Test AlgorithmUncertainty class.
+    """
+
+    # TODO
+    pass
+
+
 def test_selection():
     """
+    Test DataSelection class.
     """
 
     # TODO
@@ -502,4 +572,6 @@ if __name__ == '__main__':
 
     test_dalpha()
     test_dbeta()
+    test_alg_results()
+    test_alg_uncertainty()
     test_selection()
