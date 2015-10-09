@@ -1,10 +1,15 @@
 #!/usr/bin/python
 
 import numpy as np
-# import h5py
 import datetime
+import ipdb as pdb
 
 import hybridtrack
+
+
+##############################################################################
+#                                  G4Track                                   #
+##############################################################################
 
 
 class G4Track(object):
@@ -92,6 +97,11 @@ class G4Track(object):
     # dictionary-style or ...?
     #
     # see http://www.diveintopython3.net/special-method-names.html
+
+
+##############################################################################
+#                                    Track                                   #
+##############################################################################
 
 
 class Track(object):
@@ -206,8 +216,8 @@ class Track(object):
         tracks = {}
         g4track = G4Track.from_h5initial(evt)
         for fieldname in evt:
-            if fieldname.starts_with('pix'):
-                tracks[fieldname] = cls.from_h5initial_one(evt, fieldname,
+            if fieldname.startswith('pix'):
+                tracks[fieldname] = cls.from_h5initial_one(evt[fieldname],
                                                            g4track=g4track)
 
     @classmethod
@@ -222,9 +232,8 @@ class Track(object):
         noise = diffusedtrack.attrs['noise_ev']
 
         track = Track(image,
-                      is_modeled=True, image=image, pixel_size_um=pix,
-                      noise_ev=noise, g4track=g4track,
-                      label='MultiAngle h5 initial')
+                      is_modeled=True, pixel_size_um=pix, noise_ev=noise,
+                      g4track=g4track, label='MultiAngle h5 initial')
         if 'matlab_alpha' in diffusedtrack.attrs:
             alpha = diffusedtrack.attrs['matlab_alpha']
             track.add_algorithm('matlab HT v1.5',
@@ -282,6 +291,11 @@ class Track(object):
         raise NotImplementedError('Saving not implemented yet!')
 
 
+##############################################################################
+#                            Algorithm Output                                #
+##############################################################################
+
+
 class AlgorithmOutput(object):
     """
     The result of one specific reconstruction algorithm, on one track.
@@ -299,6 +313,11 @@ class AlgorithmOutput(object):
         self.beta_deg = beta_deg
         self.alg_name = alg_name
         self.info = info
+
+
+##############################################################################
+#                                  Testing                                   #
+##############################################################################
 
 
 def test_AlgorithmOutput():
@@ -365,7 +384,51 @@ if __name__ == '__main__':
     Run tests.
     """
 
-    test_AlgorithmOutput()
+    import h5py
+
+    test_G4Track()
     test_Track()
     test_TrackExceptions()
-    test_G4Track()
+    test_AlgorithmOutput()
+
+    try:
+        h5initial = h5py.File('MultiAngle_HT_11_12.h5', 'r')
+    except IOError:
+        print('Skipping file tests')
+        quit()
+
+    print('Beginning file tests')
+    fieldname = 'pix10_5noise0'
+    testflag = True
+    for i, evt in enumerate(h5initial):
+        try:
+            g4track = G4Track.from_h5initial(h5initial[evt])
+            if fieldname in h5initial[evt]:
+                track = Track.from_h5initial_one(h5initial[evt][fieldname])
+                track.add_algorithm('test asdf', 122.1, -33.3)
+                assert 'test asdf' in track.list_algorithms()
+            Track.from_h5initial_all(h5initial[evt])
+        except Exception:
+            print i
+            raise
+        if testflag:
+            # check g4track
+            np.testing.assert_almost_equal(
+                g4track.alpha_deg, 61.10767, decimal=4)
+            np.testing.assert_almost_equal(
+                g4track.beta_deg, 66.98443, decimal=4)
+            np.testing.assert_almost_equal(
+                g4track.energy_tot_kev, 418.70575, decimal=4)
+            np.testing.assert_almost_equal(
+                g4track.energy_dep_kev, 418.70575, decimal=4)
+
+            # check track
+            np.testing.assert_almost_equal(
+                track.noise_ev, 0.0, decimal=4)
+            np.testing.assert_almost_equal(
+                track.pixel_size_um, 10.5, decimal=4)
+            assert track.is_modeled is True
+            assert track.is_measured is False
+
+            # only run on first track (that's what these numbers are from)
+            testflag = False
