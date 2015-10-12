@@ -227,94 +227,44 @@ class AlgorithmResults(object):
           is_contained
         """
 
-    def __len__(self):
-        """
-        length of algorithm results array. For use by len(results)
-        """
-
-        return self.data_length
-
-    def __add__(self, new):
-        """
-        combine two AlgorithmResults objects by concatenating data
-        """
-
-        data_attrs =
-        for attname in data_attrs:
-            if np.logical_xor(getattr(self, attname), getattr(new, attname)):
-                raise Warning('asymmetric concatenation of ' + attname)
-
-
-
-
-##############################################################################
-#                        Data Selection class                                #
-##############################################################################
-
-
-class DataSelection(object):
-    """
-    Object containing data selection for an AlgorithmResults instance.
-    """
-
-    def __init__(self, results, **conditions):
-        """
-        Construct data selection
-
-        Required input:
-          results: an AlgorithmResults object
-
-        Optional input(s):
-          **conditions: key-value pairs can include the following:
-          beta_min
-          beta_max
-          energy_min
-          energy_max
-          depth_min
-          depth_max
-          is_contained
-        """
-
-        self.results = results
-
         # start with all true
-        selection = (np.ones(len(results)) > 0)
+        selection = (np.ones(len(self)) > 0)
 
         for kw in conditions.keys():
-            if kw.starts_with('beta') and not results.has_beta:
+            if kw.starts_with('beta') and not self.has_beta:
                 raise RuntimeError(
                     'Cannot select using beta when beta does not exist')
-            elif kw.starts_with('energy') and results.energy_tot_kev is None:
+            elif kw.starts_with('energy') and self.energy_tot_kev is None:
                 raise RuntimeError(
                     'Cannot select using energy when energy does not exist')
-            elif kw.starts_with('depth') and results.depth_um is None:
+            elif kw.starts_with('depth') and self.depth_um is None:
                 raise RuntimeError(
                     'Cannot select using depth when depth does not exist')
-            elif kw == 'is_contained' and results.is_contained is None:
+            elif kw == 'is_contained' and self.is_contained is None:
                 raise RuntimeError(
                     'Cannot select using is_contained when is_contained '
                     'does not exist')
 
             if kw == 'beta_min':
-                param = results.beta_true_deg
+                param = self.beta_true_deg
                 comparator = np.greater
             elif kw == 'beta_max':
-                param = results.beta_true_deg
+                param = self.beta_true_deg
                 comparator = np.less
             elif kw == 'energy_min':
-                param = results.energy_tot_kev
+                param = self.energy_tot_kev
                 comparator = np.greater
             elif kw == 'energy_max':
-                param = results.energy_tot_kev
+                param = self.energy_tot_kev
                 comparator = np.less
             elif kw == 'depth_min':
-                param = results.depth_um
+                param = self.depth_um
                 comparator = np.greater
             elif kw == 'depth_max':
-                param = results.depth_um
+                param = self.depth_um
                 comparator = np.less
             elif kw == 'is_contained':
-                param = results.is_contained
+                param = self.is_contained
                 comparator = np.equal
             else:
                 raise RuntimeError(
@@ -322,21 +272,65 @@ class DataSelection(object):
 
             selection = np.logical_and(
                 selection, comparator(param, conditions[kw]))
-        self.selection = selection
-        self.length = np.sum(selection)
 
-    def __call__(self):
-        """
-        If called as a function, return the boolean array of selection.
-        """
-        return self.selection
+        selected_data = dict()
+        for attr in self.data_attrs():
+            if attr is None:
+                selected_data[attr] = None
+            else:
+                selected_data[attr] = getattr(self, attr)[selection]
+
+        return AlgorithmResults(parent=self,
+                                filename=self.filename,
+                                **selected_data)
 
     def __len__(self):
         """
-        The length of the data selection is the number of True values.
+        length of algorithm results array. For use by len(results)
         """
 
-        return self.length
+        return self.data_length
+
+    def __add__(self, added):
+        """
+        combine two AlgorithmResults objects by concatenating data
+        """
+
+        # if, say, one object has an is_contained record and the other
+        #   doesn't (is_contained = None), then populate the nonexistent data
+        #   record with np.nan's, I guess. But issue a warning.
+
+        new = dict()
+        for attname in self.data_attrs:
+            data1 = getattr(self, attname)
+            data2 = getattr(added, attname)
+            if data1 is not None and data2 is not None:
+                new[attname] = np.concatenate(data1, data2)
+            elif data1 is None and data2 is None:
+                new[attname] = None
+            elif data1 is not None and data2 is None:
+                temp = np.array([np.nan for _ in range(len(data2))])
+                new[attname] = np.concatenate(data1, temp)
+                raise Warning('asymmetric concatenation of ' + attname)
+            elif data1 is None and data2 is not None:
+                temp = np.array([np.nan for _ in range(len(data1))])
+                new[attname] = np.concatenate(temp, data2)
+                raise Warning('asymmetric concatenation of ' + attname)
+
+        # non-data attributes
+        if self.parent is not None or added.parent is not None:
+            new_parent = [self.parent, added.parent]
+        else:
+            new_parent = None
+
+        if self.filename is not None or added.filename is not None:
+            new_filename = [self.filename, added.filename]
+        else:
+            new_filename = None
+
+        return AlgorithmResults(parent=new_parent,
+                                filename=new_filename,
+                                **new)
 
 
 def delta_alpha(alpha_true_deg, alpha_meas_deg):
