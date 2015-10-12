@@ -84,22 +84,25 @@ class AlgorithmResults(object):
     def input_error_check(self):
         # type checks
         if (self.parent is not None and
-                type(self.parent) is not AlgorithmResults):
+                type(self.parent) is not AlgorithmResults and
+                (type(self.parent) is not list or
+                 type(self.parent[0]) is not AlgorithmResults)):
             raise RuntimeError(
                 'Parent should be an instance of AlgorithmResults')
         if (self.filename is not None and
                 type(self.filename) is not str and
-                type(self.filename) is not list or
-                type(self.filename[0]) is not str):
+                (type(self.filename) is not list or
+                 type(self.filename[0]) is not str)):
             raise RuntimeError(
                 'Filename should be a string or a list of strings')
 
         # type conversion
         for attr in self.data_attrs():
-            if attr.startswith('is_'):
-                setattr(self, attr, bool(getattr(self, attr)))
-            else:
-                setattr(self, attr, np.array(getattr(self, attr)))
+            if getattr(self, attr) is not None:
+                if attr.startswith('is_'):
+                    setattr(self, attr, getattr(self, attr).astype(bool))
+                else:
+                    setattr(self, attr, np.array(getattr(self, attr)))
 
         # related data
         if np.logical_xor(self.alpha_true_deg is None,
@@ -231,13 +234,13 @@ class AlgorithmResults(object):
         selection = (np.ones(len(self)) > 0)
 
         for kw in conditions.keys():
-            if kw.starts_with('beta') and not self.has_beta:
+            if kw.startswith('beta') and not self.has_beta:
                 raise RuntimeError(
                     'Cannot select using beta when beta does not exist')
-            elif kw.starts_with('energy') and self.energy_tot_kev is None:
+            elif kw.startswith('energy') and self.energy_tot_kev is None:
                 raise RuntimeError(
                     'Cannot select using energy when energy does not exist')
-            elif kw.starts_with('depth') and self.depth_um is None:
+            elif kw.startswith('depth') and self.depth_um is None:
                 raise RuntimeError(
                     'Cannot select using depth when depth does not exist')
             elif kw == 'is_contained' and self.is_contained is None:
@@ -275,7 +278,7 @@ class AlgorithmResults(object):
 
         selected_data = dict()
         for attr in self.data_attrs():
-            if attr is None:
+            if getattr(self, attr) is None:
                 selected_data[attr] = None
             else:
                 selected_data[attr] = getattr(self, attr)[selection]
@@ -301,20 +304,20 @@ class AlgorithmResults(object):
         #   record with np.nan's, I guess. But issue a warning.
 
         new = dict()
-        for attname in self.data_attrs:
+        for attname in self.data_attrs():
             data1 = getattr(self, attname)
             data2 = getattr(added, attname)
             if data1 is not None and data2 is not None:
-                new[attname] = np.concatenate(data1, data2)
+                new[attname] = np.concatenate((data1, data2))
             elif data1 is None and data2 is None:
                 new[attname] = None
             elif data1 is not None and data2 is None:
-                temp = np.array([np.nan for _ in range(len(data2))])
-                new[attname] = np.concatenate(data1, temp)
+                temp = np.array([np.nan for _ in range(len(added))])
+                new[attname] = np.concatenate((data1, temp))
                 raise Warning('asymmetric concatenation of ' + attname)
             elif data1 is None and data2 is not None:
-                temp = np.array([np.nan for _ in range(len(data1))])
-                new[attname] = np.concatenate(temp, data2)
+                temp = np.array([np.nan for _ in range(len(self))])
+                new[attname] = np.concatenate((temp, data2))
                 raise Warning('asymmetric concatenation of ' + attname)
 
         # non-data attributes
@@ -331,6 +334,11 @@ class AlgorithmResults(object):
         return AlgorithmResults(parent=new_parent,
                                 filename=new_filename,
                                 **new)
+
+
+##############################################################################
+#                           Other misc functions                             #
+##############################################################################
 
 
 def delta_alpha(alpha_true_deg, alpha_meas_deg):
@@ -584,14 +592,210 @@ def test_dbeta():
     # TODO
     print('test_dbeta not implemented yet')
 
+# AlgorithmResults class
+
+
+def generate_random_alg_results(
+        length=100,
+        filename=None, parent=None,
+        has_alpha=True, has_beta=True, has_contained=True,
+        a_fwhm=30, a_f=0.7, b_rms=20, b_f=0.5):
+    """
+    Generate an AlgorithmResults instance for testing.
+
+    Data values are pseudo-realistic. But:
+      -there is no energy dependence
+      -all tracks are contained and Edep == Etot
+    """
+
+    if has_alpha:
+        alpha_true = np.random.uniform(low=-180, high=180, size=length)
+        good_alpha_length = np.round(a_f * length)
+        alpha_meas_bad = np.random.uniform(
+            low=-180, high=180, size=(length - good_alpha_length))
+        alpha_meas_good = alpha_true[:good_alpha_length] + np.random.normal(
+            loc=0.0, scale=(a_fwhm)/2.355, size=good_alpha_length)
+        alpha_meas = np.concatenate((alpha_meas_good, alpha_meas_bad))
+    else:
+        alpha_true = None
+        alpha_meas = None
+    if has_beta:
+        beta_true = np.random.triangular(
+            left=-90, mode=0, right=90, size=length)
+        good_beta_length = np.round(b_f * length)
+        beta_meas_bad = np.zeros(length - good_beta_length)
+        beta_meas_good = beta_true[:good_beta_length] + np.random.normal(
+            loc=0.0, scale=b_rms, size=good_beta_length)
+        redo = np.logical_or(beta_meas_good > 90, beta_meas_good < -90)
+        beta_meas_good[redo] = np.random.uniform(
+            low=-90, high=90, size=np.sum(redo))
+        beta_meas = np.concatenate((beta_meas_good, beta_meas_bad))
+    else:
+        beta_true = None
+        beta_meas = None
+
+    energy_tot_kev = np.random.uniform(low=100, high=478, size=length)
+    energy_dep_kev = energy_tot_kev
+    depth = np.random.uniform(low=0, high=650, size=length)
+    is_contained = (np.ones(length) > 0)
+
+    return AlgorithmResults(
+        parent=parent, filename=filename,
+        alpha_true_deg=alpha_true, alpha_meas_deg=alpha_meas,
+        beta_true_deg=beta_true, beta_meas_deg=beta_meas,
+        energy_tot_kev=energy_tot_kev, energy_dep_kev=energy_dep_kev,
+        depth_um=depth, is_contained=is_contained)
+
 
 def test_alg_results():
     """
     Test AlgorithmResults class.
     """
 
-    # TODO
-    pass
+    # basic
+    generate_random_alg_results()
+    generate_random_alg_results(has_beta=False, has_contained=False)
+
+    # length
+    assert len(generate_random_alg_results(length=100)) == 100
+    assert len(generate_random_alg_results(has_alpha=False, length=100)) == 100
+
+    # subtests
+    test_alg_results_input_check()
+    test_alg_results_add()
+    test_alg_results_select()
+
+
+def test_alg_results_input_check():
+    """
+    Test AlgorithmResults input check
+    """
+
+    # errors
+    try:
+        AlgorithmResults(filename=5,
+                         alpha_true_deg=[10, 20],
+                         alpha_meas_deg=[20, 25])
+    except RuntimeError:
+        pass
+    else:
+        print('Failed to catch AlgorithmResults filename error')
+
+    try:
+        AlgorithmResults(alpha_true_deg=np.random.random(30),
+                         alpha_meas_deg=np.random.random(29))
+    except RuntimeError:
+        pass
+    else:
+        print('Failed to catch data length mismatch')
+
+    try:
+        AlgorithmResults(alpha_true_deg=np.random.random(30))
+    except RuntimeError:
+        pass
+    else:
+        print('Failed to catch missing alpha_meas_deg')
+
+
+def test_alg_results_add():
+    """
+    Test AlgorithmResults class.
+    """
+
+    len1 = 1000
+    len2 = 100
+    # basic
+    x = generate_random_alg_results(length=len1)
+    y = generate_random_alg_results(length=len2)
+    z = x + y
+    assert len(z) == len1 + len2
+    assert z.filename is None
+    assert z.parent is None
+
+    # symmetric None's
+    x = generate_random_alg_results(length=len1, has_beta=False)
+    y = generate_random_alg_results(length=len2, has_beta=False)
+    z = x + y
+    assert z.has_beta is False
+    assert z.beta_true_deg is None
+
+    # asymmetric None's
+    try:
+        x = generate_random_alg_results(length=len1, has_beta=False)
+        y = generate_random_alg_results(length=len2, has_beta=True)
+        z = x + y
+        assert z.has_beta is True
+        assert np.sum(np.isnan(z.beta_true_deg)) == len1
+    except Warning:
+        pass
+    else:
+        print('Failed to warn on asymmetric concatenation (None + data)')
+    try:
+        x = generate_random_alg_results(length=len1, has_beta=True)
+        y = generate_random_alg_results(length=len2, has_beta=False)
+        z = x + y
+        assert z.has_beta is True
+        assert np.sum(np.isnan(z.beta_true_deg)) == len2
+    except Warning:
+        pass
+    else:
+        print('Failed to warn on asymmetric concatenation (data + None)')
+
+    # non-data attributes
+    x = generate_random_alg_results(filename='asdf', length=len1)
+    y = generate_random_alg_results(filename='qwerty', length=len2)
+    z = x + y
+    assert len(z.filename) == 2
+    assert z.filename[0] == 'asdf'
+    assert z.filename[1] == 'qwerty'
+    # also testing the 'parent' property of AlgorithmResults here
+    xx = generate_random_alg_results(parent=x, filename='asdf', length=len1)
+    yy = generate_random_alg_results(parent=y, filename='qwerty', length=len2)
+    zz = xx + yy
+    assert len(zz.filename) == 2
+    assert zz.filename[0] == 'asdf'
+    assert zz.filename[1] == 'qwerty'
+    assert len(zz.parent) == 2
+    assert zz.parent[0] is x
+    assert zz.parent[1] is y
+
+
+def test_alg_results_select():
+    """
+    Test AlgorithmResults class.
+    """
+
+    len1 = 1000
+
+    # basic
+    x = generate_random_alg_results(length=len1)
+    x = generate_random_alg_results(length=len1, has_beta=False)
+    y = x.select(energy_min=300)
+    assert type(y) is AlgorithmResults
+    x.select(energy_min=300, energy_max=400, depth_min=200)
+    x.select(is_contained=True, depth_min=200)
+
+    # handle all-false result
+    y = x.select(energy_min=300, energy_max=300, depth_min=200, depth_max=200)
+    assert len(y) == 0
+    assert not y.has_beta
+
+    # input error checking
+    x = generate_random_alg_results(length=len1, has_beta=False)
+    try:
+        x.select(beta_min=20)
+    except RuntimeError:
+        pass
+    else:
+        print('AlgorithmResults.select() failed to raise error with no beta')
+
+    try:
+        x.select(asdf_max=500)
+    except RuntimeError:
+        pass
+    else:
+        print('AlgorithmResults.select() failed to ' +
+              'raise error on bad condition')
 
 
 def test_alg_uncertainty():
@@ -603,22 +807,12 @@ def test_alg_uncertainty():
     pass
 
 
-def test_selection():
-    """
-    Test DataSelection class.
-    """
-
-    # TODO
-    print('test_selection not implemented yet')
-
-
 if __name__ == '__main__':
     """
     Run tests.
     """
 
-    test_dalpha()
-    test_dbeta()
+    # test_dalpha()
+    # test_dbeta()
     test_alg_results()
-    test_alg_uncertainty()
-    test_selection()
+    # test_alg_uncertainty()
