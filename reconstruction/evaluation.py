@@ -221,8 +221,10 @@ class AlgorithmResults(object):
 
         Input(s):
           **conditions: key-value pairs can include the following:
-          beta_min
-          beta_max
+          beta_min (alias for beta_true_min)
+          beta_max (alias for beta_true_max)
+          beta_meas_min
+          beta_meas_max
           energy_min
           energy_max
           depth_min
@@ -234,39 +236,50 @@ class AlgorithmResults(object):
         selection = (np.ones(len(self)) > 0)
 
         for kw in conditions.keys():
-            if kw.startswith('beta') and not self.has_beta:
+            if kw.lower().startswith('beta') and not self.has_beta:
                 raise RuntimeError(
                     'Cannot select using beta when beta does not exist')
-            elif kw.startswith('energy') and self.energy_tot_kev is None:
+            elif (kw.lower().startswith('energy') and
+                    self.energy_tot_kev is None):
                 raise RuntimeError(
                     'Cannot select using energy when energy does not exist')
-            elif kw.startswith('depth') and self.depth_um is None:
+            elif kw.lower().startswith('depth') and self.depth_um is None:
                 raise RuntimeError(
                     'Cannot select using depth when depth does not exist')
-            elif kw == 'is_contained' and self.is_contained is None:
+            elif kw.lower() == 'is_contained' and self.is_contained is None:
                 raise RuntimeError(
                     'Cannot select using is_contained when is_contained '
                     'does not exist')
 
-            if kw == 'beta_min':
+            # by default, do not wrap the parameter in a function.
+            wrapper = lambda x: x
+            if kw.lower() == 'beta_min' or kw.lower() == 'beta_true_min':
                 param = self.beta_true_deg
+                wrapper = np.abs
                 comparator = np.greater
-            elif kw == 'beta_max':
+            elif kw.lower() == 'beta_max' or kw.lower() == 'beta_true_max':
                 param = self.beta_true_deg
+                wrapper = np.abs
                 comparator = np.less
-            elif kw == 'energy_min':
+            elif kw.lower() == 'beta_meas_min':
+                param = self.beta_meas_deg
+                comparator = np.greater
+            elif kw.lower() == 'beta_meas_max':
+                param = self.beta_meas_deg
+                comparator = np.less
+            elif kw.lower() == 'energy_min':
                 param = self.energy_tot_kev
                 comparator = np.greater
-            elif kw == 'energy_max':
+            elif kw.lower() == 'energy_max':
                 param = self.energy_tot_kev
                 comparator = np.less
-            elif kw == 'depth_min':
+            elif kw.lower() == 'depth_min':
                 param = self.depth_um
                 comparator = np.greater
-            elif kw == 'depth_max':
+            elif kw.lower() == 'depth_max':
                 param = self.depth_um
                 comparator = np.less
-            elif kw == 'is_contained':
+            elif kw.lower() == 'is_contained':
                 param = self.is_contained
                 comparator = np.equal
             else:
@@ -274,7 +287,7 @@ class AlgorithmResults(object):
                     'Condition keyword not found: {}'.format(kw))
 
             selection = np.logical_and(
-                selection, comparator(param, conditions[kw]))
+                selection, comparator(wrapper(param), conditions[kw.lower()]))
 
         selected_data = dict()
         for attr in self.data_attrs():
@@ -412,6 +425,7 @@ class AlgorithmUncertainty(object):
 
     Input: AlgorithmResults object
 
+    ...
     mode: sets both alpha_mode and beta_mode simultaneously.
       (default: mode=2)
 
@@ -426,37 +440,37 @@ class AlgorithmUncertainty(object):
       3: zero fraction, ???
     """
 
-    def __init__(self, alg_results):
-        # dalpha=None, beta_true=None, beta_meas=None,
-        # mode=2, alpha_mode=None, beta_mode=None):
+    def __init__(self, alg_results, aunc=None, bunc=None):
+        """
+        Initialize from alg_results object.
 
-        if dalpha is None and beta_true is None and beta_meas is None:
-            raise RuntimeError('AlgorithmUncertainty requires either' +
-                               ' dalpha, or both beta_true and beta_meas')
-        elif np.logical_xor(beta_true is None, beta_meas is None):
-            raise RuntimeError('Both beta_true and beta_meas must be provided')
-        if alpha_mode is None:
-            alpha_mode = mode
-        if beta_mode is None:
-            beta_mode = mode
+        Compute alpha uncertainties (if alpha data available)
+        and beta uncertainties (if beta data available)
+        using the fit classes, aunc and bunc
+        """
 
-        if dalpha is not None:
-            alpha_result = fit_alpha(dalpha, mode=alpha_mode)
-            # TODO: make this more robust and organized
-            self.a_FWHM = alpha_result.params['fwhm'].value
-            self.a_f = alpha_result.params['f'].value
-            self.a_frandom = alpha_result.params['f_random'].value
+        # TODO: default fit algorithms
 
-        if beta_true is not None:
-            beta_result = fit_beta(beta_true=beta_true, beta_meas=beta_meas,
-                                   mode=beta_mode)
-            # TODO: beta
+        has_alpha = alg_results.has_alpha
+        has_beta = alg_results.has_beta
 
+        if not has_alpha and not has_beta:
+            raise RuntimeError(
+                'AlgorithmUncertainty requires either alpha or beta')
+        if has_alpha:
+            self.alpha_result = aunc(alg_results)
+        if has_beta:
+            self.beta_result = bunc(alg_results)
 
-class AlphaUncertainty():
-    """
-    """
-    pass
+        # if has_alpha:
+        #     alpha_result = fit_alpha(dalpha, mode=alpha_mode)
+        #     self.a_FWHM = alpha_result.params['fwhm'].value
+        #     self.a_f = alpha_result.params['f'].value
+        #     self.a_frandom = alpha_result.params['f_random'].value
+        #
+        # if has_beta:
+        #     beta_result = fit_beta(beta_true=beta_true, beta_meas=beta_meas,
+        #                            mode=beta_mode)
 
 
 def fit_alpha(dalpha, mode=2):
