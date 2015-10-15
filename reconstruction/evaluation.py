@@ -573,7 +573,7 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
         self.resolution = np.minimum(100.0 * 180.0 / self.n_values, 15)
         n_bins = np.ceil(180 / self.resolution)
         nhist, edges = np.histogram(
-            self.dalpha, bins=n_bins, range=(0.0, 180.0))
+            self.delta, bins=n_bins, range=(0.0, 180.0))
 
         self.nhist = nhist
         self.xhist = (edges[:-1] + edges[1:]) / 2
@@ -602,7 +602,8 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
         #   f_random is constrained to be 1 - f.
         #   c is set not to be varied, but to depend on f_random.
         #   center is fixed to 0.
-        init_values = {'c': None,
+        #   (FWHM is already defined for the Gaussian.)
+        init_values = {'c': self.nhist.min(),
                        'center': 0,
                        'amplitude': self.nhist.ptp(),
                        'sigma': fwhm_estimate / 2.355}
@@ -637,6 +638,102 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
             axis_max=100.0)
         self.metrics = {'FWHM': fwhm_param,
                         'f': f_param}
+
+
+class AlphaGaussPlusConstantPlusBackscatter(AlphaUncertainty):
+    """
+    Fitting d-alpha distribution with gaussian + constant + backscatter
+    """
+
+    def prepare_data(self):
+        """
+        """
+
+        # resolution calculation is from MATLAB
+        self.resolution = np.minimum(100.0 * 180.0 / self.n_values, 15)
+        n_bins = np.ceil(180 / self.resolution)
+        nhist, edges = np.histogram(
+            self.delta, bins=n_bins, range=(0.0, 180.0))
+
+        self.nhist = nhist
+        self.xhist = (edges[:-1] + edges[1:]) / 2
+
+    def perform_fit(self):
+        """
+        """
+
+        # manual estimate
+        halfmax = self.nhist.ptp()/2
+        crossing_ind = np.nonzero(self.nhist > halfmax)[0][-1]
+        halfwidth = (
+            self.xhist[crossing_ind] +
+            (self.xhist[crossing_ind + 1] - self.xhist[crossing_ind]) *
+            (halfmax - self.nhist[crossing_ind]) /
+            (self.nhist[crossing_ind + 1] - self.nhist[crossing_ind]))
+        fwhm_estimate = 2 * halfwidth
+
+        mid = int(round(len(self.nhist)/2))
+
+        # constant + forward peak
+        model = (lmfit.models.ConstantModel() +
+                 lmfit.models.GaussianModel(prefix='fwd') +
+                 lmfit.models.GaussianModel(prefix='bk'))
+        # How this is working:
+        #   res and n are defined as parameters, for use in expressions.
+        #   f is defined from amplitude.
+        #   f_random is constrained to be 1 - f.
+        #   c is set not to be varied, but to depend on f_random.
+        #   center is fixed to 0.
+        #   (FWHM is already defined for the Gaussian.)
+        init_values = {'c': self.nhist.min(),
+                       'fwd_center': 0,
+                       'fwd_amplitude': self.nhist[:mid].ptp(),
+                       'fwd_sigma': fwhm_estimate / 2.355,
+                       'bk_center': 180,
+                       'bk_amplitude': self.nhist[mid:].ptp(),
+                       'bk_sigma': fwhm_estimate / 2.355 * 1.5}
+        params = model.make_params(**init_values)
+        params.add('res', vary=False, value=self.resolution)
+        params.add('n', vary=False, value=self.n_values)
+        params.add('f', vary=False, expr='fwd_amplitude / 2 / res / n')
+        params.add('f_bk', vary=False, expr='bk_amplitude / 2 / res / n')
+        params.add('f_random', vary=False, expr='1-f-f_bk')
+        params['c'].set(value=None, vary=False, expr='res*n*f_random/180')
+        params['fwd_center'].vary = False
+        params['bk_center'].vary = False
+        self.fit = model.fit(self.nhist, x=self.xhist, params=params)
+
+    def compute_metrics(self):
+        """
+        """
+
+        fwhm_param = UncertaintyParameter(
+            name='FWHM',
+            fit_name=self.__class__,
+            value=self.fit.params['fwhm'].value,
+            uncertainty=(None, None),
+            units='degrees',
+            axis_min=0.0,
+            axis_max=120.0)
+        f_param = UncertaintyParameter(
+            name='peak fraction',
+            fit_name=self.__class__,
+            value=self.fit.params['f'].value,
+            uncertainty=(None, None),
+            units='%',
+            axis_min=0.0,
+            axis_max=100.0)
+        f_bk_param = UncertaintyParameter(
+            name='backscatter fraction',
+            fit_name=self.__class__,
+            value=self.fit.params['f_bk'].value,
+            uncertainty=(None, None),
+            units='%',
+            axis_min=0.0,
+            axis_max=100.0)
+        self.metrics = {'FWHM': fwhm_param,
+                        'f': f_param,
+                        'f_bk': f_bk_param}
 
 
 class Alpha68(AlphaUncertainty):
@@ -703,91 +800,28 @@ class Alpha68(AlphaUncertainty):
         self.metrics = {'contains68': contains68_param}
 
 
-def fit_alpha(dalpha, mode=2):
+class BetaRms(BetaUncertainty):
     """
-    Return a metric for alpha uncertainty.
-
-    Mode:
-    1: 68% (one parameter)
-    2: FWHM and peak efficiency (two parameter)
-    3: 2 plus backscatter peak (three parameter)
+    Calculate RMS for all values of delta beta.
     """
 
-    dalpha = np.array(dalpha)
-    if np.any(np.isnan(dalpha)):
-        raise DataWarning('NaN values in dalpha')
-        dalpha = dalpha(not np.isnan(dalpha))
-    if np.any(np.isinf(dalpha)):
-        raise DataWarning('Inf values in dalpha')
-        dalpha = dalpha(not np.isinf(dalpha))
-    adjust_dalpha(dalpha)
-    dalpha = np.abs(dalpha.flatten())
+    def prepare_data(self):
+        pass
 
-    n_values = len(dalpha)
-    resolution = np.minimum(100.0 * 180.0 / n_values, 15)   # from MATLAB
-    n_bins = np.ceil(180 / resolution)
-    nhist, edges = np.histogram(dalpha, bins=n_bins, range=(0.0, 180.0))
-    bin_centers = (edges[:-1] + edges[1:]) / 2
+    def perform_fit(self):
+        self.RMS = np.sqrt(np.mean(np.square(self.delta)))
 
-    # manual estimate
-    n_max = np.max(nhist)
-    n_min = np.min(nhist)
-    halfmax = (n_max - n_min)/2
-    crossing_ind = np.nonzero(nhist > halfmax)[0][-1]
-    halfwidth = (
-        bin_centers[crossing_ind] +
-        (bin_centers[crossing_ind + 1] - bin_centers[crossing_ind]) *
-        (halfmax - nhist[crossing_ind]) / (nhist[crossing_ind + 1] -
-                                           nhist[crossing_ind]))
-    fwhm_estimate = 2*halfwidth
+    def compute_metrics(self):
+        rms_param = UncertaintyParameter(
+            name='RMS',
+            fit_name=self.__class__,
+            value=self.RMS,
+            uncertainty=(),
+            units='degrees',
+            axis_min=0.0,
+            axis_max=40.0)
 
-    mid = int(round(len(nhist)/2))
-
-    if mode == 1:
-        # 68% containment value
-        raise RuntimeError('68% mode not implemented yet!')
-    elif mode == 2:
-        # constant + forward peak
-        model = lmfit.models.ConstantModel() + lmfit.models.GaussianModel()
-        init_values = {'c': np.min(nhist),
-                       'center': 0,
-                       'amplitude': np.max(nhist) - np.min(nhist),
-                       'sigma': fwhm_estimate / 2.355}
-        params = model.make_params(**init_values)
-        params['center'].vary = False
-        fit = model.fit(nhist, x=bin_centers, params=params)
-        # TODO: make this more robust
-        peak_fraction = (
-            fit.params['amplitude'].value / 2 / resolution / n_values)
-        fit.params.add('f', vary=False, value=peak_fraction)
-        random_fraction = fit.params['c'].value * 180 / resolution / n_values
-        fit.params.add('f_random', vary=False, value=random_fraction)
-
-    elif mode == 3:
-        # constant + forward peak + backscatter
-        model = (lmfit.models.ConstantModel() +
-                 lmfit.models.GaussianModel(prefix='fwd_') +
-                 lmfit.models.GaussianModel(prefix='bk_'))
-        init_values = {'c': np.min(nhist),
-                       'fwd_center': 0,
-                       'fwd_amplitude': np.max(nhist[:mid]) - np.min(nhist),
-                       'fwd_sigma': fwhm_estimate / 2.355,
-                       'bk_center': 180,
-                       'bk_amplitude': np.max(nhist[mid:]) - np.min(nhist),
-                       'bk_sigma': fwhm_estimate / 2.355 * 1.5}
-        params = model.make_params(**init_values)
-        params['fwd_center'].vary = False
-        params['bk_center'].vary = False
-        fit = model.fit(nhist, x=bin_centers, params=params)
-
-    return fit
-
-
-def fit_beta():
-    """
-    """
-    raise NotImplementedError('fit_beta has not been implemented yet')
-    pass
+        self.metrics = {'RMS': rms_param}
 
 
 ##############################################################################
