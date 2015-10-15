@@ -145,8 +145,8 @@ class AlgorithmResults(object):
             filename = h5file.filename
 
         n = 0
-        tracks = {'10.5': [[] for _ in len(h5file)],
-                  '2.5': [[] for _ in len(h5file)]}
+        tracks = {'10.5': np.empty(len(h5file)),
+                  '2.5': np.empty(len(h5file))}
 
         for evt in h5file:
             if 'Etot' not in evt.attrs or 'Edep' not in evt.attrs:
@@ -419,6 +419,93 @@ class DataWarning(UserWarning):
 ##############################################################################
 
 
+class Uncertainty(object):
+    """
+    Either an alpha uncertainty or beta uncertainty object.
+    """
+
+    def __init__(self, alg_results):
+        """
+        Initialization is common to all Uncertainty objects.
+
+        The methods will be overwritten in subclasses.
+        """
+
+        self.compute_delta(alg_results)
+
+        self.n_values = len(self.delta)
+        self.prepare_data()
+        self.perform_fit()
+        self.compute_metrics()
+
+    def compute_delta(self, alg_results):
+        pass
+
+    def prepare_data(self):
+        pass
+
+    def perform_fit(self):
+        pass
+
+    def compute_metrics(self):
+        pass
+
+
+class AlphaUncertainty(Uncertainty):
+    """
+    An alpha uncertainty calculation method
+    """
+
+    angle_type = 'alpha'
+
+    def compute_delta(self, alg_results):
+        dalpha = delta_alpha(alg_results.alpha_true_deg,
+                             alg_results.alpha_meas_deg)
+        adjust_dalpha(dalpha)
+        self.delta = np.abs(dalpha.flatten())
+
+
+class BetaUncertainty(Uncertainty):
+    """
+    A beta uncertainty calculation method
+    """
+
+    angle_type = 'beta'
+
+    def compute_delta(self, alg_results):
+        self.delta = delta_beta(alg_results.beta_true_deg,
+                                alg_results.beta_meas_deg)
+
+
+class UncertaintyParameter(object):
+    """
+    One metric parameter of uncertainty.
+
+    Attributes:
+      name (str): name of this parameter, e.g. "FWHM"
+      fit_name (str): name of the fit, e.g. "GaussPlusConstant"
+      value (float): value from the fit, e.g. 29.8
+      uncertainty (float, float): tuple of (lower, upper) 1-sigma uncertainty
+      units (str): units of the value and uncertainty, e.g. "degrees" "\cir" ?
+      axis_min (float): lower edge of axis on a plot, e.g. 0
+      axis_max (float): upper edge of axis on a plot, e.g. 120
+    """
+
+    def __init__(self, name=None, fit_name=None,
+                 value=None, uncertainty=None, units=None,
+                 axis_min=None, axis_max=None):
+        """
+        """
+
+        self.name = name
+        self.fit_name = fit_name
+        self.value = value
+        self.uncertainty = uncertainty
+        self.units = units
+        self.axis_min = axis_min
+        self.axis_max = axis_max
+
+
 class AlgorithmUncertainty(object):
     """
     Produce and store the alpha and beta uncertainty metrics.
@@ -471,6 +558,143 @@ class AlgorithmUncertainty(object):
         # if has_beta:
         #     beta_result = fit_beta(beta_true=beta_true, beta_meas=beta_meas,
         #                            mode=beta_mode)
+
+
+class AlphaGaussPlusConstant(AlphaUncertainty):
+    """
+    Fitting d-alpha distribution with gaussian plus constant
+    """
+
+    def prepare_data(self):
+        """
+        """
+
+        # resolution calculation is from MATLAB
+        self.resolution = np.minimum(100.0 * 180.0 / self.n_values, 15)
+        n_bins = np.ceil(180 / self.resolution)
+        nhist, edges = np.histogram(
+            self.dalpha, bins=n_bins, range=(0.0, 180.0))
+
+        self.nhist = nhist
+        self.xhist = (edges[:-1] + edges[1:]) / 2
+
+    def perform_fit(self):
+        """
+        """
+
+        # manual estimate
+        halfmax = self.nhist.ptp()/2
+        crossing_ind = np.nonzero(self.nhist > halfmax)[0][-1]
+        halfwidth = (
+            self.xhist[crossing_ind] +
+            (self.xhist[crossing_ind + 1] - self.xhist[crossing_ind]) *
+            (halfmax - self.nhist[crossing_ind]) /
+            (self.nhist[crossing_ind + 1] - self.nhist[crossing_ind]))
+        fwhm_estimate = 2 * halfwidth
+
+        mid = int(round(len(self.nhist)/2))
+
+        # constant + forward peak
+        model = lmfit.models.ConstantModel() + lmfit.models.GaussianModel()
+        init_values = {'c': self.nhist.min(),
+                       'center': 0,
+                       'amplitude': self.nhist.ptp(),
+                       'sigma': fwhm_estimate / 2.355}
+        params = model.make_params(**init_values)
+        params['center'].vary = False
+        fit = model.fit(self.nhist, x=self.xhist, params=params)
+        # TODO: make this more robust
+        peak_fraction = (fit.params['amplitude'].value /
+                         2 / self.resolution / self.n_values)
+        fit.params.add('f', vary=False, value=peak_fraction)
+        random_fraction = (fit.params['c'].value *
+                           180 / self.resolution / self.n_values)
+        fit.params.add('f_random', vary=False, value=random_fraction)
+
+    def compute_metrics(self):
+        pass
+
+
+# fwhm_param = UncertaintyParameter(
+#     name='FWHM',
+#     fit_name=self.__class__,
+#     value=None,
+#     uncertainty=(None, None),
+#     units='degrees',
+#     axis_min=0.0,
+#     axis_max=120.0)
+# f_param = UncertaintyParameter(
+#     name='peak fraction',
+#     fit_name=self.__class__,
+#     value=None,
+#     uncertainty=(None, None),
+#     units='%',
+#     axis_min=0.0,
+#     axis_max=100.0)
+
+
+class Alpha68(AlphaUncertainty):
+    """
+    68% containment value for alpha.
+    """
+
+    def prepare_data(self):
+        """
+        Calculate threshold values for 68% and +/- 1sigma
+        """
+
+        # see CalculateUncertainties.m from 2010
+        resolution = 0.01
+        n_bins = np.ceil(180 / resolution)
+        f = 0.68
+
+        self.n_thresh = self.n_values * f
+
+        n_sigma = np.sqrt(self.n_values * f * (1 - f))
+
+        self.n_leftsigma = self.n_thresh - n_sigma
+        self.n_rightsigma = self.n_thresh + n_sigma
+
+        nhist, edges = np.histogram(
+            self.delta, bins=n_bins, range=(0.0, 180.0))
+
+        self.nhist = nhist
+        self.xhist = edges[1:]      # right edge of each bin (conservative)
+
+    def perform_fit(self):
+        """
+        """
+
+        n = self.nhist.cumsum()
+
+        c68 = np.flatnonzero(n > self.n_thresh)[0]
+        self.contains68_value = self.xhist[c68]
+
+        c68_left = np.flatnonzero(n > self.n_leftsigma)[0]
+        c68_lower = c68 - c68_left
+        self.contains68_lower = self.xhist[c68_lower]
+
+        c68_right = np.flatnonzero(n > self.n_rightsigma)[0]
+        c68_upper = c68_right - c68
+        self.contains68_upper = self.xhist[c68_upper]
+
+    def compute_metrics(self):
+        """
+        """
+
+        value = self.contains68_value
+        lower = self.contains68_lower
+        upper = self.contains68_upper
+        contains68_param = UncertaintyParameter(
+            name='sigma_tilde',
+            fit_name=self.__class__,
+            value=value,
+            uncertainty=(lower, upper),
+            units='degrees',
+            axis_min=0.0,
+            axis_max=130.0)
+
+        self.contains68 = contains68_param
 
 
 def fit_alpha(dalpha, mode=2):
