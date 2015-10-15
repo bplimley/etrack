@@ -415,7 +415,7 @@ class DataWarning(UserWarning):
 
 
 ##############################################################################
-#                        Algorithm Uncertainty class                         #
+#                        Algorithm Uncertainty classes                       #
 ##############################################################################
 
 
@@ -439,6 +439,7 @@ class Uncertainty(object):
         self.compute_metrics()
 
     def compute_delta(self, alg_results):
+        self.delta = []
         pass
 
     def prepare_data(self):
@@ -511,21 +512,20 @@ class AlgorithmUncertainty(object):
     Produce and store the alpha and beta uncertainty metrics.
 
     Input: AlgorithmResults object
-
-    ...
-    mode: sets both alpha_mode and beta_mode simultaneously.
-      (default: mode=2)
-
-    alpha_mode:
-      1: 68% metrics (not coded yet)
-      2: forward peak, constant (random) background
-      3: forward peak, backscatter peak, constant background
-
-    beta_mode:
-      1: 68% containment
-      2: RMS
-      3: zero fraction, ???
     """
+    # ...
+    # mode: sets both alpha_mode and beta_mode simultaneously.
+    #   (default: mode=2)
+    #
+    # alpha_mode:
+    #   1: 68% metrics (not coded yet)
+    #   2: forward peak, constant (random) background
+    #   3: forward peak, backscatter peak, constant background
+    #
+    # beta_mode:
+    #   1: 68% containment
+    #   2: RMS
+    #   3: zero fraction, ???
 
     def __init__(self, alg_results, aunc=None, bunc=None):
         """
@@ -602,35 +602,33 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
                        'sigma': fwhm_estimate / 2.355}
         params = model.make_params(**init_values)
         params['center'].vary = False
-        fit = model.fit(self.nhist, x=self.xhist, params=params)
-        # TODO: make this more robust
-        peak_fraction = (fit.params['amplitude'].value /
-                         2 / self.resolution / self.n_values)
-        fit.params.add('f', vary=False, value=peak_fraction)
-        random_fraction = (fit.params['c'].value *
-                           180 / self.resolution / self.n_values)
-        fit.params.add('f_random', vary=False, value=random_fraction)
+        params.add('res', vary=False, value=self.resolution)
+        params.add('n', vary=False, value=self.n_values)
+        params.add('f', vary=False, expr='amplitude / 2 / res / n')
+        params.add('f_random', vary=False, expr='c * 180 / res / n')
+        self.fit = model.fit(self.nhist, x=self.xhist, params=params)
 
     def compute_metrics(self):
-        pass
+        """
+        """
 
+        fwhm_param = UncertaintyParameter(
+            name='FWHM',
+            fit_name=self.__class__,
+            value=self.fit.params['fwhm'].value,
+            uncertainty=(None, None),
+            units='degrees',
+            axis_min=0.0,
+            axis_max=120.0)
+        f_param = UncertaintyParameter(
+            name='peak fraction',
+            fit_name=self.__class__,
+            value=self.fit.params['f'].value,
+            uncertainty=(None, None),
+            units='%',
+            axis_min=0.0,
+            axis_max=100.0)
 
-# fwhm_param = UncertaintyParameter(
-#     name='FWHM',
-#     fit_name=self.__class__,
-#     value=None,
-#     uncertainty=(None, None),
-#     units='degrees',
-#     axis_min=0.0,
-#     axis_max=120.0)
-# f_param = UncertaintyParameter(
-#     name='peak fraction',
-#     fit_name=self.__class__,
-#     value=None,
-#     uncertainty=(None, None),
-#     units='%',
-#     axis_min=0.0,
-#     axis_max=100.0)
 
 
 class Alpha68(AlphaUncertainty):
