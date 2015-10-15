@@ -572,10 +572,6 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
         self.nhist = nhist
         self.xhist = (edges[:-1] + edges[1:]) / 2
 
-    def perform_fit(self):
-        """
-        """
-
         # manual estimate
         halfmax = self.nhist.ptp()/2
         crossing_ind = np.nonzero(self.nhist > halfmax)[0][-1]
@@ -584,9 +580,11 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
             (self.xhist[crossing_ind + 1] - self.xhist[crossing_ind]) *
             (halfmax - self.nhist[crossing_ind]) /
             (self.nhist[crossing_ind + 1] - self.nhist[crossing_ind]))
-        fwhm_estimate = 2 * halfwidth
+        self.fwhm_estimate = 2 * halfwidth
 
-        # mid = int(round(len(self.nhist)/2))
+    def perform_fit(self):
+        """
+        """
 
         # constant + forward peak
         model = lmfit.models.ConstantModel() + lmfit.models.GaussianModel()
@@ -600,7 +598,7 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
         init_values = {'c': self.nhist.min(),
                        'center': 0,
                        'amplitude': self.nhist.ptp(),
-                       'sigma': fwhm_estimate / 2.355}
+                       'sigma': self.fwhm_estimate / 2.355}
         params = model.make_params(**init_values)
         params.add('res', vary=False, value=self.resolution)
         params.add('n', vary=False, value=self.n_values)
@@ -612,6 +610,8 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
 
         if not self.fit.success:
             raise RuntimeError('Fit failed!')
+        else:
+            del(self.fwhm_estimate)
 
     def compute_metrics(self):
         """
@@ -645,37 +645,18 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
                         'f': f_param}
 
 
-class AlphaGaussPlusConstantPlusBackscatter(AlphaUncertainty):
+class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
     """
     Fitting d-alpha distribution with gaussian + constant + backscatter
     """
 
-    def prepare_data(self):
-        """
-        """
-
-        # resolution calculation is from MATLAB
-        self.resolution = np.minimum(100.0 * 180.0 / self.n_values, 15)
-        n_bins = np.ceil(180 / self.resolution)
-        nhist, edges = np.histogram(
-            self.delta, bins=n_bins, range=(0.0, 180.0))
-
-        self.nhist = nhist
-        self.xhist = (edges[:-1] + edges[1:]) / 2
+    # prepare_data is inherited from AlphaGaussPlusConstant
+    #
+    # perform_fit and compute_metrics have to be defined uniquely
 
     def perform_fit(self):
         """
         """
-
-        # manual estimate
-        halfmax = self.nhist.ptp()/2
-        crossing_ind = np.nonzero(self.nhist > halfmax)[0][-1]
-        halfwidth = (
-            self.xhist[crossing_ind] +
-            (self.xhist[crossing_ind + 1] - self.xhist[crossing_ind]) *
-            (halfmax - self.nhist[crossing_ind]) /
-            (self.nhist[crossing_ind + 1] - self.nhist[crossing_ind]))
-        fwhm_estimate = 2 * halfwidth
 
         mid = int(round(len(self.nhist)/2))
 
@@ -693,10 +674,10 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaUncertainty):
         init_values = {'c': self.nhist.min(),
                        'fwd_center': 0,
                        'fwd_amplitude': self.nhist[:mid].ptp(),
-                       'fwd_sigma': fwhm_estimate / 2.355,
+                       'fwd_sigma': self.fwhm_estimate / 2.355,
                        'bk_center': 180,
                        'bk_amplitude': self.nhist[mid:].ptp(),
-                       'bk_sigma': fwhm_estimate / 2.355 * 1.5}
+                       'bk_sigma': self.fwhm_estimate / 2.355 * 1.5}
         params = model.make_params(**init_values)
         params.add('res', vary=False, value=self.resolution)
         params.add('n', vary=False, value=self.n_values)
