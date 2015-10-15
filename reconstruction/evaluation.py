@@ -349,67 +349,6 @@ class AlgorithmResults(object):
                                 **new)
 
 
-##############################################################################
-#                           Other misc functions                             #
-##############################################################################
-
-
-def delta_alpha(alpha_true_deg, alpha_meas_deg):
-    """
-    Compute alpha_meas - alpha_true, returning value on (-180, +180].
-
-    scalar, scalar: return a scalar
-    vector, scalar: return a vector (each vector value compared to scalar)
-    vector, vector: vectors should be same size. compare elementwise.
-    """
-
-    # type conversion... also copies the data to avoid modifying the inputs
-    alpha_true_deg = np.array(alpha_true_deg)
-    alpha_meas_deg = np.array(alpha_meas_deg)
-
-    dalpha = alpha_meas_deg - alpha_true_deg
-    adjust_dalpha(dalpha)
-
-    return dalpha
-
-
-def adjust_dalpha(dalpha):
-    """
-    Put all values into (-180, +180]. Operates in-place.
-    """
-
-    if type(dalpha) is np.ndarray:
-        # elementwise correction
-        while np.any(dalpha > 180):
-            dalpha[dalpha > 180] -= 360
-        while np.any(dalpha <= -180):
-            dalpha[dalpha <= -180] += 360
-    else:
-        # scalar
-        while dalpha > 180:
-            dalpha -= 360
-        while dalpha <= -180:
-            dalpha += 360
-
-
-def delta_beta(beta_true_deg, beta_alg_deg):
-    """
-    Compute beta_alg_deg - abs(beta_true_deg).
-
-    scalar, scalar: return a scalar
-    vector, scalar: return a vector (each vector value compared to scalar)
-    vector, vector: vectors should be same size. compare elementwise.
-    """
-
-    # type conversion
-    beta_true_deg = np.array(beta_true_deg.copy())
-    beta_alg_deg = np.array(beta_alg_deg.copy())
-
-    dbeta = beta_alg_deg - np.abs(beta_true_deg)
-
-    return dbeta
-
-
 class DataWarning(UserWarning):
     pass
 
@@ -460,10 +399,47 @@ class AlphaUncertainty(Uncertainty):
     angle_type = 'alpha'
 
     def compute_delta(self, alg_results):
-        dalpha = delta_alpha(alg_results.alpha_true_deg,
-                             alg_results.alpha_meas_deg)
-        adjust_dalpha(dalpha)
+        dalpha = self.delta_alpha(alg_results.alpha_true_deg,
+                                  alg_results.alpha_meas_deg)
         self.delta = np.abs(dalpha.flatten())
+
+    @classmethod
+    def delta_alpha(cls, alpha_true_deg, alpha_meas_deg):
+        """
+        Compute alpha_meas - alpha_true, returning value on (-180, +180].
+
+        scalar, scalar: return a scalar
+        vector, scalar: return a vector (each vector value compared to scalar)
+        vector, vector: vectors should be same size. compare elementwise.
+        """
+
+        # type conversion... also copies the data to avoid modifying the inputs
+        alpha_true_deg = np.array(alpha_true_deg)
+        alpha_meas_deg = np.array(alpha_meas_deg)
+
+        dalpha = alpha_meas_deg - alpha_true_deg
+        cls.adjust_dalpha(dalpha)
+
+        return dalpha
+
+    @classmethod
+    def adjust_dalpha(dalpha):
+        """
+        Put all values into (-180, +180]. Operates in-place.
+        """
+
+        if type(dalpha) is np.ndarray:
+            # elementwise correction
+            while np.any(dalpha > 180):
+                dalpha[dalpha > 180] -= 360
+            while np.any(dalpha <= -180):
+                dalpha[dalpha <= -180] += 360
+        else:
+            # scalar
+            while dalpha > 180:
+                dalpha -= 360
+            while dalpha <= -180:
+                dalpha += 360
 
 
 class BetaUncertainty(Uncertainty):
@@ -474,8 +450,26 @@ class BetaUncertainty(Uncertainty):
     angle_type = 'beta'
 
     def compute_delta(self, alg_results):
-        self.delta = delta_beta(alg_results.beta_true_deg,
-                                alg_results.beta_meas_deg)
+        self.delta = self.delta_beta(alg_results.beta_true_deg,
+                                     alg_results.beta_meas_deg)
+
+    @classmethod
+    def delta_beta(cls, beta_true_deg, beta_alg_deg):
+        """
+        Compute beta_alg_deg - abs(beta_true_deg).
+
+        scalar, scalar: return a scalar
+        vector, scalar: return a vector (each vector value compared to scalar)
+        vector, vector: vectors should be same size. compare elementwise.
+        """
+
+        # type conversion
+        beta_true_deg = np.array(beta_true_deg.copy())
+        beta_alg_deg = np.array(beta_alg_deg.copy())
+
+        dbeta = beta_alg_deg - np.abs(beta_true_deg)
+
+        return dbeta
 
 
 class UncertaintyParameter(object):
@@ -854,33 +848,36 @@ class BetaRms(BetaUncertainty):
 def test_dalpha():
     """
     """
+
     # test basic scalar-scalar (ints)
     a1 = 5
     a2 = 15
-    assert delta_alpha(a1, a2) == 10
+    assert AlphaUncertainty.delta_alpha(a1, a2) == 10
 
     # test basic scalar-scalar (floats)
     a1 = 5.5
     a2 = 15.5
-    assert delta_alpha(a1, a2) == 10
+    assert AlphaUncertainty.delta_alpha(a1, a2) == 10
 
     # test wraparound scalar-scalar
     a1 = 175 + 360
     a2 = -175 - 360
-    assert delta_alpha(a1, a2) == 10
+    assert AlphaUncertainty.delta_alpha(a1, a2) == 10
     a1 = -175 - 360
     a2 = 175 + 360
-    assert delta_alpha(a1, a2) == -10
+    assert AlphaUncertainty.delta_alpha(a1, a2) == -10
 
     # test vector-scalar (list)
     a1 = -175
     a2 = [-150, 30, 175]
-    assert np.all(delta_alpha(a1, a2) == np.array([25, -155, -10]))
+    assert np.all(AlphaUncertainty.delta_alpha(a1, a2) ==
+                  np.array([25, -155, -10]))
 
     # test vector-vector (list)
     a1 = [-170, 0, 170]
     a2 = [170.5, 30.5, 150.5]
-    assert np.all(delta_alpha(a1, a2) == np.array([-19.5, 30.5, -19.5]))
+    assert np.all(AlphaUncertainty.delta_alpha(a1, a2) ==
+                  np.array([-19.5, 30.5, -19.5]))
 
     return None
 
@@ -954,9 +951,8 @@ def generate_hist_from_results(alg_results, resolution=1.0):
     (Might be superseded by methods in the AlphaUncertainty classes...)
     """
 
-    dalpha = delta_alpha(alg_results.alpha_true_deg,
-                         alg_results.alpha_meas_deg)
-    adjust_dalpha(dalpha)
+    dalpha = AlphaUncertainty.delta_alpha(alg_results.alpha_true_deg,
+                                          alg_results.alpha_meas_deg)
     dalpha = np.abs(dalpha.flatten())
 
     n_bins = np.ceil(180 / resolution)
