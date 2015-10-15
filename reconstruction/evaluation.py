@@ -81,7 +81,7 @@ class AlgorithmResults(object):
                 self.data_length = len(getattr(self, attr))
                 break
         else:
-            raise RuntimeError('AlgorithmResults object requires data')
+            raise InputError('AlgorithmResults object requires data')
 
     def input_error_check(self):
         # type checks
@@ -89,13 +89,13 @@ class AlgorithmResults(object):
                 type(self.parent) is not AlgorithmResults and
                 (type(self.parent) is not list or
                  type(self.parent[0]) is not AlgorithmResults)):
-            raise RuntimeError(
+            raise InputError(
                 'Parent should be an instance of AlgorithmResults')
         if (self.filename is not None and
                 type(self.filename) is not str and
                 (type(self.filename) is not list or
                  type(self.filename[0]) is not str)):
-            raise RuntimeError(
+            raise InputError(
                 'Filename should be a string or a list of strings')
 
         # type conversion
@@ -109,18 +109,18 @@ class AlgorithmResults(object):
         # related data
         if np.logical_xor(self.alpha_true_deg is None,
                           self.alpha_meas_deg is None):
-            raise RuntimeError(
+            raise InputError(
                 'Alpha results require both alpha_true and alpha_meas')
         if np.logical_xor(self.beta_true_deg is None,
                           self.beta_meas_deg is None):
-            raise RuntimeError(
+            raise InputError(
                 'Beta results require both beta_true and beta_meas')
 
         # data length mismatches
         for attr in self.data_attrs():
             if (getattr(self, attr) is not None and
                     len(getattr(self, attr)) != self.data_length):
-                raise RuntimeError(attr + ' length mismatch')
+                raise InputError(attr + ' length mismatch')
 
     @classmethod
     def from_h5initial(cls, fieldname, filename=None, h5file=None):
@@ -139,8 +139,8 @@ class AlgorithmResults(object):
         """
 
         if filename is None and h5file is None:
-            raise RuntimeError('AlgorithmResults.from_multiangle requires '
-                               'either filename or h5file as input')
+            raise InputError('AlgorithmResults.from_multiangle requires '
+                             'either filename or h5file as input')
         if h5file is None:
             h5file = h5py.File(filename, 'r')
         else:
@@ -239,17 +239,17 @@ class AlgorithmResults(object):
 
         for kw in conditions.keys():
             if kw.lower().startswith('beta') and not self.has_beta:
-                raise RuntimeError(
+                raise SelectionError(
                     'Cannot select using beta when beta does not exist')
             elif (kw.lower().startswith('energy') and
                     self.energy_tot_kev is None):
-                raise RuntimeError(
+                raise SelectionError(
                     'Cannot select using energy when energy does not exist')
             elif kw.lower().startswith('depth') and self.depth_um is None:
-                raise RuntimeError(
+                raise SelectionError(
                     'Cannot select using depth when depth does not exist')
             elif kw.lower() == 'is_contained' and self.is_contained is None:
-                raise RuntimeError(
+                raise SelectionError(
                     'Cannot select using is_contained when is_contained '
                     'does not exist')
 
@@ -285,7 +285,7 @@ class AlgorithmResults(object):
                 param = self.is_contained
                 comparator = np.equal
             else:
-                raise RuntimeError(
+                raise SelectionError(
                     'Condition keyword not found: {}'.format(kw))
 
             selection = np.logical_and(
@@ -361,11 +361,11 @@ class AlgorithmResults(object):
             elif data1 is not None and data2 is None:
                 temp = np.array([np.nan for _ in range(len(added))])
                 new[attname] = np.concatenate((data1, temp))
-                raise Warning('asymmetric concatenation of ' + attname)
+                raise DataWarning('asymmetric concatenation of ' + attname)
             elif data1 is None and data2 is not None:
                 temp = np.array([np.nan for _ in range(len(self))])
                 new[attname] = np.concatenate((temp, data2))
-                raise Warning('asymmetric concatenation of ' + attname)
+                raise DataWarning('asymmetric concatenation of ' + attname)
 
         # non-data attributes
         if self.parent is not None or added.parent is not None:
@@ -381,10 +381,6 @@ class AlgorithmResults(object):
         return AlgorithmResults(parent=new_parent,
                                 filename=new_filename,
                                 **new)
-
-
-class DataWarning(UserWarning):
-    pass
 
 
 ##############################################################################
@@ -582,6 +578,7 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
                        'center': 0,
                        'amplitude': self.nhist.ptp(),
                        'sigma': self.fwhm_estimate / 2.355}
+        weights = np.sqrt(1 / self.nhist)
         params = model.make_params(**init_values)
         params.add('res', vary=False, value=self.resolution)
         params.add('n', vary=False, value=self.n_values)
@@ -589,10 +586,11 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
         params.add('f_random', vary=False, expr='1-f')
         params['c'].set(value=None, vary=False, expr='res*n*f_random/180')
         params['center'].vary = False
-        self.fit = model.fit(self.nhist, x=self.xhist, params=params)
+        self.fit = model.fit(self.nhist, x=self.xhist,
+                             params=params, weights=weights)
 
         if not self.fit.success:
-            raise RuntimeError('Fit failed!')
+            raise FittingError('Fit failed!')
         else:
             del(self.fwhm_estimate)
 
@@ -603,7 +601,7 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
         if not self.fit.errorbars:
             fwhm_unc = np.nan
             f_unc = np.nan
-            raise Warning('Could not compute errorbars in fit')
+            raise FittingWarning('Could not compute errorbars in fit')
         else:
             fwhm_unc = self.fit.params['fwhm'].stderr
             f_unc = self.fit.params['f'].stderr
@@ -663,6 +661,7 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
                        'bk_center': 180,
                        'bk_amplitude': self.nhist[mid:].ptp(),
                        'bk_sigma': self.fwhm_estimate / 2.355 * 1.5}
+        weights = np.sqrt(1 / self.nhist)
         params = model.make_params(**init_values)
         params.add('res', vary=False, value=self.resolution)
         params.add('n', vary=False, value=self.n_values)
@@ -672,7 +671,8 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
         params['c'].set(value=None, vary=False, expr='res*n*f_random/180')
         params['fwd_center'].vary = False
         params['bk_center'].vary = False
-        self.fit = model.fit(self.nhist, x=self.xhist, params=params)
+        self.fit = model.fit(self.nhist, x=self.xhist,
+                             params=params, weights=weights)
 
     def compute_metrics(self):
         """
@@ -682,7 +682,7 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
             fwhm_unc = np.nan
             f_unc = np.nan
             f_bk_unc = np.nan
-            raise Warning('Could not compute errorbars in fit')
+            raise FittingWarning('Could not compute errorbars in fit')
         else:
             fwhm_unc = self.fit.params['fwhm'].stderr
             f_unc = self.fit.params['f'].stderr
@@ -813,6 +813,45 @@ class BetaRms(BetaUncertainty):
 DefaultAlphaUncertainty = AlphaGaussPlusConstant
 
 DefaultBetaUncertainty = BetaRms
+
+
+##############################################################################
+#                               Error classes                                #
+##############################################################################
+
+
+class EvalError(Exception):
+    """
+    Base class for errors in evaluation.py
+    """
+    pass
+
+
+class FittingError(EvalError):
+    pass
+
+
+class InputError(EvalError):
+    pass
+
+
+class SelectionError(EvalError):
+    pass
+
+
+class EvalWarning(Warning):
+    """
+    Base class for warnings in evaluation.py
+    """
+    pass
+
+
+class DataWarning(EvalWarning):
+    pass
+
+
+class FittingWarning(EvalWarning):
+    pass
 
 
 ##############################################################################

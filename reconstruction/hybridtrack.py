@@ -193,15 +193,15 @@ class ReconstructionOutput():
     pass
 
 
-class TrackException(Exception):
+class HybridTrackError(Exception):
     pass
 
 
-class NoEndsFound(TrackException):
+class NoEndsFound(HybridTrackError):
     pass
 
 
-class InfiniteLoop(TrackException):
+class InfiniteLoop(HybridTrackError):
     pass
 
 
@@ -281,7 +281,7 @@ def locate_all_ends(image_kev, options, info):
         info.ends_xy = ends_xy
     else:
         # still no ends.
-        raise NoEndsFound
+        raise
 
 
 def measure_energies(image_kev, options, info):

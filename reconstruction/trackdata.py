@@ -89,7 +89,7 @@ class G4Track(object):
         raise NotImplementedError("haven't written this yet")
 
         if self.matrix is None:
-            raise RuntimeError('measure_quantities needs a geant4 matrix')
+            raise DataError('measure_quantities needs a geant4 matrix')
 
     # TODO:
     # add interface for referencing Track objects associated with this G4Track
@@ -142,10 +142,10 @@ class Track(object):
                 is_modeled is None and
                 is_measured is None and
                 is_experimental is None):
-            raise RuntimeError('Please specify modeled or measured!')
+            raise InputError('Please specify modeled or measured!')
         elif ((is_modeled is True and is_measured is True) or
               (is_modeled is True and is_experimental is True)):
-            raise RuntimeError('Track cannot be both modeled and measured!')
+            raise InputError('Track cannot be both modeled and measured!')
         elif is_measured is not None:
             self.is_experimental = self.is_measured = bool(is_measured)
             self.is_modeled = not bool(is_measured)
@@ -198,7 +198,7 @@ class Track(object):
         self.shutter_ind = shutter_ind
 
         if timestamp is not None and type(timestamp) is not datetime.datetime:
-                raise RuntimeError('timestamp should be a datetime object')
+                raise InputError('timestamp should be a datetime object')
         self.timestamp = timestamp
 
         self.label = str(label)
@@ -254,7 +254,7 @@ class Track(object):
         """
 
         if alg_name in self.algorithms:
-            raise RuntimeError(alg_name + " already in algorithms")
+            raise InputError(alg_name + " already in algorithms")
         self.algorithms[alg_name] = AlgorithmOutput(
             alg_name, alpha_deg, beta_deg, info=info)
 
@@ -313,6 +313,25 @@ class AlgorithmOutput(object):
         self.beta_deg = beta_deg
         self.alg_name = alg_name
         self.info = info
+
+
+##############################################################################
+#                               Error classes                                #
+##############################################################################
+
+class TrackDataError(Exception):
+    """
+    Base class for errors in trackdata.py
+    """
+    pass
+
+
+class DataError(TrackDataError):
+    pass
+
+
+class InputError(TrackDataError):
+    pass
 
 
 ##############################################################################
