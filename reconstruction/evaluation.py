@@ -592,20 +592,27 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
             (self.nhist[crossing_ind + 1] - self.nhist[crossing_ind]))
         fwhm_estimate = 2 * halfwidth
 
-        mid = int(round(len(self.nhist)/2))
+        # mid = int(round(len(self.nhist)/2))
 
         # constant + forward peak
         model = lmfit.models.ConstantModel() + lmfit.models.GaussianModel()
-        init_values = {'c': self.nhist.min(),
+        # How this is working:
+        #   res and n are defined as parameters, for use in expressions.
+        #   f is defined from amplitude.
+        #   f_random is constrained to be 1 - f.
+        #   c is set not to be varied, but to depend on f_random.
+        #   center is fixed to 0.
+        init_values = {'c': None,
                        'center': 0,
                        'amplitude': self.nhist.ptp(),
                        'sigma': fwhm_estimate / 2.355}
         params = model.make_params(**init_values)
-        params['center'].vary = False
         params.add('res', vary=False, value=self.resolution)
         params.add('n', vary=False, value=self.n_values)
         params.add('f', vary=False, expr='amplitude / 2 / res / n')
-        params.add('f_random', vary=False, expr='c * 180 / res / n')
+        params.add('f_random', vary=False, expr='1-f')
+        params['c'].set(value=None, vary=False, expr='res*n*f_random/180')
+        params['center'].vary = False
         self.fit = model.fit(self.nhist, x=self.xhist, params=params)
 
     def compute_metrics(self):
@@ -628,7 +635,8 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
             units='%',
             axis_min=0.0,
             axis_max=100.0)
-
+        self.metrics = {'FWHM': fwhm_param,
+                        'f': f_param}
 
 
 class Alpha68(AlphaUncertainty):
@@ -692,7 +700,7 @@ class Alpha68(AlphaUncertainty):
             axis_min=0.0,
             axis_max=130.0)
 
-        self.contains68 = contains68_param
+        self.metrics = {'contains68': contains68_param}
 
 
 def fit_alpha(dalpha, mode=2):
@@ -881,6 +889,28 @@ def generate_random_alg_results(
         beta_true_deg=beta_true, beta_meas_deg=beta_meas,
         energy_tot_kev=energy_tot_kev, energy_dep_kev=energy_dep_kev,
         depth_um=depth, is_contained=is_contained)
+
+
+def generate_hist_from_results(alg_results, resolution=1.0):
+    """
+    Generate nhist, xhist from the alpha data in an alg_results instance.
+
+    (Might be superseded by methods in the AlphaUncertainty classes...)
+    """
+
+    dalpha = delta_alpha(alg_results.alpha_true_deg,
+                         alg_results.alpha_meas_deg)
+    adjust_dalpha(dalpha)
+    dalpha = np.abs(dalpha.flatten())
+
+    n_bins = np.ceil(180 / resolution)
+    nhist, edges = np.histogram(
+        dalpha, bins=n_bins, range=(0.0, 180.0))
+
+    nhist = nhist
+    xhist = (edges[:-1] + edges[1:]) / 2
+
+    return nhist, xhist
 
 
 def test_alg_results():
