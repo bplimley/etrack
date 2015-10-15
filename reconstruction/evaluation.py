@@ -616,15 +616,26 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
         params['center'].vary = False
         self.fit = model.fit(self.nhist, x=self.xhist, params=params)
 
+        if not self.fit.success:
+            raise RuntimeError('Fit failed!')
+
     def compute_metrics(self):
         """
         """
+
+        if not self.fit.errorbars:
+            fwhm_unc = np.nan
+            f_unc = np.nan
+            raise Warning('Could not compute errorbars in fit')
+        else:
+            fwhm_unc = self.fit.params['fwhm'].stderr
+            f_unc = self.fit.params['f'].stderr
 
         fwhm_param = UncertaintyParameter(
             name='FWHM',
             fit_name=self.__class__,
             value=self.fit.params['fwhm'].value,
-            uncertainty=(None, None),
+            uncertainty=(fwhm_unc, fwhm_unc),
             units='degrees',
             axis_min=0.0,
             axis_max=120.0)
@@ -632,7 +643,7 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
             name='peak fraction',
             fit_name=self.__class__,
             value=self.fit.params['f'].value,
-            uncertainty=(None, None),
+            uncertainty=(f_unc, f_unc),
             units='%',
             axis_min=0.0,
             axis_max=100.0)
@@ -707,11 +718,21 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaUncertainty):
         """
         """
 
+        if not self.fit.errorbars:
+            fwhm_unc = np.nan
+            f_unc = np.nan
+            f_bk_unc = np.nan
+            raise Warning('Could not compute errorbars in fit')
+        else:
+            fwhm_unc = self.fit.params['fwhm'].stderr
+            f_unc = self.fit.params['f'].stderr
+            f_bk_unc = self.fit.params['f_bk'].stderr
+
         fwhm_param = UncertaintyParameter(
             name='FWHM',
             fit_name=self.__class__,
             value=self.fit.params['fwhm'].value,
-            uncertainty=(None, None),
+            uncertainty=(fwhm_unc, fwhm_unc),
             units='degrees',
             axis_min=0.0,
             axis_max=120.0)
@@ -719,7 +740,7 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaUncertainty):
             name='peak fraction',
             fit_name=self.__class__,
             value=self.fit.params['f'].value,
-            uncertainty=(None, None),
+            uncertainty=(f_unc, f_unc),
             units='%',
             axis_min=0.0,
             axis_max=100.0)
@@ -727,7 +748,7 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaUncertainty):
             name='backscatter fraction',
             fit_name=self.__class__,
             value=self.fit.params['f_bk'].value,
-            uncertainty=(None, None),
+            uncertainty=(f_bk_unc, f_bk_unc),
             units='%',
             axis_min=0.0,
             axis_max=100.0)
@@ -809,14 +830,15 @@ class BetaRms(BetaUncertainty):
         pass
 
     def perform_fit(self):
-        self.RMS = np.sqrt(np.mean(np.square(self.delta)))
+        self.rms = np.sqrt(np.mean(np.square(self.delta)))
 
     def compute_metrics(self):
+        rms_unc = self.rms / np.sqrt(2*(self.n_values - 1))
         rms_param = UncertaintyParameter(
             name='RMS',
             fit_name=self.__class__,
-            value=self.RMS,
-            uncertainty=(),
+            value=self.rms,
+            uncertainty=(rms_unc, rms_unc),
             units='degrees',
             axis_min=0.0,
             axis_max=40.0)
