@@ -47,6 +47,8 @@ class AlgorithmResults(object):
         self.measure_data_length()
         self.input_error_check()
 
+        self.uncertainty_list = []
+
     @classmethod
     def data_attrs(cls):
         """
@@ -300,6 +302,38 @@ class AlgorithmResults(object):
                                 filename=self.filename,
                                 **selected_data)
 
+    def add_uncertainty(self, uncertainty_class):
+        """
+        Attach a new uncertainty object onto this results object.
+        """
+
+        self.uncertainty_list.append(uncertainty_class(self))
+
+    def add_default_uncertainties(self):
+        """
+        add_uncertainty with default alpha and default beta.
+
+        Defaults are defined at the bottom of the Algorithm Uncertainty Classes
+            section of evaluation.py.
+        """
+
+        self.add_uncertainty(DefaultAlphaUncertainty)
+        self.add_uncertainty(DefaultBetaUncertainty)
+
+    def list_uncertainties(self, angle_type=None):
+        """
+        List the names of all uncertainty objects attached to this
+        results object.
+        """
+
+        if angle_type is None:
+            return_list = [u.name for u in self.uncertainty_list]
+        else:
+            return_list = [u.name for u in self.uncertainty_list
+                           if u.angle_type == angle_type]
+
+        return return_list
+
     def __len__(self):
         """
         length of algorithm results array. For use by len(results)
@@ -501,63 +535,12 @@ class UncertaintyParameter(object):
         self.axis_max = axis_max
 
 
-class AlgorithmUncertainty(object):
-    """
-    Produce and store the alpha and beta uncertainty metrics.
-
-    Input: AlgorithmResults object
-    """
-    # ...
-    # mode: sets both alpha_mode and beta_mode simultaneously.
-    #   (default: mode=2)
-    #
-    # alpha_mode:
-    #   1: 68% metrics (not coded yet)
-    #   2: forward peak, constant (random) background
-    #   3: forward peak, backscatter peak, constant background
-    #
-    # beta_mode:
-    #   1: 68% containment
-    #   2: RMS
-    #   3: zero fraction, ???
-
-    def __init__(self, alg_results, aunc=None, bunc=None):
-        """
-        Initialize from alg_results object.
-
-        Compute alpha uncertainties (if alpha data available)
-        and beta uncertainties (if beta data available)
-        using the fit classes, aunc and bunc
-        """
-
-        # TODO: default fit algorithms
-
-        has_alpha = alg_results.has_alpha
-        has_beta = alg_results.has_beta
-
-        if not has_alpha and not has_beta:
-            raise RuntimeError(
-                'AlgorithmUncertainty requires either alpha or beta')
-        if has_alpha:
-            self.alpha_result = aunc(alg_results)
-        if has_beta:
-            self.beta_result = bunc(alg_results)
-
-        # if has_alpha:
-        #     alpha_result = fit_alpha(dalpha, mode=alpha_mode)
-        #     self.a_FWHM = alpha_result.params['fwhm'].value
-        #     self.a_f = alpha_result.params['f'].value
-        #     self.a_frandom = alpha_result.params['f_random'].value
-        #
-        # if has_beta:
-        #     beta_result = fit_beta(beta_true=beta_true, beta_meas=beta_meas,
-        #                            mode=beta_mode)
-
-
 class AlphaGaussPlusConstant(AlphaUncertainty):
     """
     Fitting d-alpha distribution with gaussian plus constant
     """
+
+    name = 'Alpha Gaussian + constant'
 
     def prepare_data(self):
         """
@@ -650,6 +633,8 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
     Fitting d-alpha distribution with gaussian + constant + backscatter
     """
 
+    name = 'Alpha Gaussian + backscatter Gaussian + constant'
+
     # prepare_data is inherited from AlphaGaussPlusConstant
     #
     # perform_fit and compute_metrics have to be defined uniquely
@@ -737,6 +722,8 @@ class Alpha68(AlphaUncertainty):
     68% containment value for alpha.
     """
 
+    name = 'Alpha 68% containment'
+
     def prepare_data(self):
         """
         Calculate threshold values for 68% and +/- 1sigma
@@ -801,6 +788,8 @@ class BetaRms(BetaUncertainty):
     Calculate RMS for all values of delta beta.
     """
 
+    name = 'Beta RMS'
+
     def prepare_data(self):
         pass
 
@@ -819,6 +808,11 @@ class BetaRms(BetaUncertainty):
             axis_max=40.0)
 
         self.metrics = {'RMS': rms_param}
+
+
+DefaultAlphaUncertainty = AlphaGaussPlusConstant
+
+DefaultBetaUncertainty = BetaRms
 
 
 ##############################################################################
