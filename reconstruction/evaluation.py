@@ -448,12 +448,12 @@ class AlphaUncertainty(Uncertainty):
         alpha_meas_deg = np.array(alpha_meas_deg)
 
         dalpha = alpha_meas_deg - alpha_true_deg
-        cls.adjust_dalpha(dalpha)
+        dalpha = cls.adjust_dalpha(dalpha)
 
         return dalpha
 
     @classmethod
-    def adjust_dalpha(dalpha):
+    def adjust_dalpha(cls, dalpha):
         """
         Put all values into (-180, +180]. Operates in-place.
         """
@@ -470,6 +470,8 @@ class AlphaUncertainty(Uncertainty):
                 dalpha -= 360
             while dalpha <= -180:
                 dalpha += 360
+
+        return dalpha
 
 
 class BetaUncertainty(Uncertainty):
@@ -494,8 +496,8 @@ class BetaUncertainty(Uncertainty):
         """
 
         # type conversion
-        beta_true_deg = np.array(beta_true_deg.copy())
-        beta_alg_deg = np.array(beta_alg_deg.copy())
+        beta_true_deg = np.array(beta_true_deg)
+        beta_alg_deg = np.array(beta_alg_deg)
 
         dbeta = beta_alg_deg - np.abs(beta_true_deg)
 
@@ -881,16 +883,24 @@ def test_dalpha():
     a2 = 175 + 360
     assert AlphaUncertainty.delta_alpha(a1, a2) == -10
 
-    # test vector-scalar (list)
+    # test vector-scalar (list; ndarray)
     a1 = -175
     a2 = [-150, 30, 175]
     assert np.all(AlphaUncertainty.delta_alpha(a1, a2) ==
                   np.array([25, -155, -10]))
+    assert np.all(AlphaUncertainty.delta_alpha(np.array(a1), a2) ==
+                  np.array([25, -155, -10]))
+    assert np.all(AlphaUncertainty.delta_alpha(a1, np.array(a2)) ==
+                  np.array([25, -155, -10]))
 
-    # test vector-vector (list)
+    # test vector-vector (list-list; list-ndarray; ndarray-ndarray)
     a1 = [-170, 0, 170]
     a2 = [170.5, 30.5, 150.5]
     assert np.all(AlphaUncertainty.delta_alpha(a1, a2) ==
+                  np.array([-19.5, 30.5, -19.5]))
+    assert np.all(AlphaUncertainty.delta_alpha(a1, np.array(a2)) ==
+                  np.array([-19.5, 30.5, -19.5]))
+    assert np.all(AlphaUncertainty.delta_alpha(np.array(a1), np.array(a2)) ==
                   np.array([-19.5, 30.5, -19.5]))
 
     return None
@@ -900,10 +910,40 @@ def test_dbeta():
     """
     """
 
-    # TODO
-    print('test_dbeta not implemented yet')
+    # basic scalar-scalar
+    b1 = 5
+    b2 = 15
+    assert BetaUncertainty.delta_beta(b1, b2) == 10
 
-# AlgorithmResults class
+    # absolute value
+    b1 = -5
+    b2 = 15
+    assert BetaUncertainty.delta_beta(b1, b2) == 10
+
+    # floats
+    b1 = -5.0
+    b2 = 15.0
+    assert BetaUncertainty.delta_beta(b1, b2) == 10
+
+    # vector-scalar (list; ndarray)
+    b1 = 0
+    b2 = [23, 30.0, 0]
+    assert np.all(BetaUncertainty.delta_beta(b1, b2) ==
+                  np.array([23, 30, 0]))
+    assert np.all(BetaUncertainty.delta_beta(np.array(b1), b2) ==
+                  np.array([23, 30, 0]))
+    assert np.all(BetaUncertainty.delta_beta(b1, np.array(b2)) ==
+                  np.array([23, 30, 0]))
+
+    # test vector-vector (list-list; list-ndarray; ndarray-ndarray)
+    b1 = [0, -10, 5]
+    b2 = [10, 10, 30]
+    assert np.all(BetaUncertainty.delta_beta(b1, b2) ==
+                  np.array([10, 0, 25]))
+    assert np.all(BetaUncertainty.delta_beta(b1, np.array(b2)) ==
+                  np.array([10, 0, 25]))
+    assert np.all(BetaUncertainty.delta_beta(np.array(b1), np.array(b2)) ==
+                  np.array([10, 0, 25]))
 
 
 def generate_random_alg_results(
@@ -987,6 +1027,7 @@ def test_alg_results():
     # basic
     generate_random_alg_results()
     generate_random_alg_results(has_beta=False, has_contained=False)
+    assert len(AlgorithmResults.data_attrs()) == 8
 
     # length
     assert len(generate_random_alg_results(length=100)) == 100
@@ -996,6 +1037,8 @@ def test_alg_results():
     test_alg_results_input_check()
     test_alg_results_add()
     test_alg_results_select()
+    test_alg_results_from_h5initial()
+    test_alg_results_from_track_array()
 
 
 def test_alg_results_input_check():
@@ -1008,7 +1051,7 @@ def test_alg_results_input_check():
         AlgorithmResults(filename=5,
                          alpha_true_deg=[10, 20],
                          alpha_meas_deg=[20, 25])
-    except RuntimeError:
+    except InputError:
         pass
     else:
         print('Failed to catch AlgorithmResults filename error')
@@ -1016,14 +1059,14 @@ def test_alg_results_input_check():
     try:
         AlgorithmResults(alpha_true_deg=np.random.random(30),
                          alpha_meas_deg=np.random.random(29))
-    except RuntimeError:
+    except InputError:
         pass
     else:
         print('Failed to catch data length mismatch')
 
     try:
         AlgorithmResults(alpha_true_deg=np.random.random(30))
-    except RuntimeError:
+    except InputError:
         pass
     else:
         print('Failed to catch missing alpha_meas_deg')
@@ -1116,27 +1159,59 @@ def test_alg_results_select():
     x = generate_random_alg_results(length=len1, has_beta=False)
     try:
         x.select(beta_min=20)
-    except RuntimeError:
+    except SelectionError:
         pass
     else:
         print('AlgorithmResults.select() failed to raise error with no beta')
 
     try:
         x.select(asdf_max=500)
-    except RuntimeError:
+    except SelectionError:
         pass
     else:
         print('AlgorithmResults.select() failed to ' +
               'raise error on bad condition')
 
 
-def test_alg_uncertainty():
+def test_alg_results_from_h5initial():
+    """
+    """
+
+    print('test_alg_results_from_h5initial not implemented yet')
+
+    return None
+
+
+def test_alg_results_from_track_array():
+    """
+    """
+
+    print('test_alg_results_from_track_array not implemented yet')
+
+    return None
+
+
+def test_alg_uncertainty(include_plots):
     """
     Test AlgorithmUncertainty class.
     """
 
     # TODO
-    pass
+    print('test_alg_uncertainty not implemented yet')
+    if include_plots:
+        print('test_alg_uncertainty plots not implemented yet')
+
+    return None
+
+
+def test_comprehensive():
+    """
+    Test AlgorithmResults and AlgorithmUncertainty together.
+    """
+
+    # TODO
+    # include AlgorithmResults.add_uncertainty, etc.
+    print('test_comprehensive not implemented yet')
 
 
 if __name__ == '__main__':
@@ -1144,7 +1219,9 @@ if __name__ == '__main__':
     Run tests.
     """
 
-    # test_dalpha()
-    # test_dbeta()
+    include_plots = True
+
+    test_dalpha()
+    test_dbeta()
     test_alg_results()
-    # test_alg_uncertainty()
+    test_alg_uncertainty(include_plots)
