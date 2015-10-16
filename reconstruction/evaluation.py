@@ -420,6 +420,17 @@ class Uncertainty(object):
     def compute_metrics(self):
         pass
 
+    @classmethod
+    def classname_extract(cls, obj):
+        """
+        Take an object and extract the class name from __class__.
+        """
+
+        full_string = str(obj.__class__)
+        classname = full_string.split('.')[-1].split("'")[0]
+
+        return classname
+
 
 class AlphaUncertainty(Uncertainty):
     """
@@ -522,6 +533,7 @@ class UncertaintyParameter(object):
                  value=None, uncertainty=None, units=None,
                  axis_min=None, axis_max=None):
         """
+        All arguments are required except uncertainty, axis_min, axis_max.
         """
 
         self.name = name
@@ -531,6 +543,80 @@ class UncertaintyParameter(object):
         self.units = units
         self.axis_min = axis_min
         self.axis_max = axis_max
+
+        self.input_check()
+
+    def input_check(self):
+        """
+        Check data types of inputs. And convert if applicable.
+        """
+
+        # error check
+        if type(self.name) is not str:
+            raise InputError(
+                'UncertaintyParameter name should be a string')
+        if type(self.fit_name) is not str:
+            raise InputError(
+                'UncertaintyParameter fit_name should be a string')
+        if (not isinstance(self.value, float) and
+                not isinstance(self.value, int)):
+            raise InputError(
+                'UncertaintyParameter value should be a float')
+
+        if type(self.uncertainty) in (list, tuple, np.ndarray):
+            if len(self.uncertainty) == 1:
+                self.uncertainty = self.uncertainty[0]
+            elif len(self.uncertainty) == 2:
+                if (not isinstance(self.uncertainty[0], float) and
+                        not isinstance(self.uncertainty[0], int) and
+                        self.uncertainty[0] is not None):
+                    raise InputError(
+                        'UncertaintyParameter uncertainty of ' +
+                        'length 2 should contain floats or ints')
+                if (not isinstance(self.uncertainty[1], float) and
+                        not isinstance(self.uncertainty[1], int) and
+                        self.uncertainty[1] is not None):
+                    raise InputError(
+                        'UncertaintyParameter uncertainty of ' +
+                        'length 2 should contain floats or ints')
+            else:
+                raise InputError(
+                    'UncertaintyParameter uncertainty should be' +
+                    ' of length 1 or 2')
+        if (type(self.uncertainty) not in (list, tuple, np.ndarray, type(None))
+                and not isinstance(self.uncertainty, float) and
+                not isinstance(self.uncertainty, int)):
+            raise InputError(
+                'UncertaintyParameter uncertainty of ' +
+                'length 1 should be a float')
+
+        if type(self.units) is not str:
+            raise InputError(
+                'UncertaintyParameter units should be a string')
+        if (self.axis_min is not None and
+                not isinstance(self.axis_min, int) and
+                not isinstance(self.axis_min, float)):
+            raise InputError(
+                'UncertaintyParameter axis_min should be a float')
+        if (self.axis_max is not None and
+                not isinstance(self.axis_max, int) and
+                not isinstance(self.axis_max, float)):
+            raise InputError(
+                'UncertaintyParameter axis_max should be a float')
+
+        # type conversion
+        self.value = float(self.value)
+        if self.uncertainty is None:
+            pass
+        elif isinstance(self.uncertainty, int):
+            self.uncertainty = float(self.uncertainty)
+        elif type(self.uncertainty) in (list, tuple, np.ndarray):
+            self.uncertainty = (float(self.uncertainty[0]),
+                                float(self.uncertainty[1]))
+        if self.axis_min is not None:
+            self.axis_min = float(self.axis_min)
+        if self.axis_max is not None:
+            self.axis_max = float(self.axis_max)
 
 
 class AlphaGaussPlusConstant(AlphaUncertainty):
@@ -576,9 +662,11 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
         #   c is set not to be varied, but to depend on f_random.
         #   center is fixed to 0.
         #   (FWHM is already defined for the Gaussian.)
+        amplitude_estimate = (self.nhist.ptp() * np.sqrt(2*np.pi) *
+                              self.fwhm_estimate / 2.355)
         init_values = {'c': self.nhist.min(),
                        'center': 0,
-                       'amplitude': self.nhist.ptp(),
+                       'amplitude': amplitude_estimate,
                        'sigma': self.fwhm_estimate / 2.355}
         weights = np.sqrt(1 / self.nhist)
         params = model.make_params(**init_values)
@@ -603,14 +691,14 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
         if not self.fit.errorbars:
             fwhm_unc = np.nan
             f_unc = np.nan
-            raise FittingWarning('Could not compute errorbars in fit')
+            print('FittingWarning: Could not compute errorbars in fit')
         else:
             fwhm_unc = self.fit.params['fwhm'].stderr
             f_unc = self.fit.params['f'].stderr
 
         fwhm_param = UncertaintyParameter(
             name='FWHM',
-            fit_name=self.__class__,
+            fit_name=self.classname_extract(self),
             value=self.fit.params['fwhm'].value,
             uncertainty=(fwhm_unc, fwhm_unc),
             units='degrees',
@@ -618,7 +706,7 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
             axis_max=120.0)
         f_param = UncertaintyParameter(
             name='peak fraction',
-            fit_name=self.__class__,
+            fit_name=self.classname_extract(self),
             value=self.fit.params['f'].value,
             uncertainty=(f_unc, f_unc),
             units='%',
@@ -692,7 +780,7 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
 
         fwhm_param = UncertaintyParameter(
             name='FWHM',
-            fit_name=self.__class__,
+            fit_name=self.classname_extract(self),
             value=self.fit.params['fwhm'].value,
             uncertainty=(fwhm_unc, fwhm_unc),
             units='degrees',
@@ -700,7 +788,7 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
             axis_max=120.0)
         f_param = UncertaintyParameter(
             name='peak fraction',
-            fit_name=self.__class__,
+            fit_name=self.classname_extract(self),
             value=self.fit.params['f'].value,
             uncertainty=(f_unc, f_unc),
             units='%',
@@ -708,7 +796,7 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
             axis_max=100.0)
         f_bk_param = UncertaintyParameter(
             name='backscatter fraction',
-            fit_name=self.__class__,
+            fit_name=self.classname_extract(self),
             value=self.fit.params['f_bk'].value,
             uncertainty=(f_bk_unc, f_bk_unc),
             units='%',
@@ -775,7 +863,7 @@ class Alpha68(AlphaUncertainty):
         upper = self.contains68_upper
         contains68_param = UncertaintyParameter(
             name='sigma_tilde',
-            fit_name=self.__class__,
+            fit_name=self.classname_extract(self),
             value=value,
             uncertainty=(lower, upper),
             units='degrees',
@@ -802,7 +890,7 @@ class BetaRms(BetaUncertainty):
         rms_unc = self.rms / np.sqrt(2*(self.n_values - 1))
         rms_param = UncertaintyParameter(
             name='RMS',
-            fit_name=self.__class__,
+            fit_name=self.classname_extract(self),
             value=self.rms,
             uncertainty=(rms_unc, rms_unc),
             units='degrees',
@@ -1101,7 +1189,7 @@ def test_alg_results_add():
         z = x + y
         assert z.has_beta is True
         assert np.sum(np.isnan(z.beta_true_deg)) == len1
-    except Warning:
+    except DataWarning:
         pass
     else:
         print('Failed to warn on asymmetric concatenation (None + data)')
@@ -1111,7 +1199,7 @@ def test_alg_results_add():
         z = x + y
         assert z.has_beta is True
         assert np.sum(np.isnan(z.beta_true_deg)) == len2
-    except Warning:
+    except DataWarning:
         pass
     else:
         print('Failed to warn on asymmetric concatenation (data + None)')
@@ -1146,6 +1234,7 @@ def test_alg_results_select():
     x = generate_random_alg_results(length=len1)
     x = generate_random_alg_results(length=len1, has_beta=False)
     y = x.select(energy_min=300)
+    assert not y.has_beta
     assert type(y) is AlgorithmResults
     x.select(energy_min=300, energy_max=400, depth_min=200)
     x.select(is_contained=True, depth_min=200)
@@ -1196,12 +1285,110 @@ def test_alg_uncertainty(include_plots):
     Test AlgorithmUncertainty class.
     """
 
-    # TODO
-    print('test_alg_uncertainty not implemented yet')
+    test_uncertainty_parameter_input()
+    test_alpha_uncertainties()
+    test_beta_uncertainties()
     if include_plots:
         print('test_alg_uncertainty plots not implemented yet')
 
     return None
+
+
+def test_uncertainty_parameter_input():
+    """
+    """
+
+    # basic
+    UncertaintyParameter(
+        name='asdf', fit_name='qwerty', value=23.2, uncertainty=(0.5, 0.6),
+        units='degrees', axis_min=0, axis_max=120)
+    # single uncertainty
+    UncertaintyParameter(
+        name='asdf', fit_name='qwerty', value=23.2, uncertainty=0.5,
+        units='degrees', axis_min=0, axis_max=120)
+    # unspecified uncertainty
+    UncertaintyParameter(
+        name='asdf', fit_name='qwerty', value=23.2,
+        units='degrees', axis_min=0, axis_max=120)
+    # unspecified axes limits
+    UncertaintyParameter(
+        name='asdf', fit_name='qwerty', value=23.2, uncertainty=(0.5, 0.6),
+        units='degrees')
+
+    # error checks
+    try:
+        UncertaintyParameter(
+            fit_name='qwerty', value=23.2,
+            uncertainty=(0.5, 0.6), units='degrees', axis_min=0, axis_max=120)
+    except InputError:
+        pass
+    else:
+        print('UncertaintyParameter failed to catch missing name')
+    try:
+        UncertaintyParameter(
+            name='asdf', value=23.2,
+            uncertainty=(0.5, 0.6), units='degrees', axis_min=0, axis_max=120)
+    except InputError:
+        pass
+    else:
+        print('UncertaintyParameter failed to catch missing fit_name')
+    try:
+        UncertaintyParameter(
+            name='asdf', fit_name='qwerty',
+            uncertainty=(0.5, 0.6), units='degrees', axis_min=0, axis_max=120)
+    except InputError:
+        pass
+    else:
+        print('UncertaintyParameter failed to catch missing value')
+    try:
+        UncertaintyParameter(
+            name='asdf', fit_name='qwerty', value=23.2,
+            uncertainty=(0.5, 0.6), axis_min=0, axis_max=120)
+    except InputError:
+        pass
+    else:
+        print('UncertaintyParameter failed to catch missing units')
+    try:
+        UncertaintyParameter(
+            name=123, fit_name='qwerty', value=23.2,
+            uncertainty=(0.5, 0.6), units='degrees', axis_min=0, axis_max=120)
+    except InputError:
+        pass
+    else:
+        print('UncertaintyParameter failed to catch bad name')
+    try:
+        UncertaintyParameter(
+            name='asdf', fit_name='qwerty', value='asdf',
+            uncertainty=(0.5, 0.6), units='degrees', axis_min=0, axis_max=120)
+    except InputError:
+        pass
+    else:
+        print('UncertaintyParameter failed to catch bad value')
+    try:
+        UncertaintyParameter(
+            name='asdf', fit_name='qwerty', value=23.2,
+            uncertainty=(0.5, 0.6, 0.7), units='degrees')
+    except InputError:
+        pass
+    else:
+        print('UncertaintyParameter failed to catch bad uncertainty')
+
+
+def test_alpha_uncertainties():
+    """
+    """
+
+    ar = generate_random_alg_results(length=10000)
+    agpc = AlphaGaussPlusConstant(ar)
+    print('test_alpha_uncertainty not implemented yet')
+
+
+def test_beta_uncertainties():
+    """
+    """
+    ar = generate_random_alg_results(length=1000)
+    brms = BetaRms(ar)
+    print('test_beta_uncertainty not implemented yet')
 
 
 def test_comprehensive():
@@ -1221,7 +1408,7 @@ if __name__ == '__main__':
 
     include_plots = True
 
+    test_alg_results()
     test_dalpha()
     test_dbeta()
-    test_alg_results()
     test_alg_uncertainty(include_plots)
