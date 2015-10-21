@@ -1310,6 +1310,7 @@ def test_alg_uncertainty(include_plots):
 
     test_uncertainty_parameter_input()
     test_AGPC()
+    test_A68()
     test_beta_uncertainties()
     if include_plots:
         print('test_alg_uncertainty plots not implemented yet')
@@ -1397,9 +1398,9 @@ def test_uncertainty_parameter_input():
         print('UncertaintyParameter failed to catch bad uncertainty')
 
 
-def alpha_uncertainties_basic_assertions(aunc):
+def AGPC_basic_assertions(aunc):
     """
-    Make some basic assertions about an AlphaUncertainty object.
+    Make some basic assertions about an AlphaGaussPlusConstant object.
     """
 
     assert aunc.fit.params['center'] == 0
@@ -1429,7 +1430,7 @@ def test_AGPC():
         print('Bad result while testing AlphaGaussPlusConstant, ' +
               'length = 10000. It is possible this is random chance, ' +
               'please try again.')
-    alpha_uncertainties_basic_assertions(agpc)
+    AGPC_basic_assertions(agpc)
 
     ar = generate_random_alg_results(length=1000000, a_f=f, a_fwhm=fwhm)
     agpc = AlphaGaussPlusConstant(ar)
@@ -1440,7 +1441,7 @@ def test_AGPC():
         print('Bad result while testing AlphaGaussPlusConstant, ' +
               'length = 1000000. It is possible this is random chance, ' +
               'please try again.')
-    alpha_uncertainties_basic_assertions(agpc)
+    AGPC_basic_assertions(agpc)
 
     ar = generate_random_alg_results(length=100, a_f=f, a_fwhm=fwhm)
     agpc = AlphaGaussPlusConstant(ar)
@@ -1453,11 +1454,11 @@ def test_AGPC():
         print('Bad result while testing AlphaGaussPlusConstant, ' +
               'length = 100. It is possible this is random chance, ' +
               'please try again.')
-    alpha_uncertainties_basic_assertions(agpc)
+    AGPC_basic_assertions(agpc)
 
     ar = generate_random_alg_results(length=25, a_f=f, a_fwhm=fwhm)
     agpc = AlphaGaussPlusConstant(ar)
-    alpha_uncertainties_basic_assertions(agpc)
+    AGPC_basic_assertions(agpc)
 
     # edge cases of f
     fwhm = 30
@@ -1471,7 +1472,7 @@ def test_AGPC():
         print('Bad result while testing AlphaGaussPlusConstant, ' +
               'length = 100 / f = 1.0. It is possible this is random ' +
               'chance, please try again.')
-    alpha_uncertainties_basic_assertions(agpc)
+    AGPC_basic_assertions(agpc)
 
     fwhm = 50
     f = 0.1
@@ -1483,7 +1484,7 @@ def test_AGPC():
         print('Bad result while testing AlphaGaussPlusConstant, ' +
               'length = 1000 / f = 0.1. It is possible this is random ' +
               'chance, please try again.')
-    alpha_uncertainties_basic_assertions(agpc)
+    AGPC_basic_assertions(agpc)
 
     # explore for errors
     for fwhm in [10, 25, 40, 60, 90]:
@@ -1492,10 +1493,67 @@ def test_AGPC():
                 ar = generate_random_alg_results(length=L, a_f=f, a_fwhm=fwhm)
                 agpc = AlphaGaussPlusConstant(ar)
                 try:
-                    alpha_uncertainties_basic_assertions(agpc)
+                    AGPC_basic_assertions(agpc)
                 except AssertionError:
-                    print ('issue with AGPC at ' +
+                    print ('* issue with AGPC at ' +
                            'FWHM = {}, f = {}, length = {}').format(fwhm, f, L)
+
+
+def A68_basic_assertions(aunc):
+    """
+    Make some basic assertions about an Alpha68 object.
+    """
+
+    assert isinstance(aunc.metrics['contains68'].value, float)
+    assert isinstance(aunc.metrics['contains68'].uncertainty[0], float)
+    assert not np.isnan(aunc.metrics['contains68'].uncertainty[0])
+
+
+def test_A68():
+    """
+    """
+
+    ar = generate_random_alg_results(length=1000, a_f=0.7, a_fwhm=30)
+    a68 = Alpha68(ar)
+    A68_basic_assertions(a68)
+
+    ar = generate_random_alg_results(length=100, a_f=0.7, a_fwhm=30)
+    a68 = Alpha68(ar)
+    A68_basic_assertions(a68)
+
+    ar = generate_random_alg_results(length=10000, a_f=0.7, a_fwhm=30)
+    a68 = Alpha68(ar)
+    A68_basic_assertions(a68)
+
+    ar = generate_random_alg_results(length=1000, a_f=1.0, a_fwhm=30)
+    a68 = Alpha68(ar)
+    A68_basic_assertions(a68)
+
+    ar = generate_random_alg_results(length=1000, a_f=0.2, a_fwhm=50)
+    a68 = Alpha68(ar)
+    A68_basic_assertions(a68)
+
+    # explore for errors
+    for fwhm in [10, 25, 40, 60, 90]:
+        for f in [0, 0.1, 0.2, 0.5, 0.8, 1]:
+            for L in [50, 100, 1000, 10000]:
+                ar = generate_random_alg_results(length=L, a_f=f, a_fwhm=fwhm)
+                a68 = Alpha68(ar)
+                try:
+                    A68_basic_assertions(a68)
+                except AssertionError:
+                    print ('* issue with A68 at ' +
+                           'FWHM = {}, f = {}, length = {}').format(fwhm, f, L)
+
+
+def beta_RMS_basic_assertions(bunc):
+    """
+    Make some basic assertions about a BetaRms object.
+    """
+
+    assert isinstance(bunc.metrics['RMS'].value, float)
+    assert isinstance(bunc.metrics['RMS'].uncertainty[0], float)
+    assert not np.isnan(bunc.metrics['RMS'].uncertainty[0])
 
 
 def test_beta_uncertainties():
@@ -1503,7 +1561,17 @@ def test_beta_uncertainties():
     """
     ar = generate_random_alg_results(length=1000)
     brms = BetaRms(ar)
-    print('test_beta_uncertainty not implemented yet')
+    beta_RMS_basic_assertions(brms)
+
+    for f in [0, 0.1, 0.2, 0.5, 0.8, 1]:
+        for L in [50, 100, 1000, 10000]:
+            ar = generate_random_alg_results(length=L, b_f=f)
+            brms = BetaRms(ar)
+            try:
+                beta_RMS_basic_assertions(brms)
+            except AssertionError:
+                print ('* issue with BetaRms at ' +
+                       'b_f = {}, length = {}').format(f, L)
 
 
 def test_comprehensive():
@@ -1527,3 +1595,4 @@ if __name__ == '__main__':
     test_dalpha()
     test_dbeta()
     test_alg_uncertainty(include_plots)
+    test_comprehensive()
