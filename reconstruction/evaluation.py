@@ -642,12 +642,18 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
         # manual estimate
         halfmax = self.nhist.ptp()/2
         crossing_ind = np.nonzero(self.nhist > halfmax)[0][-1]
-        halfwidth = (
-            self.xhist[crossing_ind] +
-            (self.xhist[crossing_ind + 1] - self.xhist[crossing_ind]) *
-            (halfmax - self.nhist[crossing_ind]) /
-            (self.nhist[crossing_ind + 1] - self.nhist[crossing_ind]))
-        self.fwhm_estimate = 2 * halfwidth
+        try:
+            halfwidth = (
+                self.xhist[crossing_ind] +
+                (self.xhist[crossing_ind + 1] - self.xhist[crossing_ind]) *
+                (halfmax - self.nhist[crossing_ind]) /
+                (self.nhist[crossing_ind + 1] - self.nhist[crossing_ind]))
+        except IndexError:
+            # this occurs when f is small, crossing_ind + 1 may be past
+            #   the end of the histogram.
+            self.fwhm_estimate = 50
+        else:
+            self.fwhm_estimate = 2 * halfwidth
 
     def perform_fit(self):
         """
@@ -668,13 +674,14 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
                        'center': 0,
                        'amplitude': amplitude_estimate,
                        'sigma': self.fwhm_estimate / 2.355}
-        weights = np.sqrt(1 / self.nhist)
+        weights = np.sqrt(1 / (self.nhist + 0.25))  # avoid zeros
         params = model.make_params(**init_values)
         params.add('res', vary=False, value=self.resolution)
         params.add('n', vary=False, value=self.n_values)
         params.add('f', vary=False, expr='amplitude / 2 / res / n')
-        params.add('f_random', vary=False, expr='1-f')
-        params['c'].set(value=None, vary=False, expr='res*n*f_random/180')
+        params.add('f_random', vary=False, expr='1 - f')
+        params['c'].set(value=None, vary=False,
+                        expr='res * n * f_random / 180')
         params['center'].vary = False
         self.fit = model.fit(self.nhist, x=self.xhist,
                              params=params, weights=weights)
@@ -737,32 +744,35 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
         model = (lmfit.models.ConstantModel() +
                  lmfit.models.GaussianModel(prefix='fwd') +
                  lmfit.models.GaussianModel(prefix='bk'))
-        # How this is working:
-        #   res and n are defined as parameters, for use in expressions.
-        #   f is defined from amplitude.
-        #   f_random is constrained to be 1 - f.
-        #   c is set not to be varied, but to depend on f_random.
-        #   center is fixed to 0.
-        #   (FWHM is already defined for the Gaussian.)
+        fwd_amplitude_estimate = (self.nhist[:mid].ptp() * np.sqrt(2*np.pi) *
+                                  self.fwhm_estimate / 2.355)
+        bk_amplitude_estimate = (self.nhist[mid:].ptp() * np.sqrt(2*np.pi) *
+                                  self.fwhm_estimate * 1.5 / 2.355)
         init_values = {'c': self.nhist.min(),
                        'fwd_center': 0,
-                       'fwd_amplitude': self.nhist[:mid].ptp(),
+                       'fwd_amplitude': fwd_amplitude_estimate,
                        'fwd_sigma': self.fwhm_estimate / 2.355,
                        'bk_center': 180,
-                       'bk_amplitude': self.nhist[mid:].ptp(),
+                       'bk_amplitude': bk_amplitude_estimate,
                        'bk_sigma': self.fwhm_estimate / 2.355 * 1.5}
-        weights = np.sqrt(1 / self.nhist)
+        weights = np.sqrt(1 / (self.nhist + 0.25))  # avoid zeros
         params = model.make_params(**init_values)
         params.add('res', vary=False, value=self.resolution)
         params.add('n', vary=False, value=self.n_values)
         params.add('f', vary=False, expr='fwd_amplitude / 2 / res / n')
         params.add('f_bk', vary=False, expr='bk_amplitude / 2 / res / n')
-        params.add('f_random', vary=False, expr='1-f-f_bk')
-        params['c'].set(value=None, vary=False, expr='res*n*f_random/180')
+        params.add('f_random', vary=False, expr='1 - f - f_bk')
+        params['c'].set(value=None, vary=False,
+                        expr='res * n * f_random / 180')
         params['fwd_center'].vary = False
         params['bk_center'].vary = False
         self.fit = model.fit(self.nhist, x=self.xhist,
                              params=params, weights=weights)
+
+        if not self.fit.success:
+            raise FittingError('Fit failed!')
+        else:
+            del(self.fwhm_estimate)
 
     def compute_metrics(self):
         """
@@ -1374,12 +1384,93 @@ def test_uncertainty_parameter_input():
         print('UncertaintyParameter failed to catch bad uncertainty')
 
 
+def alpha_uncertainties_basic_assertions(aunc):
+    """
+    Make some basic assertions about an AlphaUncertainty object.
+    """
+
+    assert aunc.fit.params['center'] == 0
+    assert aunc.fit.params['f_random'] + aunc.fit.params['f'] == 1
+    assert isinstance(aunc.metrics['f'].value, float)
+    assert isinstance(aunc.metrics['FWHM'].value, float)
+    assert isinstance(aunc.metrics['f'].uncertainty[0], float)
+    assert isinstance(aunc.metrics['FWHM'].uncertainty[0], float)
+
+
 def test_alpha_uncertainties():
     """
     """
 
-    ar = generate_random_alg_results(length=10000)
+    # various levels of statistics
+    fwhm = 30
+    f = 0.7
+    ar = generate_random_alg_results(length=10000, a_f=f, a_fwhm=fwhm)
     agpc = AlphaGaussPlusConstant(ar)
+    try:
+        assert np.abs(agpc.fit.params['fwhm'].value - fwhm)/fwhm < 0.05
+        assert np.abs(agpc.fit.params['f'].value - f)/f < 0.05
+    except AssertionError:
+        print('Bad result while testing AlphaGaussPlusConstant, ' +
+              'length = 10000. It is possible this is random chance, ' +
+              'please try again.')
+    alpha_uncertainties_basic_assertions(agpc)
+
+    ar = generate_random_alg_results(length=1000000, a_f=f, a_fwhm=fwhm)
+    agpc = AlphaGaussPlusConstant(ar)
+    try:
+        assert np.abs(agpc.fit.params['fwhm'].value - fwhm)/fwhm < 0.02
+        assert np.abs(agpc.fit.params['f'].value - f)/f < 0.02
+    except AssertionError:
+        print('Bad result while testing AlphaGaussPlusConstant, ' +
+              'length = 1000000. It is possible this is random chance, ' +
+              'please try again.')
+    alpha_uncertainties_basic_assertions(agpc)
+
+    ar = generate_random_alg_results(length=100, a_f=f, a_fwhm=fwhm)
+    agpc = AlphaGaussPlusConstant(ar)
+    try:
+        assert np.abs(agpc.fit.params['fwhm'].value - fwhm)/fwhm < 0.25
+        assert np.abs(agpc.fit.params['f'].value - f)/f < 0.25
+    except AssertionError:
+        print agpc.fit.params['fwhm'].value
+        print agpc.fit.params['f'].value
+        print('Bad result while testing AlphaGaussPlusConstant, ' +
+              'length = 100. It is possible this is random chance, ' +
+              'please try again.')
+    alpha_uncertainties_basic_assertions(agpc)
+
+    ar = generate_random_alg_results(length=25, a_f=f, a_fwhm=fwhm)
+    agpc = AlphaGaussPlusConstant(ar)
+    alpha_uncertainties_basic_assertions(agpc)
+
+    # edge cases of f
+    fwhm = 30
+    f = 1.0
+    ar = generate_random_alg_results(length=100, a_f=f, a_fwhm=fwhm)
+    agpc = AlphaGaussPlusConstant(ar)
+    try:
+        assert np.abs(agpc.fit.params['fwhm'].value - fwhm)/fwhm < 0.25
+        assert np.abs(agpc.fit.params['f'].value - f)/f < 0.25
+    except AssertionError:
+        print('Bad result while testing AlphaGaussPlusConstant, ' +
+              'length = 100 / f = 1.0. It is possible this is random ' +
+              'chance, please try again.')
+    alpha_uncertainties_basic_assertions(agpc)
+
+    fwhm = 50
+    f = 0.1
+    ar = generate_random_alg_results(length=1000, a_f=f, a_fwhm=fwhm)
+    agpc = AlphaGaussPlusConstant(ar)
+    try:
+        assert agpc.fit.params['f'].value < 0.2
+    except AssertionError:
+        print('Bad result while testing AlphaGaussPlusConstant, ' +
+              'length = 1000 / f = 0.1. It is possible this is random ' +
+              'chance, please try again.')
+    alpha_uncertainties_basic_assertions(agpc)
+
+    #
+
     print('test_alpha_uncertainty not implemented yet')
 
 
