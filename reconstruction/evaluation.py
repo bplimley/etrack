@@ -686,6 +686,19 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
         self.fit = model.fit(self.nhist, x=self.xhist,
                              params=params, weights=weights)
 
+        if (self.fit.params['f'].value <= 0 or
+                self.fit.params['fwhm'].value > 100):
+            # bad fit... don't use it
+            model = lmfit.models.ConstantModel()
+            params = model.make_params(c=self.nhist.mean())
+            params.add('res', vary=False, value=self.resolution)
+            params.add('n', vary=False, value=self.n_values)
+            params.add('f_random', vary=False, value=1.0)
+            params.add('fwhm', vary=False, value=np.nan)
+            params.add('f', vary=False, value=0.0)
+            params.add('center', vary=False, value=0.0)
+            self.fit = model.fit(self.nhist, x=self.xhist, params=params)
+
         if not self.fit.success:
             raise FittingError('Fit failed!')
         else:
@@ -747,7 +760,7 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
         fwd_amplitude_estimate = (self.nhist[:mid].ptp() * np.sqrt(2*np.pi) *
                                   self.fwhm_estimate / 2.355)
         bk_amplitude_estimate = (self.nhist[mid:].ptp() * np.sqrt(2*np.pi) *
-                                  self.fwhm_estimate * 1.5 / 2.355)
+                                 self.fwhm_estimate * 1.5 / 2.355)
         init_values = {'c': self.nhist.min(),
                        'fwd_center': 0,
                        'fwd_amplitude': fwd_amplitude_estimate,
@@ -1296,7 +1309,7 @@ def test_alg_uncertainty(include_plots):
     """
 
     test_uncertainty_parameter_input()
-    test_alpha_uncertainties()
+    test_AGPC()
     test_beta_uncertainties()
     if include_plots:
         print('test_alg_uncertainty plots not implemented yet')
@@ -1395,10 +1408,13 @@ def alpha_uncertainties_basic_assertions(aunc):
     assert isinstance(aunc.metrics['FWHM'].value, float)
     assert isinstance(aunc.metrics['f'].uncertainty[0], float)
     assert isinstance(aunc.metrics['FWHM'].uncertainty[0], float)
+    assert not np.isnan(aunc.metrics['f'].uncertainty[0])
+    assert not np.isnan(aunc.metrics['FWHM'].uncertainty[0])
 
 
-def test_alpha_uncertainties():
+def test_AGPC():
     """
+    Test AlphaGaussPlusConstant class.
     """
 
     # various levels of statistics
@@ -1469,9 +1485,17 @@ def test_alpha_uncertainties():
               'chance, please try again.')
     alpha_uncertainties_basic_assertions(agpc)
 
-    #
-
-    print('test_alpha_uncertainty not implemented yet')
+    # explore for errors
+    for fwhm in [10, 25, 40, 60, 90]:
+        for f in [0, 0.1, 0.2, 0.5, 0.8, 1]:
+            for L in [50, 100, 1000, 10000]:
+                ar = generate_random_alg_results(length=L, a_f=f, a_fwhm=fwhm)
+                agpc = AlphaGaussPlusConstant(ar)
+                try:
+                    alpha_uncertainties_basic_assertions(agpc)
+                except AssertionError:
+                    print ('issue with AGPC at ' +
+                           'FWHM = {}, f = {}, length = {}').format(fwhm, f, L)
 
 
 def test_beta_uncertainties():
