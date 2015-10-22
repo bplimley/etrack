@@ -714,7 +714,7 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
             print('FittingWarning: Could not compute errorbars in fit')
         else:
             fwhm_unc = self.fit.params['fwhm'].stderr
-            f_unc = self.fit.params['f'].stderr
+            f_unc = self.fit.params['f'].stderr * 100
 
         fwhm_param = UncertaintyParameter(
             name='FWHM',
@@ -727,7 +727,7 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
         f_param = UncertaintyParameter(
             name='peak fraction',
             fit_name=self.classname_extract(self),
-            value=self.fit.params['f'].value,
+            value=self.fit.params['f'].value * 100,
             uncertainty=(f_unc, f_unc),
             units='%',
             axis_min=0.0,
@@ -798,8 +798,8 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
             raise FittingWarning('Could not compute errorbars in fit')
         else:
             fwhm_unc = self.fit.params['fwhm'].stderr
-            f_unc = self.fit.params['f'].stderr
-            f_bk_unc = self.fit.params['f_bk'].stderr
+            f_unc = self.fit.params['f'].stderr * 100
+            f_bk_unc = self.fit.params['f_bk'].stderr * 100
 
         fwhm_param = UncertaintyParameter(
             name='FWHM',
@@ -812,7 +812,7 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
         f_param = UncertaintyParameter(
             name='peak fraction',
             fit_name=self.classname_extract(self),
-            value=self.fit.params['f'].value,
+            value=self.fit.params['f'].value * 100,
             uncertainty=(f_unc, f_unc),
             units='%',
             axis_min=0.0,
