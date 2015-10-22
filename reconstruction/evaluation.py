@@ -17,7 +17,7 @@ class AlgorithmResults(object):
     """
     Object containing the results of the algorithm on modeled data.
 
-    Contains:
+    Data attributes:
       alpha_true
       alpha_meas
       beta_true
@@ -25,6 +25,15 @@ class AlgorithmResults(object):
       Etot
       Edep
       depth
+
+    Other attributes:
+      has_alpha
+      has_beta
+      parent
+      filename
+      uncertainty_list
+      alpha_unc (shortcut to first alpha uncertainty object)
+      beta_unc (shortcut to first beta uncertainty object)
     """
 
     def __init__(self, parent=None, filename=None, **kwargs):
@@ -48,6 +57,8 @@ class AlgorithmResults(object):
         self.input_error_check()
 
         self.uncertainty_list = []
+        self.alpha_unc = None
+        self.beta_unc = None
 
     @classmethod
     def data_attrs(cls):
@@ -307,7 +318,20 @@ class AlgorithmResults(object):
         Attach a new uncertainty object onto this results object.
         """
 
+        if not np.any(
+                [u.angle_type == uncertainty_class.angle_type
+                 for u in self.uncertainty_list]):
+            first = True
+        else:
+            first = False
+
         self.uncertainty_list.append(uncertainty_class(self))
+
+        if first:
+            # make shortcut, like
+            #  alg_results.alpha_unc = alg_results.uncertainty_list[0]
+            attr = uncertainty_class.angle_type + '_unc'
+            setattr(self, attr, self.uncertainty_list[-1])
 
     def add_default_uncertainties(self):
         """
@@ -402,7 +426,9 @@ class Uncertainty(object):
 
         self.compute_delta(alg_results)
 
-        self.n_values = len(self.delta)
+        self.n_values = np.sum(np.logical_and(
+            np.logical_not(np.isnan(self.delta)),
+            np.logical_not(np.isinf(self.delta))))
         self.prepare_data()
         self.perform_fit()
         self.compute_metrics()
