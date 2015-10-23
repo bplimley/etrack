@@ -14,5 +14,9 @@
 *.pdf
 *.html
 
+# ignore doxygen docs
+html/
+latex/
+
 # ignore compiled python files
 *.pyc
