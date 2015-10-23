@@ -17,9 +17,12 @@ class G4Track(object):
     Electron track from Geant4.
     """
 
-    def __init__(self, matrix=None, alpha_deg=None, beta_deg=None,
+    def __init__(self,
+                 matrix=None,
+                 alpha_deg=None, beta_deg=None,
                  energy_tot_kev=None, energy_dep_kev=None, energy_esc_kev=None,
-                 x=None, dE=None):
+                 x=None, dE=None, depth_um=None,
+                 is_contained=None):
         """
         Construct G4Track object.
 
@@ -34,6 +37,8 @@ class G4Track(object):
           energy_esc_kev
           x
           dE
+          depth_um
+          is_contained
         """
 
         self.matrix = matrix
@@ -41,7 +46,8 @@ class G4Track(object):
         if matrix is not None and (
                 x is None or dE is None or
                 energy_tot_kev is None or energy_dep_kev is None or
-                energy_esc_kev is None or x is None or dE is None):
+                energy_esc_kev is None or x is None or dE is None or
+                depth_um is None or is_contained is None):
             self.measure_quantities()
         else:
             self.alpha_deg = alpha_deg
@@ -51,6 +57,8 @@ class G4Track(object):
             self.energy_esc_kev = energy_esc_kev
             self.x = x
             self.dE = dE
+            self.depth_um = depth_um
+            self.is_contained = is_contained
 
     @classmethod
     def from_h5initial(cls, evt):
@@ -66,9 +74,12 @@ class G4Track(object):
         energy_tot = evt.attrs['Etot']
         energy_dep = evt.attrs['Edep']
         track = cls(
-            matrix=None, alpha_deg=alpha, beta_deg=beta,
+            matrix=None,
+            alpha_deg=alpha, beta_deg=beta,
             energy_tot_kev=energy_tot, energy_dep_kev=energy_dep,
-            energy_esc_kev=None, x=None, dE=None)
+            energy_esc_kev=None,
+            x=None, dE=None, depth_um=None,
+            is_contained=None)
 
         return track
 

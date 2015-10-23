@@ -158,10 +158,9 @@ class AlgorithmResults(object):
             filename = h5file.filename
 
         n = 0
-        tracks = {'10.5': np.empty(len(h5file)),
-                  '2.5': np.empty(len(h5file))}
+        tracks = [[] for i in range(len(h5file))]
 
-        for evt in h5file:
+        for evt in h5file.itervalues():
             if 'Etot' not in evt.attrs or 'Edep' not in evt.attrs:
                 continue
             if 'cheat_alpha' not in evt.attrs:
@@ -169,20 +168,13 @@ class AlgorithmResults(object):
             if fieldname not in evt:
                 continue
 
-            if 'pix10_5noise0' in evt.keys() and 'pix2_5noise0' in evt.keys():
-                pix10 = evt['pix10_5noise0']
-                pix2 = evt['pix2_5noise0']
-                g4track = trackdata.G4Track.from_h5initial(evt)
-                tracks['10.5'][n] = trackdata.Track.from_h5initial_one(
-                    pix10, g4track)
-                tracks['2.5'][n] = trackdata.Track.from_h5initial_one(
-                    pix2, g4track)
-                n += 1
+            g4track = trackdata.G4Track.from_h5initial(evt)
+            tracks[n] = trackdata.Track.from_h5initial_one(
+                evt[fieldname], g4track)
+            n += 1
 
-        results10 = cls.from_track_array(tracks['10.5'])
-        results2 = cls.from_track_array(tracks['2.5'])
-
-        return results10, results2
+        tracks = tracks[:n]
+        return cls.from_track_array(tracks)
 
     @classmethod
     def from_track_array(cls, tracks,
@@ -209,8 +201,12 @@ class AlgorithmResults(object):
         for i, track in enumerate(tracks):
             alpha_true_deg[i] = track.g4track.alpha_deg
             beta_true_deg[i] = track.g4track.beta_deg
-            alpha_meas_deg[i] = track[alg_name].alpha_deg
-            beta_meas_deg[i] = track[alg_name].beta_deg
+            if alg_name in track.algorithms:
+                alpha_meas_deg[i] = track[alg_name].alpha_deg
+                beta_meas_deg[i] = track[alg_name].beta_deg
+            else:
+                alpha_meas_deg[i] = np.nan
+                beta_meas_deg[i] = np.nan
             energy_tot_kev[i] = track.g4track.energy_tot_kev
             energy_dep_kev[i] = track.g4track.energy_dep_kev
             depth_um[i] = track.g4track.depth_um
