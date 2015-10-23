@@ -94,6 +94,8 @@ class G4Track(object):
           energy_esc
           x
           dE
+          depth_um
+          is_contained
         """
 
         # TODO
