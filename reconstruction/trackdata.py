@@ -5,6 +5,7 @@ import datetime
 import ipdb as pdb
 
 import hybridtrack
+import evaluation
 
 
 ##############################################################################
@@ -345,6 +346,78 @@ class DataError(TrackDataError):
 
 class InputError(TrackDataError):
     pass
+
+
+##############################################################################
+#                                    I/O                                     #
+##############################################################################
+
+class Hdf5Format(object):
+    """
+    Base object class for defining how to write a class to hdf5.
+    """
+
+    pass
+
+
+class ClassAttr(object):
+
+    def __init__(self, name, dtype,
+                 make_dset=False,
+                 is_always_list=False,
+                 is_sometimes_list=False,
+                 is_always_dict=False,
+                 is_user_object=False):
+        self.dtype = dtype
+        self.make_dset = make_dset
+        self.is_always_list = is_always_list
+        self.is_sometimes_list = is_sometimes_list
+        self.is_user_object = is_user_object
+
+
+class AlgorithmResultsHdf5Format(Hdf5Format):
+    """
+    Class for writing AlgorithmResults object to hdf5.
+    """
+
+    base_class = evaluation.AlgorithmResults
+    attrs = (
+        ClassAttr('parent', str, is_sometimes_list=True),
+        ClassAttr('filename', str, is_sometimes_list=True),
+        ClassAttr('has_alpha', bool),
+        ClassAttr('has_beta', bool),
+        ClassAttr('data_length', int),
+        ClassAttr('uncertainty_list', None,
+                  is_user_object=True, is_always_list=True),
+    )
+
+
+class AlphaGaussPlusConstantHdf5Format(Hdf5Format):
+
+    base_class = evaluation.AlphaGaussPlusConstant
+    attrs = (
+        ClassAttr('nhist', np.ndarray),
+        ClassAttr('xhist', np.ndarray),
+        ClassAttr('resolution', float),
+        ClassAttr('metrics', None,
+                  is_user_object=True, is_always_dict=True),
+        ClassAttr('delta', np.ndarray, make_dset=True),
+        ClassAttr('n_values', int),
+    )
+
+
+class UncertaintyParameterHdf5Format(Hdf5Format):
+
+    base_class = evaluation.UncertaintyParameter
+    attrs = (
+        ClassAttr('name', str),
+        ClassAttr('fit_name', str),
+        ClassAttr('value', float),
+        ClassAttr('uncertainty', float, is_sometimes_list=True),
+        ClassAttr('units', str),
+        ClassAttr('axis_min', float),
+        ClassAttr('axis_max', float),
+    )
 
 
 ##############################################################################
