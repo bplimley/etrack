@@ -41,6 +41,8 @@ class AlgorithmResults(object):
         Should be called by a classmethod constructor instead...
         """
 
+        # 'parent' and 'filename' will be converted to lists if they are not
+        #   None. this is performed in input_error_check()
         self.parent = parent
         self.filename = filename
 
@@ -110,6 +112,11 @@ class AlgorithmResults(object):
                 'Filename should be a string or a list of strings')
 
         # type conversion
+        # parent and filename should always be lists, even if only 1 element
+        if type(self.parent) is AlgorithmResults:
+            self.parent = [self.parent]
+        if type(self.filename) is str:
+            self.filename = [self.filename]
         for attr in self.data_attrs():
             if getattr(self, attr) is not None:
                 if attr.startswith('is_'):

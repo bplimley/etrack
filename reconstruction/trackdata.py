@@ -352,6 +352,48 @@ class InputError(TrackDataError):
 #                                    I/O                                     #
 ##############################################################################
 
+def write_alg_results_to_hdf5(alg_results, h5group):
+    """
+    what does it take to write a class to file?
+    """
+
+    for i, parent in enumerate(alg_results.parent):
+        groupname = 'parent'
+        if groupname not in h5group:
+            parent_group = h5group.create_group(groupname)
+
+        parent_index_str = str(i)
+        this_group = parent_group.create_group(parent_index_str)
+        write_alg_results_to_hdf5(parent, this_group)
+
+    for i, filename in enumerate(alg_results.filename):
+        groupname = 'filename'
+        if groupname not in h5group:
+            filename_group = h5group.create_group(groupname)
+        filename_index_str = str(i)
+        filename_group.attrs.create(filename_index_str, filename)
+
+
+    h5group.attrs.create('has_alpha', alg_results.has_alpha, dtype=bool)
+    h5group.attrs.create('has_beta', alg_results.has_beta, dtype=bool)
+    h5group.attrs.create('data_length', alg_results.data_length, dtype=int)
+
+    L = alg_results.data_length
+    h5group.create_dataset(
+        'alpha_true_deg', (L,), dtype=float, data=alg_results.alpha_true_deg)
+    h5group.create_dataset(
+        'beta_true_deg', (L,), dtype=float, data=alg_results.beta_true_deg)
+
+    for i, unc in enumerate(alg_results.uncertainty_list):
+        groupname = 'uncertainty_list'
+        if groupname not in h5group:
+            unc_list_group = h5group.create_group(groupname)
+
+        unc_list_index_str = str(i)
+        this_unc_group = unc_list_group.create_group(unc_list_index_str)
+        write_unc_to_hdf5(unc, this_unc_group)
+
+
 class Hdf5Format(object):
     """
     Base object class for defining how to write a class to hdf5.
@@ -382,13 +424,21 @@ class AlgorithmResultsHdf5Format(Hdf5Format):
 
     base_class = evaluation.AlgorithmResults
     attrs = (
-        ClassAttr('parent', str, is_sometimes_list=True),
-        ClassAttr('filename', str, is_sometimes_list=True),
+        ClassAttr('parent', str, is_always_list=True),
+        ClassAttr('filename', str, is_always_list=True),
         ClassAttr('has_alpha', bool),
         ClassAttr('has_beta', bool),
         ClassAttr('data_length', int),
         ClassAttr('uncertainty_list', None,
                   is_user_object=True, is_always_list=True),
+        ClassAttr('alpha_true_deg', np.ndarray, make_dset=True),
+        ClassAttr('alpha_meas_deg', np.ndarray, make_dset=True),
+        ClassAttr('beta_true_deg', np.ndarray, make_dset=True),
+        ClassAttr('beta_meas_deg', np.ndarray, make_dset=True),
+        ClassAttr('energy_tot_kev', np.ndarray, make_dset=True),
+        ClassAttr('energy_dep_kev', np.ndarray, make_dset=True),
+        ClassAttr('depth_um', np.ndarray, make_dset=True),
+        ClassAttr('is_contained', np.ndarray, make_dset=True),
     )
 
 
