@@ -6,6 +6,7 @@ import h5py
 import ipdb as pdb
 
 import trackdata
+from trackdata import ClassAttr
 
 
 ##############################################################################
@@ -35,6 +36,34 @@ class AlgorithmResults(object):
       alpha_unc (shortcut to first alpha uncertainty object)
       beta_unc (shortcut to first beta uncertainty object)
     """
+
+    data_format = (
+        ClassAttr('parent', None,
+                  may_be_none=True, is_user_object=True, is_always_list=True),
+        ClassAttr('filename', str,
+                  may_be_none=True, is_always_list=True),
+        ClassAttr('has_alpha', bool),
+        ClassAttr('has_beta', bool),
+        ClassAttr('data_length', int),
+        ClassAttr('uncertainty_list', None,
+                  is_user_object=True, is_always_list=True),
+        ClassAttr('alpha_true_deg', np.ndarray,
+                  may_be_none=True, make_dset=True),
+        ClassAttr('alpha_meas_deg', np.ndarray,
+                  may_be_none=True, make_dset=True),
+        ClassAttr('beta_true_deg', np.ndarray,
+                  may_be_none=True, make_dset=True),
+        ClassAttr('beta_meas_deg', np.ndarray,
+                  may_be_none=True, make_dset=True),
+        ClassAttr('energy_tot_kev', np.ndarray,
+                  may_be_none=True, make_dset=True),
+        ClassAttr('energy_dep_kev', np.ndarray,
+                  may_be_none=True, make_dset=True),
+        ClassAttr('depth_um', np.ndarray,
+                  may_be_none=True, make_dset=True),
+        ClassAttr('is_contained', np.ndarray,
+                  may_be_none=True, make_dset=True),
+    )
 
     def __init__(self, parent=None, filename=None, **kwargs):
         """

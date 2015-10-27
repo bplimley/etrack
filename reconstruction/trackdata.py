@@ -357,22 +357,23 @@ def write_alg_results_to_hdf5(alg_results, h5group):
     what does it take to write a class to file?
     """
 
-    for i, parent in enumerate(alg_results.parent):
-        groupname = 'parent'
-        if groupname not in h5group:
-            parent_group = h5group.create_group(groupname)
+    if alg_results.parent is not None:
+        for i, parent in enumerate(alg_results.parent):
+            groupname = 'parent'
+            if groupname not in h5group:
+                parent_group = h5group.create_group(groupname)
 
-        parent_index_str = str(i)
-        this_group = parent_group.create_group(parent_index_str)
-        write_alg_results_to_hdf5(parent, this_group)
+            parent_index_str = str(i)
+            this_group = parent_group.create_group(parent_index_str)
+            write_alg_results_to_hdf5(parent, this_group)
 
-    for i, filename in enumerate(alg_results.filename):
-        groupname = 'filename'
-        if groupname not in h5group:
-            filename_group = h5group.create_group(groupname)
-        filename_index_str = str(i)
-        filename_group.attrs.create(filename_index_str, filename)
-
+    if alg_results.filename is not None:
+        for i, filename in enumerate(alg_results.filename):
+            groupname = 'filename'
+            if groupname not in h5group:
+                filename_group = h5group.create_group(groupname)
+            filename_index_str = str(i)
+            filename_group.attrs.create(filename_index_str, filename)
 
     h5group.attrs.create('has_alpha', alg_results.has_alpha, dtype=bool)
     h5group.attrs.create('has_beta', alg_results.has_beta, dtype=bool)
@@ -394,6 +395,81 @@ def write_alg_results_to_hdf5(alg_results, h5group):
         write_unc_to_hdf5(unc, this_unc_group)
 
 
+def write_object_to_hdf5(obj, h5group):
+    """
+    Take the user-defined class instance, obj, and write it to HDF5.
+
+    Requires data_format to be an attribute of the object.
+
+    h5group is the location it is written to file. The class attributes are
+    attributes in h5group, datasets in h5group, or subgroups of h5group.
+    """
+
+    def input_check(obj, h5group):
+        """
+        """
+
+        if not hasattr(obj, 'data_format'):
+            raise Exception(
+                'Need attribute data_format in order to write object to HDF5')
+        if not isinstance(h5group, h5py.Group):
+            raise Exception(
+                'h5group should be a file or group from h5py')
+        try:
+            if not isinstance(h5group.file, h5py.File):
+                raise Exception(
+                    'h5group should be a file or group from h5py')
+        except RuntimeError:
+            raise Exception('RuntimeError on ' + h5group + '.file - ' +
+                            'please confirm file is not already closed')
+        if h5group.file.mode != 'r+':
+            raise Exception('Cannot write object to h5file in read-only mode')
+
+    def attr_check(attr, data):
+        """
+        """
+
+        pass
+
+    for attr in obj.data_format:
+        data = getattr(obj, attr.name)
+        attr_check(attr, data)
+        # if None: skip
+        if attr.may_be_none and data is None:
+            continue
+        # non-lists
+        if not attr.is_always_list and not attr.is_sometimes_list:
+            # attributes
+            if not attr.make_dset:
+                h5group.attrs.create(
+                    attr.name, data, shape=np.shape(data), dtype=attr.dtype)
+            else:  # dset
+                h5group.create_dataset(
+                    attr.name, shape=np.shape(data), dtype=attr.dtype,
+                    data=data)
+        # lists
+        if isinstance(data, list) or isinstance(data, tuple):
+            subgroup = h5group.create_group(attr.name)
+            for i, el in enumerate(data):
+                # attributes
+                if not attr.make_dset:
+                    pass
+                else:  # dset
+                    pass
+
+
+def write_one_item(attr, data, h5group):
+    """
+    """
+
+    if attr.make_dset:
+        h5group.create_dataset(
+            attr.name, shape=np.shape(data), dtype=attr.dtype, data=data)
+    else:
+        h5group.attrs.create(
+            attr.name, data, shape=np.shape(data), dtype=attr.dtype)
+
+
 class Hdf5Format(object):
     """
     Base object class for defining how to write a class to hdf5.
@@ -403,15 +479,22 @@ class Hdf5Format(object):
 
 
 class ClassAttr(object):
+    """
+    Description of one attribute of a class, for the purposes of saving to file
+    and loading from file.
+    """
 
     def __init__(self, name, dtype,
                  make_dset=False,
+                 may_be_none=False,
                  is_always_list=False,
                  is_sometimes_list=False,
                  is_always_dict=False,
                  is_user_object=False):
+        self.name = name
         self.dtype = dtype
         self.make_dset = make_dset
+        self.may_be_none = may_be_none
         self.is_always_list = is_always_list
         self.is_sometimes_list = is_sometimes_list
         self.is_user_object = is_user_object
@@ -424,21 +507,31 @@ class AlgorithmResultsHdf5Format(Hdf5Format):
 
     base_class = evaluation.AlgorithmResults
     attrs = (
-        ClassAttr('parent', str, is_always_list=True),
-        ClassAttr('filename', str, is_always_list=True),
+        ClassAttr('parent', None,
+                  may_be_none=True, is_user_object=True, is_always_list=True),
+        ClassAttr('filename', str,
+                  may_be_none=True, is_always_list=True),
         ClassAttr('has_alpha', bool),
         ClassAttr('has_beta', bool),
         ClassAttr('data_length', int),
         ClassAttr('uncertainty_list', None,
                   is_user_object=True, is_always_list=True),
-        ClassAttr('alpha_true_deg', np.ndarray, make_dset=True),
-        ClassAttr('alpha_meas_deg', np.ndarray, make_dset=True),
-        ClassAttr('beta_true_deg', np.ndarray, make_dset=True),
-        ClassAttr('beta_meas_deg', np.ndarray, make_dset=True),
-        ClassAttr('energy_tot_kev', np.ndarray, make_dset=True),
-        ClassAttr('energy_dep_kev', np.ndarray, make_dset=True),
-        ClassAttr('depth_um', np.ndarray, make_dset=True),
-        ClassAttr('is_contained', np.ndarray, make_dset=True),
+        ClassAttr('alpha_true_deg', np.ndarray,
+                  may_be_none=True, make_dset=True),
+        ClassAttr('alpha_meas_deg', np.ndarray,
+                  may_be_none=True, make_dset=True),
+        ClassAttr('beta_true_deg', np.ndarray,
+                  may_be_none=True, make_dset=True),
+        ClassAttr('beta_meas_deg', np.ndarray,
+                  may_be_none=True, make_dset=True),
+        ClassAttr('energy_tot_kev', np.ndarray,
+                  may_be_none=True, make_dset=True),
+        ClassAttr('energy_dep_kev', np.ndarray,
+                  may_be_none=True, make_dset=True),
+        ClassAttr('depth_um', np.ndarray,
+                  may_be_none=True, make_dset=True),
+        ClassAttr('is_contained', np.ndarray,
+                  may_be_none=True, make_dset=True),
     )
 
 
