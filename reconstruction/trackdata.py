@@ -491,10 +491,10 @@ def write_object_to_hdf5(obj, h5group):
                 attr.name, data, shape=np.shape(data), dtype=attr.dtype)
 
     # ~~~ begin main ~~~
-    input_check(obj, h5grouop)
+    input_check(obj, h5group)
 
     for attr in obj.data_format:
-        data = attr_check(attr, data)
+        data = attr_check(attr)
 
         # if None: skip
         if attr.may_be_none and data is None:
@@ -507,14 +507,6 @@ def write_object_to_hdf5(obj, h5group):
                 write_one_item(attr, el, subgroup)
         else:
             write_one_item(attr, data, h5group)
-
-
-class Hdf5Format(object):
-    """
-    Base object class for defining how to write a class to hdf5.
-    """
-
-    pass
 
 
 class ClassAttr(object):
@@ -537,69 +529,6 @@ class ClassAttr(object):
         self.is_always_list = is_always_list
         self.is_sometimes_list = is_sometimes_list
         self.is_user_object = is_user_object
-
-
-class AlgorithmResultsHdf5Format(Hdf5Format):
-    """
-    Class for writing AlgorithmResults object to hdf5.
-    """
-
-    base_class = evaluation.AlgorithmResults
-    attrs = (
-        ClassAttr('parent', None,
-                  may_be_none=True, is_user_object=True, is_always_list=True),
-        ClassAttr('filename', str,
-                  may_be_none=True, is_always_list=True),
-        ClassAttr('has_alpha', bool),
-        ClassAttr('has_beta', bool),
-        ClassAttr('data_length', int),
-        ClassAttr('uncertainty_list', None,
-                  is_user_object=True, is_always_list=True),
-        ClassAttr('alpha_true_deg', np.ndarray,
-                  may_be_none=True, make_dset=True),
-        ClassAttr('alpha_meas_deg', np.ndarray,
-                  may_be_none=True, make_dset=True),
-        ClassAttr('beta_true_deg', np.ndarray,
-                  may_be_none=True, make_dset=True),
-        ClassAttr('beta_meas_deg', np.ndarray,
-                  may_be_none=True, make_dset=True),
-        ClassAttr('energy_tot_kev', np.ndarray,
-                  may_be_none=True, make_dset=True),
-        ClassAttr('energy_dep_kev', np.ndarray,
-                  may_be_none=True, make_dset=True),
-        ClassAttr('depth_um', np.ndarray,
-                  may_be_none=True, make_dset=True),
-        ClassAttr('is_contained', np.ndarray,
-                  may_be_none=True, make_dset=True),
-    )
-
-
-class AlphaGaussPlusConstantHdf5Format(Hdf5Format):
-
-    base_class = evaluation.AlphaGaussPlusConstant
-    attrs = (
-        ClassAttr('nhist', np.ndarray),
-        ClassAttr('xhist', np.ndarray),
-        ClassAttr('resolution', float),
-        ClassAttr('metrics', None,
-                  is_user_object=True, is_always_dict=True),
-        ClassAttr('delta', np.ndarray, make_dset=True),
-        ClassAttr('n_values', int),
-    )
-
-
-class UncertaintyParameterHdf5Format(Hdf5Format):
-
-    base_class = evaluation.UncertaintyParameter
-    attrs = (
-        ClassAttr('name', str),
-        ClassAttr('fit_name', str),
-        ClassAttr('value', float),
-        ClassAttr('uncertainty', float, is_sometimes_list=True),
-        ClassAttr('units', str),
-        ClassAttr('axis_min', float),
-        ClassAttr('axis_max', float),
-    )
 
 
 ##############################################################################

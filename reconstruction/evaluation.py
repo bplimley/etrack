@@ -449,6 +449,13 @@ class Uncertainty(object):
     Either an alpha uncertainty or beta uncertainty object.
     """
 
+    base_data_format = (
+        ClassAttr('delta', np.ndarray, make_dset=True),
+        ClassAttr('n_values', int),
+        ClassAttr('metrics', None, is_always_dict=True, is_user_object=True),
+        ClassAttr('angle_type', str),
+    )
+
     def __init__(self, alg_results):
         """
         Initialization is common to all Uncertainty objects.
@@ -587,6 +594,16 @@ class UncertaintyParameter(object):
       axis_max (float): upper edge of axis on a plot, e.g. 120
     """
 
+    data_format = (
+        ClassAttr('name', str),
+        ClassAttr('fit_name', str),
+        ClassAttr('value', float),
+        ClassAttr('uncertainty', float, is_sometimes_list=True),
+        ClassAttr('units', str),
+        ClassAttr('axis_min', float),
+        ClassAttr('axis_max', float),
+    )
+
     def __init__(self, name=None, fit_name=None,
                  value=None, uncertainty=None, units=None,
                  axis_min=None, axis_max=None):
@@ -683,6 +700,14 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
     """
 
     name = 'Alpha Gaussian + constant'
+    data_format = list(Uncertainty.base_data_format)
+    data_format.append([
+        ClassAttr('nhist', np.ndarray),
+        ClassAttr('xhist', np.ndarray),
+        ClassAttr('resolution', float),
+    ])
+    # TODO: fit?
+    data_format = tuple(data_format)
 
     def prepare_data(self):
         """
@@ -802,8 +827,10 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
     name = 'Alpha Gaussian + backscatter Gaussian + constant'
 
     # prepare_data is inherited from AlphaGaussPlusConstant
-    #
+
     # perform_fit and compute_metrics have to be defined uniquely
+
+    # data_format remains unchanged
 
     def perform_fit(self):
         """
