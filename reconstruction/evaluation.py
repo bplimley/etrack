@@ -37,6 +37,7 @@ class AlgorithmResults(object):
       beta_unc (shortcut to first beta uncertainty object)
     """
 
+    class_name = 'AlgorithmResults'
     data_format = (
         ClassAttr('parent', None,
                   may_be_none=True, is_user_object=True, is_always_list=True),
@@ -594,6 +595,7 @@ class UncertaintyParameter(object):
       axis_max (float): upper edge of axis on a plot, e.g. 120
     """
 
+    class_name = 'UncertaintyParameter'
     data_format = (
         ClassAttr('name', str),
         ClassAttr('fit_name', str),
@@ -700,6 +702,7 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
     """
 
     name = 'Alpha Gaussian + constant'
+    class_name = 'AlphaGaussPlusConstant'
     data_format = list(Uncertainty.base_data_format)
     data_format.append([
         ClassAttr('nhist', np.ndarray),
@@ -825,6 +828,7 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
     """
 
     name = 'Alpha Gaussian + backscatter Gaussian + constant'
+    class_name = 'AlphaGaussPlusConstantPlusBackscatter'
 
     # prepare_data is inherited from AlphaGaussPlusConstant
 
@@ -921,6 +925,7 @@ class Alpha68(AlphaUncertainty):
     """
 
     name = 'Alpha 68% containment'
+    class_name = 'Alpha68'
 
     def prepare_data(self):
         """
@@ -987,6 +992,7 @@ class BetaRms(BetaUncertainty):
     """
 
     name = 'Beta RMS'
+    class_name = 'BetaRms'
 
     def prepare_data(self):
         pass

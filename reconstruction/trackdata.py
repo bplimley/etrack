@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import numpy as np
+import h5py
 import datetime
 import ipdb as pdb
 
@@ -436,13 +437,20 @@ def write_object_to_hdf5(obj, h5group):
         check for disallowed value
         """
 
+        # get attribute
         try:
             data = getattr(obj, attr.name)
         except AttributeError:
             raise InterfaceError('Attribute does not exist')
 
-        if attr.may_be_none and data is None:
+        # None checks
+        if not attr.may_be_none and data is None:
             raise InterfaceError('Found unexpected "None" value')
+        if data is None:
+            return data
+            # remaining checks are not applicable
+
+        # other type checks
         if (attr.is_always_list and
                 not isinstance(data, list) and
                 not isinstance(data, tuple)):
@@ -452,43 +460,53 @@ def write_object_to_hdf5(obj, h5group):
             raise InterfaceError('Found unexpected list type')
         if (attr.is_always_dict and not isinstance(data, dict)):
             raise InterfaceError('Expected a dict type')
-        if (data is not None and attr.is_user_object and
+        if (attr.is_user_object and
                 (isinstance(data, int) or
                  isinstance(data, float) or
                  isinstance(data, np.ndarray) or
                  isinstance(data, str))):
             raise InterfaceError(
                 'Expected a user object, found a basic data type')
-        if attr.dtype is not None:
+        if attr.dtype is None or attr.dtype is dict:
+            pass
+        elif attr.dtype is np.ndarray:
             try:
-                attr.dtype(data)
+                data = np.array(data)
+            except ValueError:
+                raise InterfaceError('Attribute data cannot be cast properly')
+        else:
+            try:
+                data = attr.dtype(data)
             except ValueError:
                 raise InterfaceError('Attribute data cannot be cast properly')
 
         return data
 
-    def write_one_item(attr, data, h5group):
+    def write_item(attr, name, data, h5group):
         """
-        Write one hdf5 dataset or hdf5 attribute to the hdf5 file.
+        Write one item to the hdf5 file.
 
         Inputs:
-        attr: the ClassAttr object describing this attribute.
-        data: the value of the attribute in this instance.
-        h5group: the hdf5 file or group object in which the object should be
-            written.
+          attr: the ClassAttr object describing this attribute.
+          name: name for the new hdf5 object
+                (either attr.name or the dict key)
+          data: data to put in the object (intelligently)
+                (either attr.data or the dict value)
+          h5group: parent location of the new hdf5 object
         """
 
         if attr.is_user_object:
-            this_obj_group = h5group.create_group(attr.name)
+            this_obj_group = h5group.create_group(name)
+            subgroup.attrs.create('obj_type', data=data.class_name)
             # recurse
             # TODO: detect multiple references to the same object, and link
             write_object_to_hdf5(data, this_obj_group)
         elif attr.make_dset:
             h5group.create_dataset(
-                attr.name, shape=np.shape(data), dtype=attr.dtype, data=data)
+                name, shape=np.shape(data), data=data)
         else:
             h5group.attrs.create(
-                attr.name, data, shape=np.shape(data), dtype=attr.dtype)
+                name, data, shape=np.shape(data))
 
     # ~~~ begin main ~~~
     input_check(obj, h5group)
@@ -497,16 +515,23 @@ def write_object_to_hdf5(obj, h5group):
         data = attr_check(attr)
 
         # if None: skip
-        if attr.may_be_none and data is None:
+        if data is None:
             continue
 
         is_list = isinstance(data, list) or isinstance(data, tuple)
+        is_dict = isinstance(data, dict)
         if is_list:
             subgroup = h5group.create_group(attr.name)
+            subgroup.attrs.create('obj_type', data='list')
             for i, el in enumerate(data):
-                write_one_item(attr, el, subgroup)
+                write_item(attr, attr.name, el, subgroup)
+        if is_dict:
+            subgroup = h5group.create_group(attr.name)
+            subgroup.attrs.create('obj_type', data='dict')
+            for key, val in data.items():
+                write_item(attr, key, val, subgroup)
         else:
-            write_one_item(attr, data, h5group)
+            write_item(attr, attr.name, data, h5group)
 
 
 class ClassAttr(object):
@@ -528,6 +553,7 @@ class ClassAttr(object):
         self.may_be_none = may_be_none
         self.is_always_list = is_always_list
         self.is_sometimes_list = is_sometimes_list
+        self.is_always_dict = is_always_dict
         self.is_user_object = is_user_object
 
 
@@ -599,8 +625,6 @@ if __name__ == '__main__':
     """
     Run tests.
     """
-
-    import h5py
 
     test_G4Track()
     test_Track()
