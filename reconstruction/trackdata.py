@@ -348,6 +348,10 @@ class InputError(TrackDataError):
     pass
 
 
+class InterfaceError(TrackDataError):
+    pass
+
+
 ##############################################################################
 #                                    I/O                                     #
 ##############################################################################
@@ -410,64 +414,99 @@ def write_object_to_hdf5(obj, h5group):
         """
 
         if not hasattr(obj, 'data_format'):
-            raise Exception(
+            raise InterfaceError(
                 'Need attribute data_format in order to write object to HDF5')
         if not isinstance(h5group, h5py.Group):
-            raise Exception(
+            raise InterfaceError(
                 'h5group should be a file or group from h5py')
         try:
             if not isinstance(h5group.file, h5py.File):
-                raise Exception(
+                raise InterfaceError(
                     'h5group should be a file or group from h5py')
         except RuntimeError:
-            raise Exception('RuntimeError on ' + h5group + '.file - ' +
-                            'please confirm file is not already closed')
+            raise InterfaceError(
+                'RuntimeError on ' + h5group + '.file - please confirm file ' +
+                'is not already closed')
         if h5group.file.mode != 'r+':
-            raise Exception('Cannot write object to h5file in read-only mode')
+            raise InterfaceError(
+                'Cannot write object to h5file in read-only mode')
 
-    def attr_check(attr, data):
+    def attr_check(attr):
         """
+        check for disallowed value
         """
 
-        pass
+        try:
+            data = getattr(obj, attr.name)
+        except AttributeError:
+            raise InterfaceError('Attribute does not exist')
+
+        if attr.may_be_none and data is None:
+            raise InterfaceError('Found unexpected "None" value')
+        if (attr.is_always_list and
+                not isinstance(data, list) and
+                not isinstance(data, tuple)):
+            raise InterfaceError('Expected a list type')
+        if (not attr.is_always_list and not attr.is_sometimes_list and
+                (isinstance(data, list) or isinstance(data, tuple))):
+            raise InterfaceError('Found unexpected list type')
+        if (attr.is_always_dict and not isinstance(data, dict)):
+            raise InterfaceError('Expected a dict type')
+        if (data is not None and attr.is_user_object and
+                (isinstance(data, int) or
+                 isinstance(data, float) or
+                 isinstance(data, np.ndarray) or
+                 isinstance(data, str))):
+            raise InterfaceError(
+                'Expected a user object, found a basic data type')
+        if attr.dtype is not None:
+            try:
+                attr.dtype(data)
+            except ValueError:
+                raise InterfaceError('Attribute data cannot be cast properly')
+
+        return data
+
+    def write_one_item(attr, data, h5group):
+        """
+        Write one hdf5 dataset or hdf5 attribute to the hdf5 file.
+
+        Inputs:
+        attr: the ClassAttr object describing this attribute.
+        data: the value of the attribute in this instance.
+        h5group: the hdf5 file or group object in which the object should be
+            written.
+        """
+
+        if attr.is_user_object:
+            this_obj_group = h5group.create_group(attr.name)
+            # recurse
+            # TODO: detect multiple references to the same object, and link
+            write_object_to_hdf5(data, this_obj_group)
+        elif attr.make_dset:
+            h5group.create_dataset(
+                attr.name, shape=np.shape(data), dtype=attr.dtype, data=data)
+        else:
+            h5group.attrs.create(
+                attr.name, data, shape=np.shape(data), dtype=attr.dtype)
+
+    # ~~~ begin main ~~~
+    input_check(obj, h5grouop)
 
     for attr in obj.data_format:
-        data = getattr(obj, attr.name)
-        attr_check(attr, data)
+        data = attr_check(attr, data)
+
         # if None: skip
         if attr.may_be_none and data is None:
             continue
-        # non-lists
-        if not attr.is_always_list and not attr.is_sometimes_list:
-            # attributes
-            if not attr.make_dset:
-                h5group.attrs.create(
-                    attr.name, data, shape=np.shape(data), dtype=attr.dtype)
-            else:  # dset
-                h5group.create_dataset(
-                    attr.name, shape=np.shape(data), dtype=attr.dtype,
-                    data=data)
-        # lists
-        if isinstance(data, list) or isinstance(data, tuple):
+
+        is_list = isinstance(data, list) or isinstance(data, tuple)
+        if is_list:
             subgroup = h5group.create_group(attr.name)
             for i, el in enumerate(data):
-                # attributes
-                if not attr.make_dset:
-                    pass
-                else:  # dset
-                    pass
-
-
-def write_one_item(attr, data, h5group):
-    """
-    """
-
-    if attr.make_dset:
-        h5group.create_dataset(
-            attr.name, shape=np.shape(data), dtype=attr.dtype, data=data)
-    else:
-        h5group.attrs.create(
-            attr.name, data, shape=np.shape(data), dtype=attr.dtype)
+                write_one_item(attr, el, subgroup)
+        else:
+            write_one_item(attr, data, h5group)
 
 
 class Hdf5Format(object):
