@@ -150,7 +150,8 @@ class AlgorithmResults(object):
                 'Filename should be a string or a list of strings')
 
         # type conversion
-        # parent and filename should always be lists, even if only 1 element
+        # parent and filename should always be lists, if they are not None,
+        #   even if only 1 element
         if type(self.parent) is AlgorithmResults:
             self.parent = [self.parent]
         if type(self.filename) is str:
@@ -432,14 +433,26 @@ class AlgorithmResults(object):
                 new[attname] = np.concatenate((temp, data2))
                 raise DataWarning('asymmetric concatenation of ' + attname)
 
-        # non-data attributes
-        if self.parent is not None or added.parent is not None:
-            new_parent = [self.parent, added.parent]
+        # non-data attributes:
+        # both parent and filename should always be lists if they are not None
+        if isinstance(self.parent, list) and isinstance(added.parent, list):
+            new_parent = self.parent[:]
+            new_parent.extend(added.parent)
+        elif isinstance(self.parent, list):
+            new_parent = self.parent[:]
+        elif isinstance(added.parent, list):
+            new_parent = added.parent[:]
         else:
             new_parent = None
 
-        if self.filename is not None or added.filename is not None:
-            new_filename = [self.filename, added.filename]
+        if (isinstance(self.filename, list) and
+                isinstance(added.filename, list)):
+            new_filename = self.filename[:]
+            new_filename.extend(added.filename)
+        elif isinstance(self.filename, list):
+            new_filename = self.filename[:]
+        elif isinstance(added.filename, list):
+            new_filename = added.filename[:]
         else:
             new_filename = None
 
