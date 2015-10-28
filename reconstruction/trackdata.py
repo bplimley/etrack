@@ -406,8 +406,8 @@ def write_object_to_hdf5(obj, h5group):
 
     Requires data_format to be an attribute of the object.
 
-    h5group is the location it is written to file. The class attributes are
-    attributes in h5group, datasets in h5group, or subgroups of h5group.
+    h5group is an existing h5py file/group to write to. The class attributes
+    are attributes in h5group, datasets in h5group, or subgroups of h5group.
     """
 
     def input_check(obj, h5group):
@@ -426,15 +426,15 @@ def write_object_to_hdf5(obj, h5group):
                     'h5group should be a file or group from h5py')
         except RuntimeError:
             raise InterfaceError(
-                'RuntimeError on ' + h5group + '.file - please confirm file ' +
+                'RuntimeError on file attribute - please confirm file ' +
                 'is not already closed')
         if h5group.file.mode != 'r+':
             raise InterfaceError(
                 'Cannot write object to h5file in read-only mode')
 
-    def attr_check(attr):
+    def attr_check(obj, attr):
         """
-        check for disallowed value
+        attribute may be None, list/tuple, dict, or "singular" object
         """
 
         # get attribute
@@ -443,44 +443,67 @@ def write_object_to_hdf5(obj, h5group):
         except AttributeError:
             raise InterfaceError('Attribute does not exist')
 
-        # None checks
+        # check for disallowed None
         if not attr.may_be_none and data is None:
             raise InterfaceError('Found unexpected "None" value')
+
         if data is None:
             return data
             # remaining checks are not applicable
 
-        # other type checks
-        if (attr.is_always_list and
-                not isinstance(data, list) and
-                not isinstance(data, tuple)):
-            raise InterfaceError('Expected a list type')
-        if (not attr.is_always_list and not attr.is_sometimes_list and
-                (isinstance(data, list) or isinstance(data, tuple))):
-            raise InterfaceError('Found unexpected list type')
-        if (attr.is_always_dict and not isinstance(data, dict)):
-            raise InterfaceError('Expected a dict type')
-        if (attr.is_user_object and
-                (isinstance(data, int) or
-                 isinstance(data, float) or
-                 isinstance(data, np.ndarray) or
-                 isinstance(data, str))):
-            raise InterfaceError(
-                'Expected a user object, found a basic data type')
-        if attr.dtype is None or attr.dtype is dict:
-            pass
+        if isinstance(data, list) or isinstance(data, tuple):
+            # check if list/tuple is disallowed
+            if not attr.is_always_list and not attr.is_sometimes_list:
+                raise InterfaceError('Found unexpected list type')
+            # item checks occur later, in main
+        elif isinstance(data, dict):
+            # check if dict is disallowed
+            if not attr.is_always_dict and not attr.is_sometimes_dict:
+                raise InterfaceError('Found unexpected dict type')
+            # item checks occur later, in main
+        else:
+            if attr.is_always_list:
+                raise InterfaceError('Expected a list type')
+            if attr.is_always_dict:
+                raise InterfaceError('Expected a dict type')
+            item_check(attr, data)
+
+        return data
+
+    def item_check(attr, item):
+        """
+        item must not be a list/tuple or dict. it is a "singular" object.
+
+        Therefore, ignore the list and dict property flags of attr.
+        """
+
+        # None checks
+        if not attr.may_be_none and item is None:
+            raise InterfaceError('Found unexpected "None" value')
+        if item is None:
+            return item
+            # remaining checks are not applicable, and no need to return item
+
+        # other types. exact type not required, but must be castable
+        if attr.is_user_object:
+            # must be strict about type
+            if not isinstance(item, attr.dtype):
+                raise InterfaceError(
+                    'Expected user object of type ' + str(attr.dtype) +
+                    ', found a ' + str(type(item)))
+            # other checks performed in a sub-call of write_object_to_hdf5
         elif attr.dtype is np.ndarray:
             try:
-                data = np.array(data)
+                item = np.array(item)
             except ValueError:
                 raise InterfaceError('Attribute data cannot be cast properly')
         else:
             try:
-                data = attr.dtype(data)
+                item = attr.dtype(item)
             except ValueError:
                 raise InterfaceError('Attribute data cannot be cast properly')
 
-        return data
+        return item
 
     def write_item(attr, name, data, h5group):
         """
@@ -497,7 +520,7 @@ def write_object_to_hdf5(obj, h5group):
 
         if attr.is_user_object:
             this_obj_group = h5group.create_group(name)
-            subgroup.attrs.create('obj_type', data=data.class_name)
+            this_obj_group.attrs.create('obj_type', data=data.class_name)
             # recurse
             # TODO: detect multiple references to the same object, and link
             write_object_to_hdf5(data, this_obj_group)
@@ -512,7 +535,7 @@ def write_object_to_hdf5(obj, h5group):
     input_check(obj, h5group)
 
     for attr in obj.data_format:
-        data = attr_check(attr)
+        data = attr_check(obj, attr)
 
         # if None: skip
         if data is None:
@@ -523,13 +546,15 @@ def write_object_to_hdf5(obj, h5group):
         if is_list:
             subgroup = h5group.create_group(attr.name)
             subgroup.attrs.create('obj_type', data='list')
-            for i, el in enumerate(data):
-                write_item(attr, attr.name, el, subgroup)
-        if is_dict:
+            for i, item in enumerate(data):
+                item = item_check(attr, item)
+                write_item(attr, str(i), item, subgroup)
+        elif is_dict:
             subgroup = h5group.create_group(attr.name)
             subgroup.attrs.create('obj_type', data='dict')
-            for key, val in data.items():
-                write_item(attr, key, val, subgroup)
+            for key, item in data.items():
+                item = item_check(attr, item)
+                write_item(attr, key, item, subgroup)
         else:
             write_item(attr, attr.name, data, h5group)
 
@@ -546,6 +571,7 @@ class ClassAttr(object):
                  is_always_list=False,
                  is_sometimes_list=False,
                  is_always_dict=False,
+                 is_sometimes_dict=False,
                  is_user_object=False):
         self.name = name
         self.dtype = dtype
@@ -554,6 +580,7 @@ class ClassAttr(object):
         self.is_always_list = is_always_list
         self.is_sometimes_list = is_sometimes_list
         self.is_always_dict = is_always_dict
+        self.is_sometimes_dict = is_sometimes_dict
         self.is_user_object = is_user_object
 
 
