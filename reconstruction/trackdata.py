@@ -123,11 +123,7 @@ class Track(object):
     Electron track, from modeling or from experiment.
     """
 
-    def __init__(self, image,
-                 is_modeled=None, is_measured=None, is_experimental=None,
-                 pixel_size_um=None, noise_ev=None, g4track=None,
-                 energy_kev=None, x_offset_pix=None, y_offset_pix=None,
-                 timestamp=None, shutter_ind=None, label=None):
+    def __init__(self, image, **kwargs):
         """
         Construct a track object.
 
@@ -139,7 +135,6 @@ class Track(object):
         Keyword inputs:
           is_modeled (bool)
           is_measured (bool)
-          is_experimental (bool)
           pixel_size_um (float)
           noise_ev (float)
           g4track (G4Track object)
@@ -151,24 +146,31 @@ class Track(object):
           label (string)
         """
 
-        # handle flags
-        if (
-                is_modeled is None and
-                is_measured is None and
-                is_experimental is None):
+        self.input_handling(image, **kwargs)
+
+        self.algorithms = {}
+
+    def input_handling(self, image,
+                       is_modeled=None, is_measured=None,
+                       pixel_size_um=None, noise_ev=None,
+                       g4track=None,
+                       energy_kev=None,
+                       x_offset_pix=None, y_offset_pix=None,
+                       timestamp=None, shutter_ind=None,
+                       label=None):
+
+        if is_modeled is None and is_measured is None:
             raise InputError('Please specify modeled or measured!')
-        elif ((is_modeled is True and is_measured is True) or
-              (is_modeled is True and is_experimental is True)):
+        elif is_modeled is True and is_measured is True:
             raise InputError('Track cannot be both modeled and measured!')
+        elif is_modeled is False and is_measured is False:
+            raise InputError('Track must be either modeled or measured!')
         elif is_measured is not None:
-            self.is_experimental = self.is_measured = bool(is_measured)
-            self.is_modeled = not bool(is_measured)
-        elif is_experimental is not None:
-            self.is_measured = self.is_experimental = bool(is_experimental)
+            self.is_measured = bool(is_measured)
             self.is_modeled = not bool(is_measured)
         elif is_modeled is not None:
             self.is_modeled = bool(is_modeled)
-            self.is_measured = self.is_experimental = not bool(is_modeled)
+            self.is_measured = not bool(is_modeled)
 
         if g4track is not None:
             assert type(g4track) is G4Track
@@ -216,8 +218,6 @@ class Track(object):
         self.timestamp = timestamp
 
         self.label = str(label)
-
-        self.algorithms = {}
 
     @classmethod
     def from_h5initial_all(cls, evt):
@@ -573,25 +573,19 @@ def test_TrackExceptions():
     try:
         Track(image)
         raise RuntimeError('Failed to raise error on Track instantiation')
-    except RuntimeError:
+    except InputError:
         pass
 
     try:
         Track(image, is_modeled=True, is_measured=True)
         raise RuntimeError('Failed to raise error on Track instantiation')
-    except RuntimeError:
+    except InputError:
         pass
 
     try:
         Track(image, is_modeled=False, is_measured=False)
         raise RuntimeError('Failed to raise error on Track instantiation')
-    except RuntimeError:
-        pass
-
-    try:
-        Track(image, is_experimental=True, is_measured=False)
-        raise RuntimeError('Failed to raise error on Track instantiation')
-    except RuntimeError:
+    except InputError:
         pass
 
 
