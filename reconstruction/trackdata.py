@@ -6,7 +6,6 @@ import datetime
 import ipdb as pdb
 
 import hybridtrack
-import evaluation
 
 
 ##############################################################################
@@ -356,49 +355,6 @@ class InterfaceError(TrackDataError):
 ##############################################################################
 #                                    I/O                                     #
 ##############################################################################
-
-def write_alg_results_to_hdf5(alg_results, h5group):
-    """
-    what does it take to write a class to file?
-    """
-
-    if alg_results.parent is not None:
-        for i, parent in enumerate(alg_results.parent):
-            groupname = 'parent'
-            if groupname not in h5group:
-                parent_group = h5group.create_group(groupname)
-
-            parent_index_str = str(i)
-            this_group = parent_group.create_group(parent_index_str)
-            write_alg_results_to_hdf5(parent, this_group)
-
-    if alg_results.filename is not None:
-        for i, filename in enumerate(alg_results.filename):
-            groupname = 'filename'
-            if groupname not in h5group:
-                filename_group = h5group.create_group(groupname)
-            filename_index_str = str(i)
-            filename_group.attrs.create(filename_index_str, filename)
-
-    h5group.attrs.create('has_alpha', alg_results.has_alpha, dtype=bool)
-    h5group.attrs.create('has_beta', alg_results.has_beta, dtype=bool)
-    h5group.attrs.create('data_length', alg_results.data_length, dtype=int)
-
-    L = alg_results.data_length
-    h5group.create_dataset(
-        'alpha_true_deg', (L,), dtype=float, data=alg_results.alpha_true_deg)
-    h5group.create_dataset(
-        'beta_true_deg', (L,), dtype=float, data=alg_results.beta_true_deg)
-
-    for i, unc in enumerate(alg_results.uncertainty_list):
-        groupname = 'uncertainty_list'
-        if groupname not in h5group:
-            unc_list_group = h5group.create_group(groupname)
-
-        unc_list_index_str = str(i)
-        this_unc_group = unc_list_group.create_group(unc_list_index_str)
-        write_unc_to_hdf5(unc, this_unc_group)
-
 
 def write_object_to_hdf5(obj, h5group):
     """
