@@ -150,9 +150,30 @@ class Track(object):
           label (string)
         """
 
+        self.get_data_format()
+
         self.input_handling(image, **kwargs)
 
         self.algorithms = {}
+
+    def get_data_format(self):
+        """
+        Data format for writing to HDF5 (see trackdata.py)
+        """
+
+        self.data_format = (
+            ClassAttr('is_modeled', bool),
+            ClassAttr('pixel_size_um', float),
+            ClassAttr('noise_ev', float, may_be_none=True),
+            ClassAttr('g4track', G4Track,
+                      may_be_none=True, is_user_object=True),
+            ClassAttr('energy_kev', float),
+            ClassAttr('x_offset_pix', int, may_be_none=True),
+            ClassAttr('y_offset_pix', int, may_be_none=True),
+            ClassAttr('timestamp', str, may_be_none=True),
+            ClassAttr('shutter_ind', int, may_be_none=True),
+            ClassAttr('label', str, may_be_none=True),
+        )
 
     def input_handling(self, image,
                        is_modeled=None, is_measured=None,
@@ -176,9 +197,10 @@ class Track(object):
             self.is_modeled = bool(is_modeled)
             self.is_measured = not bool(is_modeled)
 
-        if g4track is not None:
-            assert type(g4track) is G4Track
+        if g4track is not None and not isinstance(g4track, G4Track):
+            raise InputError('g4track input must be a G4Track!')
             # or handle e.g. a g4 matrix input
+        self.g4track = g4track
 
         self.image = np.array(image)
 
@@ -189,8 +211,6 @@ class Track(object):
         if noise_ev is not None:
             noise_ev = np.float(noise_ev)
         self.noise_ev = noise_ev
-
-        self.g4track = g4track
 
         if energy_kev is not None:
             energy_kev = np.float(energy_kev)
@@ -217,11 +237,14 @@ class Track(object):
             shutter_ind = int(np.round(shutter_ind))
         self.shutter_ind = shutter_ind
 
-        if timestamp is not None and type(timestamp) is not datetime.datetime:
-                raise InputError('timestamp should be a datetime object')
+        if (timestamp is not None and
+                not isinstance(timestamp, datetime.datetime)):
+            raise InputError('timestamp should be a datetime object')
         self.timestamp = timestamp
 
-        self.label = str(label)
+        if label is not None:
+            label = str(label)
+        self.label = label
 
     @classmethod
     def from_h5initial_all(cls, evt):
