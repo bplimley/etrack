@@ -38,6 +38,7 @@ class AlgorithmResults(object):
     """
 
     class_name = 'AlgorithmResults'
+    __version__ = '0.1'
 
     def __init__(self, parent=None, filename=None, **kwargs):
         """
@@ -624,6 +625,7 @@ class UncertaintyParameter(object):
     """
 
     class_name = 'UncertaintyParameter'
+    __version__ = '0.1'
     data_format = (
         ClassAttr('name', str),
         ClassAttr('fit_name', str),
@@ -731,6 +733,7 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
 
     name = 'Alpha Gaussian + constant'
     class_name = 'AlphaGaussPlusConstant'
+    __version__ = '0.1'
 
     def __init__(self, alg_results):
         Uncertainty.__init__(self, alg_results)
@@ -867,6 +870,7 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
 
     name = 'Alpha Gaussian + backscatter Gaussian + constant'
     class_name = 'AlphaGaussPlusConstantPlusBackscatter'
+    __version__ = '0.1'
 
     # prepare_data is inherited from AlphaGaussPlusConstant
 
@@ -964,6 +968,7 @@ class Alpha68(AlphaUncertainty):
 
     name = 'Alpha 68% containment'
     class_name = 'Alpha68'
+    __version__ = '0.1'
 
     def prepare_data(self):
         """
@@ -1031,6 +1036,7 @@ class BetaRms(BetaUncertainty):
 
     name = 'Beta RMS'
     class_name = 'BetaRms'
+    __version__ = '0.1'
 
     def prepare_data(self):
         pass

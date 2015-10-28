@@ -18,6 +18,8 @@ class G4Track(object):
     Electron track from Geant4.
     """
 
+    __version__ = '0.1'
+
     def __init__(self,
                  matrix=None,
                  alpha_deg=None, beta_deg=None,
@@ -122,6 +124,8 @@ class Track(object):
     """
     Electron track, from modeling or from experiment.
     """
+
+    __version__ = '0.1'
 
     def __init__(self, image, **kwargs):
         """
@@ -322,6 +326,8 @@ class AlgorithmOutput(object):
       info (optional): can contain more information from algorithm
     """
 
+    __version__ = '0.1'
+
     def __init__(self, alg_name, alpha_deg, beta_deg, info=None):
         self.alpha_deg = alpha_deg
         self.beta_deg = beta_deg
@@ -521,6 +527,8 @@ class ClassAttr(object):
     and loading from file.
     """
 
+    __version__ = '0.1'
+
     def __init__(self, name, dtype,
                  make_dset=False,
                  may_be_none=False,
@@ -598,6 +606,15 @@ def test_G4Track():
     # G4Track(matrix=test_matrix())
 
 
+def test_IO():
+    """
+    """
+
+    filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(6,)))
+    filename = '.'.join(filebase, 'h5')
+
+    print 'not implemented yet'
+
 if __name__ == '__main__':
     """
     Run tests.
@@ -607,6 +624,7 @@ if __name__ == '__main__':
     test_Track()
     test_TrackExceptions()
     test_AlgorithmOutput()
+    test_IO()
 
     try:
         h5initial = h5py.File('MultiAngle_HT_11_12.h5', 'r')
