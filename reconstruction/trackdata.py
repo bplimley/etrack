@@ -240,7 +240,7 @@ class Track(object):
         if (timestamp is not None and
                 not isinstance(timestamp, datetime.datetime)):
             raise InputError('timestamp should be a datetime object')
-        self.timestamp = timestamp
+        self.timestamp = str(timestamp)
 
         if label is not None:
             label = str(label)
@@ -629,14 +629,127 @@ def test_G4Track():
     # G4Track(matrix=test_matrix())
 
 
-def test_IO():
+class TestIO(object):
+    """
+    For testing data_format handling in IO.
+    """
+
+    def __init__(self, data_format, **kwargs):
+        """
+        Initialize a TestIO object with a user-defined data_format and
+        list of keyword arguments.
+        """
+
+        self.data_format = data_format
+        for key, val in kwargs.iteritems():
+            setattr(self, key, val)
+
+
+def test_write():
     """
     """
 
-    filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(6,)))
-    filename = '.'.join(filebase, 'h5')
+    import os
 
-    print 'not implemented yet'
+    import evaluation
+
+    filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(8,)))
+    filename = '.'.join([filebase, 'h5'])
+
+    # TestIO objects and ClassAttr
+    # test all 'singular' data types
+    data_format = (ClassAttr('int1', int), ClassAttr('int2', int),
+                   ClassAttr('str1', str), ClassAttr('float1', float),
+                   ClassAttr('bool1', bool), ClassAttr('array1', np.ndarray))
+    t = TestIO(data_format, int1=34, int2=-6, str1='asdf', float1=3.141,
+               bool1=False, array1=np.array([1.0, 1.1, 1.2]))
+    with h5py.File(filename) as h5file:
+        write_object_to_hdf5(t, h5file)
+    os.remove(filename)
+
+    # test list (is_always_list)
+    data_format = (ClassAttr('float1', float),
+                   ClassAttr('list1', int, is_always_list=True),
+                   ClassAttr('str1', str))
+    t = TestIO(data_format, float1=-26.3, str1='foo', list1=[1, 3, 5, 7, 9])
+    with h5py.File(filename) as h5file:
+        write_object_to_hdf5(t, h5file)
+    os.remove(filename)
+
+    # test tuple (is_sometimes_list)
+    data_format = (ClassAttr('float1', float),
+                   ClassAttr('list1', float, is_sometimes_list=True),
+                   ClassAttr('str1', str))
+    t = TestIO(data_format, float1=-26.3, str1='foo', list1=(1.0, 3.3, 5.1))
+    with h5py.File(filename) as h5file:
+        write_object_to_hdf5(t, h5file)
+    os.remove(filename)
+
+    # test dict (is_always_dict)
+    data_format = (ClassAttr('float1', float),
+                   ClassAttr('dict1', str, is_always_dict=True),
+                   ClassAttr('str1', str))
+    t = TestIO(data_format, float1=-26.3, str1='foo',
+               dict1={'foo': 'foovalue', 'bar': 'barvalue', 'asdf': 'qwerty'})
+    with h5py.File(filename) as h5file:
+        write_object_to_hdf5(t, h5file)
+    os.remove(filename)
+
+    # test make_dset
+    data_format = (ClassAttr('float1', float),
+                   ClassAttr('array1', np.ndarray, make_dset=True),
+                   ClassAttr('str1', str))
+    t = TestIO(data_format, float1=-26.3, str1='foo',
+               array1=np.array(range(150)))
+    with h5py.File(filename) as h5file:
+        write_object_to_hdf5(t, h5file)
+    os.remove(filename)
+
+    # test may_be_none
+    data_format = (ClassAttr('float1', float),
+                   ClassAttr('str1', str, may_be_none=True))
+    t = TestIO(data_format, float1=-26.3, str1=None)
+    with h5py.File(filename) as h5file:
+        write_object_to_hdf5(t, h5file)
+    os.remove(filename)
+
+    # test is_sometimes_list without a list
+    data_format = (ClassAttr('float1', float),
+                   ClassAttr('maybelist1', int, is_sometimes_list=True),
+                   ClassAttr('str1', str))
+    t = TestIO(data_format, float1=-26.3, str1='foo', maybelist1=3)
+    with h5py.File(filename) as h5file:
+        write_object_to_hdf5(t, h5file)
+    os.remove(filename)
+
+    # test is_sometimes_dict without a dict
+    data_format = (ClassAttr('float1', float),
+                   ClassAttr('maybedict1', float, is_sometimes_dict=True),
+                   ClassAttr('str1', str))
+    t = TestIO(data_format, float1=-26.3, str1='foo', maybedict1=3.5)
+    with h5py.File(filename) as h5file:
+        write_object_to_hdf5(t, h5file)
+    os.remove(filename)
+
+    # Real Classes:
+    # single user-defined object
+    alg_results = evaluation.generate_random_alg_results(length=10000)
+    with h5py.File(filename) as h5file:
+        write_object_to_hdf5(alg_results, h5file)
+    os.remove(filename)
+
+    # multi-level object
+    alg_results.add_default_uncertainties()
+    with h5py.File(filename) as h5file:
+        write_object_to_hdf5(alg_results, h5file)
+    os.remove(filename)
+
+
+def test_read():
+    """
+    """
+
+    print 'IO read not implemented yet'
 
 if __name__ == '__main__':
     """
@@ -647,7 +760,8 @@ if __name__ == '__main__':
     test_Track()
     test_TrackExceptions()
     test_AlgorithmOutput()
-    test_IO()
+    test_write()
+    test_read()
 
     try:
         h5initial = h5py.File('MultiAngle_HT_11_12.h5', 'r')
