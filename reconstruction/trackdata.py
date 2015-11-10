@@ -6,6 +6,7 @@ import datetime
 import ipdb as pdb
 
 import hybridtrack
+import evaluation
 
 
 ##############################################################################
@@ -544,6 +545,33 @@ def write_object_to_hdf5(obj, h5group):
             write_item(attr, attr.name, data, h5group)
 
 
+def read_object_from_hdf5(h5group):
+    """
+    Take an HDF5 group which represents a class instance, parse and return it.
+
+    The class definition should exist in trackdata.py, evaluation.py.
+    """
+
+    def input_check(h5group):
+        """
+        Input HDF5 group should have 'obj_type' attribute which matches
+        a class we know.
+        """
+
+        if 'obj_type' not in h5group.attrs:
+            raise InterfaceError(
+                'HDF5 object should have an attribute, obj_type')
+        obj_type = h5group.attrs['obj_type']
+
+        if obj_type == 'AlgorithmResults':
+            data_format = evaluation.AlgorithmResults
+
+    # ~~~ begin main ~~~
+    input_check(h5group)
+
+
+
+
 class ClassAttr(object):
     """
     Description of one attribute of a class, for the purposes of saving to file
@@ -650,8 +678,6 @@ def test_write():
     """
 
     import os
-
-    import evaluation
 
     filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(8,)))
     filename = '.'.join([filebase, 'h5'])
