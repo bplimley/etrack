@@ -6,7 +6,8 @@ import datetime
 import ipdb as pdb
 
 import hybridtrack
-import evaluation
+import dataformats
+from dataformats import ClassAttr
 
 
 ##############################################################################
@@ -20,6 +21,8 @@ class G4Track(object):
     """
 
     __version__ = '0.1'
+    class_name = 'G4Track'
+    # data_format = dataformats.get_format(class_name)
 
     def __init__(self,
                  matrix=None,
@@ -127,6 +130,8 @@ class Track(object):
     """
 
     __version__ = '0.1'
+    class_name = 'Track'
+    data_format = dataformats.get_format(class_name)
 
     def __init__(self, image, **kwargs):
         """
@@ -151,30 +156,9 @@ class Track(object):
           label (string)
         """
 
-        self.get_data_format()
-
         self.input_handling(image, **kwargs)
 
         self.algorithms = {}
-
-    def get_data_format(self):
-        """
-        Data format for writing to HDF5 (see trackdata.py)
-        """
-
-        self.data_format = (
-            ClassAttr('is_modeled', bool),
-            ClassAttr('pixel_size_um', float),
-            ClassAttr('noise_ev', float, may_be_none=True),
-            ClassAttr('g4track', G4Track,
-                      may_be_none=True, is_user_object=True),
-            ClassAttr('energy_kev', float),
-            ClassAttr('x_offset_pix', int, may_be_none=True),
-            ClassAttr('y_offset_pix', int, may_be_none=True),
-            ClassAttr('timestamp', str, may_be_none=True),
-            ClassAttr('shutter_ind', int, may_be_none=True),
-            ClassAttr('label', str, may_be_none=True),
-        )
 
     def input_handling(self, image,
                        is_modeled=None, is_measured=None,
@@ -472,12 +456,16 @@ def write_object_to_hdf5(obj, h5group):
 
         # other types. exact type not required, but must be castable
         if attr.is_user_object:
-            # must be strict about type
-            if not isinstance(item, attr.dtype):
-                raise InterfaceError(
-                    'Expected user object of type ' + str(attr.dtype) +
-                    ', found a ' + str(type(item)))
-            # other checks performed in a sub-call of write_object_to_hdf5
+            pass
+            # can't check type because user-defined dtype has to be just a
+            #   classname string
+
+            # # must be strict about type
+            # if not isinstance(item, attr.dtype):
+            #     raise InterfaceError(
+            #         'Expected user object of type ' + str(attr.dtype) +
+            #         ', found a ' + str(type(item)))
+            # # other checks performed in a sub-call of write_object_to_hdf5
         elif attr.dtype is np.ndarray:
             try:
                 item = np.array(item)
@@ -549,7 +537,7 @@ def read_object_from_hdf5(h5group):
     """
     Take an HDF5 group which represents a class instance, parse and return it.
 
-    The class definition should exist in trackdata.py, evaluation.py.
+    The class definition should exist in dataformats.py.
     """
 
     def input_check(h5group):
@@ -562,41 +550,12 @@ def read_object_from_hdf5(h5group):
             raise InterfaceError(
                 'HDF5 object should have an attribute, obj_type')
         obj_type = h5group.attrs['obj_type']
+        data_format = dataformats.get_format(obj_type)
 
-        if obj_type == 'AlgorithmResults':
-            data_format = evaluation.AlgorithmResults
+        return data_format
 
     # ~~~ begin main ~~~
     input_check(h5group)
-
-
-
-
-class ClassAttr(object):
-    """
-    Description of one attribute of a class, for the purposes of saving to file
-    and loading from file.
-    """
-
-    __version__ = '0.1'
-
-    def __init__(self, name, dtype,
-                 make_dset=False,
-                 may_be_none=False,
-                 is_always_list=False,
-                 is_sometimes_list=False,
-                 is_always_dict=False,
-                 is_sometimes_dict=False,
-                 is_user_object=False):
-        self.name = name
-        self.dtype = dtype
-        self.make_dset = make_dset
-        self.may_be_none = may_be_none
-        self.is_always_list = is_always_list
-        self.is_sometimes_list = is_sometimes_list
-        self.is_always_dict = is_always_dict
-        self.is_sometimes_dict = is_sometimes_dict
-        self.is_user_object = is_user_object
 
 
 ##############################################################################
@@ -678,6 +637,7 @@ def test_write():
     """
 
     import os
+    import evaluation
 
     filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(8,)))
     filename = '.'.join([filebase, 'h5'])

@@ -6,7 +6,7 @@ import h5py
 import ipdb as pdb
 
 import trackdata
-from trackdata import ClassAttr
+import dataformats
 
 
 ##############################################################################
@@ -39,6 +39,7 @@ class AlgorithmResults(object):
 
     class_name = 'AlgorithmResults'
     __version__ = '0.1'
+    data_format = dataformats.get_format('AlgorithmResults')
 
     def __init__(self, parent=None, filename=None, **kwargs):
         """
@@ -65,41 +66,6 @@ class AlgorithmResults(object):
         self.uncertainty_list = []
         self.alpha_unc = None
         self.beta_unc = None
-
-        self.get_data_format()
-
-    def get_data_format(self):
-        """
-        Data format for writing to HDF5 (see trackdata.py)
-        """
-        self.data_format = (
-            ClassAttr('parent', AlgorithmResults,
-                      may_be_none=True, is_user_object=True,
-                      is_always_list=True),
-            ClassAttr('filename', str,
-                      may_be_none=True, is_always_list=True),
-            ClassAttr('has_alpha', bool),
-            ClassAttr('has_beta', bool),
-            ClassAttr('data_length', int),
-            ClassAttr('uncertainty_list', Uncertainty,
-                      is_user_object=True, is_always_list=True),
-            ClassAttr('alpha_true_deg', np.ndarray,
-                      may_be_none=True, make_dset=True),
-            ClassAttr('alpha_meas_deg', np.ndarray,
-                      may_be_none=True, make_dset=True),
-            ClassAttr('beta_true_deg', np.ndarray,
-                      may_be_none=True, make_dset=True),
-            ClassAttr('beta_meas_deg', np.ndarray,
-                      may_be_none=True, make_dset=True),
-            ClassAttr('energy_tot_kev', np.ndarray,
-                      may_be_none=True, make_dset=True),
-            ClassAttr('energy_dep_kev', np.ndarray,
-                      may_be_none=True, make_dset=True),
-            ClassAttr('depth_um', np.ndarray,
-                      may_be_none=True, make_dset=True),
-            ClassAttr('is_contained', np.ndarray,
-                      may_be_none=True, make_dset=True),
-        )
 
     @classmethod
     def data_attrs(cls):
@@ -472,6 +438,8 @@ class Uncertainty(object):
     Either an alpha uncertainty or beta uncertainty object.
     """
 
+    data_format = dataformats.get_format('Uncertainty')
+
     def __init__(self, alg_results):
         """
         Initialization is common to all Uncertainty objects.
@@ -487,20 +455,6 @@ class Uncertainty(object):
         self.prepare_data()
         self.perform_fit()
         self.compute_metrics()
-
-        self.get_data_format()
-
-    def get_data_format(self):
-        """
-        Data format for writing to HDF5 (see trackdata.py)
-        """
-        self.data_format = (
-            ClassAttr('delta', np.ndarray, make_dset=True),
-            ClassAttr('n_values', int),
-            ClassAttr('metrics', UncertaintyParameter,
-                      is_always_dict=True, is_user_object=True),
-            ClassAttr('angle_type', str),
-        )
 
     def compute_delta(self, alg_results):
         self.delta = []
@@ -626,15 +580,7 @@ class UncertaintyParameter(object):
 
     class_name = 'UncertaintyParameter'
     __version__ = '0.1'
-    data_format = (
-        ClassAttr('name', str),
-        ClassAttr('fit_name', str),
-        ClassAttr('value', float),
-        ClassAttr('uncertainty', float, is_sometimes_list=True),
-        ClassAttr('units', str),
-        ClassAttr('axis_min', float),
-        ClassAttr('axis_max', float),
-    )
+    data_format = dataformats.get_format('UncertaintyParameter')
 
     def __init__(self, name=None, fit_name=None,
                  value=None, uncertainty=None, units=None,
@@ -735,23 +681,7 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
     class_name = 'AlphaGaussPlusConstant'
     __version__ = '0.1'
 
-    def __init__(self, alg_results):
-        Uncertainty.__init__(self, alg_results)
-        self.append_data_format()
-
-    def append_data_format(self):
-        """
-        Data format for writing to HDF5 (see trackdata.py)
-        """
-
-        data_format = list(self.data_format)
-        data_format.extend([
-            ClassAttr('nhist', np.ndarray, make_dset=True),
-            ClassAttr('xhist', np.ndarray, make_dset=True),
-            ClassAttr('resolution', float),
-        ])
-        # TODO: fit?
-        self.data_format = tuple(data_format)
+    data_format = dataformats.get_format('AlphaGaussPlusConstant')
 
     def prepare_data(self):
         """
