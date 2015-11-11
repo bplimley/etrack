@@ -370,7 +370,7 @@ class InterfaceError(TrackDataError):
 #                                    I/O                                     #
 ##############################################################################
 
-def write_object_to_hdf5(obj, h5group):
+def write_object_to_hdf5(obj, h5group, id_dict={}):
     """
     Take the user-defined class instance, obj, and write it to HDF5.
 
@@ -479,7 +479,7 @@ def write_object_to_hdf5(obj, h5group):
 
         return item
 
-    def write_item(attr, name, data, h5group):
+    def write_item(attr, name, data, h5group, id_dict):
         """
         Write one item to the hdf5 file.
 
@@ -493,11 +493,17 @@ def write_object_to_hdf5(obj, h5group):
         """
 
         if attr.is_user_object:
-            this_obj_group = h5group.create_group(name)
-            this_obj_group.attrs.create('obj_type', data=data.class_name)
-            # recurse
-            # TODO: detect multiple references to the same object, and link
-            write_object_to_hdf5(data, this_obj_group)
+            # check id
+            if id(data) in id_dict:
+                # don't write the actual data; make a soft link
+                h5group[name] = h5py.SoftLink(id_dict[id(data)])
+            else:
+                this_obj_group = h5group.create_group(name)
+                this_obj_group.attrs.create('obj_type', data=data.class_name)
+
+                id_dict[id(data)] = this_obj_group.name
+                # recurse
+                write_object_to_hdf5(data, this_obj_group)
         elif attr.make_dset:
             h5group.create_dataset(
                 name, shape=np.shape(data), data=data)
@@ -522,20 +528,21 @@ def write_object_to_hdf5(obj, h5group):
             subgroup.attrs.create('obj_type', data='list')
             for i, item in enumerate(data):
                 item = item_check(attr, item)
-                write_item(attr, str(i), item, subgroup)
+                write_item(attr, str(i), item, subgroup, id_dict)
         elif is_dict:
             subgroup = h5group.create_group(attr.name)
             subgroup.attrs.create('obj_type', data='dict')
             for key, item in data.items():
                 item = item_check(attr, item)
-                write_item(attr, key, item, subgroup)
+                write_item(attr, key, item, subgroup, id_dict)
         else:
-            write_item(attr, attr.name, data, h5group)
+            write_item(attr, attr.name, data, h5group, id_dict)
 
 
 def read_object_from_hdf5(h5group):
     """
-    Take an HDF5 group which represents a class instance, parse and return it.
+    Take an HDF5 group which represents a class instance, parse and return it
+      as a dictionary of attribute values.
 
     The class definition should exist in dataformats.py.
     """
@@ -554,8 +561,39 @@ def read_object_from_hdf5(h5group):
 
         return data_format
 
+    def check_attr(h5group, attr):
+        """
+        Check that the data and attributes in h5group are compatible with the
+        data description in attr.
+
+        Return the attribute contents (data).
+        """
+
+        data = None
+        if attr.make_dset:
+            # HDF5 dataset
+            if attr.name in h5group:
+                data = h5group[attr.name]
+            elif not attr.may_be_none:
+                raise InterfaceError(
+                    'Missing dataset: {} in h5group {}'.format(
+                        attr.name, h5group.name))
+        else:
+            # HDF5 attribute
+            if attr.name in h5group.attrs:
+                data = h5group.attrs[attr.name]
+            elif not attr.may_be_none:
+                raise InterfaceError(
+                    'Missing attribute: {} in h5group {}'.format(
+                        attr.name, h5group.name))
+
+        return data
+
     # ~~~ begin main ~~~
-    input_check(h5group)
+    data_format = input_check(h5group)
+
+    for attr in data_format:
+        data = check_attr(h5group, attr)
 
 
 ##############################################################################
