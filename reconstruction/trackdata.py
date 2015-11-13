@@ -370,14 +370,17 @@ class InterfaceError(TrackDataError):
 #                                    I/O                                     #
 ##############################################################################
 
-def write_object_to_hdf5(obj, h5group, id_dict={}):
+def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
     """
-    Take the user-defined class instance, obj, and write it to HDF5.
+    Take the user-defined class instance, obj, and write it to HDF5
+    in HDF5 group h5group with name name.
 
     Requires data_format to be an attribute of the object.
 
     h5group is an existing h5py file/group to write to. The class attributes
     are attributes in h5group, datasets in h5group, or subgroups of h5group.
+
+    obj_dict = {pyobjectA: h5objectA, pyobjectB: h5objectB, ...}
     """
 
     def input_check(obj, h5group):
@@ -456,6 +459,7 @@ def write_object_to_hdf5(obj, h5group, id_dict={}):
 
         # other types. exact type not required, but must be castable
         if attr.is_user_object:
+            print '    {} is user object {}'.format(attr.name, attr.dtype)
             pass
             # can't check type because user-defined dtype has to be just a
             #   classname string
@@ -479,7 +483,7 @@ def write_object_to_hdf5(obj, h5group, id_dict={}):
 
         return item
 
-    def write_item(attr, name, data, h5group, id_dict):
+    def write_item(attr, name, data, h5group, obj_dict):
         """
         Write one item to the hdf5 file.
 
@@ -494,14 +498,14 @@ def write_object_to_hdf5(obj, h5group, id_dict={}):
 
         if attr.is_user_object:
             # check id
-            if id(data) in id_dict:
-                # don't write the actual data; make a soft link
-                h5group[name] = h5py.SoftLink(id_dict[id(data)])
+            if data in obj_dict:
+                # don't write the actual data; make a hard link
+                h5group[name] = obj_dict[data]
             else:
                 this_obj_group = h5group.create_group(name)
                 this_obj_group.attrs.create('obj_type', data=data.class_name)
 
-                id_dict[id(data)] = this_obj_group.name
+                obj_dict[data] = this_obj_group
                 # recurse
                 write_object_to_hdf5(data, this_obj_group)
         elif attr.make_dset:
@@ -514,6 +518,13 @@ def write_object_to_hdf5(obj, h5group, id_dict={}):
     # ~~~ begin main ~~~
     input_check(obj, h5group)
 
+    if obj in obj_dict:
+        h5group[name] = obj_dict[obj]
+        return None
+    else:
+        this_group = h5group.create_group(name)
+        obj_dict[obj] = this_group
+
     for attr in obj.data_format:
         data = attr_check(obj, attr)
 
@@ -524,27 +535,31 @@ def write_object_to_hdf5(obj, h5group, id_dict={}):
         is_list = isinstance(data, list) or isinstance(data, tuple)
         is_dict = isinstance(data, dict)
         if is_list:
-            subgroup = h5group.create_group(attr.name)
+            subgroup = this_group.create_group(attr.name)
             subgroup.attrs.create('obj_type', data='list')
             for i, item in enumerate(data):
                 item = item_check(attr, item)
-                write_item(attr, str(i), item, subgroup, id_dict)
+                write_item(attr, str(i), item, subgroup, obj_dict)
         elif is_dict:
-            subgroup = h5group.create_group(attr.name)
+            subgroup = this_group.create_group(attr.name)
             subgroup.attrs.create('obj_type', data='dict')
             for key, item in data.items():
                 item = item_check(attr, item)
-                write_item(attr, key, item, subgroup, id_dict)
+                write_item(attr, key, item, subgroup, obj_dict)
         else:
-            write_item(attr, attr.name, data, h5group, id_dict)
+            write_item(attr, attr.name, data, this_group, obj_dict)
+
+    return None
 
 
-def read_object_from_hdf5(h5group):
+def read_object_from_hdf5(h5group, obj_dict={}):
     """
     Take an HDF5 group which represents a class instance, parse and return it
       as a dictionary of attribute values.
 
     The class definition should exist in dataformats.py.
+
+    obj_dict = {h5objectA: pyobjectA, h5objectB: pyobjectB, ...}
     """
 
     def input_check(h5group):
@@ -591,6 +606,10 @@ def read_object_from_hdf5(h5group):
 
     # ~~~ begin main ~~~
     data_format = input_check(h5group)
+
+    if h5group in obj_dict:
+        # hard link
+        return obj_dict[h5group]
 
     for attr in data_format:
         data = check_attr(h5group, attr)
