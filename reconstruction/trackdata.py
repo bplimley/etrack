@@ -4,6 +4,7 @@ import numpy as np
 import h5py
 import datetime
 import ipdb as pdb
+import os
 
 import hybridtrack
 import dataformats
@@ -459,7 +460,6 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
 
         # other types. exact type not required, but must be castable
         if attr.is_user_object:
-            print '    {} is user object {}'.format(attr.name, attr.dtype)
             pass
             # can't check type because user-defined dtype has to be just a
             #   classname string
@@ -502,12 +502,8 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
                 # don't write the actual data; make a hard link
                 h5group[name] = obj_dict[data]
             else:
-                this_obj_group = h5group.create_group(name)
-                this_obj_group.attrs.create('obj_type', data=data.class_name)
-
-                obj_dict[data] = this_obj_group
                 # recurse
-                write_object_to_hdf5(data, this_obj_group)
+                write_object_to_hdf5(data, h5group, name)
         elif attr.make_dset:
             h5group.create_dataset(
                 name, shape=np.shape(data), data=data)
@@ -523,6 +519,7 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
         return None
     else:
         this_group = h5group.create_group(name)
+        this_group.attrs.create('obj_type', data=obj.class_name)
         obj_dict[obj] = this_group
 
     for attr in obj.data_format:
@@ -552,7 +549,7 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
     return None
 
 
-def read_object_from_hdf5(h5group, obj_dict={}):
+def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None):
     """
     Take an HDF5 group which represents a class instance, parse and return it
       as a dictionary of attribute values.
@@ -562,19 +559,23 @@ def read_object_from_hdf5(h5group, obj_dict={}):
     obj_dict = {h5objectA: pyobjectA, h5objectB: pyobjectB, ...}
     """
 
-    def check_input(h5group):
+    def check_input(h5group, data_format):
         """
         Input HDF5 group should have 'obj_type' attribute which matches
         a class we know.
         """
 
-        if 'obj_type' not in h5group.attrs:
-            raise InterfaceError(
-                'HDF5 object should have an attribute, obj_type')
-        obj_type = h5group.attrs['obj_type']
-        data_format = dataformats.get_format(obj_type)
+        if ext_data_format is not None:
+            # for testing: don't use dataformats.get_format()
+            return ext_data_format
 
-        return data_format
+        else:
+            if 'obj_type' not in h5group.attrs:
+                raise InterfaceError(
+                    'HDF5 object should have an attribute, obj_type')
+            obj_type = h5group.attrs['obj_type']
+            data_format = dataformats.get_format(obj_type)
+            return data_format
 
     def check_attr(h5group, attr):
         """
@@ -656,16 +657,42 @@ def read_object_from_hdf5(h5group, obj_dict={}):
 
         return hdf5_type
 
-    def check_item(attr, h5item):
-        pass
+    def read_item(attr, h5item, obj_dict={}):
 
-    def read_item():
-        pass
+        if attr.make_dset:
+            # hdf5 dataset
+            # only the np.ndarray should be non-singular
+            if attr.dtype != np.ndarray and h5item.shape != ():
+                raise InterfaceError('Found too many elements for attribute ' +
+                                     '{}'.format(attr.name))
+            if attr.dtype == int or attr.dtype == float or attr.dtype == bool:
+                output = np.zeros(())
+                h5item.read_direct(output)
+                output = attr.dtype(output)
+            elif attr.dtype == np.ndarray:
+                output = np.zeros(h5item.shape)
+                h5item.read_direct(output)
+            elif attr.dtype == str:
+                # blech
+                raise InterfaceError("Don't store strings in datasets!" +
+                                     '{}'.format(attr.name))
+            else:
+                raise InterfaceError('Unknown dtype in dataset for attribute' +
+                                     ' {}'.format(attr.name))
+
+        elif attr.is_user_object:
+            # user object: recurse
+            output = read_object_from_hdf5(h5item, obj_dict=obj_dict)
+        else:
+            # hdf5 attribute
+            output = attr.dtype(h5item)
+
+        return output
 
     #
     # ~~~ begin main ~~~
     #
-    data_format = check_input(h5group)
+    data_format = check_input(h5group, ext_data_format)
 
     if h5group in obj_dict:
         # the target of the hard link has already been created
@@ -677,6 +704,8 @@ def read_object_from_hdf5(h5group, obj_dict={}):
         output = obj_dict[h5group]
         hardlink_flag = True
     else:
+        # start with an empty dictionary
+        output = {}
         hardlink_flag = False
 
     for attr in data_format:
@@ -690,8 +719,8 @@ def read_object_from_hdf5(h5group, obj_dict={}):
             h5list = h5group[attr.name]
             while str(i) in h5list:
                 h5item = h5list[str(i)]
-                check_item(attr, h5item)
-                output[attr.name].append(read_item('...'))
+                output[attr.name].append(
+                    read_item(attr, h5item, obj_dict=obj_dict))
                 i += 1
 
         elif hdf5_type == 'dict':
@@ -699,18 +728,20 @@ def read_object_from_hdf5(h5group, obj_dict={}):
             for key, h5item in h5group[attr.name].iteritems():
                 if key == 'obj_type':
                     continue
-                check_item(attr, h5item)
-                output[attr.name][key] = read_item('...')
+                output[attr.name][key] = read_item(
+                    attr, h5item, obj_dict=obj_dict)
 
         elif hdf5_type == 'single':
             if attr.make_dset:
                 h5item = h5group[attr.name]
             else:
                 h5item = h5group.attrs[attr.name]
-            check_item(attr, h5item)
-            output[attr.name] = read_item('...')
+            output[attr.name] = read_item(
+                attr, h5item, obj_dict=obj_dict)
         else:
-            raise Exception('Unexpected hdf5_type, where did this come from?')
+            raise Exception(
+                'Unexpected hdf5_type on ' +
+                '{}, where did this come from?'.format(attr.name))
 
     if not hardlink_flag:
         obj_dict[h5group] = output
@@ -781,6 +812,8 @@ class TestIO(object):
     For testing data_format handling in IO.
     """
 
+    class_name = 'TestIO'
+
     def __init__(self, data_format, **kwargs):
         """
         Initialize a TestIO object with a user-defined data_format and
@@ -792,34 +825,47 @@ class TestIO(object):
             setattr(self, key, val)
 
 
-def test_write():
+def test_IO_singular(filename):
     """
+    test all 'singular' data types
+    write and read
     """
-
-    import os
-    import evaluation
-
-    filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(8,)))
-    filename = '.'.join([filebase, 'h5'])
 
     # TestIO objects and ClassAttr
-    # test all 'singular' data types
     data_format = (ClassAttr('int1', int), ClassAttr('int2', int),
                    ClassAttr('str1', str), ClassAttr('float1', float),
                    ClassAttr('bool1', bool), ClassAttr('array1', np.ndarray))
+    array_data = np.array([1.0, 2.1, 3.2])
     t = TestIO(data_format, int1=34, int2=-6, str1='asdf', float1=3.141,
-               bool1=False, array1=np.array([1.0, 1.1, 1.2]))
-    with h5py.File(filename) as h5file:
-        write_object_to_hdf5(t, h5file)
+               bool1=False, array1=array_data)
+    with h5py.File(filename, 'w') as h5file:
+        write_object_to_hdf5(t, h5file, 't')
+
+    with h5py.File(filename, 'r') as h5file:
+        t2 = read_object_from_hdf5(h5file['t'], ext_data_format=data_format)
+        assert t2['int1'] == 34
+        assert t2['int2'] == -6
+        assert t2['str1'] == 'asdf'
+        assert t2['float1'] == 3.141
+        assert t2['bool1'] is False
+        assert np.all(t2['array1'] == array_data)
+
     os.remove(filename)
+
+
+def test_IO_lists(filename):
+    """
+    lists and tuples
+    is_always_list, is_sometimes_list
+    """
 
     # test list (is_always_list)
     data_format = (ClassAttr('float1', float),
                    ClassAttr('list1', int, is_always_list=True),
                    ClassAttr('str1', str))
     t = TestIO(data_format, float1=-26.3, str1='foo', list1=[1, 3, 5, 7, 9])
-    with h5py.File(filename) as h5file:
-        write_object_to_hdf5(t, h5file)
+    with h5py.File(filename, 'w') as h5file:
+        write_object_to_hdf5(t, h5file, 't')
     os.remove(filename)
 
     # test tuple (is_sometimes_list)
@@ -827,36 +873,8 @@ def test_write():
                    ClassAttr('list1', float, is_sometimes_list=True),
                    ClassAttr('str1', str))
     t = TestIO(data_format, float1=-26.3, str1='foo', list1=(1.0, 3.3, 5.1))
-    with h5py.File(filename) as h5file:
-        write_object_to_hdf5(t, h5file)
-    os.remove(filename)
-
-    # test dict (is_always_dict)
-    data_format = (ClassAttr('float1', float),
-                   ClassAttr('dict1', str, is_always_dict=True),
-                   ClassAttr('str1', str))
-    t = TestIO(data_format, float1=-26.3, str1='foo',
-               dict1={'foo': 'foovalue', 'bar': 'barvalue', 'asdf': 'qwerty'})
-    with h5py.File(filename) as h5file:
-        write_object_to_hdf5(t, h5file)
-    os.remove(filename)
-
-    # test make_dset
-    data_format = (ClassAttr('float1', float),
-                   ClassAttr('array1', np.ndarray, make_dset=True),
-                   ClassAttr('str1', str))
-    t = TestIO(data_format, float1=-26.3, str1='foo',
-               array1=np.array(range(150)))
-    with h5py.File(filename) as h5file:
-        write_object_to_hdf5(t, h5file)
-    os.remove(filename)
-
-    # test may_be_none
-    data_format = (ClassAttr('float1', float),
-                   ClassAttr('str1', str, may_be_none=True))
-    t = TestIO(data_format, float1=-26.3, str1=None)
-    with h5py.File(filename) as h5file:
-        write_object_to_hdf5(t, h5file)
+    with h5py.File(filename, 'w') as h5file:
+        write_object_to_hdf5(t, h5file, 't')
     os.remove(filename)
 
     # test is_sometimes_list without a list
@@ -865,7 +883,23 @@ def test_write():
                    ClassAttr('str1', str))
     t = TestIO(data_format, float1=-26.3, str1='foo', maybelist1=3)
     with h5py.File(filename) as h5file:
-        write_object_to_hdf5(t, h5file)
+        write_object_to_hdf5(t, h5file, 't')
+    os.remove(filename)
+
+
+def test_IO_dicts(filename):
+    """
+    dicts
+    is_always_dict
+    """
+
+    data_format = (ClassAttr('float1', float),
+                   ClassAttr('dict1', str, is_always_dict=True),
+                   ClassAttr('str1', str))
+    t = TestIO(data_format, float1=-26.3, str1='foo',
+               dict1={'foo': 'foovalue', 'bar': 'barvalue', 'asdf': 'qwerty'})
+    with h5py.File(filename, 'w') as h5file:
+        write_object_to_hdf5(t, h5file, 't')
     os.remove(filename)
 
     # test is_sometimes_dict without a dict
@@ -873,29 +907,66 @@ def test_write():
                    ClassAttr('maybedict1', float, is_sometimes_dict=True),
                    ClassAttr('str1', str))
     t = TestIO(data_format, float1=-26.3, str1='foo', maybedict1=3.5)
-    with h5py.File(filename) as h5file:
-        write_object_to_hdf5(t, h5file)
+    with h5py.File(filename, 'w') as h5file:
+        write_object_to_hdf5(t, h5file, 't')
     os.remove(filename)
+
+
+def test_IO_dsets_none(filename):
+    """
+    make_dset
+    may_be_none
+    """
+
+    # test make_dset
+    data_format = (ClassAttr('float1', float),
+                   ClassAttr('array1', np.ndarray, make_dset=True),
+                   ClassAttr('str1', str))
+    t = TestIO(data_format, float1=-26.3, str1='foo',
+               array1=np.array(range(150)))
+    with h5py.File(filename, 'w') as h5file:
+        write_object_to_hdf5(t, h5file, 't')
+    os.remove(filename)
+
+    # test may_be_none
+    data_format = (ClassAttr('float1', float),
+                   ClassAttr('str1', str, may_be_none=True))
+    t = TestIO(data_format, float1=-26.3, str1=None)
+    with h5py.File(filename, 'w') as h5file:
+        write_object_to_hdf5(t, h5file, 't')
+    os.remove(filename)
+
+
+def test_IO_user_objects(filename):
+    """
+    single user object
+    multi-level user objects
+    """
+
+    import evaluation
 
     # Real Classes:
     # single user-defined object
     alg_results = evaluation.generate_random_alg_results(length=10000)
-    with h5py.File(filename) as h5file:
-        write_object_to_hdf5(alg_results, h5file)
+    with h5py.File(filename, 'w') as h5file:
+        write_object_to_hdf5(alg_results, h5file, 'alg_results', obj_dict={})
     os.remove(filename)
 
     # multi-level object
     alg_results.add_default_uncertainties()
-    with h5py.File(filename) as h5file:
-        write_object_to_hdf5(alg_results, h5file)
+    with h5py.File(filename, 'w') as h5file:
+        write_object_to_hdf5(alg_results, h5file, 'alg_results', obj_dict={})
     os.remove(filename)
 
 
-def test_read():
+def test_IO_obj_dict(filename):
     """
+    test obj_dict hardlink capability
     """
 
-    print 'IO read not implemented yet'
+    print "test_IO_obj_dict not implemented yet"
+    pass
+
 
 if __name__ == '__main__':
     """
@@ -906,8 +977,15 @@ if __name__ == '__main__':
     test_Track()
     test_TrackExceptions()
     test_AlgorithmOutput()
-    test_write()
-    test_read()
+
+    filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(8,)))
+    filename = '.'.join([filebase, 'h5'])
+
+    test_IO_singular(filename)
+    test_IO_lists(filename)
+    test_IO_dicts(filename)
+    test_IO_dsets_none(filename)
+    test_IO_user_objects(filename)
 
     try:
         h5initial = h5py.File('MultiAngle_HT_11_12.h5', 'r')
