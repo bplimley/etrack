@@ -68,6 +68,38 @@ class AlgorithmResults(object):
         self.beta_unc = None
 
     @classmethod
+    def from_hdf5(cls, h5group, obj_dict={}):
+        """
+        Initialize an AlgorithmResults object from an HDF5 group.
+        """
+
+        read_object = trackdata.read_object_from_hdf5(h5group,
+                                                      obj_dict=obj_dict)
+        if isinstance(read_object, dict):
+            # Construct the AlgorithmResults object
+            constructed_object = AlgorithmResults(
+                parent=None,
+                filename=None,
+                key=None,
+            )
+
+            # Update obj_dict
+            if read_object in obj_dict.values():
+                for key, value in obj_dict.iteritems():
+                    if value is read_object:
+                        obj_dict[key] = constructed_object
+
+        elif isinstance(read_object, cls):
+            # File was a hardlink found in obj_dict. No further work needed
+            constructed_object = read_object
+        else:
+            raise InputError(
+                'AlgorithmResults.from_hdf5 got neither a dict ' +
+                'nor the right class')
+
+        return constructed_object
+
+    @classmethod
     def data_attrs(cls):
         """
         List all the data attributes available to the AlgorithmResults class.

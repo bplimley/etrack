@@ -383,7 +383,7 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
     obj_dict = {pyobjectA: h5objectA, pyobjectB: h5objectB, ...}
     """
 
-    def input_check(obj, h5group):
+    def check_input(obj, h5group):
         """
         """
 
@@ -405,7 +405,7 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
             raise InterfaceError(
                 'Cannot write object to h5file in read-only mode')
 
-    def attr_check(obj, attr):
+    def check_attr(obj, attr):
         """
         attribute may be None, list/tuple, dict, or "singular" object
         """
@@ -439,11 +439,11 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
                 raise InterfaceError('Expected a list type')
             if attr.is_always_dict:
                 raise InterfaceError('Expected a dict type')
-            item_check(attr, data)
+            check_item(attr, data)
 
         return data
 
-    def item_check(attr, item):
+    def check_item(attr, item):
         """
         item must not be a list/tuple or dict. it is a "singular" object.
 
@@ -516,7 +516,7 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
                 name, data, shape=np.shape(data))
 
     # ~~~ begin main ~~~
-    input_check(obj, h5group)
+    check_input(obj, h5group)
 
     if obj in obj_dict:
         h5group[name] = obj_dict[obj]
@@ -526,7 +526,7 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
         obj_dict[obj] = this_group
 
     for attr in obj.data_format:
-        data = attr_check(obj, attr)
+        data = check_attr(obj, attr)
 
         # if None: skip
         if data is None:
@@ -538,13 +538,13 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
             subgroup = this_group.create_group(attr.name)
             subgroup.attrs.create('obj_type', data='list')
             for i, item in enumerate(data):
-                item = item_check(attr, item)
+                item = check_item(attr, item)
                 write_item(attr, str(i), item, subgroup, obj_dict)
         elif is_dict:
             subgroup = this_group.create_group(attr.name)
             subgroup.attrs.create('obj_type', data='dict')
             for key, item in data.items():
-                item = item_check(attr, item)
+                item = check_item(attr, item)
                 write_item(attr, key, item, subgroup, obj_dict)
         else:
             write_item(attr, attr.name, data, this_group, obj_dict)
@@ -562,7 +562,7 @@ def read_object_from_hdf5(h5group, obj_dict={}):
     obj_dict = {h5objectA: pyobjectA, h5objectB: pyobjectB, ...}
     """
 
-    def input_check(h5group):
+    def check_input(h5group):
         """
         Input HDF5 group should have 'obj_type' attribute which matches
         a class we know.
@@ -581,38 +581,141 @@ def read_object_from_hdf5(h5group, obj_dict={}):
         Check that the data and attributes in h5group are compatible with the
         data description in attr.
 
-        Return the attribute contents (data).
+        Return the attribute type: 'none', 'list', 'dict', or 'single'
+        Type 'single' includes basic data types and user objects.
         """
 
-        data = None
-        if attr.make_dset:
-            # HDF5 dataset
-            if attr.name in h5group:
-                data = h5group[attr.name]
-            elif not attr.may_be_none:
+        if attr.name in h5group:
+            # it is either an h5group or a dataset.
+            if 'obj_type' in h5group[attr.name].attrs:
+                # if it has the obj_type attribute,
+                # it is either a list or a dict or a user-defined object.
+                obj_type = h5group[attr.name].attrs['obj_type']
+                if obj_type == 'list':
+                    if not attr.is_always_list and not attr.is_sometimes_list:
+                        raise InterfaceError(
+                            'Unexpected list in HDF5 file for attribute ' +
+                            '{}'.format(attr.name))
+                    hdf5_type = 'list'
+                elif obj_type == 'dict':
+                    if not attr.is_always_dict and not attr.is_sometimes_dict:
+                        raise InterfaceError(
+                            'Unexpected dict in HDF5 file for attribute ' +
+                            '{}'.format(attr.name))
+                    hdf5_type = 'dict'
+                else:
+                    # user object
+                    if attr.is_always_list:
+                        raise InterfaceError(
+                            'Expected a list in HDF5 file for attribute ' +
+                            '{}'.format(attr.name))
+                    elif attr.is_always_dict:
+                        raise InterfaceError(
+                            'Expected a dict in HDF5 file for attribute ' +
+                            '{}'.format(attr.name))
+                    elif not attr.is_user_object:
+                        raise InterfaceError(
+                            'Unexpected user object in HDF5 file for ' +
+                            'attribute {}'.format(attr.name))
+                    hdf5_type = 'single'
+            else:
+                # not marked with obj_type attribute. A dataset.
+                if not attr.make_dset:
+                    raise InterfaceError(
+                        'Unexpected dataset in HDF5 file for attribute ' +
+                        '{}'.format(attr.name))
+                hdf5_type = 'single'
+
+        elif attr.name in h5group.attrs:
+            # it is an h5 attribute.
+            if attr.is_always_list:
                 raise InterfaceError(
-                    'Missing dataset: {} in h5group {}'.format(
-                        attr.name, h5group.name))
+                    'Expected a list in HDF5 file for attribute ' +
+                    '{}'.format(attr.name))
+            elif attr.is_always_dict:
+                raise InterfaceError(
+                    'Expected a dict in HDF5 file for attribute ' +
+                    '{}'.format(attr.name))
+            elif attr.make_dset:
+                raise InterfaceError(
+                    'Expected a dataset in HDF5 file for attribute ' +
+                    '{}; found HDF5 attribute instead'.format(attr.name))
+            elif attr.is_user_object:
+                raise InterfaceError(
+                    'Expected a user object in HDF5 file for attribute ' +
+                    '{}; found HDF5 attribute instead'.format(attr.name))
+            hdf5_type = 'single'
+
         else:
-            # HDF5 attribute
-            if attr.name in h5group.attrs:
-                data = h5group.attrs[attr.name]
-            elif not attr.may_be_none:
+            # not a h5 group, dataset, or attribute. It isn't there.
+            if not attr.may_be_none:
                 raise InterfaceError(
-                    'Missing attribute: {} in h5group {}'.format(
-                        attr.name, h5group.name))
+                    'Failed to find required attribute ' +
+                    '{} in HDF5 file'.format(attr.name))
+            hdf5_type = 'none'
 
-        return data
+        return hdf5_type
 
+    def check_item(attr, h5item):
+        pass
+
+    def read_item():
+        pass
+
+    #
     # ~~~ begin main ~~~
-    data_format = input_check(h5group)
+    #
+    data_format = check_input(h5group)
 
     if h5group in obj_dict:
-        # hard link
-        return obj_dict[h5group]
+        # the target of the hard link has already been created
+        # this works because (h5groupA == h5groupB) iff they are hardlinks
+        #   pointing to the same object in the hdf5 file.
+        # (specifically, they are equal but not identical,
+        #   i.e. (h5groupA is h5groupB) is false
+        #   for hard links pointing to the same object in the hdf5 file)
+        output = obj_dict[h5group]
+        hardlink_flag = True
+    else:
+        hardlink_flag = False
 
     for attr in data_format:
-        data = check_attr(h5group, attr)
+        hdf5_type = check_attr(h5group, attr)
+        if hdf5_type == 'none':
+            output[attr.name] = None
+            continue
+        elif hdf5_type == 'list':
+            i = 0
+            output[attr.name] = []
+            h5list = h5group[attr.name]
+            while str(i) in h5list:
+                h5item = h5list[str(i)]
+                check_item(attr, h5item)
+                output[attr.name].append(read_item('...'))
+                i += 1
+
+        elif hdf5_type == 'dict':
+            output[attr.name] = {}
+            for key, h5item in h5group[attr.name].iteritems():
+                if key == 'obj_type':
+                    continue
+                check_item(attr, h5item)
+                output[attr.name][key] = read_item('...')
+
+        elif hdf5_type == 'single':
+            if attr.make_dset:
+                h5item = h5group[attr.name]
+            else:
+                h5item = h5group.attrs[attr.name]
+            check_item(attr, h5item)
+            output[attr.name] = read_item('...')
+        else:
+            raise Exception('Unexpected hdf5_type, where did this come from?')
+
+    if not hardlink_flag:
+        obj_dict[h5group] = output
+
+    return output
 
 
 ##############################################################################
