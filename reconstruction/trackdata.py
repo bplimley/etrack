@@ -659,6 +659,9 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None):
 
     def read_item(attr, h5item, obj_dict={}):
 
+        if h5item in obj_dict:
+            return obj_dict[h5item]
+
         if attr.make_dset:
             # hdf5 dataset
             # only the np.ndarray should be non-singular
@@ -706,8 +709,10 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None):
         output = obj_dict[h5group]
         hardlink_flag = True
     else:
-        # start with an empty dictionary
+        # start ouptput as an empty dictionary
         output = {}
+        # add this object to the obj_dict
+        obj_dict[h5group] = output
         hardlink_flag = False
 
     for attr in data_format:
@@ -719,8 +724,8 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None):
             i = 0
             output[attr.name] = []
             h5list = h5group[attr.name]
-            if attr.make_dset:
-                # list elements are stored as hdf5 datasets
+            if attr.make_dset or attr.is_user_object:
+                # list elements are stored as hdf5 datasets or hdf5 groups
                 while str(i) in h5list:
                     h5item = h5list[str(i)]
                     output[attr.name].append(
@@ -1098,6 +1103,21 @@ def test_IO_obj_dict(filename):
     test obj_dict hardlink capability
     """
 
+    import evaluation
+
+    # first, check a single object which is listed in obj_dict
+    alg_results = evaluation.generate_random_alg_results(length=10000)
+    alg_results.parent = [alg_results]
+    with h5py.File(filename, 'w') as h5file:
+        write_object_to_hdf5(
+            alg_results, h5file, 'alg_results', obj_dict={})
+    with h5py.File(filename, 'r') as h5file:
+        ar2 = read_object_from_hdf5(
+            h5file['alg_results'], obj_dict={})
+    assert ar2['parent'][0] is ar2
+    os.remove(filename)
+
+    # ...
     print "test_IO_obj_dict not implemented yet"
     pass
 
@@ -1115,11 +1135,18 @@ if __name__ == '__main__':
     filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(8,)))
     filename = '.'.join([filebase, 'h5'])
 
-    test_IO_singular(filename)
-    test_IO_lists(filename)
-    test_IO_dicts(filename)
-    test_IO_dsets_none(filename)
-    test_IO_user_objects(filename)
+    try:
+        # test_IO_singular(filename)
+        # test_IO_lists(filename)
+        # test_IO_dicts(filename)
+        # test_IO_dsets_none(filename)
+        # test_IO_user_objects(filename)
+        test_IO_obj_dict(filename)
+    finally:
+        try:
+            os.remove(filename)
+        except OSError:
+            pass
 
     try:
         h5initial = h5py.File('MultiAngle_HT_11_12.h5', 'r')
