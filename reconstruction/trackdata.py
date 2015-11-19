@@ -1009,6 +1009,16 @@ def test_IO_user_objects(filename):
         write_object_to_hdf5(alg_results, h5file, 'alg_results', obj_dict={})
     with h5py.File(filename, 'r') as h5file:
         ar2 = read_object_from_hdf5(h5file['alg_results'])
+    assert np.all(ar2['alpha_meas_deg'] == alg_results.alpha_meas_deg)
+    assert np.all(ar2['alpha_true_deg'] == alg_results.alpha_true_deg)
+    assert np.all(ar2['beta_meas_deg'] == alg_results.beta_meas_deg)
+    assert np.all(ar2['beta_true_deg'] == alg_results.beta_true_deg)
+    assert np.all(ar2['depth_um'] == alg_results.depth_um)
+    assert np.all(ar2['energy_tot_kev'] == alg_results.energy_tot_kev)
+    assert np.all(ar2['energy_dep_kev'] == alg_results.energy_dep_kev)
+    assert np.all(ar2['is_contained'] == alg_results.is_contained)
+    assert ar2['has_alpha'] == alg_results.has_alpha
+    assert ar2['has_beta'] == alg_results.has_beta
     os.remove(filename)
 
     # multi-level object
@@ -1017,6 +1027,69 @@ def test_IO_user_objects(filename):
         write_object_to_hdf5(alg_results, h5file, 'alg_results', obj_dict={})
     with h5py.File(filename, 'r') as h5file:
         ar2 = read_object_from_hdf5(h5file['alg_results'])
+
+    assert np.all(ar2['alpha_meas_deg'] == alg_results.alpha_meas_deg)
+    assert np.all(ar2['alpha_true_deg'] == alg_results.alpha_true_deg)
+    assert np.all(ar2['beta_meas_deg'] == alg_results.beta_meas_deg)
+    assert np.all(ar2['beta_true_deg'] == alg_results.beta_true_deg)
+    assert np.all(ar2['depth_um'] == alg_results.depth_um)
+    assert np.all(ar2['energy_tot_kev'] == alg_results.energy_tot_kev)
+    assert np.all(ar2['energy_dep_kev'] == alg_results.energy_dep_kev)
+    assert np.all(ar2['is_contained'] == alg_results.is_contained)
+    assert ar2['has_alpha'] == alg_results.has_alpha
+    assert ar2['has_beta'] == alg_results.has_beta
+
+    # currently: alpha_unc and beta_unc are not in dataformats for alg_results
+
+    # assert ar2['alpha_unc']['angle_type'] == alg_results.alpha_unc.angle_type
+    # assert np.all(ar2['alpha_unc']['delta'] == alg_results.alpha_unc.delta)
+    # assert ar2['alpha_unc']['n_values'] == alg_results.alpha_unc.n_values
+    # assert ar2['alpha_unc']['resolution'] == alg_results.alpha_unc.resolution
+    # assert np.all(ar2['alpha_unc']['nhist'] == alg_results.alpha_unc.nhist)
+    # assert np.all(ar2['alpha_unc']['xhist'] == alg_results.alpha_unc.xhist)
+    #
+    # assert ar2['beta_unc']['angle_type'] == alg_results.beta_unc.angle_type
+    # assert np.all(ar2['beta_unc']['delta'] == alg_results.beta_unc.delta)
+    # assert ar2['beta_unc']['n_values'] == alg_results.beta_unc.n_values
+    # assert ar2['beta_unc']['resolution'] == alg_results.beta_unc.resolution
+    # assert np.all(ar2['beta_unc']['nhist'] == alg_results.beta_unc.nhist)
+    # assert np.all(ar2['beta_unc']['xhist'] == alg_results.beta_unc.xhist)
+
+    for i, unc2 in enumerate(ar2['uncertainty_list']):
+        unc = alg_results.uncertainty_list[i]
+        assert unc2['angle_type'] == unc.angle_type
+        assert np.all(unc2['delta'] == unc.delta)
+        assert unc2['n_values'] == unc.n_values
+        assert unc2['resolution'] == unc.resolution
+        assert np.all(unc2['nhist'] == unc.nhist)
+        assert np.all(unc2['xhist'] == unc.xhist)
+
+        for metricname, metric in unc2['metrics']:
+            assert metric.axis_max == unc.metrics[metricname].axis_max
+            assert metric.axis_min == unc.metrics[metricname].axis_min
+            assert metric.fit_name == unc.metrics[metricname].fit_name
+            assert metric.name == unc.metrics[metricname].name
+            assert metric.units == unc.metrics[metricname].units
+            assert metric.value == unc.metrics[metricname].value
+
+    # unc = alg_results.alpha_unc
+    # for metricname, metric in ar2['alpha_unc']['metrics']:
+    #     assert metric.axis_max == unc.metrics[metricname].axis_max
+    #     assert metric.axis_min == unc.metrics[metricname].axis_min
+    #     assert metric.fit_name == unc.metrics[metricname].fit_name
+    #     assert metric.name == unc.metrics[metricname].name
+    #     assert metric.units == unc.metrics[metricname].units
+    #     assert metric.value == unc.metrics[metricname].value
+    #
+    # unc = alg_results.beta_unc
+    # for metricname, metric in ar2['beta_unc']['metrics']:
+    #     assert metric.axis_max == unc.metrics[metricname].axis_max
+    #     assert metric.axis_min == unc.metrics[metricname].axis_min
+    #     assert metric.fit_name == unc.metrics[metricname].fit_name
+    #     assert metric.name == unc.metrics[metricname].name
+    #     assert metric.units == unc.metrics[metricname].units
+    #     assert metric.value == unc.metrics[metricname].value
+
     os.remove(filename)
 
 
