@@ -503,7 +503,7 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
                 h5group[name] = obj_dict[data]
             else:
                 # recurse
-                write_object_to_hdf5(data, h5group, name)
+                write_object_to_hdf5(data, h5group, name, obj_dict=obj_dict)
         elif attr.make_dset:
             h5group.create_dataset(
                 name, shape=np.shape(data), data=data)
@@ -518,6 +518,8 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
         h5group[name] = obj_dict[obj]
         return None
     else:
+        if name in h5group:
+            del(h5group[name])
         this_group = h5group.create_group(name)
         this_group.attrs.create('obj_type', data=obj.class_name)
         obj_dict[obj] = this_group
@@ -661,7 +663,7 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None,
     def read_item(attr, h5item, obj_dict={}):
 
         vprint('     Reading item {}'.format(h5item))
-        if h5item in obj_dict:
+        if (not isinstance(h5item, np.ndarray)) and h5item in obj_dict:
             vprint('     Item {} in obj_dict! Skipping'.format(h5item))
             return obj_dict[h5item]
 
@@ -723,7 +725,6 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None,
         #   for hard links pointing to the same object in the hdf5 file)
         vprint('  Found {} in obj_dict! Skipping'.format(str(h5group)))
         output = obj_dict[h5group]
-        hardlink_flag = True
         return output
     else:
         vprint('  {} not in obj_dict. adding and processing...'.format(
@@ -732,7 +733,6 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None,
         output = {}
         # add this object to the obj_dict
         obj_dict[h5group] = output
-        hardlink_flag = False
 
     for attr in data_format:
         vprint('  Attribute {}'.format(attr.name))
@@ -1029,16 +1029,7 @@ def test_IO_user_objects(filename):
         write_object_to_hdf5(alg_results, h5file, 'alg_results', obj_dict={})
     with h5py.File(filename, 'r') as h5file:
         ar2 = read_object_from_hdf5(h5file['alg_results'])
-    assert np.all(ar2['alpha_meas_deg'] == alg_results.alpha_meas_deg)
-    assert np.all(ar2['alpha_true_deg'] == alg_results.alpha_true_deg)
-    assert np.all(ar2['beta_meas_deg'] == alg_results.beta_meas_deg)
-    assert np.all(ar2['beta_true_deg'] == alg_results.beta_true_deg)
-    assert np.all(ar2['depth_um'] == alg_results.depth_um)
-    assert np.all(ar2['energy_tot_kev'] == alg_results.energy_tot_kev)
-    assert np.all(ar2['energy_dep_kev'] == alg_results.energy_dep_kev)
-    assert np.all(ar2['is_contained'] == alg_results.is_contained)
-    assert ar2['has_alpha'] == alg_results.has_alpha
-    assert ar2['has_beta'] == alg_results.has_beta
+    check_alg_results_IO(ar2, alg_results, uncertainty_flag=False)
     os.remove(filename)
 
     # multi-level object
@@ -1047,68 +1038,82 @@ def test_IO_user_objects(filename):
         write_object_to_hdf5(alg_results, h5file, 'alg_results', obj_dict={})
     with h5py.File(filename, 'r') as h5file:
         ar2 = read_object_from_hdf5(h5file['alg_results'])
-
-    assert np.all(ar2['alpha_meas_deg'] == alg_results.alpha_meas_deg)
-    assert np.all(ar2['alpha_true_deg'] == alg_results.alpha_true_deg)
-    assert np.all(ar2['beta_meas_deg'] == alg_results.beta_meas_deg)
-    assert np.all(ar2['beta_true_deg'] == alg_results.beta_true_deg)
-    assert np.all(ar2['depth_um'] == alg_results.depth_um)
-    assert np.all(ar2['energy_tot_kev'] == alg_results.energy_tot_kev)
-    assert np.all(ar2['energy_dep_kev'] == alg_results.energy_dep_kev)
-    assert np.all(ar2['is_contained'] == alg_results.is_contained)
-    assert ar2['has_alpha'] == alg_results.has_alpha
-    assert ar2['has_beta'] == alg_results.has_beta
-
-    assert ar2['alpha_unc']['angle_type'] == alg_results.alpha_unc.angle_type
-    assert np.all(ar2['alpha_unc']['delta'] == alg_results.alpha_unc.delta)
-    assert ar2['alpha_unc']['n_values'] == alg_results.alpha_unc.n_values
-    assert ar2['alpha_unc']['resolution'] == alg_results.alpha_unc.resolution
-    assert np.all(ar2['alpha_unc']['nhist'] == alg_results.alpha_unc.nhist)
-    assert np.all(ar2['alpha_unc']['xhist'] == alg_results.alpha_unc.xhist)
-
-    assert ar2['beta_unc']['angle_type'] == alg_results.beta_unc.angle_type
-    assert np.all(ar2['beta_unc']['delta'] == alg_results.beta_unc.delta)
-    assert ar2['beta_unc']['n_values'] == alg_results.beta_unc.n_values
-    assert ar2['beta_unc']['resolution'] == alg_results.beta_unc.resolution
-    assert np.all(ar2['beta_unc']['nhist'] == alg_results.beta_unc.nhist)
-    assert np.all(ar2['beta_unc']['xhist'] == alg_results.beta_unc.xhist)
-
-    for i, unc2 in enumerate(ar2['uncertainty_list']):
-        unc = alg_results.uncertainty_list[i]
-        assert unc2['angle_type'] == unc.angle_type
-        assert np.all(unc2['delta'] == unc.delta)
-        assert unc2['n_values'] == unc.n_values
-        assert unc2['resolution'] == unc.resolution
-        assert np.all(unc2['nhist'] == unc.nhist)
-        assert np.all(unc2['xhist'] == unc.xhist)
-
-        for metricname, metric in unc2['metrics']:
-            assert metric.axis_max == unc.metrics[metricname].axis_max
-            assert metric.axis_min == unc.metrics[metricname].axis_min
-            assert metric.fit_name == unc.metrics[metricname].fit_name
-            assert metric.name == unc.metrics[metricname].name
-            assert metric.units == unc.metrics[metricname].units
-            assert metric.value == unc.metrics[metricname].value
-
-    unc = alg_results.alpha_unc
-    for metricname, metric in ar2['alpha_unc']['metrics']:
-        assert metric.axis_max == unc.metrics[metricname].axis_max
-        assert metric.axis_min == unc.metrics[metricname].axis_min
-        assert metric.fit_name == unc.metrics[metricname].fit_name
-        assert metric.name == unc.metrics[metricname].name
-        assert metric.units == unc.metrics[metricname].units
-        assert metric.value == unc.metrics[metricname].value
-
-    unc = alg_results.beta_unc
-    for metricname, metric in ar2['beta_unc']['metrics']:
-        assert metric.axis_max == unc.metrics[metricname].axis_max
-        assert metric.axis_min == unc.metrics[metricname].axis_min
-        assert metric.fit_name == unc.metrics[metricname].fit_name
-        assert metric.name == unc.metrics[metricname].name
-        assert metric.units == unc.metrics[metricname].units
-        assert metric.value == unc.metrics[metricname].value
-
+    check_alg_results_IO(ar2, alg_results, uncertainty_flag=True)
     os.remove(filename)
+
+
+def check_alg_results_IO(read_dict, orig_obj, uncertainty_flag=False):
+    """
+    Check that the output from read_object_from_hdf5 (read_dict) has the same
+    data as the original object (orig_obj) for an AlgorithmResults object.
+
+    uncertainty_flag: also check alpha_unc and beta_unc
+    """
+
+    assert np.all(read_dict['alpha_meas_deg'] == orig_obj.alpha_meas_deg)
+    assert np.all(read_dict['alpha_true_deg'] == orig_obj.alpha_true_deg)
+    assert np.all(read_dict['beta_meas_deg'] == orig_obj.beta_meas_deg)
+    assert np.all(read_dict['beta_true_deg'] == orig_obj.beta_true_deg)
+    assert np.all(read_dict['depth_um'] == orig_obj.depth_um)
+    assert np.all(read_dict['energy_tot_kev'] == orig_obj.energy_tot_kev)
+    assert np.all(read_dict['energy_dep_kev'] == orig_obj.energy_dep_kev)
+    assert np.all(read_dict['is_contained'] == orig_obj.is_contained)
+    assert read_dict['has_alpha'] == orig_obj.has_alpha
+    assert read_dict['has_beta'] == orig_obj.has_beta
+
+    if uncertainty_flag:
+        aunc1 = read_dict['alpha_unc']
+        aunc2 = orig_obj.alpha_unc
+        assert aunc1['angle_type'] == aunc2.angle_type
+        assert np.all(aunc1['delta'] == aunc2.delta)
+        assert aunc1['n_values'] == aunc2.n_values
+        assert aunc1['resolution'] == aunc2.resolution
+        assert np.all(aunc1['nhist'] == aunc2.nhist)
+        assert np.all(aunc1['xhist'] == aunc2.xhist)
+
+        bunc1 = read_dict['beta_unc']
+        bunc2 = orig_obj.beta_unc
+        assert bunc1['angle_type'] == bunc2.angle_type
+        assert np.all(bunc1['delta'] == bunc2.delta)
+        assert bunc1['n_values'] == bunc2.n_values
+
+        for i, unc2 in enumerate(read_dict['uncertainty_list']):
+            unc = orig_obj.uncertainty_list[i]
+            assert unc2['angle_type'] == unc.angle_type
+            assert np.all(unc2['delta'] == unc.delta)
+            assert unc2['n_values'] == unc.n_values
+            if unc2['angle_type'] == 'alpha':
+                assert unc2['resolution'] == unc.resolution
+                assert np.all(unc2['nhist'] == unc.nhist)
+                assert np.all(unc2['xhist'] == unc.xhist)
+
+            for metricname, metric in unc2['metrics'].iteritems():
+                assert metric['axis_max'] == unc.metrics[metricname].axis_max
+                assert metric['axis_min'] == unc.metrics[metricname].axis_min
+                assert metric['fit_name'] == unc.metrics[metricname].fit_name
+                assert metric['name'] == unc.metrics[metricname].name
+                assert metric['units'] == unc.metrics[metricname].units
+                assert metric['value'] == unc.metrics[metricname].value
+
+        unc = orig_obj.alpha_unc
+        iterator = read_dict['alpha_unc']['metrics'].iteritems()
+        for metricname, metric in iterator:
+            assert metric['axis_max'] == unc.metrics[metricname].axis_max
+            assert metric['axis_min'] == unc.metrics[metricname].axis_min
+            assert metric['fit_name'] == unc.metrics[metricname].fit_name
+            assert metric['name'] == unc.metrics[metricname].name
+            assert metric['units'] == unc.metrics[metricname].units
+            assert metric['value'] == unc.metrics[metricname].value
+
+        unc = orig_obj.beta_unc
+        iterator = read_dict['beta_unc']['metrics'].iteritems()
+        for metricname, metric in iterator:
+            assert metric['axis_max'] == unc.metrics[metricname].axis_max
+            assert metric['axis_min'] == unc.metrics[metricname].axis_min
+            assert metric['fit_name'] == unc.metrics[metricname].fit_name
+            assert metric['name'] == unc.metrics[metricname].name
+            assert metric['units'] == unc.metrics[metricname].units
+            assert metric['value'] == unc.metrics[metricname].value
 
 
 def test_IO_obj_dict(filename):
@@ -1145,6 +1150,27 @@ def test_IO_obj_dict(filename):
     os.remove(filename)
 
 
+def test_IO_overwrite(filename):
+    """
+    test the ability to overwrite objects in an existing HDF5 file
+    """
+
+    import evaluation
+
+    # simple overwrite
+    alg_results = evaluation.generate_random_alg_results(length=10000)
+    alg_results.add_default_uncertainties()
+    with h5py.File(filename, 'a') as h5file:
+        write_object_to_hdf5(alg_results, h5file, 'alg_results', obj_dict={})
+    with h5py.File(filename, 'a') as h5file:
+        write_object_to_hdf5(alg_results, h5file, 'alg_results', obj_dict={})
+    with h5py.File(filename, 'r') as h5file:
+        ar2 = read_object_from_hdf5(h5file['alg_results'])
+
+    check_alg_results_IO(ar2, alg_results, uncertainty_flag=True)
+
+    os.remove(filename)
+
 if __name__ == '__main__':
     """
     Run tests.
@@ -1159,13 +1185,18 @@ if __name__ == '__main__':
     filename = '.'.join([filebase, 'h5'])
 
     try:
-        # test_IO_singular(filename)
-        # test_IO_lists(filename)
-        # test_IO_dicts(filename)
-        # test_IO_dsets_none(filename)
-        # test_IO_user_objects(filename)
+        test_IO_singular(filename)
+        test_IO_lists(filename)
+        test_IO_dicts(filename)
+        test_IO_dsets_none(filename)
+        test_IO_user_objects(filename)
         test_IO_obj_dict(filename)
+        test_IO_overwrite(filename)
     finally:
+        # if any exceptions are raised in the test, the file will not have
+        #   been deleted by os.remove(). So try it here.
+        #   (too lazy to actually check whether it's still there or not,
+        #    so try/except))
         try:
             os.remove(filename)
         except OSError:
