@@ -1149,6 +1149,28 @@ def test_IO_obj_dict(filename):
     assert ar2['beta_unc'] is ar2['uncertainty_list'][1]
     os.remove(filename)
 
+    # check obj_dict with multiple objects written to the same file
+    # (has to be written in the same file session)
+    ar1 = evaluation.generate_random_alg_results(length=10000)
+    ar1.add_default_uncertainties()
+    ar2 = evaluation.generate_random_alg_results(length=1000)
+    ar2.add_default_uncertainties()
+    obj_dict = {}
+    with h5py.File(filename, 'a') as h5file:
+        write_object_to_hdf5(ar1, h5file, 'ar1', obj_dict=obj_dict)
+        write_object_to_hdf5(ar2, h5file, 'ar2', obj_dict=obj_dict)
+        # should be hardlinked
+        write_object_to_hdf5(ar1, h5file, 'ar3', obj_dict=obj_dict)
+    with h5py.File(filename, 'r') as h5file:
+        ar1r = read_object_from_hdf5(h5file['ar1'])
+        ar2r = read_object_from_hdf5(h5file['ar2'])
+        ar3r = read_object_from_hdf5(h5file['ar3'])
+    check_alg_results_IO(ar1r, ar1, uncertainty_flag=True)
+    check_alg_results_IO(ar2r, ar2, uncertainty_flag=True)
+    check_alg_results_IO(ar3r, ar1, uncertainty_flag=True)
+    # this is the hardlink test:
+    assert ar1r is ar3r
+
 
 def test_IO_overwrite(filename):
     """
@@ -1166,10 +1188,34 @@ def test_IO_overwrite(filename):
         write_object_to_hdf5(alg_results, h5file, 'alg_results', obj_dict={})
     with h5py.File(filename, 'r') as h5file:
         ar2 = read_object_from_hdf5(h5file['alg_results'])
-
     check_alg_results_IO(ar2, alg_results, uncertainty_flag=True)
-
     os.remove(filename)
+
+    # writing two objects to the same file
+    ar1 = evaluation.generate_random_alg_results(length=10000)
+    ar1.add_default_uncertainties()
+    ar2 = evaluation.generate_random_alg_results(length=1000)
+    ar2.add_default_uncertainties()
+    with h5py.File(filename, 'a') as h5file:
+        write_object_to_hdf5(ar1, h5file, 'ar1', obj_dict={})
+        write_object_to_hdf5(ar2, h5file, 'ar2', obj_dict={})
+    with h5py.File(filename, 'r') as h5file:
+        ar1r = read_object_from_hdf5(h5file['ar1'])
+        ar2r = read_object_from_hdf5(h5file['ar2'])
+    check_alg_results_IO(ar1r, ar1, uncertainty_flag=True)
+    check_alg_results_IO(ar2r, ar2, uncertainty_flag=True)
+
+    # overwriting just one of the two objects
+    ar3 = evaluation.generate_random_alg_results(length=1000)
+    ar3.add_default_uncertainties()
+    with h5py.File(filename, 'a') as h5file:
+        write_object_to_hdf5(ar3, h5file, 'ar1', obj_dict={})
+    with h5py.File(filename, 'r') as h5file:
+        ar1r = read_object_from_hdf5(h5file['ar1'])
+        ar2r = read_object_from_hdf5(h5file['ar2'])
+    check_alg_results_IO(ar1r, ar3, uncertainty_flag=True)
+    check_alg_results_IO(ar2r, ar2, uncertainty_flag=True)
+
 
 if __name__ == '__main__':
     """
