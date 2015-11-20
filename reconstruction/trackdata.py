@@ -549,7 +549,8 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
     return None
 
 
-def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None):
+def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None,
+                          verbosity=0):
     """
     Take an HDF5 group which represents a class instance, parse and return it
       as a dictionary of attribute values.
@@ -659,7 +660,9 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None):
 
     def read_item(attr, h5item, obj_dict={}):
 
+        vprint('     Reading item {}'.format(h5item))
         if h5item in obj_dict:
+            vprint('     Item {} in obj_dict! Skipping'.format(h5item))
             return obj_dict[h5item]
 
         if attr.make_dset:
@@ -685,7 +688,8 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None):
 
         elif attr.is_user_object:
             # user object: recurse
-            output = read_object_from_hdf5(h5item, obj_dict=obj_dict)
+            output = read_object_from_hdf5(
+                h5item, obj_dict=obj_dict, verbosity=verbosity)
         elif attr.dtype is np.ndarray:
             output = np.array(h5item)
         else:
@@ -694,10 +698,21 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None):
 
         return output
 
+    def vprint(stringdata):
+        """
+        Verbose print
+        """
+        if verbosity > 0:
+            print stringdata
+
     #
     # ~~~ begin main ~~~
     #
     data_format = check_input(h5group, ext_data_format)
+    vprint(' ')
+    vprint('Beginning read of {}. obj_dict includes:'.format(str(h5group)))
+    for key in obj_dict.keys():
+        vprint('    {}'.format(str(key)))
 
     if h5group in obj_dict:
         # the target of the hard link has already been created
@@ -706,9 +721,13 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None):
         # (specifically, they are equal but not identical,
         #   i.e. (h5groupA is h5groupB) is false
         #   for hard links pointing to the same object in the hdf5 file)
+        vprint('  Found {} in obj_dict! Skipping'.format(str(h5group)))
         output = obj_dict[h5group]
         hardlink_flag = True
+        return output
     else:
+        vprint('  {} not in obj_dict. adding and processing...'.format(
+               str(h5group)))
         # start ouptput as an empty dictionary
         output = {}
         # add this object to the obj_dict
@@ -716,6 +735,7 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None):
         hardlink_flag = False
 
     for attr in data_format:
+        vprint('  Attribute {}'.format(attr.name))
         hdf5_type = check_attr(h5group, attr)
         if hdf5_type == 'none':
             output[attr.name] = None
@@ -741,23 +761,20 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None):
 
         elif hdf5_type == 'dict':
             output[attr.name] = {}
-            if attr.make_dset:
-                # dictionary entries are stored as hdf5 datasets
-                for key, h5item in h5group[attr.name].iteritems():
-                    if key == 'obj_type':
-                        continue
-                    output[attr.name][key] = read_item(
-                        attr, h5item, obj_dict=obj_dict)
-            else:
-                # dictionary entries are stored as hdf5 attributes
-                for key, h5item in h5group[attr.name].attrs.iteritems():
-                    if key == 'obj_type':
-                        continue
-                    output[attr.name][key] = read_item(
-                        attr, h5item, obj_dict=obj_dict)
+            # read datasets, groups, and attributes
+            for key, h5item in h5group[attr.name].iteritems():
+                if key == 'obj_type':
+                    continue
+                output[attr.name][key] = read_item(
+                    attr, h5item, obj_dict=obj_dict)
+            for key, h5item in h5group[attr.name].attrs.iteritems():
+                if key == 'obj_type':
+                    continue
+                output[attr.name][key] = read_item(
+                    attr, h5item, obj_dict=obj_dict)
 
         elif hdf5_type == 'single':
-            if attr.make_dset:
+            if attr.make_dset or attr.is_user_object:
                 h5item = h5group[attr.name]
             else:
                 h5item = h5group.attrs[attr.name]
@@ -768,9 +785,7 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None):
                 'Unexpected hdf5_type on ' +
                 '{}, where did this come from?'.format(attr.name))
 
-    if not hardlink_flag:
-        obj_dict[h5group] = output
-
+    vprint(' ')
     return output
 
 
@@ -1115,9 +1130,19 @@ def test_IO_obj_dict(filename):
     assert ar2['parent'][0] is ar2
     os.remove(filename)
 
-    # ...
-    print "test_IO_obj_dict not implemented yet"
-    pass
+    # check alpha_unc and beta_unc
+    alg_results.add_default_uncertainties()
+    alg_results.parent = [alg_results]
+    with h5py.File(filename, 'w') as h5file:
+        write_object_to_hdf5(
+            alg_results, h5file, 'alg_results', obj_dict={})
+    with h5py.File(filename, 'r') as h5file:
+        ar2 = read_object_from_hdf5(
+            h5file['alg_results'], obj_dict={})
+    assert ar2['parent'][0] is ar2
+    assert ar2['alpha_unc'] is ar2['uncertainty_list'][0]
+    assert ar2['beta_unc'] is ar2['uncertainty_list'][1]
+    os.remove(filename)
 
 
 if __name__ == '__main__':

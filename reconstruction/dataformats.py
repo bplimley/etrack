@@ -67,6 +67,12 @@ def get_format(class_name):
     elif class_name == 'AlphaGaussPlusConstantPlusBackscatter':
         data_format = get_format('AlphaGaussPlusConstant')
 
+    elif class_name == 'Alpha68':
+        data_format = get_format('Uncertainty')
+
+    elif class_name == 'BetaRms':
+        data_format = get_format('Uncertainty')
+
     elif class_name == 'UncertaintyParameter':
         data_format = (
             ClassAttr('name', str),
