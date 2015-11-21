@@ -405,6 +405,12 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
         if h5group.file.mode != 'r+':
             raise InterfaceError(
                 'Cannot write object to h5file in read-only mode')
+        # clear obj_dict of any closed HDF5 objects
+        obj_dict_copy = obj_dict.copy()
+        for key, val in obj_dict_copy.iteritems():
+            if str(val) == '<Closed HDF5 group>':
+                del obj_dict[key]
+
 
     def check_attr(obj, attr):
         """
@@ -549,6 +555,44 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
             write_item(attr, attr.name, data, this_group, obj_dict)
 
     return None
+
+
+def write_objects_to_hdf5(h5group_or_filename, obj_dict={}, **kwargs):
+    """
+    Write a list of objects to file.
+    h5group_or_filename, as implied, can be either a h5file/h5group object,
+      or a filename for an h5file to create.
+      If the filename is missing the .h5 or .hdf5 extension, .h5 will be added.
+      And the h5file will be closed if filename is supplied.
+
+    kwargs in the form:
+    h5_object_name=py_object
+    """
+
+    if (isinstance(h5group_or_filename, str) or
+            isinstance(h5group_or_filename, unicode)):
+        # filename supplied: create h5 file and close when finished
+        filename = h5group_or_filename
+        # check extension
+        if filename[-5:] != '.hdf5' and filename[-3:] != '.h5':
+            filename += '.h5'
+        with h5py.File(filename) as h5group:
+            for key, val in kwargs.iteritems():
+                write_object_to_hdf5(val, h5group, key, obj_dict=obj_dict)
+        return filename
+
+    elif isinstance(h5group_or_filename, h5py.Group):
+        # h5group supplied: just write the objects
+        h5group = h5group_or_filename
+        for key, val in kwargs.iteritems():
+            write_object_to_hdf5(val, h5group, key, obj_dict=obj_dict)
+        return h5group.file.filename
+
+    else:
+        raise InterfaceError(
+            'write_objects_to_hdf5 needs either an h5py.Group ' +
+            'or a string filename')
+        return None
 
 
 def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None,
@@ -1217,10 +1261,84 @@ def test_IO_overwrite(filename):
     check_alg_results_IO(ar2r, ar2, uncertainty_flag=True)
 
 
+def test_write_objects_to_hdf5():
+    """
+    test the multiple-object form of writing
+    """
+
+    import evaluation
+
+    filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(8,)))
+    filename = '.'.join([filebase, 'h5'])
+
+    # h5file provided
+    # single object
+    ar = evaluation.generate_random_alg_results(length=1000)
+    ar.add_default_uncertainties()
+    with h5py.File(filename, 'a') as h5file:
+        write_objects_to_hdf5(h5file, ar=ar)
+    with h5py.File(filename, 'r') as h5file:
+        ar_read = read_object_from_hdf5(h5file['ar'])
+    check_alg_results_IO(ar_read, ar, uncertainty_flag=True)
+    os.remove(filename)
+
+    # h5file provided
+    # multiple objects
+    ar1 = evaluation.generate_random_alg_results(length=1000)
+    ar1.add_default_uncertainties()
+    ar2 = evaluation.generate_random_alg_results(length=2000)
+    ar2.add_default_uncertainties()
+    ar3 = evaluation.generate_random_alg_results(length=3000)
+    ar3.add_default_uncertainties()
+    with h5py.File(filename, 'a') as h5file:
+        filename_written = write_objects_to_hdf5(
+            h5file,
+            ar1=ar1, ar2=ar2, ar3=ar3, aunc=ar1.alpha_unc)
+    assert filename_written == filename
+    with h5py.File(filename, 'r') as h5file:
+        ar1_read = read_object_from_hdf5(h5file['ar1'])
+        ar2_read = read_object_from_hdf5(h5file['ar2'])
+        ar3_read = read_object_from_hdf5(h5file['ar3'])
+        aunc = read_object_from_hdf5(h5file['aunc'])
+    check_alg_results_IO(ar1_read, ar1, uncertainty_flag=True)
+    check_alg_results_IO(ar2_read, ar2, uncertainty_flag=True)
+    check_alg_results_IO(ar3_read, ar3, uncertainty_flag=True)
+    # check hard link across multiple write calls (within a file session)
+    assert aunc is ar1_read['alpha_unc']
+
+    # filename provided, including extension (single object)
+    filename_written = write_objects_to_hdf5(filename, ar=ar)
+    assert filename_written == filename
+    with h5py.File(filename, 'r') as h5file:
+        ar_read = read_object_from_hdf5(h5file['ar'])
+    check_alg_results_IO(ar_read, ar, uncertainty_flag=True)
+    os.remove(filename)
+
+    # filename provided as *.hdf5
+    filename_hdf5 = '.'.join([filebase, 'hdf5'])
+    filename_written = write_objects_to_hdf5(filename_hdf5, ar=ar)
+    assert filename_written == filename_hdf5
+    with h5py.File(filename_hdf5, 'r') as h5file:
+        ar_read = read_object_from_hdf5(h5file['ar'])
+    check_alg_results_IO(ar_read, ar, uncertainty_flag=True)
+    os.remove(filename_hdf5)
+
+    # filename provided without extension. check that extension is added
+    filename_written = write_objects_to_hdf5(filebase, ar=ar)
+    assert filename_written == filename
+    with h5py.File(filename, 'r') as h5file:
+        ar_read = read_object_from_hdf5(h5file['ar'])
+    check_alg_results_IO(ar_read, ar, uncertainty_flag=True)
+    os.remove(filename)
+
+
 if __name__ == '__main__':
     """
     Run tests.
     """
+
+    # save time for routine testing
+    run_file_tests = False
 
     test_G4Track()
     test_Track()
@@ -1238,6 +1356,7 @@ if __name__ == '__main__':
         test_IO_user_objects(filename)
         test_IO_obj_dict(filename)
         test_IO_overwrite(filename)
+        test_write_objects_to_hdf5()
     finally:
         # if any exceptions are raised in the test, the file will not have
         #   been deleted by os.remove(). So try it here.
@@ -1248,11 +1367,17 @@ if __name__ == '__main__':
         except OSError:
             pass
 
+    import sys
+
     try:
         h5initial = h5py.File('MultiAngle_HT_11_12.h5', 'r')
     except IOError:
         print('Skipping file tests')
-        quit()
+        sys.exit()
+
+    if not run_file_tests:
+        print('Skipping file tests')
+        sys.exit()
 
     print('Beginning file tests')
     fieldname = 'pix10_5noise0'
