@@ -554,21 +554,24 @@ class Uncertainty(object):
 
     data_format = dataformats.get_format('Uncertainty')
 
-    def __init__(self, alg_results):
+    def __init__(self, alg_results, construct_empty=False):
         """
         Initialization is common to all Uncertainty objects.
 
         The methods will be overwritten in subclasses.
+
+        construct_empty is only to be used in internal methods.
         """
 
-        self.compute_delta(alg_results)
+        if not construct_empty:
+            self.compute_delta(alg_results)
 
-        self.n_values = np.sum(np.logical_and(
-            np.logical_not(np.isnan(self.delta)),
-            np.logical_not(np.isinf(self.delta))))
-        self.prepare_data()
-        self.perform_fit()
-        self.compute_metrics()
+            self.n_values = np.sum(np.logical_and(
+                np.logical_not(np.isnan(self.delta)),
+                np.logical_not(np.isinf(self.delta))))
+            self.prepare_data()
+            self.perform_fit()
+            self.compute_metrics()
 
     def compute_delta(self, alg_results):
         self.delta = []
@@ -593,6 +596,55 @@ class Uncertainty(object):
         classname = full_string.split('.')[-1].split("'")[0]
 
         return classname
+
+    @classmethod
+    def from_pydict(cls, read_dict, pydict_to_pyobj={},
+                    reconstruct_fits=False):
+        """
+        Initialize an uncertainty object (of the correct sub-class) from
+        the dictionary returned by trackdata.read_object_from_hdf5().
+
+        Called from AlgorithmResults.from_pydict, if the AlgorithmResults
+        instance has any uncertainties attached to it.
+        """
+
+        # sadly, the fit name is only written inside of the metrics...
+        fit_name = read_dict['metrics'].values()[0]['fit_name']
+
+        if fit_name == 'AlphaGaussPlusConstant':
+            constructed_unc = AlphaGaussPlusConstant(
+                None, construct_empty=True)
+            constructed_unc.nhist = read_dict['nhist']
+            constructed_unc.xhist = read_dict['xhist']
+            constructed_unc.resolution = read_dict['resolution']
+
+        elif fit_name == 'AlphaGaussPlusConstantPlusBackscatter':
+            constructed_unc = AlphaGaussPlusConstantPlusBackscatter(
+                None, construct_empty=True)
+            constructed_unc.nhist = read_dict['nhist']
+            constructed_unc.xhist = read_dict['xhist']
+            constructed_unc.resolution = read_dict['resolution']
+
+        elif fit_name == 'Alpha68':
+            pass
+        elif fit_name == 'BetaRms':
+            pass
+        else:
+            raise Exception(
+                'Unknown uncertainty fit type: {}'.format(fit_name))
+
+        constructed_unc.angle_type = read_dict['angle_type']
+        constructed_unc.n_values = read_dict['n_values']
+        constructed_unc.delta = read_dict['delta']
+
+        constructed_unc.metrics = {}
+        for key, metric_dict in read_dict['metrics'].iteritems():
+            constructed_unc.metrics[key] = UncertaintyParameter(**metric_dict)
+
+        # # the uncertainty is attached to the AlgorithmResults object, so
+        # #   object dictionary would just add clutter.
+        # pydict_to_pyobj[id(read_dict)] = constructed_unc
+        return constructed_unc
 
 
 class AlphaUncertainty(Uncertainty):
