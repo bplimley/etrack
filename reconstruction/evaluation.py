@@ -41,9 +41,15 @@ class AlgorithmResults(object):
     __version__ = '0.1'
     data_format = dataformats.get_format('AlgorithmResults')
 
-    def __init__(self, parent=None, filename=None, **kwargs):
+    def __init__(self, parent=None, filename=None, suppress_check=False,
+                 **kwargs):
         """
-        Should be called by a classmethod constructor instead...
+        __init__ should not be called from outside the class.
+
+        Use a classmethod constructor instead:
+          AlgorithmResults.from_hdf5
+          AlgorithmResults.from_track_array
+          AlgorithmResults.from_h5initial
         """
 
         # 'parent' and 'filename' will be converted to lists if they are not
@@ -61,41 +67,117 @@ class AlgorithmResults(object):
         self.has_beta = (self.beta_true_deg is not None)
 
         self.measure_data_length()
-        self.input_error_check()
+        if not suppress_check:
+            self.input_error_check()
+            # if input_error_check is suppressed, it should be called
+            #   separately in the classmethod constructor. See from_hdf5
 
         self.uncertainty_list = []
         self.alpha_unc = None
         self.beta_unc = None
 
     @classmethod
-    def from_hdf5(cls, h5group, obj_dict={}):
+    def from_hdf5(cls, h5group,
+                  h5_to_pydict={}, pydict_to_pyobj={},
+                  reconstruct_fits=False):
         """
         Initialize an AlgorithmResults object from an HDF5 group.
+
+        Inputs:
+          h5group: the h5py group object to read from.
+          h5_to_pydict: the object dictionary to translate hdf5 objects
+            to python dictionaries. This will be updated to include the
+            constructed object, if applicable.
+          pydict_to_pyobj: object dictionary to translate python dictionary
+            objects (returned from trackdata.read_object_from_hdf5)
+            to constructed class instances (e.g. an AlgorithmResults object)
+            (keys are id(pydict))
+          reconstruct_fits: boolean for reconstructed the actual fit object
+            in the uncertainties.
+            If reconsctruct_fits is False (the default), the uncertainty
+            objects will still include the metrics as well as xhist, nhist.
+
+        Output: an AlgorithmResults object.
         """
 
-        read_object = trackdata.read_object_from_hdf5(h5group,
-                                                      obj_dict=obj_dict)
-        if isinstance(read_object, dict):
-            # Construct the AlgorithmResults object
-            constructed_object = AlgorithmResults(
-                parent=None,
-                filename=None,
-                key=None,
-            )
+        read_dict = trackdata.read_object_from_hdf5(
+            h5group, obj_dict=h5_to_pydict)
 
-            # Update obj_dict
-            if read_object in obj_dict.values():
-                for key, value in obj_dict.iteritems():
-                    if value is read_object:
-                        obj_dict[key] = constructed_object
+        constructed_object = cls.from_pydict(
+            read_dict, pydict_to_pyobj=pydict_to_pyobj, reconstruct_fits=False)
 
-        elif isinstance(read_object, cls):
-            # File was a hardlink found in obj_dict. No further work needed
-            constructed_object = read_object
-        else:
-            raise InputError(
-                'AlgorithmResults.from_hdf5 got neither a dict ' +
-                'nor the right class')
+        # # update any entries in h5_to_pydict ???
+        # if read_dict in h5_to_pydict.values():
+        #     for key, value in h5_to_pydict.iteritems():
+        #         if value is read_dict:
+        #             h5_to_pydict[key] = constructed_object
+
+        constructed_object.input_error_check()
+
+        return constructed_object
+
+    @classmethod
+    def from_pydict(cls, read_dict, pydict_to_pyobj={},
+                    reconstruct_fits=False):
+        """
+        Initialize an AlgorithmResults object from the dictionary returned by
+        trackdata.read_object_from_hdf5().
+        """
+
+        if id(read_dict) in pydict_to_pyobj:
+            return pydict_to_pyobj[id(read_dict)]
+
+        other_attrs = (
+            'parent',
+            'filename')
+        # uncertainty_list, alpha_unc, beta_unc are done later
+        # has_alpha, has_beta, data_length are constructed in __init__()
+        all_attrs = other_attrs + cls.data_attrs()
+
+        kwargs = {}
+        for attr in all_attrs:
+            kwargs[attr] = read_dict.get(attr)
+            # read_dict.get() defaults to None, although this actually
+            #   shouldn't be needed since read_object_from_hdf5 adds Nones
+        constructed_object = AlgorithmResults(suppress_check=True, **kwargs)
+
+        # add entry to pydict_to_pyobj
+        pydict_to_pyobj[id(read_dict)] = constructed_object
+
+        for i, parent in enumerate(constructed_object.parent):
+            if isinstance(parent, cls):
+                continue
+            elif isinstance(parent, dict):
+                # is this okay?
+                constructed_object.parent[i] = cls.from_pydict(
+                    parent, pydict_to_pyobj=pydict_to_pyobj)
+                # parents' fits are never reconstructed!
+            elif parent is None:
+                continue
+            else:
+                raise Exception("Unexpected item in 'parent' attribute")
+
+        unc_list_dict = read_dict['uncertainty_list']
+        unc_list = [None for _ in xrange(len(unc_list_dict))]
+        for i, unc in enumerate(unc_list_dict):
+            if isinstance(unc, Uncertainty):
+                continue
+            elif isinstance(unc, dict):
+                unc_list[i] = Uncertainty.from_pydict(
+                    unc, pydict_to_pyobj=pydict_to_pyobj)
+            else:
+                raise Exception(
+                    "Unexpected item in 'uncertainty_list' attribute")
+        constructed_object.uncertainty_list = unc_list
+        # now the dicts in alpha_unc and beta_unc
+        #   must already have been constructed in uncertainty_list
+        constructed_object.alpha_unc = pydict_to_pyobj[
+            id(read_dict['alpha_unc'])]
+        constructed_object.beta_unc = pydict_to_pyobj[
+            id(read_dict['beta_unc'])]
+
+        if reconstruct_fits:
+            print('Fit reconstruction not implemented yet!')
 
         return constructed_object
 

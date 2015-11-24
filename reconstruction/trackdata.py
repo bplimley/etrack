@@ -411,7 +411,6 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
             if str(val) == '<Closed HDF5 group>':
                 del obj_dict[key]
 
-
     def check_attr(obj, attr):
         """
         attribute may be None, list/tuple, dict, or "singular" object
