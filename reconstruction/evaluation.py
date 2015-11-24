@@ -101,7 +101,7 @@ class AlgorithmResults(object):
         """
 
         read_dict = trackdata.read_object_from_hdf5(
-            h5group, obj_dict=h5_to_pydict)
+            h5group, h5_to_pydict=h5_to_pydict)
 
         constructed_object = cls.from_pydict(
             read_dict, pydict_to_pyobj=pydict_to_pyobj, reconstruct_fits=False)
@@ -989,8 +989,8 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
 
         # constant + forward peak
         model = (lmfit.models.ConstantModel() +
-                 lmfit.models.GaussianModel(prefix='fwd') +
-                 lmfit.models.GaussianModel(prefix='bk'))
+                 lmfit.models.GaussianModel(prefix='fwd_') +
+                 lmfit.models.GaussianModel(prefix='bk_'))
         fwd_amplitude_estimate = (self.nhist[:mid].ptp() * np.sqrt(2*np.pi) *
                                   self.fwhm_estimate / 2.355)
         bk_amplitude_estimate = (self.nhist[mid:].ptp() * np.sqrt(2*np.pi) *
@@ -1031,14 +1031,14 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
             f_bk_unc = np.nan
             raise FittingWarning('Could not compute errorbars in fit')
         else:
-            fwhm_unc = self.fit.params['fwhm'].stderr
+            fwhm_unc = self.fit.params['fwd_fwhm'].stderr
             f_unc = self.fit.params['f'].stderr * 100
             f_bk_unc = self.fit.params['f_bk'].stderr * 100
 
         fwhm_param = UncertaintyParameter(
             name='FWHM',
             fit_name=self.classname_extract(self),
-            value=self.fit.params['fwhm'].value,
+            value=self.fit.params['fwd_fwhm'].value,
             uncertainty=(fwhm_unc, fwhm_unc),
             units='degrees',
             axis_min=0.0,
@@ -1817,9 +1817,28 @@ def test_comprehensive():
     Test AlgorithmResults and AlgorithmUncertainty together.
     """
 
-    # TODO
-    # include AlgorithmResults.add_uncertainty, etc.
-    print('test_comprehensive not implemented yet')
+    # adding all uncertainties
+    ar = generate_random_alg_results(length=1000)
+    ar.add_default_uncertainties()
+    assert len(ar.uncertainty_list) == 2
+    assert ar.alpha_unc is ar.uncertainty_list[0]
+    assert ar.beta_unc is ar.uncertainty_list[1]
+    assert isinstance(ar.alpha_unc, DefaultAlphaUncertainty)
+    assert isinstance(ar.beta_unc, DefaultBetaUncertainty)
+
+    ar.add_uncertainty(Alpha68)
+    assert isinstance(ar.uncertainty_list[-1], Alpha68)
+    ar.add_uncertainty(AlphaGaussPlusConstantPlusBackscatter)
+    assert isinstance(ar.uncertainty_list[-1],
+                      AlphaGaussPlusConstantPlusBackscatter)
+
+    # I/O
+    filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(8,)))
+    filename = '.'.join([filebase, 'h5'])
+    with h5py.File(filename,'a') as h5f:
+        trackdata.write_object_to_hdf5(ar, h5f, 'ar')
+    with h5py.File(filename,'r') as h5f:
+        ar_read = AlgorithmResults.from_hdf5(h5f['ar'])
 
 
 if __name__ == '__main__':

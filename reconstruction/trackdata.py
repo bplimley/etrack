@@ -622,8 +622,13 @@ def read_object_from_hdf5(h5group, h5_to_pydict={}, ext_data_format=None,
 
         else:
             if 'obj_type' not in h5group.attrs:
-                raise InterfaceError(
-                    'HDF5 object should have an attribute, obj_type')
+                if h5group == h5group.file:
+                    raise InterfaceError(
+                        'Looks like you supplied the HDF5 file object ' +
+                        'instead of the HDF5 group representing the object...')
+                else:
+                    raise InterfaceError(
+                        'HDF5 object should have an attribute, obj_type')
             obj_type = h5group.attrs['obj_type']
             data_format = dataformats.get_format(obj_type)
             return data_format
