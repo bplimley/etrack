@@ -542,6 +542,48 @@ class AlgorithmResults(object):
                                 filename=new_filename,
                                 **new)
 
+    def __eq__(self, other):
+        """
+        Check if this AlgorithmResults is the same as another AlgorithmResults.
+        x == y ~~> x.__eq__(y)
+        """
+
+        print('AlgorithmResults.__eq__() is a work in progress')
+
+        # basics
+        eq = (
+            self.__version__ == other.__version__ and
+            self.data_length == other.data_length and
+            len(self.uncertainty_list) == len(other.uncertainty_list)
+        )
+        if not eq:
+            return False
+
+        # data attributes
+        for attr in self.data_attrs():
+            satt = getattr(self, attr)
+            oatt = getattr(other, attr)
+            if satt is None or (
+                    isinstance(satt, np.ndarray) and satt[0] is None):
+                eq = eq and (oatt is None or (
+                    isinstance(oatt, np.ndarray) and oatt[0] is None))
+            else:
+                eq = eq and np.all(satt == oatt)
+            if not eq:
+                return False
+
+        # uncertainty objects
+        for i, unc in enumerate(self.uncertainty_list):
+            unc2 = other.uncertainty_list[i]
+            eq = eq and type(unc) is type(unc2)
+            smet = [metric.value for metric in unc.metrics.itervalues()]
+            omet = [metric.value for metric in unc2.metrics.itervalues()]
+            eq = eq and np.all(smet == omet)
+            if not eq:
+                return False
+
+        return True
+
 
 ##############################################################################
 #                        Algorithm Uncertainty classes                       #
@@ -921,7 +963,7 @@ class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
             fwhm_unc = np.nan
             f_unc = np.nan
             f_bk_unc = np.nan
-            raise FittingWarning('Could not compute errorbars in fit')
+            print('FittingWarning: Could not compute errorbars in fit')
         else:
             fwhm_unc = self.fit.params['fwd_fwhm'].stderr
             f_unc = self.fit.params['f'].stderr * 100
@@ -1820,6 +1862,7 @@ def test_comprehensive():
     # adding all uncertainties
     ar = generate_random_alg_results(length=1000)
     ar.add_default_uncertainties()
+    ar.parent = [ar]
     assert len(ar.uncertainty_list) == 2
     assert ar.alpha_unc is ar.uncertainty_list[0]
     assert ar.beta_unc is ar.uncertainty_list[1]
@@ -1835,10 +1878,12 @@ def test_comprehensive():
     # I/O
     filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(8,)))
     filename = '.'.join([filebase, 'h5'])
-    with h5py.File(filename,'a') as h5f:
+    with h5py.File(filename, 'a') as h5f:
         trackdata.write_object_to_hdf5(ar, h5f, 'ar')
-    with h5py.File(filename,'r') as h5f:
+    with h5py.File(filename, 'r') as h5f:
         ar_read = AlgorithmResults.from_hdf5(h5f['ar'])
+    assert ar_read == ar
+    assert ar_read.parent[0] is ar_read
 
 
 if __name__ == '__main__':
