@@ -144,18 +144,19 @@ class AlgorithmResults(object):
         # add entry to pydict_to_pyobj
         pydict_to_pyobj[id(read_dict)] = constructed_object
 
-        for i, parent in enumerate(constructed_object.parent):
-            if isinstance(parent, cls):
-                continue
-            elif isinstance(parent, dict):
-                # is this okay?
-                constructed_object.parent[i] = cls.from_pydict(
-                    parent, pydict_to_pyobj=pydict_to_pyobj)
-                # parents' fits are never reconstructed!
-            elif parent is None:
-                continue
-            else:
-                raise Exception("Unexpected item in 'parent' attribute")
+        if constructed_object.parent is not None:
+            for i, parent in enumerate(constructed_object.parent):
+                if isinstance(parent, cls):
+                    continue
+                elif isinstance(parent, dict):
+                    # is this okay?
+                    constructed_object.parent[i] = cls.from_pydict(
+                        parent, pydict_to_pyobj=pydict_to_pyobj)
+                    # parents' fits are never reconstructed!
+                elif parent is None:
+                    continue
+                else:
+                    raise Exception("Unexpected item in 'parent' attribute")
 
         unc_list_dict = read_dict['uncertainty_list']
         unc_list = [None for _ in xrange(len(unc_list_dict))]
@@ -171,10 +172,10 @@ class AlgorithmResults(object):
         constructed_object.uncertainty_list = unc_list
         # now the dicts in alpha_unc and beta_unc
         #   must already have been constructed in uncertainty_list
-        constructed_object.alpha_unc = pydict_to_pyobj[
-            id(read_dict['alpha_unc'])]
-        constructed_object.beta_unc = pydict_to_pyobj[
-            id(read_dict['beta_unc'])]
+        for unc_link in ('alpha_unc', 'beta_unc'):
+            if read_dict[unc_link] is not None:
+                setattr(constructed_object, unc_link,
+                        pydict_to_pyobj[id(read_dict[unc_link])])
 
         if reconstruct_fits:
             print('Fit reconstruction not implemented yet!')
@@ -608,6 +609,12 @@ class Uncertainty(object):
         instance has any uncertainties attached to it.
         """
 
+        # dictionary check. Although I don't expect links to resolve,
+        #   because alpha_unc and beta_unc are the only links and they are
+        #   handled separately.
+        if id(read_dict) in pydict_to_pyobj:
+            return pydict_to_pyobj[id(read_dict)]
+
         # sadly, the fit name is only written inside of the metrics...
         fit_name = read_dict['metrics'].values()[0]['fit_name']
 
@@ -626,9 +633,9 @@ class Uncertainty(object):
             constructed_unc.resolution = read_dict['resolution']
 
         elif fit_name == 'Alpha68':
-            pass
+            constructed_unc = Alpha68(None, construct_empty=True)
         elif fit_name == 'BetaRms':
-            pass
+            constructed_unc = BetaRms(None, construct_empty=True)
         else:
             raise Exception(
                 'Unknown uncertainty fit type: {}'.format(fit_name))
@@ -641,9 +648,9 @@ class Uncertainty(object):
         for key, metric_dict in read_dict['metrics'].iteritems():
             constructed_unc.metrics[key] = UncertaintyParameter(**metric_dict)
 
-        # # the uncertainty is attached to the AlgorithmResults object, so
-        # #   object dictionary would just add clutter.
-        # pydict_to_pyobj[id(read_dict)] = constructed_unc
+        # put the uncertainty object into the dictionary so that shortcuts
+        # (alg_results.alpha_unc, beta_unc) can find it.
+        pydict_to_pyobj[id(read_dict)] = constructed_unc
         return constructed_unc
 
 
