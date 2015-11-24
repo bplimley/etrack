@@ -371,7 +371,7 @@ class InterfaceError(TrackDataError):
 #                                    I/O                                     #
 ##############################################################################
 
-def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
+def write_object_to_hdf5(obj, h5group, name, pyobj_to_h5={}):
     """
     Take the user-defined class instance, obj, and write it to HDF5
     in HDF5 group h5group with name name.
@@ -381,7 +381,8 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
     h5group is an existing h5py file/group to write to. The class attributes
     are attributes in h5group, datasets in h5group, or subgroups of h5group.
 
-    obj_dict = {pyobjectA: h5objectA, pyobjectB: h5objectB, ...}
+    pyobj_to_h5 = object dictionary:
+                    {pyobjectA: h5objectA, pyobjectB: h5objectB, ...}
     """
 
     def check_input(obj, h5group):
@@ -405,11 +406,11 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
         if h5group.file.mode != 'r+':
             raise InterfaceError(
                 'Cannot write object to h5file in read-only mode')
-        # clear obj_dict of any closed HDF5 objects
-        obj_dict_copy = obj_dict.copy()
-        for key, val in obj_dict_copy.iteritems():
+        # clear pyobj_to_h5 of any closed HDF5 objects
+        pyobj_to_h5_copy = pyobj_to_h5.copy()
+        for key, val in pyobj_to_h5_copy.iteritems():
             if str(val) == '<Closed HDF5 group>':
-                del obj_dict[key]
+                del pyobj_to_h5[key]
 
     def check_attr(obj, attr):
         """
@@ -488,7 +489,7 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
 
         return item
 
-    def write_item(attr, name, data, h5group, obj_dict):
+    def write_item(attr, name, data, h5group, pyobj_to_h5):
         """
         Write one item to the hdf5 file.
 
@@ -499,16 +500,18 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
           data: data to put in the object (intelligently)
                 (either attr.data or the dict value)
           h5group: parent location of the new hdf5 object
+          pyobj_to_h5: object dictionary to update
         """
 
         if attr.is_user_object:
             # check id
-            if data in obj_dict:
+            if data in pyobj_to_h5:
                 # don't write the actual data; make a hard link
-                h5group[name] = obj_dict[data]
+                h5group[name] = pyobj_to_h5[data]
             else:
                 # recurse
-                write_object_to_hdf5(data, h5group, name, obj_dict=obj_dict)
+                write_object_to_hdf5(data, h5group, name,
+                                     pyobj_to_h5=pyobj_to_h5)
         elif attr.make_dset:
             h5group.create_dataset(
                 name, shape=np.shape(data), data=data)
@@ -519,15 +522,15 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
     # ~~~ begin main ~~~
     check_input(obj, h5group)
 
-    if obj in obj_dict:
-        h5group[name] = obj_dict[obj]
+    if obj in pyobj_to_h5:
+        h5group[name] = pyobj_to_h5[obj]
         return None
     else:
         if name in h5group:
             del(h5group[name])
         this_group = h5group.create_group(name)
         this_group.attrs.create('obj_type', data=obj.class_name)
-        obj_dict[obj] = this_group
+        pyobj_to_h5[obj] = this_group
 
     for attr in obj.data_format:
         data = check_attr(obj, attr)
@@ -543,20 +546,20 @@ def write_object_to_hdf5(obj, h5group, name, obj_dict={}):
             subgroup.attrs.create('obj_type', data='list')
             for i, item in enumerate(data):
                 item = check_item(attr, item)
-                write_item(attr, str(i), item, subgroup, obj_dict)
+                write_item(attr, str(i), item, subgroup, pyobj_to_h5)
         elif is_dict:
             subgroup = this_group.create_group(attr.name)
             subgroup.attrs.create('obj_type', data='dict')
             for key, item in data.items():
                 item = check_item(attr, item)
-                write_item(attr, key, item, subgroup, obj_dict)
+                write_item(attr, key, item, subgroup, pyobj_to_h5)
         else:
-            write_item(attr, attr.name, data, this_group, obj_dict)
+            write_item(attr, attr.name, data, this_group, pyobj_to_h5)
 
     return None
 
 
-def write_objects_to_hdf5(h5group_or_filename, obj_dict={}, **kwargs):
+def write_objects_to_hdf5(h5group_or_filename, pyobj_to_h5={}, **kwargs):
     """
     Write a list of objects to file.
     h5group_or_filename, as implied, can be either a h5file/h5group object,
@@ -577,14 +580,16 @@ def write_objects_to_hdf5(h5group_or_filename, obj_dict={}, **kwargs):
             filename += '.h5'
         with h5py.File(filename) as h5group:
             for key, val in kwargs.iteritems():
-                write_object_to_hdf5(val, h5group, key, obj_dict=obj_dict)
+                write_object_to_hdf5(val, h5group, key,
+                                     pyobj_to_h5=pyobj_to_h5)
         return filename
 
     elif isinstance(h5group_or_filename, h5py.Group):
         # h5group supplied: just write the objects
         h5group = h5group_or_filename
         for key, val in kwargs.iteritems():
-            write_object_to_hdf5(val, h5group, key, obj_dict=obj_dict)
+            write_object_to_hdf5(val, h5group, key,
+                                 pyobj_to_h5=pyobj_to_h5)
         return h5group.file.filename
 
     else:
@@ -594,7 +599,7 @@ def write_objects_to_hdf5(h5group_or_filename, obj_dict={}, **kwargs):
         return None
 
 
-def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None,
+def read_object_from_hdf5(h5group, h5_to_pydict={}, ext_data_format=None,
                           verbosity=0):
     """
     Take an HDF5 group which represents a class instance, parse and return it
@@ -602,7 +607,7 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None,
 
     The class definition should exist in dataformats.py.
 
-    obj_dict = {h5objectA: pyobjectA, h5objectB: pyobjectB, ...}
+    h5_to_pydict = {h5objectA: pyobjectA, h5objectB: pyobjectB, ...}
     """
 
     def check_input(h5group, data_format):
@@ -703,12 +708,12 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None,
 
         return hdf5_type
 
-    def read_item(attr, h5item, obj_dict={}):
+    def read_item(attr, h5item, h5_to_pydict={}):
 
         vprint('     Reading item {}'.format(h5item))
-        if (not isinstance(h5item, np.ndarray)) and h5item in obj_dict:
-            vprint('     Item {} in obj_dict! Skipping'.format(h5item))
-            return obj_dict[h5item]
+        if (not isinstance(h5item, np.ndarray)) and h5item in h5_to_pydict:
+            vprint('     Item {} in h5_to_pydict! Skipping'.format(h5item))
+            return h5_to_pydict[h5item]
 
         if attr.make_dset:
             # hdf5 dataset
@@ -734,7 +739,7 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None,
         elif attr.is_user_object:
             # user object: recurse
             output = read_object_from_hdf5(
-                h5item, obj_dict=obj_dict, verbosity=verbosity)
+                h5item, h5_to_pydict=h5_to_pydict, verbosity=verbosity)
         elif attr.dtype is np.ndarray:
             output = np.array(h5item)
         else:
@@ -755,27 +760,27 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None,
     #
     data_format = check_input(h5group, ext_data_format)
     vprint(' ')
-    vprint('Beginning read of {}. obj_dict includes:'.format(str(h5group)))
-    for key in obj_dict.keys():
+    vprint('Beginning read of {}. h5_to_pydict includes:'.format(str(h5group)))
+    for key in h5_to_pydict.keys():
         vprint('    {}'.format(str(key)))
 
-    if h5group in obj_dict:
+    if h5group in h5_to_pydict:
         # the target of the hard link has already been created
         # this works because (h5groupA == h5groupB) iff they are hardlinks
         #   pointing to the same object in the hdf5 file.
         # (specifically, they are equal but not identical,
         #   i.e. (h5groupA is h5groupB) is false
         #   for hard links pointing to the same object in the hdf5 file)
-        vprint('  Found {} in obj_dict! Skipping'.format(str(h5group)))
-        output = obj_dict[h5group]
+        vprint('  Found {} in h5_to_pydict! Skipping'.format(str(h5group)))
+        output = h5_to_pydict[h5group]
         return output
     else:
-        vprint('  {} not in obj_dict. adding and processing...'.format(
+        vprint('  {} not in h5_to_pydict. adding and processing...'.format(
                str(h5group)))
         # start ouptput as an empty dictionary
         output = {}
-        # add this object to the obj_dict
-        obj_dict[h5group] = output
+        # add this object to the h5_to_pydict
+        h5_to_pydict[h5group] = output
 
     for attr in data_format:
         vprint('  Attribute {}'.format(attr.name))
@@ -792,14 +797,14 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None,
                 while str(i) in h5list:
                     h5item = h5list[str(i)]
                     output[attr.name].append(
-                        read_item(attr, h5item, obj_dict=obj_dict))
+                        read_item(attr, h5item, h5_to_pydict=h5_to_pydict))
                     i += 1
             else:
                 # list elements are stored as hdf5 attributes
                 while str(i) in h5list.attrs:
                     h5item = h5list.attrs[str(i)]
                     output[attr.name].append(
-                        read_item(attr, h5item, obj_dict=obj_dict))
+                        read_item(attr, h5item, h5_to_pydict=h5_to_pydict))
                     i += 1
 
         elif hdf5_type == 'dict':
@@ -809,12 +814,12 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None,
                 if key == 'obj_type':
                     continue
                 output[attr.name][key] = read_item(
-                    attr, h5item, obj_dict=obj_dict)
+                    attr, h5item, h5_to_pydict=h5_to_pydict)
             for key, h5item in h5group[attr.name].attrs.iteritems():
                 if key == 'obj_type':
                     continue
                 output[attr.name][key] = read_item(
-                    attr, h5item, obj_dict=obj_dict)
+                    attr, h5item, h5_to_pydict=h5_to_pydict)
 
         elif hdf5_type == 'single':
             if attr.make_dset or attr.is_user_object:
@@ -822,7 +827,7 @@ def read_object_from_hdf5(h5group, obj_dict={}, ext_data_format=None,
             else:
                 h5item = h5group.attrs[attr.name]
             output[attr.name] = read_item(
-                attr, h5item, obj_dict=obj_dict)
+                attr, h5item, h5_to_pydict=h5_to_pydict)
         else:
             raise Exception(
                 'Unexpected hdf5_type on ' +
