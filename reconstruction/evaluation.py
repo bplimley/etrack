@@ -41,6 +41,85 @@ class AlgorithmResults(object):
     __version__ = '0.1'
     data_format = dataformats.get_format('AlgorithmResults')
 
+    @classmethod
+    def data_attrs(cls):
+        """
+        List all the data attributes available to the AlgorithmResults class.
+
+        These attributes, if not None, should all be of the same length.
+        (i.e. doesn't include parent, filename, has_alpha, has_beta)
+        """
+
+        attr_list = (
+            'alpha_true_deg',
+            'alpha_meas_deg',
+            'beta_true_deg',
+            'beta_meas_deg',
+            'energy_tot_kev',
+            'energy_dep_kev',
+            'depth_um',
+            'is_contained')
+
+        return attr_list
+
+    def measure_data_length(self):
+        """
+        Data length is taken from the first non-None attribute,
+        in order of the data_attrs() list.
+        """
+
+        for attr in self.data_attrs():
+            if getattr(self, attr) is not None:
+                self.data_length = len(getattr(self, attr))
+                break
+        else:
+            raise InputError('AlgorithmResults object requires data')
+
+    def input_error_check(self):
+        # type checks
+        if (self.parent is not None and
+                type(self.parent) is not AlgorithmResults and
+                (type(self.parent) is not list or
+                 type(self.parent[0]) is not AlgorithmResults)):
+            raise InputError(
+                'Parent should be an instance of AlgorithmResults')
+        if (self.filename is not None and
+                type(self.filename) is not str and
+                (type(self.filename) is not list or
+                 type(self.filename[0]) is not str)):
+            raise InputError(
+                'Filename should be a string or a list of strings')
+
+        # type conversion
+        # parent and filename should always be lists, if they are not None,
+        #   even if only 1 element
+        if type(self.parent) is AlgorithmResults:
+            self.parent = [self.parent]
+        if type(self.filename) is str:
+            self.filename = [self.filename]
+        for attr in self.data_attrs():
+            if getattr(self, attr) is not None:
+                if attr.startswith('is_'):
+                    setattr(self, attr, getattr(self, attr).astype(bool))
+                else:
+                    setattr(self, attr, np.array(getattr(self, attr)))
+
+        # related data
+        if np.logical_xor(self.alpha_true_deg is None,
+                          self.alpha_meas_deg is None):
+            raise InputError(
+                'Alpha results require both alpha_true and alpha_meas')
+        if np.logical_xor(self.beta_true_deg is None,
+                          self.beta_meas_deg is None):
+            raise InputError(
+                'Beta results require both beta_true and beta_meas')
+
+        # data length mismatches
+        for attr in self.data_attrs():
+            if (getattr(self, attr) is not None and
+                    len(getattr(self, attr)) != self.data_length):
+                raise InputError(attr + ' length mismatch')
+
     def __init__(self, parent=None, filename=None, suppress_check=False,
                  **kwargs):
         """
@@ -181,85 +260,6 @@ class AlgorithmResults(object):
             print('Fit reconstruction not implemented yet!')
 
         return constructed_object
-
-    @classmethod
-    def data_attrs(cls):
-        """
-        List all the data attributes available to the AlgorithmResults class.
-
-        These attributes, if not None, should all be of the same length.
-        (i.e. doesn't include parent, filename, has_alpha, has_beta)
-        """
-
-        attr_list = (
-            'alpha_true_deg',
-            'alpha_meas_deg',
-            'beta_true_deg',
-            'beta_meas_deg',
-            'energy_tot_kev',
-            'energy_dep_kev',
-            'depth_um',
-            'is_contained')
-
-        return attr_list
-
-    def measure_data_length(self):
-        """
-        Data length is taken from the first non-None attribute,
-        in order of the data_attrs() list.
-        """
-
-        for attr in self.data_attrs():
-            if getattr(self, attr) is not None:
-                self.data_length = len(getattr(self, attr))
-                break
-        else:
-            raise InputError('AlgorithmResults object requires data')
-
-    def input_error_check(self):
-        # type checks
-        if (self.parent is not None and
-                type(self.parent) is not AlgorithmResults and
-                (type(self.parent) is not list or
-                 type(self.parent[0]) is not AlgorithmResults)):
-            raise InputError(
-                'Parent should be an instance of AlgorithmResults')
-        if (self.filename is not None and
-                type(self.filename) is not str and
-                (type(self.filename) is not list or
-                 type(self.filename[0]) is not str)):
-            raise InputError(
-                'Filename should be a string or a list of strings')
-
-        # type conversion
-        # parent and filename should always be lists, if they are not None,
-        #   even if only 1 element
-        if type(self.parent) is AlgorithmResults:
-            self.parent = [self.parent]
-        if type(self.filename) is str:
-            self.filename = [self.filename]
-        for attr in self.data_attrs():
-            if getattr(self, attr) is not None:
-                if attr.startswith('is_'):
-                    setattr(self, attr, getattr(self, attr).astype(bool))
-                else:
-                    setattr(self, attr, np.array(getattr(self, attr)))
-
-        # related data
-        if np.logical_xor(self.alpha_true_deg is None,
-                          self.alpha_meas_deg is None):
-            raise InputError(
-                'Alpha results require both alpha_true and alpha_meas')
-        if np.logical_xor(self.beta_true_deg is None,
-                          self.beta_meas_deg is None):
-            raise InputError(
-                'Beta results require both beta_true and beta_meas')
-
-        # data length mismatches
-        for attr in self.data_attrs():
-            if (getattr(self, attr) is not None and
-                    len(getattr(self, attr)) != self.data_length):
-                raise InputError(attr + ' length mismatch')
 
     @classmethod
     def from_h5initial(cls, fieldname, filename=None, h5file=None):
@@ -737,114 +737,6 @@ class BetaUncertainty(Uncertainty):
         return dbeta
 
 
-class UncertaintyParameter(object):
-    """
-    One metric parameter of uncertainty.
-
-    Attributes:
-      name (str): name of this parameter, e.g. "FWHM"
-      fit_name (str): name of the fit, e.g. "GaussPlusConstant"
-      value (float): value from the fit, e.g. 29.8
-      uncertainty (float, float): tuple of (lower, upper) 1-sigma uncertainty
-      units (str): units of the value and uncertainty, e.g. "degrees" "\cir" ?
-      axis_min (float): lower edge of axis on a plot, e.g. 0
-      axis_max (float): upper edge of axis on a plot, e.g. 120
-    """
-
-    class_name = 'UncertaintyParameter'
-    __version__ = '0.1'
-    data_format = dataformats.get_format('UncertaintyParameter')
-
-    def __init__(self, name=None, fit_name=None,
-                 value=None, uncertainty=None, units=None,
-                 axis_min=None, axis_max=None):
-        """
-        All arguments are required except uncertainty, axis_min, axis_max.
-        """
-
-        self.name = name
-        self.fit_name = fit_name
-        self.value = value
-        self.uncertainty = uncertainty
-        self.units = units
-        self.axis_min = axis_min
-        self.axis_max = axis_max
-
-        self.input_check()
-
-    def input_check(self):
-        """
-        Check data types of inputs. And convert if applicable.
-        """
-
-        # error check
-        if type(self.name) is not str:
-            raise InputError(
-                'UncertaintyParameter name should be a string')
-        if type(self.fit_name) is not str:
-            raise InputError(
-                'UncertaintyParameter fit_name should be a string')
-        if (not isinstance(self.value, float) and
-                not isinstance(self.value, int)):
-            raise InputError(
-                'UncertaintyParameter value should be a float')
-
-        if type(self.uncertainty) in (list, tuple, np.ndarray):
-            if len(self.uncertainty) == 1:
-                self.uncertainty = self.uncertainty[0]
-            elif len(self.uncertainty) == 2:
-                if (not isinstance(self.uncertainty[0], float) and
-                        not isinstance(self.uncertainty[0], int) and
-                        self.uncertainty[0] is not None):
-                    raise InputError(
-                        'UncertaintyParameter uncertainty of ' +
-                        'length 2 should contain floats or ints')
-                if (not isinstance(self.uncertainty[1], float) and
-                        not isinstance(self.uncertainty[1], int) and
-                        self.uncertainty[1] is not None):
-                    raise InputError(
-                        'UncertaintyParameter uncertainty of ' +
-                        'length 2 should contain floats or ints')
-            else:
-                raise InputError(
-                    'UncertaintyParameter uncertainty should be' +
-                    ' of length 1 or 2')
-        if (type(self.uncertainty) not in (list, tuple, np.ndarray, type(None))
-                and not isinstance(self.uncertainty, float) and
-                not isinstance(self.uncertainty, int)):
-            raise InputError(
-                'UncertaintyParameter uncertainty of ' +
-                'length 1 should be a float')
-
-        if type(self.units) is not str:
-            raise InputError(
-                'UncertaintyParameter units should be a string')
-        if (self.axis_min is not None and
-                not isinstance(self.axis_min, int) and
-                not isinstance(self.axis_min, float)):
-            raise InputError(
-                'UncertaintyParameter axis_min should be a float')
-        if (self.axis_max is not None and
-                not isinstance(self.axis_max, int) and
-                not isinstance(self.axis_max, float)):
-            raise InputError(
-                'UncertaintyParameter axis_max should be a float')
-
-        # type conversion
-        self.value = float(self.value)
-        if self.uncertainty is None:
-            pass
-        elif isinstance(self.uncertainty, int):
-            self.uncertainty = float(self.uncertainty)
-        elif type(self.uncertainty) in (list, tuple, np.ndarray):
-            self.uncertainty = (float(self.uncertainty[0]),
-                                float(self.uncertainty[1]))
-        if self.axis_min is not None:
-            self.axis_min = float(self.axis_min)
-        if self.axis_max is not None:
-            self.axis_max = float(self.axis_max)
-
-
 class AlphaGaussPlusConstant(AlphaUncertainty):
     """
     Fitting d-alpha distribution with gaussian plus constant
@@ -1159,6 +1051,114 @@ class BetaRms(BetaUncertainty):
             axis_max=40.0)
 
         self.metrics = {'RMS': rms_param}
+
+
+class UncertaintyParameter(object):
+    """
+    One metric parameter of uncertainty.
+
+    Attributes:
+      name (str): name of this parameter, e.g. "FWHM"
+      fit_name (str): name of the fit, e.g. "GaussPlusConstant"
+      value (float): value from the fit, e.g. 29.8
+      uncertainty (float, float): tuple of (lower, upper) 1-sigma uncertainty
+      units (str): units of the value and uncertainty, e.g. "degrees" "\cir" ?
+      axis_min (float): lower edge of axis on a plot, e.g. 0
+      axis_max (float): upper edge of axis on a plot, e.g. 120
+    """
+
+    class_name = 'UncertaintyParameter'
+    __version__ = '0.1'
+    data_format = dataformats.get_format('UncertaintyParameter')
+
+    def __init__(self, name=None, fit_name=None,
+                 value=None, uncertainty=None, units=None,
+                 axis_min=None, axis_max=None):
+        """
+        All arguments are required except uncertainty, axis_min, axis_max.
+        """
+
+        self.name = name
+        self.fit_name = fit_name
+        self.value = value
+        self.uncertainty = uncertainty
+        self.units = units
+        self.axis_min = axis_min
+        self.axis_max = axis_max
+
+        self.input_check()
+
+    def input_check(self):
+        """
+        Check data types of inputs. And convert if applicable.
+        """
+
+        # error check
+        if type(self.name) is not str:
+            raise InputError(
+                'UncertaintyParameter name should be a string')
+        if type(self.fit_name) is not str:
+            raise InputError(
+                'UncertaintyParameter fit_name should be a string')
+        if (not isinstance(self.value, float) and
+                not isinstance(self.value, int)):
+            raise InputError(
+                'UncertaintyParameter value should be a float')
+
+        if type(self.uncertainty) in (list, tuple, np.ndarray):
+            if len(self.uncertainty) == 1:
+                self.uncertainty = self.uncertainty[0]
+            elif len(self.uncertainty) == 2:
+                if (not isinstance(self.uncertainty[0], float) and
+                        not isinstance(self.uncertainty[0], int) and
+                        self.uncertainty[0] is not None):
+                    raise InputError(
+                        'UncertaintyParameter uncertainty of ' +
+                        'length 2 should contain floats or ints')
+                if (not isinstance(self.uncertainty[1], float) and
+                        not isinstance(self.uncertainty[1], int) and
+                        self.uncertainty[1] is not None):
+                    raise InputError(
+                        'UncertaintyParameter uncertainty of ' +
+                        'length 2 should contain floats or ints')
+            else:
+                raise InputError(
+                    'UncertaintyParameter uncertainty should be' +
+                    ' of length 1 or 2')
+        if (type(self.uncertainty) not in (list, tuple, np.ndarray, type(None))
+                and not isinstance(self.uncertainty, float) and
+                not isinstance(self.uncertainty, int)):
+            raise InputError(
+                'UncertaintyParameter uncertainty of ' +
+                'length 1 should be a float')
+
+        if type(self.units) is not str:
+            raise InputError(
+                'UncertaintyParameter units should be a string')
+        if (self.axis_min is not None and
+                not isinstance(self.axis_min, int) and
+                not isinstance(self.axis_min, float)):
+            raise InputError(
+                'UncertaintyParameter axis_min should be a float')
+        if (self.axis_max is not None and
+                not isinstance(self.axis_max, int) and
+                not isinstance(self.axis_max, float)):
+            raise InputError(
+                'UncertaintyParameter axis_max should be a float')
+
+        # type conversion
+        self.value = float(self.value)
+        if self.uncertainty is None:
+            pass
+        elif isinstance(self.uncertainty, int):
+            self.uncertainty = float(self.uncertainty)
+        elif type(self.uncertainty) in (list, tuple, np.ndarray):
+            self.uncertainty = (float(self.uncertainty[0]),
+                                float(self.uncertainty[1]))
+        if self.axis_min is not None:
+            self.axis_min = float(self.axis_min)
+        if self.axis_max is not None:
+            self.axis_max = float(self.axis_max)
 
 
 DefaultAlphaUncertainty = AlphaGaussPlusConstant
