@@ -5,6 +5,7 @@ import lmfit
 import h5py
 import ipdb as pdb
 
+import trackio
 import trackdata
 import dataformats
 
@@ -168,7 +169,7 @@ class AlgorithmResults(object):
             to python dictionaries. This will be updated to include the
             constructed object, if applicable.
           pydict_to_pyobj: object dictionary to translate python dictionary
-            objects (returned from trackdata.read_object_from_hdf5)
+            objects (returned from trackio.read_object_from_hdf5)
             to constructed class instances (e.g. an AlgorithmResults object)
             (keys are id(pydict))
           reconstruct_fits: boolean for reconstructed the actual fit object
@@ -179,7 +180,7 @@ class AlgorithmResults(object):
         Output: an AlgorithmResults object.
         """
 
-        read_dict = trackdata.read_object_from_hdf5(
+        read_dict = trackio.read_object_from_hdf5(
             h5group, h5_to_pydict=h5_to_pydict)
 
         constructed_object = cls.from_pydict(
@@ -200,7 +201,7 @@ class AlgorithmResults(object):
                     reconstruct_fits=False):
         """
         Initialize an AlgorithmResults object from the dictionary returned by
-        trackdata.read_object_from_hdf5().
+        trackio.read_object_from_hdf5().
         """
 
         if id(read_dict) in pydict_to_pyobj:
@@ -645,7 +646,7 @@ class Uncertainty(object):
                     reconstruct_fits=False):
         """
         Initialize an uncertainty object (of the correct sub-class) from
-        the dictionary returned by trackdata.read_object_from_hdf5().
+        the dictionary returned by trackio.read_object_from_hdf5().
 
         Called from AlgorithmResults.from_pydict, if the AlgorithmResults
         instance has any uncertainties attached to it.
@@ -1879,7 +1880,7 @@ def test_comprehensive():
     filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(8,)))
     filename = '.'.join([filebase, 'h5'])
     with h5py.File(filename, 'a') as h5f:
-        trackdata.write_object_to_hdf5(ar, h5f, 'ar')
+        trackio.write_object_to_hdf5(ar, h5f, 'ar')
     with h5py.File(filename, 'r') as h5f:
         ar_read = AlgorithmResults.from_hdf5(h5f['ar'])
     assert ar_read == ar
