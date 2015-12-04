@@ -314,12 +314,59 @@ class Track(object):
         return track
 
     @classmethod
-    def load(cls, filename):
+    def from_h5matlab_one(cls, pixnoise, g4track=None):
         """
-        Load a track from file (saved using track.save).
+        Construct a Track object from one pixelsize/noise of an event in an
+        HDF5 file.
+
+        HDF5 file is the December 2015 format from MATLAB.
         """
 
-        raise NotImplementedError('Loading not implemented yet!')
+        errorcode = pixnoise.attrs['errorcode']
+        if errorcode != 0:
+            # for now, only accept tracks without errors
+            return errorcode
+        # algorithm_error = (errorcode == 4 or errorcode == 5)
+        # good_algorithm = (errorcode == 0)
+        # has_algorithm = good_algorithm or algorithm_error
+        # has_ridge = good_algorithm
+        # has_measurement = good_algorithm
+        # has_multiple_tracks = (errorcode == 2 or errorcode == 6)
+        #
+        # do_pixnoise = true
+        # check_pixsize = good_algorithm or has_multiple_tracks
+        # check_noise = has_multiple_tracks
+        # do_img = has_algorithm
+        #
+        # do_EtotTind = has_algorithm
+        # do_nends = good_algorithm or errorcode == 4
+        #
+        # do_T = has_multiple_tracks
+        # do_edgesegments = good_algorithm
+        # do_ridge = has_ridge
+        # do_measurement = has_measurement
+
+        # track info (not algorithm info)
+        img = np.zeros(())
+        pixnoise['img'].read_direct(img)
+
+        kwargs = {}
+        kwargs['is_modeled'] = True
+        kwargs['g4track'] = g4track
+        kwargs['pixel_size_um'] = pixnoise.attrs['pixel_size_um']
+        kwargs['noise_ev'] = pixnoise.attrs['noise_ev']
+        kwargs['energy_kev'] = pixnoise.attrs['Etot']
+
+        track = Track(img, **kwargs)
+
+        # algorithm info
+        alpha = pixnoise.attrs['alpha']
+        beta = pixnoise.attrs['beta']
+        info = MatlabAlgorithmInfo(pixnoise)
+
+        track.add_algorithm('matlab HT v1.5',
+                            alpha_deg=alpha, beta_deg=beta,
+                            info=info)
 
     def add_algorithm(self, alg_name, alpha_deg, beta_deg, info=None):
         """
@@ -355,12 +402,61 @@ class Track(object):
         # Map dictionary lookup to algorithms dictionary.
         return item in self.algorithms
 
-    def save(self, filename):
+
+class MatlabAlgorithmInfo(object):
+    """
+    An empty container to store attributes loaded from the Matlab algorithm.
+    """
+
+    class_name = 'MatlabAlgorithmInfo'
+    data_format = dataformats.get_format(class_name)
+
+    attr_list = (
+        'Tind',
+        'lt',
+        'n_ends',
+        'Eend',
+        'alpha',
+        'beta',
+        'dalpha',
+        'dbeta',
+        'edgesegments_energies_kev',
+        'edgesegments_coordinates_pix',
+        'edgesegemnts_chosen_index',
+        'edgesegments_start_coordinates_pix',
+        'edgesegments_start_direction_indices',
+        'edgesegments_low_threshold_used',
+        'dedx_ref',
+        'dedx_meas',
+        'measurement_start_ind',
+        'measurement_end_ind',
+    )
+    data_list = (
+        'thin',
+        'x',
+        'y',
+        'w',
+        'a0',
+        'dE',
+    )
+
+    def __init__(self, pixnoise):
         """
-        Write all track data to an HDF5 file.
+        Initialize MatlabAlgorithmInfo with all the attributes from a
+        successful HybridTrack algorithm.
+
+        pixnoise is the h5 group.
+
+        This goes with the _h5matlab format.
         """
 
-        raise NotImplementedError('Saving not implemented yet!')
+        for attr in self.attr_list:
+            if attr in pixnoise.attrs:
+                setattr(self, attr, pixnoise.attrs[attr])
+            else:
+                raise InputError(
+                    'Missing h5 attribute: {} in {}'.format(
+                        attr, str(pixnoise)))
 
 
 ##############################################################################
