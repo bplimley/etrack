@@ -85,7 +85,22 @@ def get_format(class_name):
         )
 
     elif class_name == 'G4Track':
-        raise Exception('G4Track data format not defined yet')
+        data_format = (
+            ClassAttr('matrix', np.ndarray, make_dset=True),
+            ClassAttr('x', np.ndarray, make_dset=True),
+            ClassAttr('dE', np.ndarray, make_dset=True),
+            ClassAttr('x0', np.ndarray, may_be_none=True),
+            ClassAttr('alpha_deg', float, may_be_none=True),
+            ClassAttr('beta_deg', float, may_be_none=True),
+            ClassAttr('first_step_vector', np.ndarray, may_be_none=True),
+            ClassAttr('energy_tot_kev', float, may_be_none=True),
+            ClassAttr('energy_dep_kev', float, may_be_none=True),
+            ClassAttr('energy_esc_kev', float, may_be_none=True),
+            ClassAttr('energy_xray_kev', float, may_be_none=True),
+            ClassAttr('energy_brems_kev', float, may_be_none=True),
+            ClassAttr('depth_um', float, may_be_none=True),
+            ClassAttr('is_contained', bool, may_be_none=True),
+        )
 
     elif class_name == 'Track':
         data_format = (

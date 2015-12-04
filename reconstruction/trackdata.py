@@ -19,16 +19,28 @@ class G4Track(object):
     Electron track from Geant4.
     """
 
-    __version__ = '0.1'
+    __version__ = '0.2'
     class_name = 'G4Track'
     # data_format = dataformats.get_format(class_name)
 
-    def __init__(self,
-                 matrix=None,
-                 alpha_deg=None, beta_deg=None,
-                 energy_tot_kev=None, energy_dep_kev=None, energy_esc_kev=None,
-                 x=None, dE=None, depth_um=None,
-                 is_contained=None):
+    # a lot more attributes could be added here...
+    attr_list = (
+        'x',
+        'dE',
+        'x0',
+        'alpha_deg',
+        'beta_deg',
+        'first_step_vector',
+        'energy_tot_kev',
+        'energy_dep_kev',
+        'energy_esc_kev',
+        'energy_xray_kev',
+        'energy_brems_kev',
+        'depth_um',
+        'is_contained',
+    )
+
+    def __init__(self, matrix=None, **kwargs):
         """
         Construct G4Track object.
 
@@ -36,35 +48,26 @@ class G4Track(object):
         quantities will be calculated using the matrix (not implemented yet).
 
           matrix
-          alpha_deg
-          beta_deg
-          energy_tot_kev
-          energy_dep_kev
-          energy_esc_kev
-          x
-          dE
-          depth_um
-          is_contained
+          (see attr_list class variable)
         """
 
         self.matrix = matrix
 
+        for attr in self.attr_list:
+            if attr in kwargs:
+                setattr(self, attr, kwargs[attr])
+            else:
+                setattr(self, attr, None)
+
         if matrix is not None and (
-                x is None or dE is None or
-                energy_tot_kev is None or energy_dep_kev is None or
-                energy_esc_kev is None or x is None or dE is None or
-                depth_um is None or is_contained is None):
+                'x' not in kwargs or
+                'dE' not in kwargs or
+                'energy_tot_kev' not in kwargs or
+                'energy_dep_kev' not in kwargs or
+                'energy_esc_kev' not in kwargs or
+                'depth_um' not in kwargs or
+                'is_contained' not in kwargs):
             self.measure_quantities()
-        else:
-            self.alpha_deg = alpha_deg
-            self.beta_deg = beta_deg
-            self.energy_tot_kev = energy_tot_kev
-            self.energy_dep_kev = energy_dep_kev
-            self.energy_esc_kev = energy_esc_kev
-            self.x = x
-            self.dE = dE
-            self.depth_um = depth_um
-            self.is_contained = is_contained
 
     @classmethod
     def from_h5initial(cls, evt):
@@ -88,6 +91,50 @@ class G4Track(object):
             is_contained=None)
 
         return track
+
+    @classmethod
+    def from_h5matlab(cls, evt):
+        """
+        Construct a G4Track instance from an event in an HDF5 file.
+
+        The format of the HDF5 file is 'matlab', a.k.a. the more complete mess
+        that Brian made in December 2015.
+        """
+
+        if evt.attrs['multiplicity'] > 1:
+            # at this time, I am not handling multiple-scattered photons
+            return None
+
+        matrix = np.zeros(())
+        evt['trackM'].read_direct(matrix)
+        matrix = np.array(matrix)
+
+        cheat = evt['cheat']
+
+        # h5 attributes
+        kwargs = {
+            'energy_tot_kev': cheat.attrs['Etot'],
+            'energy_dep_kev': cheat.attrs['Edep'],
+            'energy_esc_kev': cheat.attrs['Eesc'],
+            'energy_xray_kev': cheat.attrs['Exray'],
+            'energy_brems_kev': cheat.attrs['Ebrems'],
+            'x0': cheat.attrs['x0'],
+            'first_step_vector': cheat.attrs['firstStepVector'],
+            'alpha_deg': cheat.attrs['alpha'],
+            'beta_deg': cheat.attrs['beta']
+        }
+
+        # h5 datasets
+        x = np.zeros(())
+        cheat['x'].read_direct(x)
+        kwargs['x'] = x
+
+        dE = np.zeros(())
+        cheat['dE'].read_direct(dE)
+        kwargs['dE'] = dE
+
+        g4track = G4Track(matrix=matrix, **kwargs)
+        return g4track
 
     def measure_quantities(self):
         """
