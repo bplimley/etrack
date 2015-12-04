@@ -408,6 +408,7 @@ class MatlabAlgorithmInfo(object):
     An empty container to store attributes loaded from the Matlab algorithm.
     """
 
+    __version__ = '0.1'
     class_name = 'MatlabAlgorithmInfo'
     data_format = dataformats.get_format(class_name)
 
@@ -476,13 +477,20 @@ class AlgorithmOutput(object):
       info (optional): can contain more information from algorithm
     """
 
-    __version__ = '0.1'
+    __version__ = '0.2'
+    class_name = 'AlgorithmOutput'
 
     def __init__(self, alg_name, alpha_deg, beta_deg, info=None):
         self.alpha_deg = alpha_deg
         self.beta_deg = beta_deg
         self.alg_name = alg_name
         self.info = info
+
+        # customize data_format based on which algorithm type
+        if self.alg_name.startswith('matlab'):
+            self.data_format = dataformats.get_format('AlgorithmOutputMatlab')
+        else:
+            self.data_format = dataformats.get_format(self.class_name)
 
 
 ##############################################################################

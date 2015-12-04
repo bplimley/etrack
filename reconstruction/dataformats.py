@@ -115,6 +115,24 @@ def get_format(class_name):
             ClassAttr('timestamp', str, may_be_none=True),
             ClassAttr('shutter_ind', int, may_be_none=True),
             ClassAttr('label', str, may_be_none=True),
+            ClassAttr('algorithms', 'AlgorithmOutput',
+                      is_user_object=True, is_always_dict=True),
+        )
+
+    elif class_name == 'AlgorithmOutput':
+        data_format = (
+            ClassAttr('alg_name', str),
+            ClassAttr('alpha_deg', float),
+            ClassAttr('beta_deg', float),
+        )
+
+    elif class_name == 'AlgorithmOutputMatlab':
+        data_format = (
+            ClassAttr('alg_name', str),
+            ClassAttr('alpha_deg', float),
+            ClassAttr('beta_deg', float),
+            ClassAttr('info', 'MatlabAlgorithmInfo',
+                      is_user_object=True),
         )
 
     elif class_name == 'MatlabAlgorithmInfo':
