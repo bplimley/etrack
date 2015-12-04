@@ -117,6 +117,28 @@ def get_format(class_name):
             ClassAttr('label', str, may_be_none=True),
         )
 
+    elif class_name == 'MatlabAlgorithmInfo':
+        data_format = (
+            ClassAttr('Tind', int),
+            ClassAttr('lt', float),
+            ClassAttr('n_ends', int),
+            ClassAttr('Eend', float),
+            ClassAttr('alpha', float),
+            ClassAttr('beta', float),
+            ClassAttr('dalpha', float),
+            ClassAttr('dbeta', float),
+            ClassAttr('edgesegments_energies_kev', np.ndarray),
+            ClassAttr('edgesegments_coordinates_pix', np.ndarray),
+            ClassAttr('edgesegemnts_chosen_index', int),
+            ClassAttr('edgesegments_start_coordinates_pix', np.ndarray),
+            ClassAttr('edgesegments_start_direction_indices', float),
+            ClassAttr('edgesegments_low_threshold_used', float),
+            ClassAttr('dedx_ref', float),
+            ClassAttr('dedx_meas', float),
+            ClassAttr('measurement_start_ind', int),
+            ClassAttr('measurement_end_ind', int),
+        )
+
     else:
         raise Exception('Unknown class_name')
 
