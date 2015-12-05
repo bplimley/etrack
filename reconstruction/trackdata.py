@@ -67,7 +67,8 @@ class G4Track(object):
                 'energy_esc_kev' not in kwargs or
                 'depth_um' not in kwargs or
                 'is_contained' not in kwargs):
-            self.measure_quantities()
+            pass
+            # self.measure_quantities()
 
     @classmethod
     def from_h5initial(cls, evt):
@@ -105,17 +106,18 @@ class G4Track(object):
             # at this time, I am not handling multiple-scattered photons
             return None
 
-        matrix = np.zeros(())
-        evt['trackM'].read_direct(matrix)
+        data = evt['trackM']
+        matrix = np.zeros(data.shape)
+        data.read_direct(matrix)
         matrix = np.array(matrix)
 
-        cheat = evt['cheat']
+        cheat = evt['cheat']['0']
 
         # h5 attributes
         kwargs = {
             'energy_tot_kev': cheat.attrs['Etot'],
             'energy_dep_kev': cheat.attrs['Edep'],
-            'energy_esc_kev': cheat.attrs['Eesc'],
+            'energy_esc_kev': evt.attrs['Eesc'],
             'energy_xray_kev': cheat.attrs['Exray'],
             'energy_brems_kev': cheat.attrs['Ebrems'],
             'x0': cheat.attrs['x0'],
@@ -125,12 +127,14 @@ class G4Track(object):
         }
 
         # h5 datasets
-        x = np.zeros(())
-        cheat['x'].read_direct(x)
+        data = cheat['x']
+        x = np.zeros(data.shape)
+        data.read_direct(x)
         kwargs['x'] = x
 
-        dE = np.zeros(())
-        cheat['dE'].read_direct(dE)
+        data = cheat['dE']
+        dE = np.zeros(data.shape)
+        data.read_direct(dE)
         kwargs['dE'] = dE
 
         g4track = G4Track(matrix=matrix, **kwargs)
@@ -386,8 +390,9 @@ class Track(object):
         # do_measurement = has_measurement
 
         # track info (not algorithm info)
-        img = np.zeros(())
-        pixnoise['img'].read_direct(img)
+        data = pixnoise['img']
+        img = np.zeros(data.shape)
+        data.read_direct(img)
 
         kwargs = {}
         kwargs['is_modeled'] = True
@@ -401,7 +406,7 @@ class Track(object):
         # algorithm info
         alpha = pixnoise.attrs['alpha']
         beta = pixnoise.attrs['beta']
-        info = MatlabAlgorithmInfo(pixnoise)
+        info = MatlabAlgorithmInfo.from_h5pixnoise(pixnoise)
 
         track.add_algorithm('matlab HT v1.5',
                             alpha_deg=alpha, beta_deg=beta,
@@ -508,7 +513,7 @@ class MatlabAlgorithmInfo(object):
         'dbeta',
         'edgesegments_energies_kev',
         'edgesegments_coordinates_pix',
-        'edgesegemnts_chosen_index',
+        'edgesegments_chosen_index',
         'edgesegments_start_coordinates_pix',
         'edgesegments_start_direction_indices',
         'edgesegments_low_threshold_used',
@@ -518,7 +523,7 @@ class MatlabAlgorithmInfo(object):
         'measurement_end_ind',
     )
     data_list = (
-        'thin',
+        'thinned_img',
         'x',
         'y',
         'w',
@@ -760,32 +765,10 @@ def test_AlgorithmOutput():
     AlgorithmOutput('matlab HT v1.5', 120.5, 43.5)
 
 
-if __name__ == '__main__':
+def test_h5initial(h5initial):
     """
-    Run tests.
     """
 
-    # save time for routine testing
-    run_file_tests = False
-
-    test_G4Track()
-    test_Track()
-    test_TrackExceptions()
-    test_AlgorithmOutput()
-
-    import sys
-
-    try:
-        h5initial = h5py.File('MultiAngle_HT_11_12.h5', 'r')
-    except IOError:
-        print('Skipping file tests')
-        sys.exit()
-
-    if not run_file_tests:
-        print('Skipping file tests')
-        sys.exit()
-
-    print('Beginning file tests')
     fieldname = 'pix10_5noise0'
     testflag = True
     for i, evt in enumerate(h5initial):
@@ -821,7 +804,58 @@ if __name__ == '__main__':
             # only run on first track (that's what these numbers are from)
             testflag = False
 
-    # h5matlab test
-    loadpath = ('/home/plimley/Documents/MATLAB/data/Electron Track/' +
-                'algorithms/results/2013sep binned')
-    #
+
+def test_h5matlab(filename):
+    """
+    """
+
+    evt = h5file['00000']
+    g4track = G4Track.from_h5matlab(evt)
+    pixnoise = {}
+    for key in evt:
+        if key.startswith('pix'):
+            pixnoise[key] = Track.from_h5matlab_one(
+                evt[key], g4track=g4track)
+
+
+if __name__ == '__main__':
+    """
+    Run tests.
+    """
+
+    import os
+
+    # save time for routine testing
+    run_file_tests = True
+
+    test_G4Track()
+    test_Track()
+    test_TrackExceptions()
+    test_AlgorithmOutput()
+
+    try:
+        with h5py.File(
+            '/home/plimley/gh/etrack/reconstruction/MultiAngle_HT_11_12.h5',
+                'r') as h5initial:
+            print('Running h5initial file test')
+            test_h5initial(h5initial)
+    except IOError:
+        print('Skipping h5initial file test')
+
+    try:
+        loadpath = ('/home/plimley/Documents/MATLAB/data/Electron Track/' +
+                    'algorithms/results/2013sep binned')
+        loadname = 'MultiAngle_HT_20_2.h5'
+        filename = os.path.join(loadpath, loadname)
+
+        # with h5py.File(filename, 'r') as h5file:
+        #     print('Running h5matlab file test')
+        #     test_h5matlab(h5file)
+
+        # debug version: no auto close file
+        h5file = h5py.File(filename, 'r')
+        print('Running h5matlab file test')
+        test_h5matlab(h5file)
+        h5file.close()
+    except IOError:
+        print('Skipping h5matlab file test')
