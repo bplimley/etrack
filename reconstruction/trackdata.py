@@ -136,6 +136,31 @@ class G4Track(object):
         g4track = G4Track(matrix=matrix, **kwargs)
         return g4track
 
+    @classmethod
+    def from_pydict(cls, read_dict, pydict_to_pyobj={}):
+        """
+        Initialize a G4Track object from the dictionary returned by
+        trackio.read_object_from_hdf5().
+        """
+
+        if id(read_dict) in pydict_to_pyobj:
+            return pydict_to_pyobj[id(read_dict)]
+
+        other_attrs = ('matrix')
+        all_attrs = other_attrs + cls.attr_list
+
+        kwargs = {}
+        for attr in all_attrs:
+            kwargs[attr] = read_dict.get(attr)
+            # read_dict.get() defaults to None, although this actually
+            #   shouldn't be needed since read_object_from_hdf5 adds Nones
+        constructed_object = cls(**kwargs)
+
+        # add entry to pydict_to_pyobj
+        pydict_to_pyobj[id(read_dict)] = constructed_object
+
+        return constructed_object
+
     def measure_quantities(self):
         """
         Measure the following using the Geant4 matrix.
@@ -178,6 +203,20 @@ class Track(object):
     __version__ = '0.1'
     class_name = 'Track'
     data_format = dataformats.get_format(class_name)
+
+    attr_list = (
+        'is_modeled',
+        'is_measured',
+        'pixel_size_um',
+        'noise_ev',
+        'g4track',
+        'energy_kev',
+        'x_offset_pix',
+        'y_offset_pix',
+        'timestamp',
+        'shutter_ind',
+        'label',
+    )
 
     def __init__(self, image, **kwargs):
         """
@@ -368,6 +407,46 @@ class Track(object):
                             alpha_deg=alpha, beta_deg=beta,
                             info=info)
 
+    @classmethod
+    def from_pydict(cls, read_dict, pydict_to_pyobj={}):
+        """
+        Initialize a Track object from the dictionary returned by
+        trackio.read_object_from_hdf5().
+        """
+
+        if id(read_dict) in pydict_to_pyobj:
+            return pydict_to_pyobj[id(read_dict)]
+
+        other_attrs = ('image', 'algorithms')
+        all_attrs = other_attrs + cls.attr_list()
+
+        kwargs = {}
+        for attr in all_attrs:
+            if attr is 'g4track' and read_dict.get(attr) is not None:
+                kwargs[attr] = G4Track.from_pydict(
+                    read_dict[attr], pydict_to_pyobj=pydict_to_pyobj)
+                # if g4track *is* None, then it gets assigned in "else" below
+            elif attr is 'algorithms':
+                kwargs[attr] = {}
+                if read_dict.get(attr) is not None:
+                    for key, val in read_dict[attr].iteritems():
+                        kwargs[attr][key] = AlgorithmOutput.from_pydict(
+                            read_dict[attr][key],
+                            pydict_to_pyobj=pydict_to_pyobj)
+                # else, algorithms is still {} as it should be
+            else:
+                kwargs[attr] = read_dict.get(attr)
+            # read_dict.get() defaults to None, although this actually
+            #   shouldn't be needed since read_object_from_hdf5 adds Nones
+
+        image = kwargs.pop('image')
+        constructed_object = cls(image, **kwargs)
+
+        # add entry to pydict_to_pyobj
+        pydict_to_pyobj[id(read_dict)] = constructed_object
+
+        return constructed_object
+
     def add_algorithm(self, alg_name, alpha_deg, beta_deg, info=None):
         """
         """
@@ -441,7 +520,16 @@ class MatlabAlgorithmInfo(object):
         'dE',
     )
 
-    def __init__(self, pixnoise):
+    def __init__(self, **kwargs):
+        """
+        Shouldn't need to call this -- use from_h5pixnoise or from_pydict
+        """
+
+        for attr in kwargs:
+            setattr(self, attr, kwargs[attr])
+
+    @classmethod
+    def from_h5pixnoise(cls, pixnoise):
         """
         Initialize MatlabAlgorithmInfo with all the attributes from a
         successful HybridTrack algorithm.
@@ -451,13 +539,46 @@ class MatlabAlgorithmInfo(object):
         This goes with the _h5matlab format.
         """
 
-        for attr in self.attr_list:
+        kwargs = {}
+        for attr in cls.attr_list:
             if attr in pixnoise.attrs:
-                setattr(self, attr, pixnoise.attrs[attr])
+                kwargs[attr] = pixnoise.attrs[attr]
             else:
                 raise InputError(
                     'Missing h5 attribute: {} in {}'.format(
                         attr, str(pixnoise)))
+        for attr in cls.data_list:
+            if attr in pixnoise:
+                kwargs[attr] = pixnoise[attr]
+            else:
+                raise InputError(
+                    'Missing h5 dataset: {} in {}'.format(
+                        attr, str(pixnoise)))
+        return cls(**kwargs)
+
+    @classmethod
+    def from_pydict(cls, read_dict, pydict_to_pyobj={}):
+        """
+        Initialize a MatlabAlgorithmInfo object from the dictionary returned by
+        trackio.read_object_from_hdf5().
+        """
+
+        if id(read_dict) in pydict_to_pyobj:
+            return pydict_to_pyobj[id(read_dict)]
+
+        all_attrs = cls.attr_list
+
+        kwargs = {}
+        for attr in all_attrs:
+            kwargs[attr] = read_dict.get(attr)
+            # read_dict.get() defaults to None, although this actually
+            #   shouldn't be needed since read_object_from_hdf5 adds Nones
+        constructed_object = cls(**kwargs)
+
+        # add entry to pydict_to_pyobj
+        pydict_to_pyobj[id(read_dict)] = constructed_object
+
+        return constructed_object
 
 
 ##############################################################################
@@ -491,6 +612,34 @@ class AlgorithmOutput(object):
             self.data_format = dataformats.get_format('AlgorithmOutputMatlab')
         else:
             self.data_format = dataformats.get_format(self.class_name)
+
+    @classmethod
+    def from_pydict(cls, read_dict, pydict_to_pyobj={}):
+        """
+        Initialize an AlgorithmOutput object from the dictionary returned by
+        trackio.read_object_from_hdf5().
+        """
+
+        if id(read_dict) in pydict_to_pyobj:
+            return pydict_to_pyobj[id(read_dict)]
+
+        # handle "info" later
+        all_attrs = ('alg_name', 'alpha_deg', 'beta_deg')
+
+        kwargs = {}
+        for attr in all_attrs:
+            kwargs[attr] = read_dict[attr]
+
+        if kwargs['alg_name'].startswith('matlab') and 'info' in read_dict:
+            kwargs['info'] = MatlabAlgorithmInfo.from_pydict(
+                read_dict['info'], pydict_to_pyobj=pydict_to_pyobj)
+
+        constructed_object = cls(**kwargs)
+
+        # add entry to pydict_to_pyobj
+        pydict_to_pyobj[id(read_dict)] = constructed_object
+
+        return constructed_object
 
 
 ##############################################################################
@@ -540,6 +689,7 @@ def test_Track():
 
     # test Track data format
     import trackio
+    import os
 
     filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(8,)))
     filename = '.'.join([filebase, 'h5'])
@@ -555,6 +705,11 @@ def test_Track():
     assert track2['label'] == track.label
     assert track2['energy_kev'] == track.energy_kev
     assert np.all(track2['image'] == track.image)
+
+    assert track2['algorithms']['python HT v1.5']['alpha_deg'] == 120.5
+    assert track2['algorithms']['python HT v1.5']['beta_deg'] == 43.5
+
+    os.remove(filename)
 
 
 def test_TrackExceptions():
