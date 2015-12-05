@@ -307,7 +307,7 @@ class Track(object):
             shutter_ind = int(np.round(shutter_ind))
         self.shutter_ind = shutter_ind
 
-        if (timestamp is not None and
+        if (timestamp is not None and timestamp != 'None' and
                 not isinstance(timestamp, datetime.datetime)):
             raise InputError('timestamp should be a datetime object')
         self.timestamp = str(timestamp)
@@ -418,19 +418,20 @@ class Track(object):
             return pydict_to_pyobj[id(read_dict)]
 
         other_attrs = ('image', 'algorithms')
-        all_attrs = other_attrs + cls.attr_list()
+        all_attrs = other_attrs + cls.attr_list
 
         kwargs = {}
+        # keep algorithms in a separate dict because they do not go in __init__
+        algorithms = {}
         for attr in all_attrs:
-            if attr is 'g4track' and read_dict.get(attr) is not None:
+            if attr == 'g4track' and read_dict.get(attr) is not None:
                 kwargs[attr] = G4Track.from_pydict(
                     read_dict[attr], pydict_to_pyobj=pydict_to_pyobj)
                 # if g4track *is* None, then it gets assigned in "else" below
-            elif attr is 'algorithms':
-                kwargs[attr] = {}
+            elif attr == 'algorithms':
                 if read_dict.get(attr) is not None:
                     for key, val in read_dict[attr].iteritems():
-                        kwargs[attr][key] = AlgorithmOutput.from_pydict(
+                        algorithms[key] = AlgorithmOutput.from_pydict(
                             read_dict[attr][key],
                             pydict_to_pyobj=pydict_to_pyobj)
                 # else, algorithms is still {} as it should be
@@ -441,6 +442,11 @@ class Track(object):
 
         image = kwargs.pop('image')
         constructed_object = cls(image, **kwargs)
+        for key, algoutput in algorithms.iteritems():
+            alpha = algoutput.alpha_deg
+            beta = algoutput.beta_deg
+            info = algoutput.info
+            constructed_object.add_algorithm(key, alpha, beta, info)
 
         # add entry to pydict_to_pyobj
         pydict_to_pyobj[id(read_dict)] = constructed_object
@@ -708,6 +714,17 @@ def test_Track():
 
     assert track2['algorithms']['python HT v1.5']['alpha_deg'] == 120.5
     assert track2['algorithms']['python HT v1.5']['beta_deg'] == 43.5
+
+    track3 = Track.from_pydict(track2, pydict_to_pyobj={})
+    assert track3.is_modeled == track.is_modeled
+    assert track3.pixel_size_um == track.pixel_size_um
+    assert track3.noise_ev == track.noise_ev
+    assert track3.label == track.label
+    assert track3.energy_kev == track.energy_kev
+    assert np.all(track3.image == track.image)
+
+    assert track3.algorithms['python HT v1.5'].alpha_deg == 120.5
+    assert track3.algorithms['python HT v1.5'].beta_deg == 43.5
 
     os.remove(filename)
 
