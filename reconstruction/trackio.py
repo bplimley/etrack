@@ -818,6 +818,7 @@ def test_IO_obj_dict(filename):
     check_alg_results_IO(ar3r, ar1, uncertainty_flag=True)
     # this is the hardlink test:
     assert ar1r is ar3r
+    os.remove(filename)
 
 
 def test_IO_overwrite(filename):
@@ -865,6 +866,7 @@ def test_IO_overwrite(filename):
         ar2r = read_object_from_hdf5(h5file['ar2'])
     check_alg_results_IO(ar1r, ar3, uncertainty_flag=True)
     check_alg_results_IO(ar2r, ar2, uncertainty_flag=True)
+    os.remove(filename)
 
 
 def test_write_objects_to_hdf5():
@@ -911,6 +913,7 @@ def test_write_objects_to_hdf5():
     check_alg_results_IO(ar3_read, ar3, uncertainty_flag=True)
     # check hard link across multiple write calls (within a file session)
     assert aunc is ar1_read['alpha_unc']
+    os.remove(filename)
 
     # filename provided, including extension (single object)
     filename_written = write_objects_to_hdf5(filename, ar=ar)

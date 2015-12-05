@@ -536,7 +536,25 @@ def test_Track():
                   label='MultiAngle', energy_kev=np.sum(image))
     options, info = hybridtrack.reconstruct(image)
 
-    track.add_algorithm('matlab HT v1.5', 120.5, 43.5, info=info)
+    track.add_algorithm('python HT v1.5', 120.5, 43.5, info=info)
+
+    # test Track data format
+    import trackio
+
+    filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(8,)))
+    filename = '.'.join([filebase, 'h5'])
+    with h5py.File(filename, 'a') as h5file:
+        trackio.write_object_to_hdf5(
+            track, h5file, 'track', pyobj_to_h5={})
+    with h5py.File(filename, 'r') as h5file:
+        track2 = trackio.read_object_from_hdf5(
+            h5file['track'], h5_to_pydict={})
+    assert track2['is_modeled'] == track.is_modeled
+    assert track2['pixel_size_um'] == track.pixel_size_um
+    assert track2['noise_ev'] == track.noise_ev
+    assert track2['label'] == track.label
+    assert track2['energy_kev'] == track.energy_kev
+    assert np.all(track2['image'] == track.image)
 
 
 def test_TrackExceptions():
@@ -630,3 +648,8 @@ if __name__ == '__main__':
 
             # only run on first track (that's what these numbers are from)
             testflag = False
+
+    # h5matlab test
+    loadpath = ('/home/plimley/Documents/MATLAB/data/Electron Track/' +
+                'algorithms/results/2013sep binned')
+    #

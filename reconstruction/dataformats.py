@@ -104,6 +104,7 @@ def get_format(class_name):
 
     elif class_name == 'Track':
         data_format = (
+            ClassAttr('image', np.ndarray),
             ClassAttr('is_modeled', bool),
             ClassAttr('pixel_size_um', float),
             ClassAttr('noise_ev', float, may_be_none=True),
