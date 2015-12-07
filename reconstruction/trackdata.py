@@ -21,7 +21,7 @@ class G4Track(object):
 
     __version__ = '0.2'
     class_name = 'G4Track'
-    # data_format = dataformats.get_format(class_name)
+    data_format = dataformats.get_format(class_name)
 
     # a lot more attributes could be added here...
     attr_list = (
@@ -411,6 +411,7 @@ class Track(object):
         track.add_algorithm('matlab HT v1.5',
                             alpha_deg=alpha, beta_deg=beta,
                             info=info)
+        return track
 
     @classmethod
     def from_pydict(cls, read_dict, pydict_to_pyobj={}):

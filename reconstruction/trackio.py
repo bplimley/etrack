@@ -484,7 +484,7 @@ def read_object_from_hdf5(h5group, h5_to_pydict={}, ext_data_format=None,
     return output
 
 
-class InterfaceError(object):
+class InterfaceError(Exception):
     pass
 
 
