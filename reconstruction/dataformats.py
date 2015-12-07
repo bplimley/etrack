@@ -148,7 +148,7 @@ def get_format(class_name):
             ClassAttr('dbeta', float),
             ClassAttr('edgesegments_energies_kev', np.ndarray),
             ClassAttr('edgesegments_coordinates_pix', np.ndarray),
-            ClassAttr('edgesegemnts_chosen_index', int),
+            ClassAttr('edgesegments_chosen_index', int),
             ClassAttr('edgesegments_start_coordinates_pix', np.ndarray),
             ClassAttr('edgesegments_start_direction_indices', float),
             ClassAttr('edgesegments_low_threshold_used', float),
