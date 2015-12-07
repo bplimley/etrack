@@ -805,7 +805,7 @@ def test_h5initial(h5initial):
             testflag = False
 
 
-def test_h5matlab(filename):
+def test_h5matlab(h5file):
     """
     """
 
@@ -848,14 +848,14 @@ if __name__ == '__main__':
         loadname = 'MultiAngle_HT_20_2.h5'
         filename = os.path.join(loadpath, loadname)
 
-        # with h5py.File(filename, 'r') as h5file:
-        #     print('Running h5matlab file test')
-        #     test_h5matlab(h5file)
+        with h5py.File(filename, 'r') as h5file:
+            print('Running h5matlab file test')
+            test_h5matlab(h5file)
 
-        # debug version: no auto close file
-        h5file = h5py.File(filename, 'r')
-        print('Running h5matlab file test')
-        test_h5matlab(h5file)
-        h5file.close()
+        # # debug version: no auto close file
+        # h5file = h5py.File(filename, 'r')
+        # print('Running h5matlab file test')
+        # test_h5matlab(h5file)
+        # h5file.close()
     except IOError:
         print('Skipping h5matlab file test')
