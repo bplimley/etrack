@@ -48,11 +48,6 @@ def write_object_to_hdf5(obj, h5group, name, pyobj_to_h5={}):
         if h5group.file.mode != 'r+':
             raise InterfaceError(
                 'Cannot write object to h5file in read-only mode')
-        # clear pyobj_to_h5 of any closed HDF5 objects
-        pyobj_to_h5_copy = pyobj_to_h5.copy()
-        for key, val in pyobj_to_h5_copy.iteritems():
-            if str(val) == '<Closed HDF5 group>':
-                del pyobj_to_h5[key]
 
     def check_attr(obj, attr):
         """
