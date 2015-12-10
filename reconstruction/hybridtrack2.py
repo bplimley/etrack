@@ -761,9 +761,6 @@ def diffusion_skip_points(ridge, options):
     width_meas_length_pts = int(width_meas_length_pts)  # used as index
     width_values = [r.fwhm_um for r in ridge[:width_meas_length_pts]]
 
-    # TODO: remove this MATLAB bug
-    width_values[0] = 0
-
     # measure width
     measured_width_um = options.measurement_func(width_values)
 
