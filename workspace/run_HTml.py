@@ -32,7 +32,7 @@ def run_HT_file(h5f, v, dry_run):
     """
 
     for track_key in h5f.keys():
-        h5save.create_group(track_key)
+        # h5save.create_group(track_key)
         if v > 1:
             print('  Starting', track_key, 'at', time.ctime())
         this_h5track = h5f[track_key]
@@ -40,7 +40,7 @@ def run_HT_file(h5f, v, dry_run):
         pydict_to_pyobj = {}
         pyobj_to_h5 = {}
 
-        pix_list = ['pix2_5noise0', 'pix10_5noise0']:
+        pix_list = ['pix2_5noise0', 'pix10_5noise0']
         if (pix_list[0] not in this_h5track.keys() or
                 pix_list[1] not in this_h5track.keys()):
             continue
@@ -72,8 +72,9 @@ def run_HT_file(h5f, v, dry_run):
                 alpha_deg=HTinfo.alpha_deg, beta_deg=HTinfo.beta_deg,
                 info=HTinfo)
             if v > 2:
-                print('  Appending to file', pix_key, 'at', time.ctime())
+                print('    Appending to file', pix_key, 'at', time.ctime())
             # append to same file
+            pdb.set_trace()
             if dry_run:
                 continue
             trackio.write_object_to_hdf5(
@@ -107,8 +108,8 @@ def run_main():
     DRY_RUN = True
 
     for loadfile in glob.glob(os.path.join(LOAD_DIR, LOAD_FILE)):
-        if V > 0: print('# Starting', checkfile, 'at', time.ctime(), '#')
-        savefile = os.path.join(SAVE_DIR, os.path.basename(loadfile))
+        if V > 0: print('# Starting', loadfile, 'at', time.ctime(), '#')
+        # savefile = os.path.join(SAVE_DIR, os.path.basename(loadfile))
 
 
         # if check_file(savefile): continue

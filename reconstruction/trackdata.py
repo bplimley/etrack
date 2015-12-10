@@ -150,7 +150,7 @@ class G4Track(object):
         if id(read_dict) in pydict_to_pyobj:
             return pydict_to_pyobj[id(read_dict)]
 
-        other_attrs = ('matrix')
+        other_attrs = ('matrix',)
         all_attrs = other_attrs + cls.attr_list
 
         kwargs = {}
