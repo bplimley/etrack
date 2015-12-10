@@ -26,27 +26,34 @@ def check_file(checkfile):
     return os.path.isfile(checkfile)
 
 
-def run_HT_file(h5load, h5save, v):
+def run_HT_file(h5f, v, dry_run):
     """
-    Handle one file: h5load['00000']['pix10_5noise0'] and so
+    Handle one file: h5f['00000']['pix10_5noise0'] and so
     """
 
-    for track_key in h5load.keys():
+    for track_key in h5f.keys():
         h5save.create_group(track_key)
         if v > 1:
             print('  Starting', track_key, 'at', time.ctime())
-        this_h5track = h5load[track_key]
+        this_h5track = h5f[track_key]
         h5_to_pydict = {}
         pydict_to_pyobj = {}
         pyobj_to_h5 = {}
-        for pix_key in this_h5track.keys():
-            if not pix_key.startswith('pix'):
-                continue
-            if pix_key != 'pix2_5noise0' and pix_key != 'pix10_5noise0':
-                continue
+
+        pix_list = ['pix2_5noise0', 'pix10_5noise0']:
+        if (pix_list[0] not in this_h5track.keys() or
+                pix_list[1] not in this_h5track.keys()):
+            continue
+        for pix_key in pix_list:
+            # if not pix_key.startswith('pix'):
+            #     continue
+
+            alg_name = 'python HT v1.5'
             if v > 2:
                 print('    Starting', pix_key, 'at', time.ctime())
             this_h5pix = this_h5track[pix_key]
+            if alg_name in this_h5pix['algorithms'].keys():
+                continue
             if v > 3:
                 print('      Reading pydict...', time.ctime())
             this_dict = trackio.read_object_from_hdf5(
@@ -59,14 +66,19 @@ def run_HT_file(h5load, h5save, v):
                 print('      Running HybridTrack...', time.ctime())
             HTout, HTinfo = hybridtrack.reconstruct(
                 this_pixobj.image, pixel_size_um=this_pixobj.pixel_size_um)
+
             this_pixobj.add_algorithm(
-                'python HT v1.5',
+                alg_name,
                 alpha_deg=HTinfo.alpha_deg, beta_deg=HTinfo.beta_deg,
                 info=HTinfo)
-
-            # save
+            if v > 2:
+                print('  Appending to file', pix_key, 'at', time.ctime())
+            # append to same file
+            if dry_run:
+                continue
             trackio.write_object_to_hdf5(
-                this_pixobj, h5save[track_key], pix_key,
+                this_pixobj.algorithms[alg_name],
+                this_h5pix['algorithms'], alg_name,
                 pyobj_to_h5=pyobj_to_h5)
 
 
@@ -75,40 +87,34 @@ def run_main():
     location = 'extHD'
     if location == 'LRC':
         LOAD_DIR = '/global/home/users/bcplimley/multi_angle/HTbatch01_h5m/'
-        SAVE_DIR = '/global/home/users/bcplimley/multi_angle/HTbatch01_pyml/'
+        # SAVE_DIR = '/global/home/users/bcplimley/multi_angle/HTbatch01_pyml/'
     elif location == 'desktop':
         # LBL desktop
         LOAD_DIR = ('/home/plimley/Documents/MATLAB/data/Electron Track/' +
                     'algorithms/results/2013sep binned')
-        SAVE_DIR = LOAD_DIR
+        # SAVE_DIR = LOAD_DIR
     elif location == 'extHD':
         # 'TEAM 7B' WD USB 1TB hard drive
         LOAD_DIR = '/media/plimley/TEAM 7B/HTbatch01_pyml'
-        SAVE_DIR = '/media/plimley/TEAM 7B/HTbatch01_pyHT'
+        # SAVE_DIR = '/media/plimley/TEAM 7B/HTbatch01_pyHT'
     else:
         raise RuntimeError('need a valid location')
 
     LOAD_FILE = 'MultiAngle_HT_*_*_py.h5'
 
-    VERBOSITY = 1
+    VERBOSITY = 4
     V = VERBOSITY       # for conciseness (=P)
-    DRY_RUN = False
+    DRY_RUN = True
 
     for loadfile in glob.glob(os.path.join(LOAD_DIR, LOAD_FILE)):
         if V > 0: print('# Starting', checkfile, 'at', time.ctime(), '#')
         savefile = os.path.join(SAVE_DIR, os.path.basename(loadfile))
 
 
-        if check_file(savefile): continue
+        # if check_file(savefile): continue
         try:
-            with h5py.File(loadfile, 'r') as h5load:
-                try:
-                    with h5py.File(savefile, 'w') as h5save:
-                        if not DRY_RUN:
-                            run_HT_file(h5load, h5save, V)
-                except IOError:
-                    print('  !!! unable to save file', savefile)
-                    continue
+            with h5py.File(loadfile, 'r+') as h5f:
+                run_HT_file(h5f, V, DRY_RUN)
         except IOError:
             print('  !!! unable to load file', loadfile)
             continue
