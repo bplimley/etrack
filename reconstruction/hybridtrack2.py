@@ -500,12 +500,13 @@ class RidgePoint(object):
         """Measure the direction from previous ridge point to this one.
         """
         if self.previous is None:
-            # first point. (this behavior matches MATLAB)
+            # first point.
             self.step_alpha_deg = ((
                 self.best_cut.angle_ind * self.options.angle_increment_deg) +
                 180)
+            if self.step_alpha_deg > 180:
+                self.step_alpha_deg -= 360
         elif True:     # this is the correct way to do it, but not MATLAB's
-            # TODO: make this True
             # all subsequent points
             dpos = self.coordinates_pix - self.previous.coordinates_pix
             self.step_alpha_deg = 180/np.pi * np.arctan2(-dpos[1], -dpos[0])
