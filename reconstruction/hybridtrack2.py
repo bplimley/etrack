@@ -504,7 +504,7 @@ class RidgePoint(object):
             self.step_alpha_deg = ((
                 self.best_cut.angle_ind * self.options.angle_increment_deg) +
                 180)
-        elif False:     # this is the correct way to do it, but not MATLAB's
+        elif True:     # this is the correct way to do it, but not MATLAB's
             # TODO: make this True
             # all subsequent points
             dpos = self.coordinates_pix - self.previous.coordinates_pix
