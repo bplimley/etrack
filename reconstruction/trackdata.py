@@ -7,6 +7,7 @@ import ipdb as pdb
 
 import hybridtrack
 import dataformats
+import trackio
 
 
 ##############################################################################
@@ -139,6 +140,19 @@ class G4Track(object):
 
         # add entry to pydict_to_pyobj
         pydict_to_pyobj[id(read_dict)] = constructed_object
+
+        return constructed_object
+
+    def from_hdf5(cls, h5group, h5_to_pydict={}, pydict_to_pyobj={}):
+        """
+        Initialize a G4Track instance from an HDF5 group.
+        """
+
+        read_dict = trackio.read_object_from_hdf5(
+            h5group, h5_to_pydict=h5_to_pydict)
+
+        constructed_object = cls.from_pydict(
+            read_dict, pydict_to_pyobj=pydict_to_pyobj)
 
         return constructed_object
 
@@ -530,6 +544,21 @@ class MatlabAlgorithmInfo(object):
 
         # add entry to pydict_to_pyobj
         pydict_to_pyobj[id(read_dict)] = constructed_object
+
+        return constructed_object
+
+    @classmethod
+    def from_hdf5(cls, h5group,
+                  h5_to_pydict={}, pydict_to_pyobj={}):
+        """
+        Initialize a Track object from an HDF5 group.
+        """
+
+        read_dict = trackio.read_object_from_hdf5(
+            h5group, h5_to_pydict=h5_to_pydict)
+
+        constructed_object = cls.from_pydict(
+            read_dict, pydict_to_pyobj=pydict_to_pyobj)
 
         return constructed_object
 
