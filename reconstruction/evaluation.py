@@ -263,49 +263,6 @@ class AlgorithmResults(object):
         return constructed_object
 
     @classmethod
-    def from_h5initial(cls, fieldname, filename=None, h5file=None):
-        """
-        Construct AlgorithmResults instance from an h5file of MultiAngle
-        pixelsize data.
-
-        Inputs:
-          fieldname: e.g. 'pix10_5noise0'
-          filename: path/name of an HDF5 file
-          h5file: the loaded HDF5 file object from h5py.File with read access
-
-        Either filename or h5file must be provided.
-
-        Returns TWO instances of AlgorithmResults: 10.5um, 2.5um.
-        """
-
-        if filename is None and h5file is None:
-            raise InputError('AlgorithmResults.from_multiangle requires '
-                             'either filename or h5file as input')
-        if h5file is None:
-            h5file = h5py.File(filename, 'r')
-        else:
-            filename = h5file.filename
-
-        n = 0
-        tracks = [[] for i in range(len(h5file))]
-
-        for evt in h5file.itervalues():
-            if 'Etot' not in evt.attrs or 'Edep' not in evt.attrs:
-                continue
-            if 'cheat_alpha' not in evt.attrs:
-                continue
-            if fieldname not in evt:
-                continue
-
-            g4track = trackdata.G4Track.from_h5initial(evt)
-            tracks[n] = trackdata.Track.from_h5initial_one(
-                evt[fieldname], g4track)
-            n += 1
-
-        tracks = tracks[:n]
-        return cls.from_track_array(tracks)
-
-    @classmethod
     def from_track_array(cls, tracks,
                          alg_name='matlab HT v1.5', filename=None):
         """

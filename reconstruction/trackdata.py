@@ -71,29 +71,6 @@ class G4Track(object):
             # self.measure_quantities()
 
     @classmethod
-    def from_h5initial(cls, evt):
-        """
-        Construct a G4Track instance from an event in an HDF5 file.
-
-        The format of the HDF5 file is 'initial', a.k.a. the mess that Brian
-        first made in September 2015.
-        """
-
-        alpha = evt.attrs['cheat_alpha']
-        beta = evt.attrs['cheat_beta']
-        energy_tot = evt.attrs['Etot']
-        energy_dep = evt.attrs['Edep']
-        track = cls(
-            matrix=None,
-            alpha_deg=alpha, beta_deg=beta,
-            energy_tot_kev=energy_tot, energy_dep_kev=energy_dep,
-            energy_esc_kev=None,
-            x=None, dE=None, depth_um=None,
-            is_contained=None)
-
-        return track
-
-    @classmethod
     def from_h5matlab(cls, evt):
         """
         Construct a G4Track instance from an event in an HDF5 file.
@@ -319,42 +296,6 @@ class Track(object):
         if label is not None:
             label = str(label)
         self.label = label
-
-    @classmethod
-    def from_h5initial_all(cls, evt):
-        """
-        Construct a dictionary of Track objects from an event in an HDF5 file.
-
-        type(output['pix10_5noise0']) = Track
-        """
-
-        tracks = {}
-        g4track = G4Track.from_h5initial(evt)
-        for fieldname in evt:
-            if fieldname.startswith('pix'):
-                tracks[fieldname] = cls.from_h5initial_one(evt[fieldname],
-                                                           g4track=g4track)
-
-    @classmethod
-    def from_h5initial_one(cls, diffusedtrack, g4track=None):
-        """
-        Construct a Track object from one pixelsize/noise of an event in an
-        HDF5 file.
-        """
-
-        image = diffusedtrack['img']
-        pix = diffusedtrack.attrs['pixel_size_um']
-        noise = diffusedtrack.attrs['noise_ev']
-
-        track = Track(image,
-                      is_modeled=True, pixel_size_um=pix, noise_ev=noise,
-                      g4track=g4track, label='MultiAngle h5 initial')
-        if 'matlab_alpha' in diffusedtrack.attrs:
-            alpha = diffusedtrack.attrs['matlab_alpha']
-            track.add_algorithm('matlab HT v1.5',
-                                alpha_deg=alpha, beta_deg=None)
-
-        return track
 
     @classmethod
     def from_h5matlab_one(cls, pixnoise, g4track=None):
@@ -766,46 +707,6 @@ def test_AlgorithmOutput():
     AlgorithmOutput('matlab HT v1.5', 120.5, 43.5)
 
 
-def test_h5initial(h5initial):
-    """
-    """
-
-    fieldname = 'pix10_5noise0'
-    testflag = True
-    for i, evt in enumerate(h5initial):
-        try:
-            g4track = G4Track.from_h5initial(h5initial[evt])
-            if fieldname in h5initial[evt]:
-                track = Track.from_h5initial_one(h5initial[evt][fieldname])
-                track.add_algorithm('test asdf', 122.1, -33.3)
-                assert 'test asdf' in track.list_algorithms()
-            Track.from_h5initial_all(h5initial[evt])
-        except Exception:
-            print i
-            raise
-        if testflag:
-            # check g4track
-            np.testing.assert_almost_equal(
-                g4track.alpha_deg, 61.10767, decimal=4)
-            np.testing.assert_almost_equal(
-                g4track.beta_deg, 66.98443, decimal=4)
-            np.testing.assert_almost_equal(
-                g4track.energy_tot_kev, 418.70575, decimal=4)
-            np.testing.assert_almost_equal(
-                g4track.energy_dep_kev, 418.70575, decimal=4)
-
-            # check track
-            np.testing.assert_almost_equal(
-                track.noise_ev, 0.0, decimal=4)
-            np.testing.assert_almost_equal(
-                track.pixel_size_um, 10.5, decimal=4)
-            assert track.is_modeled is True
-            assert track.is_measured is False
-
-            # only run on first track (that's what these numbers are from)
-            testflag = False
-
-
 def test_h5matlab(h5file):
     """
     """
@@ -833,15 +734,6 @@ if __name__ == '__main__':
     test_Track()
     test_TrackExceptions()
     test_AlgorithmOutput()
-
-    try:
-        with h5py.File(
-            '/home/plimley/gh/etrack/reconstruction/MultiAngle_HT_11_12.h5',
-                'r') as h5initial:
-            print('Running h5initial file test')
-            test_h5initial(h5initial)
-    except IOError:
-        print('Skipping h5initial file test')
 
     try:
         loadpath = ('/home/plimley/Documents/MATLAB/data/Electron Track/' +
