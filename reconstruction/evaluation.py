@@ -307,6 +307,80 @@ class AlgorithmResults(object):
 
         return results
 
+    @classmethod
+    def from_hdf5_tracks(cls, h5file,
+                         subgroup_name=None,
+                         alg_name='matlab HT v1.5', filename=None):
+        """
+        Construct AlgorithmResults instance from an h5py.File or Group in
+        trackio.write_objects_to_hdf5 format.
+
+        subgroup_name: e.g. pix10_5noise0.
+        alg_name: the name of the algorithm, as stored in the Track object.
+        filename: optional, to be stored into AlgorithmResults.filename.
+        """
+
+        data_dict = {}
+        g4_dict = {}
+        h5name_dict = {}
+        for attr in cls.data_attrs():
+            # data_dict: array to load data into
+            data_dict[attr] = np.zeros(len(h5file.keys()))
+            # g4_dict: True = attribute in the g4track; False = in algorithm
+            if attr in ('alpha_meas_deg', 'beta_meas_deg'):
+                g4_dict[attr] = False
+            else:
+                g4_dict[attr] = True
+            # h5name_dict: name of HDF5 attribute in file which contains this
+            #   attribute of data
+            if attr.startswith('alpha'):
+                h5name_dict[attr] = 'alpha_deg'
+            elif attr.startswith('beta'):
+                h5name_dict[attr] = 'beta_deg'
+            elif attr.startswith('energy'):
+                h5name_dict[attr] = attr
+            elif attr == 'depth_um':
+                h5name_dict[attr] = None
+            elif attr == 'is_contained':
+                h5name_dict[attr] = None
+
+        n = 0
+        for evt in h5file:
+            if subgroup_name is not None and subgroup_name not in evt:
+                continue
+            if subgroup_name is None:
+                pixnoise = evt
+            else:
+                pixnoise = evt[subgroup_name]
+            alg_group_name = 'algorithms'
+            if (alg_group_name not in pixnoise or
+                    alg_name not in pixnoise[alg_group_name]):
+                continue
+            alg_object = pixnoise[alg_group_name][alg_name]
+            g4_object = pixnoise['g4track']
+
+            for key, val in data_dict.iteritems():
+                if key == 'depth_um':
+                    val[n] = (g4_object.attrs['x0'][2] + 0.65) * 1000
+                    # now 0 should be pixel side, 650 back side
+                elif key == 'is_contained':
+                    # TODO: handle this using energy_esc
+                    pass
+                elif g4_dict[key]:
+                    val[n] = g4_object.attrs[h5name_dict[attr]]
+                else:
+                    val[n] = alg_object.attrs[h5name_dict[attr]]
+            n += 1
+
+        for key, val in data_dict.iteritems():
+            data_dict[key] = val[:n]
+
+        filename = evt.file.filename
+        constructed_object = AlgorithmResults(
+            parent=None, filename=filename, **data_dict)
+
+        return constructed_object
+
     def select(self, **conditions):
         """
         Construct a new AlgorithmResults object by selecting events out of
