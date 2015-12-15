@@ -13,7 +13,7 @@ from dataformats import ClassAttr
 #                                    I/O                                     #
 ##############################################################################
 
-def write_object_to_hdf5(obj, h5group, name, pyobj_to_h5={}):
+def write_object_to_hdf5(obj, h5group, name, pyobj_to_h5=None):
     """
     Take the user-defined class instance, obj, and write it to HDF5
     in HDF5 group h5group with name name.
@@ -26,6 +26,9 @@ def write_object_to_hdf5(obj, h5group, name, pyobj_to_h5={}):
     pyobj_to_h5 = object dictionary:
                     {pyobjectA: h5objectA, pyobjectB: h5objectB, ...}
     """
+
+    if pyobj_to_h5 is None:
+        pyobj_to_h5 = {}
 
     def check_input(obj, h5group):
         """
@@ -196,7 +199,7 @@ def write_object_to_hdf5(obj, h5group, name, pyobj_to_h5={}):
     return None
 
 
-def write_objects_to_hdf5(h5group_or_filename, pyobj_to_h5={}, **kwargs):
+def write_objects_to_hdf5(h5group_or_filename, pyobj_to_h5=None, **kwargs):
     """
     Write a list of objects to file.
     h5group_or_filename, as implied, can be either a h5file/h5group object,
@@ -207,6 +210,9 @@ def write_objects_to_hdf5(h5group_or_filename, pyobj_to_h5={}, **kwargs):
     kwargs in the form:
     h5_object_name=py_object
     """
+
+    if pyobj_to_h5 is None:
+        pyobj_to_h5 = {}
 
     if (isinstance(h5group_or_filename, str) or
             isinstance(h5group_or_filename, unicode)):
@@ -236,7 +242,7 @@ def write_objects_to_hdf5(h5group_or_filename, pyobj_to_h5={}, **kwargs):
         return None
 
 
-def read_object_from_hdf5(h5group, h5_to_pydict={}, ext_data_format=None,
+def read_object_from_hdf5(h5group, h5_to_pydict=None, ext_data_format=None,
                           verbosity=0):
     """
     Take an HDF5 group which represents a class instance, parse and return it
@@ -246,6 +252,9 @@ def read_object_from_hdf5(h5group, h5_to_pydict={}, ext_data_format=None,
 
     h5_to_pydict = {h5objectA: pyobjectA, h5objectB: pyobjectB, ...}
     """
+
+    if h5_to_pydict is None:
+        h5_to_pydict = {}
 
     def check_input(h5group, data_format):
         """
@@ -350,7 +359,10 @@ def read_object_from_hdf5(h5group, h5_to_pydict={}, ext_data_format=None,
 
         return hdf5_type
 
-    def read_item(attr, h5item, h5_to_pydict={}):
+    def read_item(attr, h5item, h5_to_pydict=None):
+
+        if h5_to_pydict is None:
+            h5_to_pydict = {}
 
         vprint('     Reading item {}'.format(h5item))
         if (not isinstance(h5item, np.ndarray)) and h5item in h5_to_pydict:
@@ -668,7 +680,7 @@ def test_IO_user_objects(filename):
     alg_results = evaluation.generate_random_alg_results(length=10000)
     with h5py.File(filename, 'w') as h5file:
         write_object_to_hdf5(
-            alg_results, h5file, 'alg_results', pyobj_to_h5={})
+            alg_results, h5file, 'alg_results')
     with h5py.File(filename, 'r') as h5file:
         ar2 = read_object_from_hdf5(h5file['alg_results'])
     check_alg_results_IO(ar2, alg_results, uncertainty_flag=False)
@@ -678,7 +690,7 @@ def test_IO_user_objects(filename):
     alg_results.add_default_uncertainties()
     with h5py.File(filename, 'w') as h5file:
         write_object_to_hdf5(
-            alg_results, h5file, 'alg_results', pyobj_to_h5={})
+            alg_results, h5file, 'alg_results')
     with h5py.File(filename, 'r') as h5file:
         ar2 = read_object_from_hdf5(h5file['alg_results'])
     check_alg_results_IO(ar2, alg_results, uncertainty_flag=True)
@@ -771,10 +783,10 @@ def test_IO_obj_dict(filename):
     alg_results.parent = [alg_results]
     with h5py.File(filename, 'w') as h5file:
         write_object_to_hdf5(
-            alg_results, h5file, 'alg_results', pyobj_to_h5={})
+            alg_results, h5file, 'alg_results')
     with h5py.File(filename, 'r') as h5file:
         ar2 = read_object_from_hdf5(
-            h5file['alg_results'], h5_to_pydict={})
+            h5file['alg_results'])
     assert ar2['parent'][0] is ar2
     os.remove(filename)
 
@@ -783,10 +795,10 @@ def test_IO_obj_dict(filename):
     alg_results.parent = [alg_results]
     with h5py.File(filename, 'w') as h5file:
         write_object_to_hdf5(
-            alg_results, h5file, 'alg_results', pyobj_to_h5={})
+            alg_results, h5file, 'alg_results')
     with h5py.File(filename, 'r') as h5file:
         ar2 = read_object_from_hdf5(
-            h5file['alg_results'], h5_to_pydict={})
+            h5file['alg_results'])
     assert ar2['parent'][0] is ar2
     assert ar2['alpha_unc'] is ar2['uncertainty_list'][0]
     assert ar2['beta_unc'] is ar2['uncertainty_list'][1]
@@ -798,16 +810,19 @@ def test_IO_obj_dict(filename):
     ar1.add_default_uncertainties()
     ar2 = evaluation.generate_random_alg_results(length=1000)
     ar2.add_default_uncertainties()
-    obj_dict = {}
+
+    pyobj_to_h5 = {}
     with h5py.File(filename, 'a') as h5file:
-        write_object_to_hdf5(ar1, h5file, 'ar1', pyobj_to_h5=obj_dict)
-        write_object_to_hdf5(ar2, h5file, 'ar2', pyobj_to_h5=obj_dict)
+        write_object_to_hdf5(ar1, h5file, 'ar1', pyobj_to_h5=pyobj_to_h5)
+        write_object_to_hdf5(ar2, h5file, 'ar2', pyobj_to_h5=pyobj_to_h5)
         # should be hardlinked
-        write_object_to_hdf5(ar1, h5file, 'ar3', pyobj_to_h5=obj_dict)
+        write_object_to_hdf5(ar1, h5file, 'ar3', pyobj_to_h5=pyobj_to_h5)
+
+    h5_to_pydict = {}
     with h5py.File(filename, 'r') as h5file:
-        ar1r = read_object_from_hdf5(h5file['ar1'])
-        ar2r = read_object_from_hdf5(h5file['ar2'])
-        ar3r = read_object_from_hdf5(h5file['ar3'])
+        ar1r = read_object_from_hdf5(h5file['ar1'], h5_to_pydict=h5_to_pydict)
+        ar2r = read_object_from_hdf5(h5file['ar2'], h5_to_pydict=h5_to_pydict)
+        ar3r = read_object_from_hdf5(h5file['ar3'], h5_to_pydict=h5_to_pydict)
     check_alg_results_IO(ar1r, ar1, uncertainty_flag=True)
     check_alg_results_IO(ar2r, ar2, uncertainty_flag=True)
     check_alg_results_IO(ar3r, ar1, uncertainty_flag=True)
@@ -828,10 +843,10 @@ def test_IO_overwrite(filename):
     alg_results.add_default_uncertainties()
     with h5py.File(filename, 'a') as h5file:
         write_object_to_hdf5(
-            alg_results, h5file, 'alg_results', pyobj_to_h5={})
+            alg_results, h5file, 'alg_results')
     with h5py.File(filename, 'a') as h5file:
         write_object_to_hdf5(
-            alg_results, h5file, 'alg_results', pyobj_to_h5={})
+            alg_results, h5file, 'alg_results')
     with h5py.File(filename, 'r') as h5file:
         ar2 = read_object_from_hdf5(h5file['alg_results'])
     check_alg_results_IO(ar2, alg_results, uncertainty_flag=True)
@@ -843,8 +858,8 @@ def test_IO_overwrite(filename):
     ar2 = evaluation.generate_random_alg_results(length=1000)
     ar2.add_default_uncertainties()
     with h5py.File(filename, 'a') as h5file:
-        write_object_to_hdf5(ar1, h5file, 'ar1', pyobj_to_h5={})
-        write_object_to_hdf5(ar2, h5file, 'ar2', pyobj_to_h5={})
+        write_object_to_hdf5(ar1, h5file, 'ar1')
+        write_object_to_hdf5(ar2, h5file, 'ar2')
     with h5py.File(filename, 'r') as h5file:
         ar1r = read_object_from_hdf5(h5file['ar1'])
         ar2r = read_object_from_hdf5(h5file['ar2'])
@@ -855,7 +870,7 @@ def test_IO_overwrite(filename):
     ar3 = evaluation.generate_random_alg_results(length=1000)
     ar3.add_default_uncertainties()
     with h5py.File(filename, 'a') as h5file:
-        write_object_to_hdf5(ar3, h5file, 'ar1', pyobj_to_h5={})
+        write_object_to_hdf5(ar3, h5file, 'ar1')
     with h5py.File(filename, 'r') as h5file:
         ar1r = read_object_from_hdf5(h5file['ar1'])
         ar2r = read_object_from_hdf5(h5file['ar2'])
@@ -898,11 +913,16 @@ def test_write_objects_to_hdf5():
             h5file,
             ar1=ar1, ar2=ar2, ar3=ar3, aunc=ar1.alpha_unc)
     assert filename_written == filename
+
+    h5_to_pydict = {}
     with h5py.File(filename, 'r') as h5file:
-        ar1_read = read_object_from_hdf5(h5file['ar1'])
-        ar2_read = read_object_from_hdf5(h5file['ar2'])
-        ar3_read = read_object_from_hdf5(h5file['ar3'])
-        aunc = read_object_from_hdf5(h5file['aunc'])
+        ar1_read = read_object_from_hdf5(
+            h5file['ar1'], h5_to_pydict=h5_to_pydict)
+        ar2_read = read_object_from_hdf5(
+            h5file['ar2'], h5_to_pydict=h5_to_pydict)
+        ar3_read = read_object_from_hdf5(
+            h5file['ar3'], h5_to_pydict=h5_to_pydict)
+        aunc = read_object_from_hdf5(h5file['aunc'], h5_to_pydict=h5_to_pydict)
     check_alg_results_IO(ar1_read, ar1, uncertainty_flag=True)
     check_alg_results_IO(ar2_read, ar2, uncertainty_flag=True)
     check_alg_results_IO(ar3_read, ar3, uncertainty_flag=True)
