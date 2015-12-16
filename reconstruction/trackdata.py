@@ -177,13 +177,6 @@ class G4Track(object):
         if self.matrix is None:
             raise DataError('measure_quantities needs a geant4 matrix')
 
-    # TODO:
-    # add interface for referencing Track objects associated with this G4Track
-    #
-    # dictionary-style or ...?
-    #
-    # see http://www.diveintopython3.net/special-method-names.html
-
 
 ##############################################################################
 #                                    Track                                   #
@@ -312,7 +305,7 @@ class Track(object):
         self.label = label
 
     @classmethod
-    def from_h5matlab_one(cls, pixnoise, g4track=None):
+    def from_h5matlab(cls, pixnoise, g4track=None):
         """
         Construct a Track object from one pixelsize/noise of an event in an
         HDF5 file.
@@ -738,6 +731,11 @@ def test_AlgorithmOutput():
 
 def test_h5matlab(h5file):
     """
+    tested with this file:
+
+    loadpath = ('/home/plimley/Documents/MATLAB/data/Electron Track/' +
+                'algorithms/results/2013sep binned')
+    loadname = 'MultiAngle_HT_20_2.h5'
     """
 
     evt = h5file['00000']
@@ -745,11 +743,14 @@ def test_h5matlab(h5file):
     pixnoise = {}
     for key in evt:
         if key.startswith('pix'):
-            pixnoise[key] = Track.from_h5matlab_one(
+            pixnoise[key] = Track.from_h5matlab(
                 evt[key], g4track=g4track)
+            assert pixnoise[key].is_modeled
+
+    # TODO: assertions!
 
 
-if __name__ == '__main__':
+def main():
     """
     Run tests.
     """
@@ -757,7 +758,7 @@ if __name__ == '__main__':
     import os
 
     # save time for routine testing
-    run_file_tests = True
+    # run_file_tests = True
 
     test_G4Track()
     test_Track()
@@ -781,3 +782,7 @@ if __name__ == '__main__':
         # h5file.close()
     except IOError:
         print('Skipping h5matlab file test')
+
+
+if __name__ == '__main__':
+    main()
