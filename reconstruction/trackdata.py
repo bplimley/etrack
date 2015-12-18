@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+from __future__ import print_function
+
 import numpy as np
 import h5py
 import datetime
@@ -649,6 +651,28 @@ def test_G4Track():
 
     # G4Track(matrix=test_matrix())
 
+    test_G4Track_IO()
+
+
+def test_G4Track_IO():
+    """
+    """
+
+    # TODO
+    print('test_G4Track_IO not implemented yet!')
+    pass
+
+    test_G4Track_from_pydict()
+    test_G4Track_from_hdf5()
+
+
+def test_G4Track_from_pydict():
+    pass
+
+
+def test_G4Track_from_hdf5():
+    pass
+
 
 def test_Track():
     """
@@ -662,6 +686,10 @@ def test_Track():
 
     track.add_algorithm('python HT v1.5', 120.5, 43.5, info=info)
 
+    test_Track_read(track)
+
+
+def test_Track_read(track):
     # test Track data format
     import trackio
     import os
@@ -674,6 +702,7 @@ def test_Track():
     with h5py.File(filename, 'r') as h5file:
         track2 = trackio.read_object_from_hdf5(
             h5file['track'], h5_to_pydict={})
+
     assert track2['is_modeled'] == track.is_modeled
     assert track2['pixel_size_um'] == track.pixel_size_um
     assert track2['noise_ev'] == track.noise_ev
@@ -684,6 +713,20 @@ def test_Track():
     assert track2['algorithms']['python HT v1.5']['alpha_deg'] == 120.5
     assert track2['algorithms']['python HT v1.5']['beta_deg'] == 43.5
 
+    track3 = test_Track_from_pydict(track, track2)
+
+    test_Track_from_hdf5()
+
+    os.remove(filename)
+
+
+def test_Track_from_pydict(track, track2):
+    """
+    track is the original generated Track object
+    track2 is the pydict from file
+
+    Returns the track object constructed from pydict.
+    """
     track3 = Track.from_pydict(track2, pydict_to_pyobj={})
     assert track3.is_modeled == track.is_modeled
     assert track3.pixel_size_um == track.pixel_size_um
@@ -695,7 +738,17 @@ def test_Track():
     assert track3.algorithms['python HT v1.5'].alpha_deg == 120.5
     assert track3.algorithms['python HT v1.5'].beta_deg == 43.5
 
-    os.remove(filename)
+    return track3
+
+
+def test_Track_from_hdf5():
+    """
+    as previously, but test the Track.from_hdf5() constructor.
+    """
+
+    # TODO
+    print('test_Track_from_hdf5 not implemented yet!')
+    pass
 
 
 def test_TrackExceptions():
@@ -731,6 +784,8 @@ def test_AlgorithmOutput():
 
 def test_h5matlab(h5file):
     """
+    includes G4Track and Track.
+
     tested with this file:
 
     loadpath = ('/home/plimley/Documents/MATLAB/data/Electron Track/' +
