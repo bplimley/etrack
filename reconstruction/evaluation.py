@@ -129,7 +129,6 @@ class AlgorithmResults(object):
         Use a classmethod constructor instead:
           AlgorithmResults.from_hdf5
           AlgorithmResults.from_track_array
-          AlgorithmResults.from_h5initial
         """
 
         # 'parent' and 'filename' will be converted to lists if they are not
@@ -1460,7 +1459,6 @@ def test_alg_results():
     test_alg_results_input_check()
     test_alg_results_add()
     test_alg_results_select()
-    test_alg_results_from_h5initial()
     test_alg_results_from_track_array()
 
 
@@ -1595,15 +1593,6 @@ def test_alg_results_select():
     else:
         print('AlgorithmResults.select() failed to ' +
               'raise error on bad condition')
-
-
-def test_alg_results_from_h5initial():
-    """
-    """
-
-    print('test_alg_results_from_h5initial not implemented yet')
-
-    return None
 
 
 def test_alg_results_from_track_array():
