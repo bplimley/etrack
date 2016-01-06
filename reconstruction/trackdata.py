@@ -121,11 +121,14 @@ class G4Track(object):
         return g4track
 
     @classmethod
-    def from_pydict(cls, read_dict, pydict_to_pyobj={}):
+    def from_pydict(cls, read_dict, pydict_to_pyobj=None):
         """
         Initialize a G4Track object from the dictionary returned by
         trackio.read_object_from_hdf5().
         """
+
+        if pydict_to_pyobj is None:
+            pydict_to_pyobj = {}
 
         if id(read_dict) in pydict_to_pyobj:
             return pydict_to_pyobj[id(read_dict)]
@@ -146,10 +149,15 @@ class G4Track(object):
         return constructed_object
 
     @classmethod
-    def from_hdf5(cls, h5group, h5_to_pydict={}, pydict_to_pyobj={}):
+    def from_hdf5(cls, h5group, h5_to_pydict=None, pydict_to_pyobj=None):
         """
         Initialize a G4Track instance from an HDF5 group.
         """
+
+        if h5_to_pydict is None:
+            h5_to_pydict = {}
+        if pydict_to_pyobj is None:
+            pydict_to_pyobj = {}
 
         read_dict = trackio.read_object_from_hdf5(
             h5group, h5_to_pydict=h5_to_pydict)
@@ -365,11 +373,14 @@ class Track(object):
         return track
 
     @classmethod
-    def from_pydict(cls, read_dict, pydict_to_pyobj={}):
+    def from_pydict(cls, read_dict, pydict_to_pyobj=None):
         """
         Initialize a Track object from the dictionary returned by
         trackio.read_object_from_hdf5().
         """
+
+        if pydict_to_pyobj is None:
+            pydict_to_pyobj = {}
 
         if id(read_dict) in pydict_to_pyobj:
             return pydict_to_pyobj[id(read_dict)]
@@ -411,10 +422,15 @@ class Track(object):
         return constructed_object
 
     @classmethod
-    def from_hdf5(cls, h5group, h5_to_pydict={}, pydict_to_pyobj={}):
+    def from_hdf5(cls, h5group, h5_to_pydict=None, pydict_to_pyobj=None):
         """
         Initialize a Track instance from an HDF5 group.
         """
+
+        if h5_to_pydict is None:
+            h5_to_pydict = {}
+        if pydict_to_pyobj is None:
+            pydict_to_pyobj = {}
 
         read_dict = trackio.read_object_from_hdf5(
             h5group, h5_to_pydict=h5_to_pydict)
@@ -534,11 +550,14 @@ class MatlabAlgorithmInfo(object):
         return cls(**kwargs)
 
     @classmethod
-    def from_pydict(cls, read_dict, pydict_to_pyobj={}):
+    def from_pydict(cls, read_dict, pydict_to_pyobj=None):
         """
         Initialize a MatlabAlgorithmInfo object from the dictionary returned by
         trackio.read_object_from_hdf5().
         """
+
+        if pydict_to_pyobj is None:
+            pydict_to_pyobj = {}
 
         if id(read_dict) in pydict_to_pyobj:
             return pydict_to_pyobj[id(read_dict)]
@@ -559,10 +578,15 @@ class MatlabAlgorithmInfo(object):
 
     @classmethod
     def from_hdf5(cls, h5group,
-                  h5_to_pydict={}, pydict_to_pyobj={}):
+                  h5_to_pydict=None, pydict_to_pyobj=None):
         """
-        Initialize a Track object from an HDF5 group.
+        Initialize a MatlabAlgorithmInfo object from an HDF5 group.
         """
+
+        if h5_to_pydict is None:
+            h5_to_pydict = {}
+        if pydict_to_pyobj is None:
+            pydict_to_pyobj = {}
 
         read_dict = trackio.read_object_from_hdf5(
             h5group, h5_to_pydict=h5_to_pydict)
@@ -606,11 +630,14 @@ class AlgorithmOutput(object):
             self.data_format = dataformats.get_format(self.class_name)
 
     @classmethod
-    def from_pydict(cls, read_dict, pydict_to_pyobj={}):
+    def from_pydict(cls, read_dict, pydict_to_pyobj=None):
         """
         Initialize an AlgorithmOutput object from the dictionary returned by
         trackio.read_object_from_hdf5().
         """
+
+        if pydict_to_pyobj is None:
+            pydict_to_pyobj = {}
 
         if id(read_dict) in pydict_to_pyobj:
             return pydict_to_pyobj[id(read_dict)]
@@ -702,10 +729,10 @@ def test_Track():
         filename = '.'.join([filebase, 'h5'])
         with h5py.File(filename, 'a') as h5file:
             trackio.write_object_to_hdf5(
-                track, h5file, 'track', pyobj_to_h5={})
+                track, h5file, 'track')
         with h5py.File(filename, 'r') as h5file:
             track2 = trackio.read_object_from_hdf5(
-                h5file['track'], h5_to_pydict={})
+                h5file['track'])
 
         assert track2['is_modeled'] == track.is_modeled
         assert track2['pixel_size_um'] == track.pixel_size_um
@@ -730,7 +757,7 @@ def test_Track():
 
         Returns the track object constructed from pydict.
         """
-        track3 = Track.from_pydict(track2, pydict_to_pyobj={})
+        track3 = Track.from_pydict(track2)
         assert track3.is_modeled == track.is_modeled
         assert track3.pixel_size_um == track.pixel_size_um
         assert track3.noise_ev == track.noise_ev

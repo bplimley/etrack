@@ -159,7 +159,7 @@ class AlgorithmResults(object):
 
     @classmethod
     def from_hdf5(cls, h5group,
-                  h5_to_pydict={}, pydict_to_pyobj={},
+                  h5_to_pydict=None, pydict_to_pyobj=None,
                   reconstruct_fits=False):
         """
         Initialize an AlgorithmResults object from an HDF5 group.
@@ -181,6 +181,11 @@ class AlgorithmResults(object):
         Output: an AlgorithmResults object.
         """
 
+        if h5_to_pydict is None:
+            h5_to_pydict = {}
+        if pydict_to_pyobj is None:
+            pydict_to_pyobj = {}
+
         read_dict = trackio.read_object_from_hdf5(
             h5group, h5_to_pydict=h5_to_pydict)
 
@@ -198,12 +203,15 @@ class AlgorithmResults(object):
         return constructed_object
 
     @classmethod
-    def from_pydict(cls, read_dict, pydict_to_pyobj={},
+    def from_pydict(cls, read_dict, pydict_to_pyobj=None,
                     reconstruct_fits=False):
         """
         Initialize an AlgorithmResults object from the dictionary returned by
         trackio.read_object_from_hdf5().
         """
+
+        if pydict_to_pyobj is None:
+            pydict_to_pyobj = {}
 
         if id(read_dict) in pydict_to_pyobj:
             return pydict_to_pyobj[id(read_dict)]
@@ -674,7 +682,7 @@ class Uncertainty(object):
         return classname
 
     @classmethod
-    def from_pydict(cls, read_dict, pydict_to_pyobj={},
+    def from_pydict(cls, read_dict, pydict_to_pyobj=None,
                     reconstruct_fits=False):
         """
         Initialize an uncertainty object (of the correct sub-class) from
@@ -683,6 +691,9 @@ class Uncertainty(object):
         Called from AlgorithmResults.from_pydict, if the AlgorithmResults
         instance has any uncertainties attached to it.
         """
+
+        if pydict_to_pyobj is None:
+            pydict_to_pyobj = {}
 
         # dictionary check. Although I don't expect links to resolve,
         #   because alpha_unc and beta_unc are the only links and they are
