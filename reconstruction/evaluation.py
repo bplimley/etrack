@@ -128,7 +128,9 @@ class AlgorithmResults(object):
 
         Use a classmethod constructor instead:
           AlgorithmResults.from_hdf5
+          AlgorithmResults.from_pydict
           AlgorithmResults.from_track_array
+          AlgorithmResults.from_hdf5_tracks
         """
 
         # 'parent' and 'filename' will be converted to lists if they are not
@@ -1446,162 +1448,167 @@ def test_alg_results():
     Test AlgorithmResults class.
     """
 
-    # basic
-    generate_random_alg_results()
-    generate_random_alg_results(has_beta=False, has_contained=False)
-    assert len(AlgorithmResults.data_attrs()) == 8
+    def test_alg_results_main():
+        # basic
+        generate_random_alg_results()
+        generate_random_alg_results(has_beta=False, has_contained=False)
+        assert len(AlgorithmResults.data_attrs()) == 8
 
-    # length
-    assert len(generate_random_alg_results(length=100)) == 100
-    assert len(generate_random_alg_results(has_alpha=False, length=100)) == 100
+        # length
+        assert len(generate_random_alg_results(length=100)) == 100
+        assert len(generate_random_alg_results(has_alpha=False,
+                                               length=100)) == 100
 
-    # subtests
-    test_alg_results_input_check()
-    test_alg_results_add()
-    test_alg_results_select()
-    test_alg_results_from_track_array()
+        # subtests
+        test_alg_results_input_check()
+        test_alg_results_add()
+        test_alg_results_select()
+        test_alg_results_from_track_array()
 
+    def test_alg_results_input_check():
+        """
+        Test AlgorithmResults input check
+        """
 
-def test_alg_results_input_check():
-    """
-    Test AlgorithmResults input check
-    """
+        # errors
+        try:
+            AlgorithmResults(filename=5,
+                             alpha_true_deg=[10, 20],
+                             alpha_meas_deg=[20, 25])
+        except InputError:
+            pass
+        else:
+            print('Failed to catch AlgorithmResults filename error')
 
-    # errors
-    try:
-        AlgorithmResults(filename=5,
-                         alpha_true_deg=[10, 20],
-                         alpha_meas_deg=[20, 25])
-    except InputError:
-        pass
-    else:
-        print('Failed to catch AlgorithmResults filename error')
+        try:
+            AlgorithmResults(alpha_true_deg=np.random.random(30),
+                             alpha_meas_deg=np.random.random(29))
+        except InputError:
+            pass
+        else:
+            print('Failed to catch data length mismatch')
 
-    try:
-        AlgorithmResults(alpha_true_deg=np.random.random(30),
-                         alpha_meas_deg=np.random.random(29))
-    except InputError:
-        pass
-    else:
-        print('Failed to catch data length mismatch')
+        try:
+            AlgorithmResults(alpha_true_deg=np.random.random(30))
+        except InputError:
+            pass
+        else:
+            print('Failed to catch missing alpha_meas_deg')
 
-    try:
-        AlgorithmResults(alpha_true_deg=np.random.random(30))
-    except InputError:
-        pass
-    else:
-        print('Failed to catch missing alpha_meas_deg')
+    def test_alg_results_add():
+        """
+        Test AlgorithmResults class.
+        """
 
-
-def test_alg_results_add():
-    """
-    Test AlgorithmResults class.
-    """
-
-    len1 = 1000
-    len2 = 100
-    # basic
-    x = generate_random_alg_results(length=len1)
-    y = generate_random_alg_results(length=len2)
-    z = x + y
-    assert len(z) == len1 + len2
-    assert z.filename is None
-    assert z.parent is None
-
-    # symmetric None's
-    x = generate_random_alg_results(length=len1, has_beta=False)
-    y = generate_random_alg_results(length=len2, has_beta=False)
-    z = x + y
-    assert z.has_beta is False
-    assert z.beta_true_deg is None
-
-    # asymmetric None's
-    try:
-        x = generate_random_alg_results(length=len1, has_beta=False)
-        y = generate_random_alg_results(length=len2, has_beta=True)
+        len1 = 1000
+        len2 = 100
+        # basic
+        x = generate_random_alg_results(length=len1)
+        y = generate_random_alg_results(length=len2)
         z = x + y
-        assert z.has_beta is True
-        assert np.sum(np.isnan(z.beta_true_deg)) == len1
-    except DataWarning:
-        pass
-    else:
-        print('Failed to warn on asymmetric concatenation (None + data)')
-    try:
-        x = generate_random_alg_results(length=len1, has_beta=True)
+        assert len(z) == len1 + len2
+        assert z.filename is None
+        assert z.parent is None
+
+        # symmetric None's
+        x = generate_random_alg_results(length=len1, has_beta=False)
         y = generate_random_alg_results(length=len2, has_beta=False)
         z = x + y
-        assert z.has_beta is True
-        assert np.sum(np.isnan(z.beta_true_deg)) == len2
-    except DataWarning:
-        pass
-    else:
-        print('Failed to warn on asymmetric concatenation (data + None)')
+        assert z.has_beta is False
+        assert z.beta_true_deg is None
 
-    # non-data attributes
-    x = generate_random_alg_results(filename='asdf', length=len1)
-    y = generate_random_alg_results(filename='qwerty', length=len2)
-    z = x + y
-    assert len(z.filename) == 2
-    assert z.filename[0] == 'asdf'
-    assert z.filename[1] == 'qwerty'
-    # also testing the 'parent' property of AlgorithmResults here
-    xx = generate_random_alg_results(parent=x, filename='asdf', length=len1)
-    yy = generate_random_alg_results(parent=y, filename='qwerty', length=len2)
-    zz = xx + yy
-    assert len(zz.filename) == 2
-    assert zz.filename[0] == 'asdf'
-    assert zz.filename[1] == 'qwerty'
-    assert len(zz.parent) == 2
-    assert zz.parent[0] is x
-    assert zz.parent[1] is y
+        # asymmetric None's
+        try:
+            x = generate_random_alg_results(length=len1, has_beta=False)
+            y = generate_random_alg_results(length=len2, has_beta=True)
+            z = x + y
+            assert z.has_beta is True
+            assert np.sum(np.isnan(z.beta_true_deg)) == len1
+        except DataWarning:
+            pass
+        else:
+            print('Failed to warn on asymmetric concatenation (None + data)')
+        try:
+            x = generate_random_alg_results(length=len1, has_beta=True)
+            y = generate_random_alg_results(length=len2, has_beta=False)
+            z = x + y
+            assert z.has_beta is True
+            assert np.sum(np.isnan(z.beta_true_deg)) == len2
+        except DataWarning:
+            pass
+        else:
+            print('Failed to warn on asymmetric concatenation (data + None)')
 
+        # non-data attributes
+        x = generate_random_alg_results(filename='asdf', length=len1)
+        y = generate_random_alg_results(filename='qwerty', length=len2)
+        z = x + y
+        assert len(z.filename) == 2
+        assert z.filename[0] == 'asdf'
+        assert z.filename[1] == 'qwerty'
+        # also testing the 'parent' property of AlgorithmResults here
+        xx = generate_random_alg_results(
+            parent=x, filename='asdf', length=len1)
+        yy = generate_random_alg_results(
+            parent=y, filename='qwerty', length=len2)
+        zz = xx + yy
+        assert len(zz.filename) == 2
+        assert zz.filename[0] == 'asdf'
+        assert zz.filename[1] == 'qwerty'
+        assert len(zz.parent) == 2
+        assert zz.parent[0] is x
+        assert zz.parent[1] is y
 
-def test_alg_results_select():
-    """
-    Test AlgorithmResults class.
-    """
+    def test_alg_results_select():
+        """
+        Test AlgorithmResults class.
+        """
 
-    len1 = 1000
+        len1 = 1000
 
-    # basic
-    x = generate_random_alg_results(length=len1)
-    x = generate_random_alg_results(length=len1, has_beta=False)
-    y = x.select(energy_min=300)
-    assert not y.has_beta
-    assert type(y) is AlgorithmResults
-    x.select(energy_min=300, energy_max=400, depth_min=200)
-    x.select(is_contained=True, depth_min=200)
+        # basic
+        x = generate_random_alg_results(length=len1)
+        x = generate_random_alg_results(length=len1, has_beta=False)
+        y = x.select(energy_min=300)
+        assert not y.has_beta
+        assert type(y) is AlgorithmResults
+        x.select(energy_min=300, energy_max=400, depth_min=200)
+        x.select(is_contained=True, depth_min=200)
 
-    # handle all-false result
-    y = x.select(energy_min=300, energy_max=300, depth_min=200, depth_max=200)
-    assert len(y) == 0
-    assert not y.has_beta
+        # handle all-false result
+        y = x.select(energy_min=300, energy_max=300,
+                     depth_min=200, depth_max=200)
+        assert len(y) == 0
+        assert not y.has_beta
 
-    # input error checking
-    x = generate_random_alg_results(length=len1, has_beta=False)
-    try:
-        x.select(beta_min=20)
-    except SelectionError:
-        pass
-    else:
-        print('AlgorithmResults.select() failed to raise error with no beta')
+        # input error checking
+        x = generate_random_alg_results(length=len1, has_beta=False)
+        try:
+            x.select(beta_min=20)
+        except SelectionError:
+            pass
+        else:
+            print(
+                'AlgorithmResults.select() failed to raise error with no beta')
 
-    try:
-        x.select(asdf_max=500)
-    except SelectionError:
-        pass
-    else:
-        print('AlgorithmResults.select() failed to ' +
-              'raise error on bad condition')
+        try:
+            x.select(asdf_max=500)
+        except SelectionError:
+            pass
+        else:
+            print('AlgorithmResults.select() failed to ' +
+                  'raise error on bad condition')
 
+    def test_alg_results_from_track_array():
+        """
+        """
 
-def test_alg_results_from_track_array():
-    """
-    """
+        print('test_alg_results_from_track_array not implemented yet')
 
-    print('test_alg_results_from_track_array not implemented yet')
+        return None
 
-    return None
+    # main
+    test_alg_results_main()
 
 
 def test_alg_uncertainty(include_plots):
@@ -1609,270 +1616,280 @@ def test_alg_uncertainty(include_plots):
     Test AlgorithmUncertainty class.
     """
 
-    test_uncertainty_parameter_input()
-    test_AGPC()
-    test_A68()
-    test_beta_uncertainties()
-    if include_plots:
-        print('test_alg_uncertainty plots not implemented yet')
+    def test_alg_uncertainty_main():
+        test_uncertainty_parameter_input()
+        test_AGPC()
+        test_A68()
+        test_beta_uncertainties()
+        if include_plots:
+            print('test_alg_uncertainty plots not implemented yet')
 
-    return None
+        return None
 
+    def test_uncertainty_parameter_input():
+        """
+        """
 
-def test_uncertainty_parameter_input():
-    """
-    """
-
-    # basic
-    UncertaintyParameter(
-        name='asdf', fit_name='qwerty', value=23.2, uncertainty=(0.5, 0.6),
-        units='degrees', axis_min=0, axis_max=120)
-    # single uncertainty
-    UncertaintyParameter(
-        name='asdf', fit_name='qwerty', value=23.2, uncertainty=0.5,
-        units='degrees', axis_min=0, axis_max=120)
-    # unspecified uncertainty
-    UncertaintyParameter(
-        name='asdf', fit_name='qwerty', value=23.2,
-        units='degrees', axis_min=0, axis_max=120)
-    # unspecified axes limits
-    UncertaintyParameter(
-        name='asdf', fit_name='qwerty', value=23.2, uncertainty=(0.5, 0.6),
-        units='degrees')
-
-    # error checks
-    try:
+        # basic
         UncertaintyParameter(
-            fit_name='qwerty', value=23.2,
-            uncertainty=(0.5, 0.6), units='degrees', axis_min=0, axis_max=120)
-    except InputError:
-        pass
-    else:
-        print('UncertaintyParameter failed to catch missing name')
-    try:
+            name='asdf', fit_name='qwerty', value=23.2, uncertainty=(0.5, 0.6),
+            units='degrees', axis_min=0, axis_max=120)
+        # single uncertainty
         UncertaintyParameter(
-            name='asdf', value=23.2,
-            uncertainty=(0.5, 0.6), units='degrees', axis_min=0, axis_max=120)
-    except InputError:
-        pass
-    else:
-        print('UncertaintyParameter failed to catch missing fit_name')
-    try:
-        UncertaintyParameter(
-            name='asdf', fit_name='qwerty',
-            uncertainty=(0.5, 0.6), units='degrees', axis_min=0, axis_max=120)
-    except InputError:
-        pass
-    else:
-        print('UncertaintyParameter failed to catch missing value')
-    try:
+            name='asdf', fit_name='qwerty', value=23.2, uncertainty=0.5,
+            units='degrees', axis_min=0, axis_max=120)
+        # unspecified uncertainty
         UncertaintyParameter(
             name='asdf', fit_name='qwerty', value=23.2,
-            uncertainty=(0.5, 0.6), axis_min=0, axis_max=120)
-    except InputError:
-        pass
-    else:
-        print('UncertaintyParameter failed to catch missing units')
-    try:
+            units='degrees', axis_min=0, axis_max=120)
+        # unspecified axes limits
         UncertaintyParameter(
-            name=123, fit_name='qwerty', value=23.2,
-            uncertainty=(0.5, 0.6), units='degrees', axis_min=0, axis_max=120)
-    except InputError:
-        pass
-    else:
-        print('UncertaintyParameter failed to catch bad name')
-    try:
-        UncertaintyParameter(
-            name='asdf', fit_name='qwerty', value='asdf',
-            uncertainty=(0.5, 0.6), units='degrees', axis_min=0, axis_max=120)
-    except InputError:
-        pass
-    else:
-        print('UncertaintyParameter failed to catch bad value')
-    try:
-        UncertaintyParameter(
-            name='asdf', fit_name='qwerty', value=23.2,
-            uncertainty=(0.5, 0.6, 0.7), units='degrees')
-    except InputError:
-        pass
-    else:
-        print('UncertaintyParameter failed to catch bad uncertainty')
+            name='asdf', fit_name='qwerty', value=23.2, uncertainty=(0.5, 0.6),
+            units='degrees')
 
+        # error checks
+        try:
+            UncertaintyParameter(
+                fit_name='qwerty', value=23.2,
+                uncertainty=(0.5, 0.6), units='degrees',
+                axis_min=0, axis_max=120)
+        except InputError:
+            pass
+        else:
+            print('UncertaintyParameter failed to catch missing name')
+        try:
+            UncertaintyParameter(
+                name='asdf', value=23.2,
+                uncertainty=(0.5, 0.6), units='degrees',
+                axis_min=0, axis_max=120)
+        except InputError:
+            pass
+        else:
+            print('UncertaintyParameter failed to catch missing fit_name')
+        try:
+            UncertaintyParameter(
+                name='asdf', fit_name='qwerty',
+                uncertainty=(0.5, 0.6), units='degrees',
+                axis_min=0, axis_max=120)
+        except InputError:
+            pass
+        else:
+            print('UncertaintyParameter failed to catch missing value')
+        try:
+            UncertaintyParameter(
+                name='asdf', fit_name='qwerty', value=23.2,
+                uncertainty=(0.5, 0.6), axis_min=0, axis_max=120)
+        except InputError:
+            pass
+        else:
+            print('UncertaintyParameter failed to catch missing units')
+        try:
+            UncertaintyParameter(
+                name=123, fit_name='qwerty', value=23.2,
+                uncertainty=(0.5, 0.6), units='degrees',
+                axis_min=0, axis_max=120)
+        except InputError:
+            pass
+        else:
+            print('UncertaintyParameter failed to catch bad name')
+        try:
+            UncertaintyParameter(
+                name='asdf', fit_name='qwerty', value='asdf',
+                uncertainty=(0.5, 0.6), units='degrees',
+                axis_min=0, axis_max=120)
+        except InputError:
+            pass
+        else:
+            print('UncertaintyParameter failed to catch bad value')
+        try:
+            UncertaintyParameter(
+                name='asdf', fit_name='qwerty', value=23.2,
+                uncertainty=(0.5, 0.6, 0.7), units='degrees')
+        except InputError:
+            pass
+        else:
+            print('UncertaintyParameter failed to catch bad uncertainty')
 
-def AGPC_basic_assertions(aunc):
-    """
-    Make some basic assertions about an AlphaGaussPlusConstant object.
-    """
+    def test_AGPC():
+        """
+        Test AlphaGaussPlusConstant class.
+        """
 
-    assert aunc.fit.params['center'] == 0
-    assert aunc.fit.params['f_random'] + aunc.fit.params['f'] == 1
-    assert isinstance(aunc.metrics['f'].value, float)
-    assert isinstance(aunc.metrics['FWHM'].value, float)
-    assert isinstance(aunc.metrics['f'].uncertainty[0], float)
-    assert isinstance(aunc.metrics['FWHM'].uncertainty[0], float)
-    assert not np.isnan(aunc.metrics['f'].uncertainty[0])
-    assert not np.isnan(aunc.metrics['FWHM'].uncertainty[0])
+        def AGPC_basic_assertions(aunc):
+            """
+            Make some basic assertions about an AlphaGaussPlusConstant object.
+            """
 
+            assert aunc.fit.params['center'] == 0
+            assert aunc.fit.params['f_random'] + aunc.fit.params['f'] == 1
+            assert isinstance(aunc.metrics['f'].value, float)
+            assert isinstance(aunc.metrics['FWHM'].value, float)
+            assert isinstance(aunc.metrics['f'].uncertainty[0], float)
+            assert isinstance(aunc.metrics['FWHM'].uncertainty[0], float)
+            assert not np.isnan(aunc.metrics['f'].uncertainty[0])
+            assert not np.isnan(aunc.metrics['FWHM'].uncertainty[0])
 
-def test_AGPC():
-    """
-    Test AlphaGaussPlusConstant class.
-    """
+        # test_AGPC() main
 
-    # various levels of statistics
-    fwhm = 30
-    f = 0.7
-    ar = generate_random_alg_results(length=10000, a_f=f, a_fwhm=fwhm)
-    agpc = AlphaGaussPlusConstant(ar)
-    try:
-        assert np.abs(agpc.fit.params['fwhm'].value - fwhm)/fwhm < 0.05
-        assert np.abs(agpc.fit.params['f'].value - f)/f < 0.05
-    except AssertionError:
-        print('Bad result while testing AlphaGaussPlusConstant, ' +
-              'length = 10000. It is possible this is random chance, ' +
-              'please try again.')
-    AGPC_basic_assertions(agpc)
+        # various levels of statistics
+        fwhm = 30
+        f = 0.7
+        ar = generate_random_alg_results(length=10000, a_f=f, a_fwhm=fwhm)
+        agpc = AlphaGaussPlusConstant(ar)
+        try:
+            assert np.abs(agpc.fit.params['fwhm'].value - fwhm)/fwhm < 0.05
+            assert np.abs(agpc.fit.params['f'].value - f)/f < 0.05
+        except AssertionError:
+            print('Bad result while testing AlphaGaussPlusConstant, ' +
+                  'length = 10000. It is possible this is random chance, ' +
+                  'please try again.')
+        AGPC_basic_assertions(agpc)
 
-    ar = generate_random_alg_results(length=1000000, a_f=f, a_fwhm=fwhm)
-    agpc = AlphaGaussPlusConstant(ar)
-    try:
-        assert np.abs(agpc.fit.params['fwhm'].value - fwhm)/fwhm < 0.02
-        assert np.abs(agpc.fit.params['f'].value - f)/f < 0.02
-    except AssertionError:
-        print('Bad result while testing AlphaGaussPlusConstant, ' +
-              'length = 1000000. It is possible this is random chance, ' +
-              'please try again.')
-    AGPC_basic_assertions(agpc)
+        ar = generate_random_alg_results(length=1000000, a_f=f, a_fwhm=fwhm)
+        agpc = AlphaGaussPlusConstant(ar)
+        try:
+            assert np.abs(agpc.fit.params['fwhm'].value - fwhm)/fwhm < 0.02
+            assert np.abs(agpc.fit.params['f'].value - f)/f < 0.02
+        except AssertionError:
+            print('Bad result while testing AlphaGaussPlusConstant, ' +
+                  'length = 1000000. It is possible this is random chance, ' +
+                  'please try again.')
+        AGPC_basic_assertions(agpc)
 
-    ar = generate_random_alg_results(length=100, a_f=f, a_fwhm=fwhm)
-    agpc = AlphaGaussPlusConstant(ar)
-    try:
-        assert np.abs(agpc.fit.params['fwhm'].value - fwhm)/fwhm < 0.25
-        assert np.abs(agpc.fit.params['f'].value - f)/f < 0.25
-    except AssertionError:
-        print agpc.fit.params['fwhm'].value
-        print agpc.fit.params['f'].value
-        print('Bad result while testing AlphaGaussPlusConstant, ' +
-              'length = 100. It is possible this is random chance, ' +
-              'please try again.')
-    AGPC_basic_assertions(agpc)
+        ar = generate_random_alg_results(length=100, a_f=f, a_fwhm=fwhm)
+        agpc = AlphaGaussPlusConstant(ar)
+        try:
+            assert np.abs(agpc.fit.params['fwhm'].value - fwhm)/fwhm < 0.25
+            assert np.abs(agpc.fit.params['f'].value - f)/f < 0.25
+        except AssertionError:
+            print agpc.fit.params['fwhm'].value
+            print agpc.fit.params['f'].value
+            print('Bad result while testing AlphaGaussPlusConstant, ' +
+                  'length = 100. It is possible this is random chance, ' +
+                  'please try again.')
+        AGPC_basic_assertions(agpc)
 
-    ar = generate_random_alg_results(length=25, a_f=f, a_fwhm=fwhm)
-    agpc = AlphaGaussPlusConstant(ar)
-    AGPC_basic_assertions(agpc)
+        ar = generate_random_alg_results(length=25, a_f=f, a_fwhm=fwhm)
+        agpc = AlphaGaussPlusConstant(ar)
+        AGPC_basic_assertions(agpc)
 
-    # edge cases of f
-    fwhm = 30
-    f = 1.0
-    ar = generate_random_alg_results(length=100, a_f=f, a_fwhm=fwhm)
-    agpc = AlphaGaussPlusConstant(ar)
-    try:
-        assert np.abs(agpc.fit.params['fwhm'].value - fwhm)/fwhm < 0.25
-        assert np.abs(agpc.fit.params['f'].value - f)/f < 0.25
-    except AssertionError:
-        print('Bad result while testing AlphaGaussPlusConstant, ' +
-              'length = 100 / f = 1.0. It is possible this is random ' +
-              'chance, please try again.')
-    AGPC_basic_assertions(agpc)
+        # edge cases of f
+        fwhm = 30
+        f = 1.0
+        ar = generate_random_alg_results(length=100, a_f=f, a_fwhm=fwhm)
+        agpc = AlphaGaussPlusConstant(ar)
+        try:
+            assert np.abs(agpc.fit.params['fwhm'].value - fwhm)/fwhm < 0.25
+            assert np.abs(agpc.fit.params['f'].value - f)/f < 0.25
+        except AssertionError:
+            print('Bad result while testing AlphaGaussPlusConstant, ' +
+                  'length = 100 / f = 1.0. It is possible this is random ' +
+                  'chance, please try again.')
+        AGPC_basic_assertions(agpc)
 
-    fwhm = 50
-    f = 0.1
-    ar = generate_random_alg_results(length=1000, a_f=f, a_fwhm=fwhm)
-    agpc = AlphaGaussPlusConstant(ar)
-    try:
-        assert agpc.fit.params['f'].value < 0.2
-    except AssertionError:
-        print('Bad result while testing AlphaGaussPlusConstant, ' +
-              'length = 1000 / f = 0.1. It is possible this is random ' +
-              'chance, please try again.')
-    AGPC_basic_assertions(agpc)
+        fwhm = 50
+        f = 0.1
+        ar = generate_random_alg_results(length=1000, a_f=f, a_fwhm=fwhm)
+        agpc = AlphaGaussPlusConstant(ar)
+        try:
+            assert agpc.fit.params['f'].value < 0.2
+        except AssertionError:
+            print('Bad result while testing AlphaGaussPlusConstant, ' +
+                  'length = 1000 / f = 0.1. It is possible this is random ' +
+                  'chance, please try again.')
+        AGPC_basic_assertions(agpc)
 
-    # explore for errors
-    for fwhm in [10, 25, 40, 60, 90]:
+        # explore for errors
+        for fwhm in [10, 25, 40, 60, 90]:
+            for f in [0, 0.1, 0.2, 0.5, 0.8, 1]:
+                for L in [50, 100, 1000, 10000]:
+                    ar = generate_random_alg_results(
+                        length=L, a_f=f, a_fwhm=fwhm)
+                    agpc = AlphaGaussPlusConstant(ar)
+                    try:
+                        AGPC_basic_assertions(agpc)
+                    except AssertionError:
+                        print ('* issue with AGPC at FWHM = {}, f = {}, ' +
+                               'length = {}').format(fwhm, f, L)
+
+    def test_A68():
+        """
+        """
+
+        def A68_basic_assertions(aunc):
+            """
+            Make some basic assertions about an Alpha68 object.
+            """
+
+            assert isinstance(aunc.metrics['contains68'].value, float)
+            assert isinstance(aunc.metrics['contains68'].uncertainty[0], float)
+            assert not np.isnan(aunc.metrics['contains68'].uncertainty[0])
+
+        ar = generate_random_alg_results(length=1000, a_f=0.7, a_fwhm=30)
+        a68 = Alpha68(ar)
+        A68_basic_assertions(a68)
+
+        ar = generate_random_alg_results(length=100, a_f=0.7, a_fwhm=30)
+        a68 = Alpha68(ar)
+        A68_basic_assertions(a68)
+
+        ar = generate_random_alg_results(length=10000, a_f=0.7, a_fwhm=30)
+        a68 = Alpha68(ar)
+        A68_basic_assertions(a68)
+
+        ar = generate_random_alg_results(length=1000, a_f=1.0, a_fwhm=30)
+        a68 = Alpha68(ar)
+        A68_basic_assertions(a68)
+
+        ar = generate_random_alg_results(length=1000, a_f=0.2, a_fwhm=50)
+        a68 = Alpha68(ar)
+        A68_basic_assertions(a68)
+
+        # explore for errors
+        for fwhm in [10, 25, 40, 60, 90]:
+            for f in [0, 0.1, 0.2, 0.5, 0.8, 1]:
+                for L in [50, 100, 1000, 10000]:
+                    ar = generate_random_alg_results(
+                        length=L, a_f=f, a_fwhm=fwhm)
+                    a68 = Alpha68(ar)
+                    try:
+                        A68_basic_assertions(a68)
+                    except AssertionError:
+                        print ('* issue with A68 at FWHM = {}, f = {}, ' +
+                               'length = {}').format(fwhm, f, L)
+
+    def test_beta_uncertainties():
+        """
+        """
+
+        def beta_RMS_basic_assertions(bunc):
+            """
+            Make some basic assertions about a BetaRms object.
+            """
+
+            assert isinstance(bunc.metrics['RMS'].value, float)
+            assert isinstance(bunc.metrics['RMS'].uncertainty[0], float)
+            assert not np.isnan(bunc.metrics['RMS'].uncertainty[0])
+
+        # test_beta_uncertainties() main
+
+        ar = generate_random_alg_results(length=1000)
+        brms = BetaRms(ar)
+        beta_RMS_basic_assertions(brms)
+
         for f in [0, 0.1, 0.2, 0.5, 0.8, 1]:
             for L in [50, 100, 1000, 10000]:
-                ar = generate_random_alg_results(length=L, a_f=f, a_fwhm=fwhm)
-                agpc = AlphaGaussPlusConstant(ar)
+                ar = generate_random_alg_results(length=L, b_f=f)
+                brms = BetaRms(ar)
                 try:
-                    AGPC_basic_assertions(agpc)
+                    beta_RMS_basic_assertions(brms)
                 except AssertionError:
-                    print ('* issue with AGPC at ' +
-                           'FWHM = {}, f = {}, length = {}').format(fwhm, f, L)
+                    print ('* issue with BetaRms at ' +
+                           'b_f = {}, length = {}').format(f, L)
 
+    # test_alg_uncertainty() main
 
-def A68_basic_assertions(aunc):
-    """
-    Make some basic assertions about an Alpha68 object.
-    """
-
-    assert isinstance(aunc.metrics['contains68'].value, float)
-    assert isinstance(aunc.metrics['contains68'].uncertainty[0], float)
-    assert not np.isnan(aunc.metrics['contains68'].uncertainty[0])
-
-
-def test_A68():
-    """
-    """
-
-    ar = generate_random_alg_results(length=1000, a_f=0.7, a_fwhm=30)
-    a68 = Alpha68(ar)
-    A68_basic_assertions(a68)
-
-    ar = generate_random_alg_results(length=100, a_f=0.7, a_fwhm=30)
-    a68 = Alpha68(ar)
-    A68_basic_assertions(a68)
-
-    ar = generate_random_alg_results(length=10000, a_f=0.7, a_fwhm=30)
-    a68 = Alpha68(ar)
-    A68_basic_assertions(a68)
-
-    ar = generate_random_alg_results(length=1000, a_f=1.0, a_fwhm=30)
-    a68 = Alpha68(ar)
-    A68_basic_assertions(a68)
-
-    ar = generate_random_alg_results(length=1000, a_f=0.2, a_fwhm=50)
-    a68 = Alpha68(ar)
-    A68_basic_assertions(a68)
-
-    # explore for errors
-    for fwhm in [10, 25, 40, 60, 90]:
-        for f in [0, 0.1, 0.2, 0.5, 0.8, 1]:
-            for L in [50, 100, 1000, 10000]:
-                ar = generate_random_alg_results(length=L, a_f=f, a_fwhm=fwhm)
-                a68 = Alpha68(ar)
-                try:
-                    A68_basic_assertions(a68)
-                except AssertionError:
-                    print ('* issue with A68 at ' +
-                           'FWHM = {}, f = {}, length = {}').format(fwhm, f, L)
-
-
-def beta_RMS_basic_assertions(bunc):
-    """
-    Make some basic assertions about a BetaRms object.
-    """
-
-    assert isinstance(bunc.metrics['RMS'].value, float)
-    assert isinstance(bunc.metrics['RMS'].uncertainty[0], float)
-    assert not np.isnan(bunc.metrics['RMS'].uncertainty[0])
-
-
-def test_beta_uncertainties():
-    """
-    """
-    ar = generate_random_alg_results(length=1000)
-    brms = BetaRms(ar)
-    beta_RMS_basic_assertions(brms)
-
-    for f in [0, 0.1, 0.2, 0.5, 0.8, 1]:
-        for L in [50, 100, 1000, 10000]:
-            ar = generate_random_alg_results(length=L, b_f=f)
-            brms = BetaRms(ar)
-            try:
-                beta_RMS_basic_assertions(brms)
-            except AssertionError:
-                print ('* issue with BetaRms at ' +
-                       'b_f = {}, length = {}').format(f, L)
+    test_alg_uncertainty_main()
 
 
 def test_comprehensive():
