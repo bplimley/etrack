@@ -744,7 +744,7 @@ def test_Track():
         assert track2['algorithms']['python HT v1.5']['alpha_deg'] == 120.5
         assert track2['algorithms']['python HT v1.5']['beta_deg'] == 43.5
 
-        track3 = test_Track_from_pydict(track, track2)
+        test_Track_from_pydict(track, track2)
 
         test_Track_from_hdf5()
 
@@ -779,6 +779,29 @@ def test_Track():
         print('test_Track_from_hdf5 not implemented yet!')
         pass
 
+    def test_TrackExceptions():
+        """
+        """
+
+        image = hybridtrack.test_input()
+        try:
+            Track(image)
+            raise RuntimeError('Failed to raise error on Track instantiation')
+        except InputError:
+            pass
+
+        try:
+            Track(image, is_modeled=True, is_measured=True)
+            raise RuntimeError('Failed to raise error on Track instantiation')
+        except InputError:
+            pass
+
+        try:
+            Track(image, is_modeled=False, is_measured=False)
+            raise RuntimeError('Failed to raise error on Track instantiation')
+        except InputError:
+            pass
+
     # test_Track() main
 
     image = hybridtrack.test_input()
@@ -791,29 +814,7 @@ def test_Track():
 
     test_Track_read(track)
 
-
-def test_TrackExceptions():
-    """
-    """
-
-    image = hybridtrack.test_input()
-    try:
-        Track(image)
-        raise RuntimeError('Failed to raise error on Track instantiation')
-    except InputError:
-        pass
-
-    try:
-        Track(image, is_modeled=True, is_measured=True)
-        raise RuntimeError('Failed to raise error on Track instantiation')
-    except InputError:
-        pass
-
-    try:
-        Track(image, is_modeled=False, is_measured=False)
-        raise RuntimeError('Failed to raise error on Track instantiation')
-    except InputError:
-        pass
+    test_TrackExceptions()
 
 
 def test_AlgorithmOutput():
@@ -863,7 +864,6 @@ def main():
 
     test_G4Track()
     test_Track()
-    test_TrackExceptions()
     test_AlgorithmOutput()
 
     try:
@@ -887,3 +887,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+    if False:
+        pdb.set_trace()
+        pass

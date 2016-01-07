@@ -6,7 +6,6 @@ import h5py
 import ipdb as pdb
 
 import trackio
-import trackdata
 import dataformats
 
 
@@ -1296,91 +1295,6 @@ class FittingWarning(EvalWarning):
 ##############################################################################
 
 
-def test_dalpha():
-    """
-    """
-
-    # test basic scalar-scalar (ints)
-    a1 = 5
-    a2 = 15
-    assert AlphaUncertainty.delta_alpha(a1, a2) == 10
-
-    # test basic scalar-scalar (floats)
-    a1 = 5.5
-    a2 = 15.5
-    assert AlphaUncertainty.delta_alpha(a1, a2) == 10
-
-    # test wraparound scalar-scalar
-    a1 = 175 + 360
-    a2 = -175 - 360
-    assert AlphaUncertainty.delta_alpha(a1, a2) == 10
-    a1 = -175 - 360
-    a2 = 175 + 360
-    assert AlphaUncertainty.delta_alpha(a1, a2) == -10
-
-    # test vector-scalar (list; ndarray)
-    a1 = -175
-    a2 = [-150, 30, 175]
-    assert np.all(AlphaUncertainty.delta_alpha(a1, a2) ==
-                  np.array([25, -155, -10]))
-    assert np.all(AlphaUncertainty.delta_alpha(np.array(a1), a2) ==
-                  np.array([25, -155, -10]))
-    assert np.all(AlphaUncertainty.delta_alpha(a1, np.array(a2)) ==
-                  np.array([25, -155, -10]))
-
-    # test vector-vector (list-list; list-ndarray; ndarray-ndarray)
-    a1 = [-170, 0, 170]
-    a2 = [170.5, 30.5, 150.5]
-    assert np.all(AlphaUncertainty.delta_alpha(a1, a2) ==
-                  np.array([-19.5, 30.5, -19.5]))
-    assert np.all(AlphaUncertainty.delta_alpha(a1, np.array(a2)) ==
-                  np.array([-19.5, 30.5, -19.5]))
-    assert np.all(AlphaUncertainty.delta_alpha(np.array(a1), np.array(a2)) ==
-                  np.array([-19.5, 30.5, -19.5]))
-
-    return None
-
-
-def test_dbeta():
-    """
-    """
-
-    # basic scalar-scalar
-    b1 = 5
-    b2 = 15
-    assert BetaUncertainty.delta_beta(b1, b2) == 10
-
-    # absolute value
-    b1 = -5
-    b2 = 15
-    assert BetaUncertainty.delta_beta(b1, b2) == 10
-
-    # floats
-    b1 = -5.0
-    b2 = 15.0
-    assert BetaUncertainty.delta_beta(b1, b2) == 10
-
-    # vector-scalar (list; ndarray)
-    b1 = 0
-    b2 = [23, 30.0, 0]
-    assert np.all(BetaUncertainty.delta_beta(b1, b2) ==
-                  np.array([23, 30, 0]))
-    assert np.all(BetaUncertainty.delta_beta(np.array(b1), b2) ==
-                  np.array([23, 30, 0]))
-    assert np.all(BetaUncertainty.delta_beta(b1, np.array(b2)) ==
-                  np.array([23, 30, 0]))
-
-    # test vector-vector (list-list; list-ndarray; ndarray-ndarray)
-    b1 = [0, -10, 5]
-    b2 = [10, 10, 30]
-    assert np.all(BetaUncertainty.delta_beta(b1, b2) ==
-                  np.array([10, 0, 25]))
-    assert np.all(BetaUncertainty.delta_beta(b1, np.array(b2)) ==
-                  np.array([10, 0, 25]))
-    assert np.all(BetaUncertainty.delta_beta(np.array(b1), np.array(b2)) ==
-                  np.array([10, 0, 25]))
-
-
 def generate_random_alg_results(
         length=100,
         filename=None, parent=None,
@@ -1460,25 +1374,52 @@ def test_alg_results():
     """
 
     def test_alg_results_main():
-        # basic
+        # __init__(), data_attrs()
+        test_alg_results_construction()
+
+        # __len__(), measure_data_length()
+        test_alg_results_length()
+
+        # input_error_check()
+        test_alg_results_input_check()
+
+        # __add__()
+        test_alg_results_add()
+
+        # select()
+        test_alg_results_select()
+
+        #
+        test_alg_results_from_track_array()
+
+        # add_uncertainty, add_default_uncertainties, list_uncertainties are
+        #   tested in comprehensive tests
+
+        # __eq__()
+
+    def test_alg_results_construction():
+        """
+        Tests AlgorithmResults.__init__(), AlgorithmResults.data_attrs()
+        """
+
+        # basic class construction
         generate_random_alg_results()
         generate_random_alg_results(has_beta=False, has_contained=False)
         assert len(AlgorithmResults.data_attrs()) == 8
+
+    def test_alg_results_length():
+        """
+        Test AlgorithmResults.measure_data_length(), AlgorithmResults.__len__()
+        """
 
         # length
         assert len(generate_random_alg_results(length=100)) == 100
         assert len(generate_random_alg_results(has_alpha=False,
                                                length=100)) == 100
 
-        # subtests
-        test_alg_results_input_check()
-        test_alg_results_add()
-        test_alg_results_select()
-        test_alg_results_from_track_array()
-
     def test_alg_results_input_check():
         """
-        Test AlgorithmResults input check
+        Test AlgorithmResults.input_error_check()
         """
 
         # errors
@@ -1508,7 +1449,7 @@ def test_alg_results():
 
     def test_alg_results_add():
         """
-        Test AlgorithmResults class.
+        Test AlgorithmResults.__add__()
         """
 
         len1 = 1000
@@ -1572,7 +1513,7 @@ def test_alg_results():
 
     def test_alg_results_select():
         """
-        Test AlgorithmResults class.
+        Tests AlgorithmResults.select()
         """
 
         len1 = 1000
@@ -1628,17 +1569,118 @@ def test_alg_uncertainty(include_plots):
     """
 
     def test_alg_uncertainty_main():
+        # AlphaUncertainty.delta_alpha(), AlphaUncertainty.adjust_dalpha()
+        # BetaUncertainty.delta_beta()
+        test_dalpha()
+        test_dbeta()
+
+        # UncertaintyParameter.__init__(), UncertaintyParameter.input_check()
         test_uncertainty_parameter_input()
+
+        # AlphaGaussPlusConstant overall
         test_AGPC()
+
+        # Alpha68 overall
         test_A68()
+
+        # BetaRms overall
         test_beta_uncertainties()
+
         if include_plots:
             print('test_alg_uncertainty plots not implemented yet')
 
         return None
 
+    def test_dalpha():
+        """
+        test AlphaUncertainty.delta_alpha(), AlphaUncertainty.adjust_dalpha()
+        """
+
+        # test basic scalar-scalar (ints)
+        a1 = 5
+        a2 = 15
+        assert AlphaUncertainty.delta_alpha(a1, a2) == 10
+
+        # test basic scalar-scalar (floats)
+        a1 = 5.5
+        a2 = 15.5
+        assert AlphaUncertainty.delta_alpha(a1, a2) == 10
+
+        # test wraparound scalar-scalar
+        a1 = 175 + 360
+        a2 = -175 - 360
+        assert AlphaUncertainty.delta_alpha(a1, a2) == 10
+        a1 = -175 - 360
+        a2 = 175 + 360
+        assert AlphaUncertainty.delta_alpha(a1, a2) == -10
+
+        # test vector-scalar (list; ndarray)
+        a1 = -175
+        a2 = [-150, 30, 175]
+        assert np.all(AlphaUncertainty.delta_alpha(a1, a2) ==
+                      np.array([25, -155, -10]))
+        assert np.all(AlphaUncertainty.delta_alpha(np.array(a1), a2) ==
+                      np.array([25, -155, -10]))
+        assert np.all(AlphaUncertainty.delta_alpha(a1, np.array(a2)) ==
+                      np.array([25, -155, -10]))
+
+        # test vector-vector (list-list; list-ndarray; ndarray-ndarray)
+        a1 = [-170, 0, 170]
+        a2 = [170.5, 30.5, 150.5]
+        assert np.all(AlphaUncertainty.delta_alpha(a1, a2) ==
+                      np.array([-19.5, 30.5, -19.5]))
+        assert np.all(AlphaUncertainty.delta_alpha(a1, np.array(a2)) ==
+                      np.array([-19.5, 30.5, -19.5]))
+        assert np.all(
+            AlphaUncertainty.delta_alpha(np.array(a1), np.array(a2)) ==
+            np.array([-19.5, 30.5, -19.5]))
+
+        return None
+
+    def test_dbeta():
+        """
+        test BetaUncertainty.delta_beta()
+        """
+
+        # basic scalar-scalar
+        b1 = 5
+        b2 = 15
+        assert BetaUncertainty.delta_beta(b1, b2) == 10
+
+        # absolute value
+        b1 = -5
+        b2 = 15
+        assert BetaUncertainty.delta_beta(b1, b2) == 10
+
+        # floats
+        b1 = -5.0
+        b2 = 15.0
+        assert BetaUncertainty.delta_beta(b1, b2) == 10
+
+        # vector-scalar (list; ndarray)
+        b1 = 0
+        b2 = [23, 30.0, 0]
+        assert np.all(BetaUncertainty.delta_beta(b1, b2) ==
+                      np.array([23, 30, 0]))
+        assert np.all(BetaUncertainty.delta_beta(np.array(b1), b2) ==
+                      np.array([23, 30, 0]))
+        assert np.all(BetaUncertainty.delta_beta(b1, np.array(b2)) ==
+                      np.array([23, 30, 0]))
+
+        # test vector-vector (list-list; list-ndarray; ndarray-ndarray)
+        b1 = [0, -10, 5]
+        b2 = [10, 10, 30]
+        assert np.all(BetaUncertainty.delta_beta(b1, b2) ==
+                      np.array([10, 0, 25]))
+        assert np.all(BetaUncertainty.delta_beta(b1, np.array(b2)) ==
+                      np.array([10, 0, 25]))
+        assert np.all(BetaUncertainty.delta_beta(np.array(b1), np.array(b2)) ==
+                      np.array([10, 0, 25]))
+
     def test_uncertainty_parameter_input():
         """
+        test UncertaintyParameter.__init__(),
+          UncertaintyParameter.input_check()
         """
 
         # basic
@@ -1723,7 +1765,7 @@ def test_alg_uncertainty(include_plots):
 
     def test_AGPC():
         """
-        Test AlphaGaussPlusConstant class.
+        Test overall behavior of AlphaGaussPlusConstant class.
         """
 
         def AGPC_basic_assertions(aunc):
@@ -1825,6 +1867,7 @@ def test_alg_uncertainty(include_plots):
 
     def test_A68():
         """
+        test overall behavior of Alpha68 class
         """
 
         def A68_basic_assertions(aunc):
@@ -1871,6 +1914,7 @@ def test_alg_uncertainty(include_plots):
 
     def test_beta_uncertainties():
         """
+        test overall behavior of BetaRms class
         """
 
         def beta_RMS_basic_assertions(bunc):
@@ -1903,9 +1947,11 @@ def test_alg_uncertainty(include_plots):
     test_alg_uncertainty_main()
 
 
-def test_comprehensive():
+def test_add_uncertainties():
     """
-    Test AlgorithmResults and AlgorithmUncertainty together.
+    test AlgorithmResults.add_uncertainty,
+      AlgorithmResults.add_default_uncertainties
+    for AGPC, A68, BetaRms, AGPCPB
     """
 
     # adding all uncertainties
@@ -1924,18 +1970,74 @@ def test_comprehensive():
     assert isinstance(ar.uncertainty_list[-1],
                       AlphaGaussPlusConstantPlusBackscatter)
 
-    # I/O
-    filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(8,)))
-    filename = '.'.join([filebase, 'h5'])
-    with h5py.File(filename, 'a') as h5f:
-        trackio.write_object_to_hdf5(ar, h5f, 'ar')
-    with h5py.File(filename, 'r') as h5f:
-        ar_read = AlgorithmResults.from_hdf5(h5f['ar'])
-    assert ar_read == ar
-    assert ar_read.parent[0] is ar_read
+
+def test_IO():
+    """
+
+    """
+
+    def main():
+        # test trackio.write
+        # test trackio.read
+        ar_pydict = test_trackio_functions()
+        ar_pydict2 = test_backwards_compatibility()
+
+        # test AlgorithmResults.from_pydict and Uncertainty.from_pydict
+        test_from_pydict(ar_pydict)
+        test_from_pydict(ar_pydict2)
+
+        temporary()
+
+    def test_trackio_functions():
+
+        ar = generate_random_alg_results(length=1000)
+
+        # write and then read
+
+        return ar_pydict
+
+    def test_backwards_compatibility():
+        # load from an existing file
+        pass
+        return ar_pydict
+
+    def test_from_pydict(ar_pydict):
+
+        # AlgorithmResults.from_pydict()
+        # Uncertainty.from_pydict()
+        pass
+
+    def test_from_files():
+        # test AlgorithmResults.from_hdf5
+        # test AlgorithmResults.from_track_array
+        # test AlgorithmResults.from_hdf5_tracks
+        pass
+
+    # rename this
+    def temporary():
+        """
+        test trackio.write_object_to_hdf5 on AlgorithmResults
+        test AlgorithmResults.from_hdf5
+        """
 
 
-if __name__ == '__main__':
+
+        # I/O
+        filebase = ''.join(
+            chr(i) for i in np.random.randint(97, 122, size=(8,)))
+        filename = '.'.join([filebase, 'h5'])
+        with h5py.File(filename, 'a') as h5f:
+            trackio.write_object_to_hdf5(ar, h5f, 'ar')
+        with h5py.File(filename, 'r') as h5f:
+            ar_read = AlgorithmResults.from_hdf5(h5f['ar'])
+        assert ar_read == ar
+        assert ar_read.parent[0] is ar_read
+
+    # test_comprehensive() main
+    main()
+
+
+def main():
     """
     Run tests.
     """
@@ -1943,7 +2045,16 @@ if __name__ == '__main__':
     include_plots = True
 
     test_alg_results()
-    test_dalpha()
-    test_dbeta()
     test_alg_uncertainty(include_plots)
-    test_comprehensive()
+
+    test_add_uncertainties()
+    test_IO()
+
+
+if __name__ == '__main__':
+
+    main()
+
+    if False:
+        pdb.set_trace()
+        pass

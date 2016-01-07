@@ -1000,3 +1000,7 @@ def test_write_objects_to_hdf5():
 
 if __name__ == '__main__':
     main()
+
+    if False:
+        pdb.set_trace()
+        pass
