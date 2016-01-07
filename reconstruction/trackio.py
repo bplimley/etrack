@@ -505,8 +505,7 @@ def main():
     Run tests.
     """
 
-    filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(8,)))
-    filename = '.'.join([filebase, 'h5'])
+    filename = generate_random_filename(ext='h5')
 
     try:
         test_IO_data_types(filename)
@@ -523,6 +522,21 @@ def main():
             os.remove(filename)
         except OSError:
             pass
+
+
+def generate_random_filename(ext='h5'):
+    """
+    Generate a random 8-character filename, with extension ext.
+    """
+
+    if ext and ext[0] == '.':
+        ext = ext[1:]
+
+    filebase = ''.join(
+        chr(i) for i in np.random.randint(97, 122, size=(8,)))
+    filename = '.'.join([filebase, ext])
+
+    return filename
 
 
 class TestIO(object):
@@ -928,19 +942,20 @@ def test_write_objects_to_hdf5():
 
     import evaluation
 
-    filebase = ''.join(chr(i) for i in np.random.randint(97, 122, size=(8,)))
-    filename = '.'.join([filebase, 'h5'])
+    filename = generate_random_filename(ext='')
+    filename_h5 = filename + '.h5'
+    filename_hdf5 = filename + '.hdf5'
 
     # h5file provided
     # single object
     ar = evaluation.generate_random_alg_results(length=1000)
     ar.add_default_uncertainties()
-    with h5py.File(filename, 'a') as h5file:
+    with h5py.File(filename_h5, 'a') as h5file:
         write_objects_to_hdf5(h5file, ar=ar)
-    with h5py.File(filename, 'r') as h5file:
+    with h5py.File(filename_h5, 'r') as h5file:
         ar_read = read_object_from_hdf5(h5file['ar'])
     check_alg_results_IO(ar_read, ar, uncertainty_flag=True)
-    os.remove(filename)
+    os.remove(filename_h5)
 
     # h5file provided
     # multiple objects
@@ -950,14 +965,14 @@ def test_write_objects_to_hdf5():
     ar2.add_default_uncertainties()
     ar3 = evaluation.generate_random_alg_results(length=3000)
     ar3.add_default_uncertainties()
-    with h5py.File(filename, 'a') as h5file:
+    with h5py.File(filename_h5, 'a') as h5file:
         filename_written = write_objects_to_hdf5(
             h5file,
             ar1=ar1, ar2=ar2, ar3=ar3, aunc=ar1.alpha_unc)
-    assert filename_written == filename
+    assert filename_written == filename_h5
 
     h5_to_pydict = {}
-    with h5py.File(filename, 'r') as h5file:
+    with h5py.File(filename_h5, 'r') as h5file:
         ar1_read = read_object_from_hdf5(
             h5file['ar1'], h5_to_pydict=h5_to_pydict)
         ar2_read = read_object_from_hdf5(
@@ -970,18 +985,17 @@ def test_write_objects_to_hdf5():
     check_alg_results_IO(ar3_read, ar3, uncertainty_flag=True)
     # check hard link across multiple write calls (within a file session)
     assert aunc is ar1_read['alpha_unc']
-    os.remove(filename)
+    os.remove(filename_h5)
 
     # filename provided, including extension (single object)
-    filename_written = write_objects_to_hdf5(filename, ar=ar)
-    assert filename_written == filename
-    with h5py.File(filename, 'r') as h5file:
+    filename_written = write_objects_to_hdf5(filename_h5, ar=ar)
+    assert filename_written == filename_h5
+    with h5py.File(filename_h5, 'r') as h5file:
         ar_read = read_object_from_hdf5(h5file['ar'])
     check_alg_results_IO(ar_read, ar, uncertainty_flag=True)
-    os.remove(filename)
+    os.remove(filename_h5)
 
     # filename provided as *.hdf5
-    filename_hdf5 = '.'.join([filebase, 'hdf5'])
     filename_written = write_objects_to_hdf5(filename_hdf5, ar=ar)
     assert filename_written == filename_hdf5
     with h5py.File(filename_hdf5, 'r') as h5file:
@@ -990,12 +1004,12 @@ def test_write_objects_to_hdf5():
     os.remove(filename_hdf5)
 
     # filename provided without extension. check that extension is added
-    filename_written = write_objects_to_hdf5(filebase, ar=ar)
-    assert filename_written == filename
-    with h5py.File(filename, 'r') as h5file:
+    filename_written = write_objects_to_hdf5(filename, ar=ar)
+    assert filename_written == filename_h5
+    with h5py.File(filename_h5, 'r') as h5file:
         ar_read = read_object_from_hdf5(h5file['ar'])
     check_alg_results_IO(ar_read, ar, uncertainty_flag=True)
-    os.remove(filename)
+    os.remove(filename_h5)
 
 
 if __name__ == '__main__':

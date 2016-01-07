@@ -1986,13 +1986,19 @@ def test_IO():
         test_from_pydict(ar_pydict)
         test_from_pydict(ar_pydict2)
 
-        temporary()
-
     def test_trackio_functions():
 
         ar = generate_random_alg_results(length=1000)
+        filename = trackio.generate_random_filename(ext='h5')
 
         # write and then read
+        with h5py.File(filename, 'a') as h5f:
+            trackio.write_object_to_hdf5(ar, h5f, 'ar')
+        with h5py.File(filename, 'r') as h5f:
+            ar_pydict = trackio.read_
+            # ar_read = AlgorithmResults.from_hdf5(h5f['ar'])
+        # assert ar_read == ar
+        # assert ar_read.parent[0] is ar_read
 
         return ar_pydict
 
@@ -2012,26 +2018,6 @@ def test_IO():
         # test AlgorithmResults.from_track_array
         # test AlgorithmResults.from_hdf5_tracks
         pass
-
-    # rename this
-    def temporary():
-        """
-        test trackio.write_object_to_hdf5 on AlgorithmResults
-        test AlgorithmResults.from_hdf5
-        """
-
-
-
-        # I/O
-        filebase = ''.join(
-            chr(i) for i in np.random.randint(97, 122, size=(8,)))
-        filename = '.'.join([filebase, 'h5'])
-        with h5py.File(filename, 'a') as h5f:
-            trackio.write_object_to_hdf5(ar, h5f, 'ar')
-        with h5py.File(filename, 'r') as h5f:
-            ar_read = AlgorithmResults.from_hdf5(h5f['ar'])
-        assert ar_read == ar
-        assert ar_read.parent[0] is ar_read
 
     # test_comprehensive() main
     main()
