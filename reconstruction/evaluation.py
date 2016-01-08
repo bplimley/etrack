@@ -1389,11 +1389,8 @@ def test_alg_results():
         # select()
         test_alg_results_select()
 
-        #
-        test_alg_results_from_track_array()
-
-        # add_uncertainty, add_default_uncertainties, list_uncertainties are
-        #   tested in comprehensive tests
+        # add_uncertainty, add_default_uncertainties, list_uncertainties,
+        #   loading from files are tested in comprehensive tests
 
         # __eq__()
 
@@ -1550,14 +1547,6 @@ def test_alg_results():
         else:
             print('AlgorithmResults.select() failed to ' +
                   'raise error on bad condition')
-
-    def test_alg_results_from_track_array():
-        """
-        """
-
-        print('test_alg_results_from_track_array not implemented yet')
-
-        return None
 
     # main
     test_alg_results_main()
@@ -1994,16 +1983,15 @@ def test_IO():
             trackio.write_object_to_hdf5(ar, h5f, 'ar')
         with h5py.File(filename, 'r') as h5f:
             ar_pydict = trackio.read_object_from_hdf5(h5f['ar'])
-            # ar_read = AlgorithmResults.from_hdf5(h5f['ar'])
 
         return ar, ar_pydict
 
     def test_backwards_compatibility():
         # load from an existing file
-        loadfile = ''
+        loadfile = 'eval_test.h5'
         try:
             with h5py.File(loadfile, 'r') as h5f:
-                pass
+                ar_pydict = trackio.read_object_from_hdf5(h5f['ar'])
         except OSError:
             ar_pydict = None
             print ('File not found; skipping backwards compatibility ' +
@@ -2018,19 +2006,32 @@ def test_IO():
 
         ar_read = AlgorithmResults.from_pydict(ar_pydict)
         assert ar_read == ar
-        assert ar_read.parent[0] is ar_read
 
         if ar_pydict2 is None:
             pass
         else:
             ar_read2 = AlgorithmResults.from_pydict(ar_pydict2)
-            assert ar_read2.parent[0] is ar_read2
+            assert isinstance(ar_read2, AlgorithmResults)
 
     def test_from_files():
         # test AlgorithmResults.from_hdf5
         # test AlgorithmResults.from_track_array
         # test AlgorithmResults.from_hdf5_tracks
-        pass
+
+        # from_hdf5
+        loadfile = 'eval_test.h5'
+        with h5py.File(loadfile, 'r') as h5f:
+            AlgorithmResults.from_hdf5(h5f['ar'])
+
+        import trackdata
+        # from_track_array
+        track_array = [trackdata.Track.generate_random(alg_name='asdf')
+                       for _ in xrange(25)]
+        ar = AlgorithmResults.from_track_array(track_array, alg_name='asdf')
+        assert len(ar) == 25
+
+        # from_hdf5_tracks
+        loadfile2 = ''
 
     # test_comprehensive() main
     main()

@@ -440,6 +440,44 @@ class Track(object):
 
         return constructed_object
 
+    @classmethod
+    def generate_random(cls, size=(10, 10), alg_name=None,
+                        a_fwhm=30, a_f=0.7, b_rms=20, b_f=0.5):
+        """
+        Generate a random image. is_modeled = True.
+
+        size: 2x1 tuple indicating dimensions of image
+        alg_name: if this is a string, generate a random alpha and beta and
+          assign as algorithm results to this alg_name.
+          The distribution of dalpha and dbeta are controlled by
+          a_fwhm, a_f, b_rms, b_f, as in evaluation.generate_random_alg_results
+        """
+
+        img = np.random.random(size=size)
+        a0 = np.random.uniform(-180.0, 180.0)
+        b0 = np.random.uniform(-90.0, 90.0)
+        g4t = G4Track(alpha_deg=a0, beta_deg=b0)
+        t = Track(img, is_modeled=True, g4track=g4t)
+
+        if alg_name is not None and isinstance(alg_name, str):
+            # alpha
+            if np.random.random() < a_f:
+                a1 = a0 + np.random.normal(loc=0.0, scale=(a_fwhm)/2.355)
+            else:
+                a1 = np.random.uniform(-180.0, 180.0)
+
+            # beta
+            if np.random.random() < b_f:
+                b1 = b0 + np.random.normal(loc=0.0, scale=b_rms)
+                if b1 < 0:
+                    b1 = 0
+                elif b1 > 90:
+                    b1 = 89.9
+            else:
+                b1 = 0
+
+            t.add_algorithm(alg_name, a1, b1)
+
     def add_algorithm(self, alg_name, alpha_deg, beta_deg, info=None):
         """
         """
