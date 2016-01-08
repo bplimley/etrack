@@ -1979,15 +1979,13 @@ def test_IO():
     def main():
         # test trackio.write
         # test trackio.read
-        ar_pydict = test_trackio_functions()
+        ar, ar_pydict = test_trackio_functions()
         ar_pydict2 = test_backwards_compatibility()
 
         # test AlgorithmResults.from_pydict and Uncertainty.from_pydict
-        test_from_pydict(ar_pydict)
-        test_from_pydict(ar_pydict2)
+        test_from_pydict(ar, ar_pydict, ar_pydict2)
 
     def test_trackio_functions():
-
         ar = generate_random_alg_results(length=1000)
         filename = trackio.generate_random_filename(ext='h5')
 
@@ -1995,23 +1993,38 @@ def test_IO():
         with h5py.File(filename, 'a') as h5f:
             trackio.write_object_to_hdf5(ar, h5f, 'ar')
         with h5py.File(filename, 'r') as h5f:
-            ar_pydict = trackio.read_
+            ar_pydict = trackio.read_object_from_hdf5(h5f['ar'])
             # ar_read = AlgorithmResults.from_hdf5(h5f['ar'])
-        # assert ar_read == ar
-        # assert ar_read.parent[0] is ar_read
 
-        return ar_pydict
+        return ar, ar_pydict
 
     def test_backwards_compatibility():
         # load from an existing file
-        pass
+        loadfile = ''
+        try:
+            with h5py.File(loadfile, 'r') as h5f:
+                pass
+        except OSError:
+            ar_pydict = None
+            print ('File not found; skipping backwards compatibility ' +
+                   'AlgorithmResults.from_pydict()')
+
         return ar_pydict
 
-    def test_from_pydict(ar_pydict):
+    def test_from_pydict(ar, ar_pydict, ar_pydict2=None):
 
         # AlgorithmResults.from_pydict()
         # Uncertainty.from_pydict()
-        pass
+
+        ar_read = AlgorithmResults.from_pydict(ar_pydict)
+        assert ar_read == ar
+        assert ar_read.parent[0] is ar_read
+
+        if ar_pydict2 is None:
+            pass
+        else:
+            ar_read2 = AlgorithmResults.from_pydict(ar_pydict2)
+            assert ar_read2.parent[0] is ar_read2
 
     def test_from_files():
         # test AlgorithmResults.from_hdf5
