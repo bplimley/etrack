@@ -478,6 +478,8 @@ class Track(object):
 
             t.add_algorithm(alg_name, a1, b1)
 
+        return t
+
     def add_algorithm(self, alg_name, alpha_deg, beta_deg, info=None):
         """
         """
