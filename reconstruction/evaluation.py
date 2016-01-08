@@ -78,24 +78,27 @@ class AlgorithmResults(object):
     def input_error_check(self):
         # type checks
         if (self.parent is not None and
-                type(self.parent) is not AlgorithmResults and
-                (type(self.parent) is not list or
-                 type(self.parent[0]) is not AlgorithmResults)):
+                not isinstance(self.parent, AlgorithmResults) and
+                (not isinstance(self.parent, list) or
+                 not isinstance(self.parent[0], AlgorithmResults))):
             raise InputError(
                 'Parent should be an instance of AlgorithmResults')
         if (self.filename is not None and
-                type(self.filename) is not str and
-                (type(self.filename) is not list or
-                 type(self.filename[0]) is not str)):
+                not isinstance(self.filename, str) and
+                not isinstance(self.filename, unicode) and
+                (not isinstance(self.filename, list) or
+                 (not isinstance(self.filename[0], str) and
+                  not isinstance(self.filename[0], unicode)))):
             raise InputError(
                 'Filename should be a string or a list of strings')
 
         # type conversion
         # parent and filename should always be lists, if they are not None,
         #   even if only 1 element
-        if type(self.parent) is AlgorithmResults:
+        if isinstance(self.parent, AlgorithmResults):
             self.parent = [self.parent]
-        if type(self.filename) is str:
+        if (isinstance(self.filename, str) or
+                isinstance(self.filename, unicode)):
             self.filename = [self.filename]
         for attr in self.data_attrs():
             if getattr(self, attr) is not None:
@@ -331,6 +334,8 @@ class AlgorithmResults(object):
         data_dict = {}
         g4_dict = {}
         h5name_dict = {}
+        alg_group_name = 'algorithms'
+
         for attr in cls.data_attrs():
             # data_dict: array to load data into
             data_dict[attr] = np.zeros(len(h5file.keys()))
@@ -353,14 +358,15 @@ class AlgorithmResults(object):
                 h5name_dict[attr] = None
 
         n = 0
-        for evt in h5file:
+        for evt in h5file.values():
             if subgroup_name is not None and subgroup_name not in evt:
                 continue
+
             if subgroup_name is None:
                 pixnoise = evt
             else:
                 pixnoise = evt[subgroup_name]
-            alg_group_name = 'algorithms'
+
             if (alg_group_name not in pixnoise or
                     alg_name not in pixnoise[alg_group_name]):
                 continue
@@ -375,9 +381,9 @@ class AlgorithmResults(object):
                     # TODO: handle this using energy_esc
                     pass
                 elif g4_dict[key]:
-                    val[n] = g4_object.attrs[h5name_dict[attr]]
+                    val[n] = g4_object.attrs[h5name_dict[key]]
                 else:
-                    val[n] = alg_object.attrs[h5name_dict[attr]]
+                    val[n] = alg_object.attrs[h5name_dict[key]]
             n += 1
 
         for key, val in data_dict.iteritems():
@@ -1974,6 +1980,8 @@ def test_IO():
         # test AlgorithmResults.from_pydict and Uncertainty.from_pydict
         test_from_pydict(ar, ar_pydict, ar_pydict2)
 
+        test_from_files()
+
     def test_trackio_functions():
         ar = generate_random_alg_results(length=1000)
         filename = trackio.generate_random_filename(ext='h5')
@@ -1983,6 +1991,7 @@ def test_IO():
             trackio.write_object_to_hdf5(ar, h5f, 'ar')
         with h5py.File(filename, 'r') as h5f:
             ar_pydict = trackio.read_object_from_hdf5(h5f['ar'])
+        os.remove(filename)
 
         return ar, ar_pydict
 
@@ -2031,7 +2040,39 @@ def test_IO():
         assert len(ar) == 25
 
         # from_hdf5_tracks
-        loadfile2 = ''
+        loadfile2 = ('/media/plimley/TEAM 7B/HTbatch01_pyml/' +
+                     'MultiAngle_HT_56_12_py.h5')
+        with h5py.File(loadfile2, 'r') as h5f:
+            ar1 = AlgorithmResults.from_hdf5_tracks(
+                h5f, subgroup_name='pix10_5noise0', alg_name='matlab HT v1.5')
+            ar2 = AlgorithmResults.from_hdf5_tracks(
+                h5f, subgroup_name='pix10_5noise0', alg_name='python HT v1.5')
+            ar3 = AlgorithmResults.from_hdf5_tracks(
+                h5f, subgroup_name='pix10_5noise0', alg_name='python HT v1.5a')
+            assert len(ar1) == 931
+            assert len(ar2) == 931
+            assert len(ar3) == 931
+            assert ar1.filename[0] == loadfile2
+            assert ar2.filename[0] == loadfile2
+            assert ar3.filename[0] == loadfile2
+
+            ar1 = AlgorithmResults.from_hdf5_tracks(
+                h5f, subgroup_name='pix2_5noise0', alg_name='matlab HT v1.5')
+            ar2 = AlgorithmResults.from_hdf5_tracks(
+                h5f, subgroup_name='pix2_5noise0', alg_name='python HT v1.5')
+            ar3 = AlgorithmResults.from_hdf5_tracks(
+                h5f, subgroup_name='pix2_5noise0', alg_name='python HT v1.5a')
+            assert len(ar1) == 930
+            assert len(ar2) == 930
+            assert len(ar3) == 930
+            assert ar1.filename[0] == loadfile2
+            assert ar2.filename[0] == loadfile2
+            assert ar3.filename[0] == loadfile2
+
+            # TODO: consider adding more tests,
+            #   e.g. after add_default_uncertainties()
+            # pdb.set_trace()
+            # pass
 
     # test_comprehensive() main
     main()
@@ -2053,6 +2094,7 @@ def main():
 
 if __name__ == '__main__':
 
+    import os
     main()
 
     if False:
