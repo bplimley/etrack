@@ -46,7 +46,7 @@ def run_HT_file(h5f, v, dry_run):
         if (pix_list[0] not in this_h5track.keys() or
                 pix_list[1] not in this_h5track.keys()):
             continue
-        for pix_key in pix_list:
+        for _, pix_key in enumerate(pix_list):
             # if not pix_key.startswith('pix'):
             #     continue
 
@@ -60,31 +60,28 @@ def run_HT_file(h5f, v, dry_run):
             if alg_name in this_h5pix['algorithms'].keys():
                 continue
             if v > 3:
-                print('      Reading pydict...', time.ctime())
-            this_dict = trackio.read_object_from_hdf5(
-                this_h5pix, h5_to_pydict=h5_to_pydict)
-            if v > 3:
                 print('      Building Track object...', time.ctime())
-            this_pixobj = trackdata.Track.from_pydict(
-                this_dict, pydict_to_pyobj=pydict_to_pyobj)
+            this_track = trackdata.Track.from_hdf5(
+                this_h5pix,
+                h5_to_pydict=h5_to_pydict, pydict_to_pyobj=pydict_to_pyobj)
             if v > 3:
                 print('      Running HybridTrack...', time.ctime())
             try:
                 HTout, HTinfo = hybridtrack.reconstruct(
-                    this_pixobj.image, pixel_size_um=this_pixobj.pixel_size_um)
+                    this_track.image, pixel_size_um=this_track.pixel_size_um)
                 HTout2, HTinfo2 = hybridtrack2.reconstruct(
-                    this_pixobj.image, pixel_size_um=this_pixobj.pixel_size_um)
-            except hybridtrack.HybridTrackError, hybridtrack2.HybridTrackError:
+                    this_track.image, pixel_size_um=this_track.pixel_size_um)
+            except Exception:  # hybridtrack.HybridTrackError, hybridtrack2.HybridTrackError:
                 if v > 1:
                     print('      HybridTrackError on', track_key,
                           'at', time.ctime())
                 continue
 
-            this_pixobj.add_algorithm(
+            this_track.add_algorithm(
                 alg_name,
                 alpha_deg=HTinfo.alpha_deg, beta_deg=HTinfo.beta_deg,
                 info=HTinfo)
-            this_pixobj.add_algorithm(
+            this_track.add_algorithm(
                 alg_name2,
                 alpha_deg=HTinfo2.alpha_deg, beta_deg=HTinfo2.beta_deg,
                 info=HTinfo2)
@@ -94,11 +91,11 @@ def run_HT_file(h5f, v, dry_run):
             if dry_run:
                 continue
             trackio.write_object_to_hdf5(
-                this_pixobj.algorithms[alg_name],
+                this_track.algorithms[alg_name],
                 this_h5pix['algorithms'], alg_name,
                 pyobj_to_h5=pyobj_to_h5)
             trackio.write_object_to_hdf5(
-                this_pixobj.algorithms[alg_name2],
+                this_track.algorithms[alg_name2],
                 this_h5pix['algorithms'], alg_name2,
                 pyobj_to_h5=pyobj_to_h5)
 
