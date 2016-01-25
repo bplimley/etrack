@@ -66,7 +66,7 @@ class JobHandler(object):
         # work_function (required)
         if not isinstance(work_function, types.FunctionType):
             raise RuntimeError('JobHandler requires a valid work function')
-        self.do_work = work_function
+        self.full_work_function = work_function
 
         # in_place_flag (defaults to False)
         if 'in_place_flag' in kwargs:
@@ -107,6 +107,10 @@ class JobHandler(object):
                 self.default_threads = 1
         else:
             self.default_threads = 1
+
+        # initialize do_work with
+        self.set_work_function(
+            verbosity=self.default_verbosity, dry_run=self.default_dry_run)
 
         # ~~~ path and filename args ~~~
         # loadglob (required)
@@ -164,17 +168,92 @@ class JobHandler(object):
         # TODO
         # .......
 
+    def set_work_function(self, verbosity, dry_run):
+
+        self.do_work = self.get_work_function(
+            verbosity=verbosity, dry_run=dry_run)
+
     def start(self, verbosity=1, dry_run=False, n_threads=None):
 
         if n_threads is None:
             n_threads = self.default_threads
 
-        # args...
+        self.set_work_function(verbosity=verbosity, dry_run=dry_run)
 
         # loadfilelist...
 
         p = multiprocessing.Pool(processes=n_threads)
         p.map(self.do_work, flist)
+
+    def get_work_function(self, verbosity=1, dry_run=False):
+        """
+        Make a version of self.full_work_function, with hidden input args.
+
+        self.full_work_function(filename, verbosity, dry_run)
+        self.short_work_function(filename)
+        """
+
+        def short_work_function(filename):
+            self.full_work_function(filename, verbosity, dry_run)
+
+        return short_work_function
+
+
+def get_filename_function(inputglob, outputglob):
+    """
+    Generate a function which turns a filename of form inputglob into
+    a filename of form outputglob.
+
+    E.g.:
+    func = get_filename_function('asdf_*.h5', 'qwerty_*_done.h5')
+    func('asdf_24_6.h5')
+    # returns 'qwerty_24_6_done.h5'
+    """
+
+    #
+
+
+def split_glob(globname):
+    """
+    Return N+1 parts, where N is the number of asterisks in the glob.
+
+    E.g.:
+    split_glob('asdf_*_*.h5')
+    # ('asdf_', '_', '.h5')
+    """
+
+    parts = []
+    ind = 0
+    while '*' in globname[0:]:
+        ind2 = globname.find('*', ind)
+        parts.append(globname[ind:ind2])
+        ind = ind2 + 1      # don't include the asterisk
+    parts.append(globname[ind:])
+
+    return parts
+
+
+def check_glob(filename, globname):
+    """
+    Return True if filename is of format globname, False otherwise.
+    """
+
+    if not isinstance(globname, str) and not isinstance(globname, unicode):
+        raise RuntimeError('globname must be a string type')
+    if not isinstance(filename, str) and not isinstance(filename, unicode):
+        raise RuntimeError('filename must be a string type')
+
+    parts = split_glob(globname)
+    ind = 0
+    value = True
+    for part in parts:
+        ind2 = filename.find(part, ind)
+        if ind2 == -1:
+            value = False
+            break
+        ind += len(part)
+
+    return value
 
 
 def isstrlike(data):
