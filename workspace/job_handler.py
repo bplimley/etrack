@@ -228,7 +228,39 @@ class JobHandler(object):
         """
 
         def short_work_function(filename):
+            # add verbosity messages!
+
+            # construct the relevant file paths and names
+            if self.doneflag:
+                donefile = os.path.join(
+                    self.donepath, self.donefilefunc(filename))
+            if self.phflag:
+                phfile = os.path.join(
+                    self.phpath, self.phfilefunc(filename))
+            if not self.in_place_flag:
+                savefile = os.path.join(
+                    self.savepath, self.savefilefunc(filename))
+            # skip?
+            if self.doneflag and os.path.exists(donefile):
+                return None
+            if self.phflag and os.path.exists(phfile):
+                return None
+            if not self.in_place_flag and os.path.exists(savefile):
+                return None
+
+            # make placeholder
+            if self.phflag:
+                with open(phfile, 'w') as phf:
+                    phf.write('placeholder')
+            # perform work
             self.full_work_function(filename, verbosity, dry_run)
+
+            # finished
+            if self.doneflag:
+                with open(donefile, 'w') as df:
+                    df.write('completed')
+            if self.phflag:
+                os.remove(phf)
 
         return short_work_function
 
