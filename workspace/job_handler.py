@@ -2,6 +2,7 @@
 
 # Handle file processing jobs.
 
+from __future__ import print_function
 import os
 import glob
 import time
@@ -148,8 +149,9 @@ class JobHandler(object):
         if 'saveglob' in kwargs:
             if not isstrlike(kwargs['saveglob']):
                 raise JobError('saveglob should be a string')
+            self.saveglob = kwargs['saveglob']
             self.savefilefunc = get_filename_function(
-                self.loadglob, kwargs['saveglob'],
+                self.loadglob, self.saveglob,
                 only_numeric=self.only_numeric)
             # savepath (defaults to '')
             if 'savepath' in kwargs:
@@ -164,11 +166,11 @@ class JobHandler(object):
             if 'phglob' in kwargs:
                 if not isstrlike(kwargs['phglob']):
                     raise JobError('phglob should be a string')
-                phglob = kwargs['phglob']
+                self.phglob = kwargs['phglob']
             else:
-                phglob = 'ph_' + self.loadglob
+                self.phglob = 'ph_' + self.loadglob
             self.phfilefunc = get_filename_function(
-                self.loadglob, phglob, only_numeric=self.only_numeric)
+                self.loadglob, self.phglob, only_numeric=self.only_numeric)
             # phpath (defaults to savepath if phglob exists)
             if 'phpath' in kwargs:
                 if not isstrlike(kwargs['phpath']):
@@ -182,11 +184,11 @@ class JobHandler(object):
             if 'doneglob' in kwargs:
                 if not isstrlike(kwargs['doneglob']):
                     raise JobError('doneglob should be a string')
-                doneglob = kwargs['doneglob']
+                self.doneglob = kwargs['doneglob']
             else:
-                doneglob = 'done_' + self.saveglob
+                self.doneglob = 'done_' + self.saveglob
             self.donefilefunc = get_filename_function(
-                self.loadglob, doneglob, only_numeric=self.only_numeric)
+                self.loadglob, self.doneglob, only_numeric=self.only_numeric)
             # donepath (defaults to savepath if doneglob exists)
             if 'donepath' in kwargs:
                 if not isstrlike(kwargs['donepath']):
@@ -195,13 +197,10 @@ class JobHandler(object):
             else:
                 self.donepath = self.savepath
 
-        # TODO
-        # .......
-
     def set_work_function(self, verbosity, dry_run):
 
         self.do_work = self.get_work_function(
-            verbosity=verbosity, dry_run=dry_run)
+            v=verbosity, dry_run=dry_run)
 
     def start(self, verbosity=1, dry_run=False, n_threads=None):
 
@@ -210,16 +209,20 @@ class JobHandler(object):
 
         self.set_work_function(verbosity=verbosity, dry_run=dry_run)
 
-        # TODO:
-        # what about ph files and done files? when do they get written?
-        # in work function somewhere? as a decorator?
+        flist_with_path = glob.glob(os.path.join(self.loadpath, self.loadglob))
+        flist = [os.path.split(f)[-1] for f in flist_with_path]
+        flist.sort()
 
-        # loadfilelist...
+        vprint(verbosity, 2, '~~~ Beginning job with {} threads at {}'.format(
+            n_threads, time.ctime()))
 
-        p = multiprocessing.Pool(processes=n_threads)
-        p.map(self.do_work, flist)
+        if n_threads == 1:
+            [self.do_work(f) for f in flist]
+        else:
+            p = multiprocessing.Pool(processes=n_threads)
+            p.map(self.do_work, flist)
 
-    def get_work_function(self, verbosity=1, dry_run=False):
+    def get_work_function(self, v=1, dry_run=False):
         """
         Make a version of self.full_work_function, with hidden input args.
 
@@ -228,41 +231,117 @@ class JobHandler(object):
         """
 
         def short_work_function(filename):
-            # add verbosity messages!
+            vprint(v, 3, ('Entering work function with v={}, dry_run={}, ' +
+                   'loadfile={}').format(v, dry_run, filename))
 
             # construct the relevant file paths and names
-            if self.doneflag:
-                donefile = os.path.join(
-                    self.donepath, self.donefilefunc(filename))
-            if self.phflag:
-                phfile = os.path.join(
-                    self.phpath, self.phfilefunc(filename))
-            if not self.in_place_flag:
-                savefile = os.path.join(
-                    self.savepath, self.savefilefunc(filename))
+            loadfile = os.path.join(self.loadpath, filename)
+            # if savepath == loadpath,
+            # the glob will try to load test_24_save.h5 as well as test_24.h5.
+            # It will throw a GlobError. Catch it and skip the file.
+            try:
+                if self.doneflag:
+                    donefile = os.path.join(
+                        self.donepath, self.donefilefunc(filename))
+                    vprint(v, 4, 'Donefile is {}'.format(donefile))
+                if self.phflag:
+                    phfile = os.path.join(
+                        self.phpath, self.phfilefunc(filename))
+                    vprint(v, 4, 'Placeholder is {}'.format(phfile))
+                if not self.in_place_flag:
+                    savefile = os.path.join(
+                        self.savepath, self.savefilefunc(filename))
+                    vprint(v, 4, 'Savefile is {}'.format(savefile))
+            except GlobError:
+                vprint(v, 3, 'Glob mismatch on {}, skipping at {}'.format(
+                    filename, time.ctime()))
+                return None
+
             # skip?
             if self.doneflag and os.path.exists(donefile):
+                vprint(v, 2, 'Found donefile {}, skipping at {}'.format(
+                    donefile, time.ctime()))
                 return None
             if self.phflag and os.path.exists(phfile):
+                vprint(v, 2, 'Found placeholder {}, skipping at {}'.format(
+                    phfile, time.ctime()))
                 return None
             if not self.in_place_flag and os.path.exists(savefile):
+                vprint(v, 2, 'Found savefile {}, skipping at {}'.format(
+                    savefile, time.ctime()))
                 return None
 
             # make placeholder
             if self.phflag:
+                vprint(v, 3, 'Creating placeholder {} at {}'.format(
+                    phfile, time.ctime()))
                 with open(phfile, 'w') as phf:
                     phf.write('placeholder')
             # perform work
-            self.full_work_function(filename, verbosity, dry_run)
+            vprint(v, 1, 'Starting {} at {}'.format(loadfile, time.ctime()))
+            if self.in_place_flag:
+                self.full_work_function(loadfile, verbosity=v, dry_run=dry_run)
+            else:
+                self.full_work_function(
+                    loadfile, savefile, verbosity=v, dry_run=dry_run)
 
+            vprint(v, 2, 'Finished {} at {}'.format(loadfile, time.ctime()))
             # finished
             if self.doneflag:
+                vprint(v, 3, 'Writing donefile {} at {}'.format(
+                    donefile, time.ctime()))
                 with open(donefile, 'w') as df:
                     df.write('completed')
             if self.phflag:
-                os.remove(phf)
+                vprint(v, 3, 'Removing placeholder {} at {}'.format(
+                    phfile, time.ctime()))
+                os.remove(phfile)
+
+            vprint(v, 4, 'Exiting work function from {} at {}'.format(
+                loadfile, time.ctime()))
 
         return short_work_function
+
+    def remove_ph_files(self):
+        if self.phflag:
+            rm_list = glob.glob(os.path.join(self.phpath, self.phglob))
+            for f in rm_list:
+                os.remove(f)
+
+    def remove_done_files(self):
+        if self.doneflag:
+            rm_list = glob.glob(os.path.join(self.donepath, self.doneglob))
+            for f in rm_list:
+                os.remove(f)
+
+    def remove_save_files(self, i_am_sure=False):
+        if i_am_sure and not self.in_place_flag:
+            rm_list = glob.glob(os.path.join(self.savepath, self.saveglob))
+            for f in rm_list:
+                os.remove(f)
+        elif not self.in_place_flag:
+            print("If you want me to remove savefiles, " +
+                  "you have to tell me you're sure...")
+
+    def remove_load_files(self, i_am_sure=False, totally_sure=False):
+        if i_am_sure and totally_sure:
+            rm_list = glob.glob(os.path.join(self.savepath, self.saveglob))
+            for f in rm_list:
+                os.remove(f)
+        else:
+            print("If you want me to remove LOADfiles, " +
+                  "you have to tell me you're sure, totally sure...")
+
+    def remove_all_files(self, i_am_sure=False, totally_sure=False):
+        self.remove_ph_files()
+        self.remove_done_files()
+        self.remove_save_files(i_am_sure=i_am_sure)
+        self.remove_load_files(i_am_sure=i_am_sure, totally_sure=totally_sure)
+
+
+def vprint(verbosity, vmin, textstring):
+    if verbosity >= vmin:
+        print(textstring)
 
 
 def get_filename_function(inputglob, outputglob, only_numeric=True):
@@ -279,7 +358,7 @@ def get_filename_function(inputglob, outputglob, only_numeric=True):
     input_split = split_glob(inputglob)
     output_split = split_glob(outputglob)
     if len(input_split) != len(output_split):
-        raise JobError('Input and output globs need same number of *!')
+        raise GlobError('Input and output globs need same number of *!')
 
     def filename_function(filename):
         contents = get_glob_content(filename, inputglob,
@@ -323,24 +402,24 @@ def get_glob_content(filename, globname, only_numeric=True):
     """
 
     if not isstrlike(globname):
-        raise JobError('globname must be a string type')
+        raise GlobError('globname must be a string type')
     if not isstrlike(filename):
-        raise JobError('filename must be a string type')
+        raise GlobError('filename must be a string type')
 
     parts = split_glob(globname)
 
     if not filename.startswith(parts[0]):
-        raise JobError("filename doesn't match glob")
+        raise GlobError("filename doesn't match glob")
     content = []
     ind = len(parts[0])
 
     for part in parts[1:]:
         ind2 = filename.find(part, ind)
         if ind2 == -1:
-            raise JobError("filename doesn't match glob")
+            raise GlobError("filename doesn't match glob")
         content.append(filename[ind:ind2])
         if only_numeric and not content[-1].isdigit():
-            raise JobError("filename doesn't match glob")
+            raise GlobError("filename doesn't match glob")
         ind = ind2 + len(part)
 
     return content
@@ -353,7 +432,7 @@ def put_glob_content(contents, globname):
 
     parts = split_glob(globname)
     if len(contents) + 1 != len(parts):
-        raise JobError("contents don't match number of * in globname")
+        raise GlobError("contents don't match number of * in globname")
 
     out = parts[0]
     for content, part in zip(contents, parts[1:]):
@@ -371,6 +450,10 @@ def isstrlike(data):
 
 
 class JobError(Exception):
+    pass
+
+
+class GlobError(Exception):
     pass
 
 
@@ -403,7 +486,7 @@ def test_get_glob_content():
     filename = 'MultiAngle_24_12.h5'
     try:
         c = get_glob_content(filename, globname)
-    except JobError:
+    except GlobError:
         pass
     else:
         raise AssertionError('get_glob_content() failed to raise error')
@@ -412,7 +495,7 @@ def test_get_glob_content():
     filename = 'MultiAngle_24_12.h5'
     try:
         c = get_glob_content(filename, globname)
-    except JobError:
+    except GlobError:
         pass
     else:
         raise AssertionError('get_glob_content() failed to raise error')
@@ -421,7 +504,7 @@ def test_get_glob_content():
     filename = 'MultiAngle_24_12.h5'
     try:
         c = get_glob_content(filename, globname)
-    except JobError:
+    except GlobError:
         pass
     else:
         raise AssertionError('get_glob_content() failed to raise error')
@@ -431,7 +514,7 @@ def test_get_glob_content():
     filename = 'MultiAngle_24_12_.h5'
     try:
         c = get_glob_content(filename, globname)
-    except JobError:
+    except GlobError:
         pass
     else:
         raise AssertionError('get_glob_content() failed to raise error')
@@ -462,7 +545,7 @@ def test_put_glob_contents():
     contents = ['24', '12', 'extra']
     try:
         put_glob_content(contents, globname)
-    except JobError:
+    except GlobError:
         pass
     else:
         raise AssertionError('put_glob_contents() failed to raise error')
@@ -486,9 +569,73 @@ def test_get_filename_function():
     assert func(inputfilename) == 'finished_24_and_12_asdf.h5'
 
 
+def test_work(loadfile, savefile, verbosity=1, dry_run=False):
+    print(
+        '+ test_work loadfile={} savefile={} verbosity={} dry_run={} +'.format(
+            loadfile, savefile, verbosity, dry_run))
+    sleeptime = 4 + np.random.random() * 4
+    time.sleep(sleeptime)
+    with open(savefile, 'w') as s:
+        s.write(' ')
+    print(
+        '/ test_work loadfile={} savefile={} verbosity={} dry_run={} /'.format(
+            loadfile, savefile, verbosity, dry_run))
+
+
+def create_test_files(writepath, writeglob, n):
+    if not os.path.isdir(writepath):
+        os.mkdir(writepath)
+    for i in range(n):
+        filename = os.path.join(
+            writepath, put_glob_content([str(i)], writeglob))
+        with open(filename, 'w') as f:
+            f.write(' ')
+
+
+def remove_test_files(rmpath, rmglob, n):
+    for i in range(n):
+        filename = os.path.join(rmpath, put_glob_content(str(i), rmglob))
+        os.remove(filename)
+
+
+def test_run_job():
+    v = 4
+
+    # single thread, separate dirs, default settings
+    test_job('./testload', 'test_*.h5',
+             './testsave', 'test_*_save.h5',
+             20, {},
+             {'verbosity': v})
+
+    #
+
+
+def test_job(loadpath, loadglob,
+             savepath, saveglob,
+             n, handler_kwargs, start_kwargs):
+    # setup
+    create_test_files(loadpath, loadglob, n)
+    create_test_files(savepath, saveglob, 0)
+
+    # "real work"
+    jh = JobHandler(
+        test_work,
+        loadpath=loadpath, loadglob=loadglob,
+        savepath=savepath, saveglob=saveglob,
+        **handler_kwargs)
+    jh.start(**start_kwargs)
+
+    # teardown
+    jh.remove_all_files(i_am_sure=True, totally_sure=True)
+
+
 if __name__ == '__main__':
+    import numpy as np
+
     test_isstrlike()
     test_split_glob()
     test_get_glob_content()
     test_put_glob_contents()
     test_get_filename_function()
+
+    test_run_job()
