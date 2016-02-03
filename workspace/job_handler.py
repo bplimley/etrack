@@ -7,6 +7,7 @@ import os
 import glob
 import time
 import multiprocessing
+import numpy as np
 import ipdb as pdb
 import types
 
@@ -31,7 +32,6 @@ class JobHandler(object):
         if donepath/doneglob are not given, then donepath = savepath and
         doneglob = 'done_' + saveglob
       verbosity: default verbosity, passed to work_function (int) (default: 1)
-      dry_run: default state of doing a dry-run (bool) (default: False)
       n_threads: default number of processes to run (multiprocessing) (int)
         (default: 1)
       only_numeric: flag for requiring * in globs to be only filled by digits
@@ -111,12 +111,6 @@ class JobHandler(object):
         else:
             self.default_verbosity = 1
 
-        # dry_run (defaults to False)
-        if 'dry_run' in kwargs:
-            self.default_dry_run = bool(kwargs['dry_run'])
-        else:
-            self.default_dry_run = False
-
         # n_threads (defaults to 1)
         if 'n_threads' in kwargs:
             try:
@@ -128,8 +122,7 @@ class JobHandler(object):
             self.default_threads = 1
 
         # initialize do_work with defaults
-        self.set_work_function(
-            verbosity=self.default_verbosity, dry_run=self.default_dry_run)
+        self.set_work_function(verbosity=self.default_verbosity)
 
         # ~~~ path and filename args ~~~
         # loadglob (required)
@@ -197,13 +190,14 @@ class JobHandler(object):
             else:
                 self.donepath = self.savepath
 
-    def set_work_function(self, verbosity, dry_run):
+    def set_work_function(self, verbosity, dry_run=False):
 
-        self.do_work = self.get_work_function(
-            v=verbosity, dry_run=dry_run)
+        self.do_work = self.get_work_function(v=verbosity, dry_run=dry_run)
 
-    def start(self, verbosity=1, dry_run=False, n_threads=None):
+    def start(self, verbosity=None, dry_run=False, n_threads=None):
 
+        if verbosity is None:
+            verbosity = self.default_verbosity
         if n_threads is None:
             n_threads = self.default_threads
 
@@ -266,17 +260,24 @@ class JobHandler(object):
                 vprint(v, 2, 'Found placeholder {}, skipping at {}'.format(
                     phfile, time.ctime()))
                 return None
-            if not self.in_place_flag and os.path.exists(savefile):
+            if (not self.in_place_flag and not self.doneflag
+                    and os.path.exists(savefile)):
+                # savefile only causes skip if not using donefiles
                 vprint(v, 2, 'Found savefile {}, skipping at {}'.format(
                     savefile, time.ctime()))
                 return None
 
             # make placeholder
             if self.phflag:
-                vprint(v, 3, 'Creating placeholder {} at {}'.format(
-                    phfile, time.ctime()))
-                with open(phfile, 'w') as phf:
-                    phf.write('placeholder')
+                if dry_run:
+                    vprint(v, 3,
+                           '[dry_run] Creating placeholder {} at {}'.format(
+                               phfile, time.ctime()))
+                else:
+                    vprint(v, 3, 'Creating placeholder {} at {}'.format(
+                        phfile, time.ctime()))
+                    with open(phfile, 'w') as phf:
+                        phf.write('placeholder')
             # perform work
             vprint(v, 1, 'Starting {} at {}'.format(loadfile, time.ctime()))
             if self.in_place_flag:
@@ -285,17 +286,26 @@ class JobHandler(object):
                 self.full_work_function(
                     loadfile, savefile, verbosity=v, dry_run=dry_run)
 
-            vprint(v, 2, 'Finished {} at {}'.format(loadfile, time.ctime()))
+            vprint(v, 2, 'Finishing {} at {}'.format(loadfile, time.ctime()))
             # finished
             if self.doneflag:
-                vprint(v, 3, 'Writing donefile {} at {}'.format(
-                    donefile, time.ctime()))
-                with open(donefile, 'w') as df:
-                    df.write('completed')
+                if dry_run:
+                    vprint(v, 3, '[dry_run] Writing donefile {} at {}'.format(
+                        donefile, time.ctime()))
+                else:
+                    vprint(v, 3, 'Writing donefile {} at {}'.format(
+                        donefile, time.ctime()))
+                    with open(donefile, 'w') as df:
+                        df.write('completed')
             if self.phflag:
-                vprint(v, 3, 'Removing placeholder {} at {}'.format(
-                    phfile, time.ctime()))
-                os.remove(phfile)
+                if dry_run:
+                    vprint(v, 3,
+                           '[dry_run] Removing placeholder {} at {}'.format(
+                               phfile, time.ctime()))
+                else:
+                    vprint(v, 3, 'Removing placeholder {} at {}'.format(
+                        phfile, time.ctime()))
+                    os.remove(phfile)
 
             vprint(v, 4, 'Exiting work function from {} at {}'.format(
                 loadfile, time.ctime()))
@@ -325,7 +335,7 @@ class JobHandler(object):
 
     def remove_load_files(self, i_am_sure=False, totally_sure=False):
         if i_am_sure and totally_sure:
-            rm_list = glob.glob(os.path.join(self.savepath, self.saveglob))
+            rm_list = glob.glob(os.path.join(self.loadpath, self.loadglob))
             for f in rm_list:
                 os.remove(f)
         else:
@@ -569,17 +579,38 @@ def test_get_filename_function():
     assert func(inputfilename) == 'finished_24_and_12_asdf.h5'
 
 
-def test_work(loadfile, savefile, verbosity=1, dry_run=False):
-    print(
-        '+ test_work loadfile={} savefile={} verbosity={} dry_run={} +'.format(
-            loadfile, savefile, verbosity, dry_run))
-    sleeptime = 4 + np.random.random() * 4
-    time.sleep(sleeptime)
-    with open(savefile, 'w') as s:
-        s.write(' ')
-    print(
-        '/ test_work loadfile={} savefile={} verbosity={} dry_run={} /'.format(
-            loadfile, savefile, verbosity, dry_run))
+def get_test_work_function(mintime=4, maxtime=5,
+                           myverbosity=False, nosave=False):
+
+    if nosave:
+        def test_work(loadfile, verbosity=1, dry_run=False):
+            if myverbosity:
+                print(('+ test_work loadfile={} verbosity={} ' +
+                       'dry_run={} +').format(
+                      loadfile, verbosity, dry_run))
+            sleeptime = mintime + np.random.random() * (maxtime - mintime)
+            time.sleep(sleeptime)
+            if myverbosity:
+                print(('/ test_work loadfile={} verbosity={} ' +
+                       'dry_run={} /').format(
+                      loadfile, verbosity, dry_run))
+    else:
+        def test_work(loadfile, savefile, verbosity=1, dry_run=False):
+            if myverbosity:
+                print(('+ test_work loadfile={} savefile={} verbosity={} ' +
+                       'dry_run={} +').format(
+                      loadfile, savefile, verbosity, dry_run))
+            sleeptime = mintime + np.random.random() * (maxtime - mintime)
+            time.sleep(sleeptime)
+            if not dry_run:
+                with open(savefile, 'w') as s:
+                    s.write(' ')
+            if myverbosity:
+                print(('/ test_work loadfile={} savefile={} verbosity={} ' +
+                       'dry_run={} /').format(
+                      loadfile, savefile, verbosity, dry_run))
+
+    return test_work
 
 
 def create_test_files(writepath, writeglob, n):
@@ -588,7 +619,16 @@ def create_test_files(writepath, writeglob, n):
     for i in range(n):
         filename = os.path.join(
             writepath, put_glob_content([str(i)], writeglob))
-        with open(filename, 'w') as f:
+        pytouch(filename)
+
+
+def pytouch(flist):
+    if isinstance(flist, list) or isinstance(flist, tuple):
+        for fpath in flist:
+            with open(fpath, 'w') as f:
+                f.write(' ')
+    elif isstrlike(flist):
+        with open(flist, 'w') as f:
             f.write(' ')
 
 
@@ -598,44 +638,218 @@ def remove_test_files(rmpath, rmglob, n):
         os.remove(filename)
 
 
-def test_run_job():
-    v = 4
+def test_run_job_single():
+    # single threaded
 
-    # single thread, separate dirs, default settings
-    test_job('./testload', 'test_*.h5',
-             './testsave', 'test_*_save.h5',
-             20, {},
-             {'verbosity': v})
+    def test1():
+        # separate dirs, default settings, starting clean
+        jh = test_job(do_work,
+                      './testload', 'test_*.h5',
+                      './testsave', 'test_*_save.h5',
+                      n, {'verbosity': v})
+        t1 = time.time()
+        jh.start(n_threads=n_threads)
+        dt = time.time() - t1
+        assert dt > n / n_threads * mintime
+        assert dt < n / n_threads * maxtime
+        jh.remove_all_files(i_am_sure=True, totally_sure=True)
 
-    #
+    def test2():
+        # separate dirs, default settings, starting with save and ph
+        jh = test_job(do_work,
+                      './testload', 'test_*.h5',
+                      './testsave', 'test_*_save.h5',
+                      n, {'verbosity': v})
+        if n_threads == 1:
+            pytouch(['./testsave/test_1_save.h5', './testsave/test_2_save.h5',
+                     './testsave/ph_test_7.h5'])
+        elif n_threads == 4:
+            pass
+        t1 = time.time()
+        jh.start(n_threads=n_threads)
+        dt = time.time() - t1
+        if n_threads == 1:
+            assert dt > (n - 3) * mintime
+            assert dt < (n - 3) * maxtime
+        elif n_threads == 4:
+            pass
+        jh.remove_all_files(i_am_sure=True, totally_sure=True)
+
+    def test3():
+        # same dir, defaults, starting clean
+        jh = test_job(do_work,
+                      './testload', 'test_*.h5',
+                      './testload', 'test_*_save.h5',
+                      n, {'verbosity': v})
+        t1 = time.time()
+        jh.start(n_threads=n_threads)
+        dt = time.time() - t1
+        assert dt > n / n_threads * mintime
+        assert dt < n / n_threads * maxtime
+        jh.remove_all_files(i_am_sure=True, totally_sure=True)
+
+    def test4():
+        # no ph, start with save (and ph)
+        jh = test_job(do_work,
+                      './testload', 'test_*.h5',
+                      './testsave', 'test_*_save.h5',
+                      n, {'verbosity': v, 'phflag': False})
+        if n_threads == 1:
+            pytouch(['./testsave/test_1_save.h5', './testsave/test_2_save.h5',
+                     './testsave/ph_test_7.h5'])
+        elif n_threads == 4:
+            pass
+        t1 = time.time()
+        jh.start(n_threads=n_threads)
+        dt = time.time() - t1
+        # the created ph shouldn't cause a skip
+        if n_threads == 1:
+            assert dt > (n - 2) * mintime
+            assert dt < (n - 2) * maxtime
+        elif n_threads == 4:
+            pass
+        jh.remove_all_files(i_am_sure=True, totally_sure=True)
+
+    def test5():
+        # donefiles, start with save and ph and done
+        jh = test_job(do_work,
+                      './testload', 'test_*.h5',
+                      './testsave', 'test_*_save.h5',
+                      n, {'verbosity': v, 'doneflag': True})
+        if n_threads == 1:
+            pytouch(['./testsave/test_1_save.h5',
+                     './testsave/test_2_save.h5',
+                     './testsave/test_3_save.h5',
+                     './testsave/test_4_save.h5',
+                     './testsave/ph_test_6.h5',
+                     './testsave/ph_test_7.h5',
+                     './testsave/done_test_0_save.h5'])
+        elif n_threads == 4:
+            pass
+        t1 = time.time()
+        jh.start(n_threads=n_threads)
+        dt = time.time() - t1
+        # created savefiles shouldn't be skipped
+        if n_threads == 1:
+            assert dt > (n / n_threads - 3) * mintime
+            assert dt < (n / n_threads - 3) * maxtime
+        elif n_threads == 4:
+            pass
+        jh.remove_all_files(i_am_sure=True, totally_sure=True)
+
+    def test6():
+        # dry_run
+        jh = test_job(do_work,
+                      './testload', 'test_*.h5',
+                      './testsave', 'test_*_save.h5',
+                      n, {'verbosity': v})
+        t1 = time.time()
+        jh.start(dry_run=True, n_threads=n_threads)
+        dt = time.time() - t1
+        assert dt > n / n_threads * mintime
+        assert dt < n / n_threads * maxtime
+        assert not os.path.exists('./testsave/test_3_save.h5')
+        jh.remove_all_files(i_am_sure=True, totally_sure=True)
+
+    def test7():
+        # in place. start with save and ph and done
+        jh = test_job(do_work,
+                      './testload', 'test_*.h5',
+                      './testsave', 'test_*_save.h5',
+                      n, {'verbosity': v, 'in_place_flag': True,
+                          'doneflag': True})
+        if n_threads == 1:
+            pytouch(['./testsave/test_1_save.h5',
+                     './testsave/test_2_save.h5',
+                     './testsave/test_3_save.h5',
+                     './testsave/test_4_save.h5',
+                     './testsave/ph_test_6.h5',
+                     './testsave/ph_test_7.h5',
+                     './testsave/done_test_0_save.h5'])
+        elif n_threads == 4:
+            pass
+        t1 = time.time()
+        jh.start(n_threads=n_threads)
+        dt = time.time() - t1
+        # created savefiles shouldn't be skipped
+        if n_threads == 1:
+            assert dt > (n / n_threads - 3) * mintime
+            assert dt < (n / n_threads - 3) * maxtime
+        elif n_threads == 4:
+            pass
+        jh.remove_all_files(i_am_sure=True, totally_sure=True)
+
+    # single threaded
+    n_threads = 1
+    v = 2
+    n = 10
+    mintime = 4
+    maxtime = 4.25
+    # check that the number of files processed is unambiguous (single thread)
+    assert (maxtime - mintime) * n < mintime
+    do_work = get_test_work_function(mintime=mintime, maxtime=maxtime)
+
+    # pre-clean, in case last run was interrupted
+    jh = test_job(do_work,
+                  './testload', 'test_*.h5',
+                  './testsave', 'test_*_save.h5',
+                  n, {})
+    jh.remove_all_files(i_am_sure=True, totally_sure=True)
+    test1()
+    test2()
+    test3()
+    test4()
+    test5()
+    test6()
+    do_work = get_test_work_function(
+        mintime=mintime, maxtime=maxtime, nosave=True)
+    test7()
+
+    # multi threaded
+    n_threads = 4
+    n = 20
+    # check that the number of files processed is unambiguous (multi thread)
+    assert (maxtime - mintime) * (float(n) / n_threads) < mintime
+    # pre-clean, in case last run was interrupted
+    jh = test_job(do_work,
+                  './testload', 'test_*.h5',
+                  './testsave', 'test_*_save.h5',
+                  n, {})
+    jh.remove_all_files(i_am_sure=True, totally_sure=True)
+    test1()
+    test2()
+    test3()
+    test4()
+    test5()
+    test6()
+    do_work = get_test_work_function(
+        mintime=mintime, maxtime=maxtime, nosave=True)
+    test7()
 
 
-def test_job(loadpath, loadglob,
+def test_job(work_function, loadpath, loadglob,
              savepath, saveglob,
-             n, handler_kwargs, start_kwargs):
+             n, handler_kwargs):
     # setup
+    print(' ')
     create_test_files(loadpath, loadglob, n)
     create_test_files(savepath, saveglob, 0)
 
     # "real work"
     jh = JobHandler(
-        test_work,
+        work_function,
         loadpath=loadpath, loadglob=loadglob,
         savepath=savepath, saveglob=saveglob,
         **handler_kwargs)
-    jh.start(**start_kwargs)
 
-    # teardown
-    jh.remove_all_files(i_am_sure=True, totally_sure=True)
+    return jh
 
 
 if __name__ == '__main__':
-    import numpy as np
-
     test_isstrlike()
     test_split_glob()
     test_get_glob_content()
     test_put_glob_contents()
     test_get_filename_function()
 
-    test_run_job()
+    test_run_job_single()
