@@ -224,7 +224,7 @@ class JobHandler(object):
         self.short_work_function(filename)
         """
 
-        def short_work_function(filename):
+        def short_work_function(filename, v=v, dry_run=dry_run):
             vprint(v, 3, ('Entering work function with v={}, dry_run={}, ' +
                    'loadfile={}').format(v, dry_run, filename))
 
@@ -638,10 +638,10 @@ def remove_test_files(rmpath, rmglob, n):
         os.remove(filename)
 
 
-def test_run_job_single():
-    # single threaded
+def test_run_job():
 
     def test1():
+        # pdb.set_trace()
         # separate dirs, default settings, starting clean
         jh = test_job(do_work,
                       './testload', 'test_*.h5',
@@ -664,7 +664,14 @@ def test_run_job_single():
             pytouch(['./testsave/test_1_save.h5', './testsave/test_2_save.h5',
                      './testsave/ph_test_7.h5'])
         elif n_threads == 4:
-            pass
+            pytouch(['./testsave/test_1_save.h5',
+                     './testsave/test_2_save.h5',
+                     './testsave/test_3_save.h5',
+                     './testsave/test_4_save.h5',
+                     './testsave/ph_test_7.h5',
+                     './testsave/ph_test_8.h5',
+                     './testsave/ph_test_9.h5',
+                     './testsave/ph_test_10.h5'])
         t1 = time.time()
         jh.start(n_threads=n_threads)
         dt = time.time() - t1
@@ -672,7 +679,8 @@ def test_run_job_single():
             assert dt > (n - 3) * mintime
             assert dt < (n - 3) * maxtime
         elif n_threads == 4:
-            pass
+            assert dt > (n - 8) / n_threads * mintime
+            assert dt < (n - 8) / n_threads * maxtime
         jh.remove_all_files(i_am_sure=True, totally_sure=True)
 
     def test3():
@@ -698,7 +706,14 @@ def test_run_job_single():
             pytouch(['./testsave/test_1_save.h5', './testsave/test_2_save.h5',
                      './testsave/ph_test_7.h5'])
         elif n_threads == 4:
-            pass
+            pytouch(['./testsave/test_1_save.h5',
+                     './testsave/test_2_save.h5',
+                     './testsave/test_3_save.h5',
+                     './testsave/test_4_save.h5',
+                     './testsave/ph_test_7.h5',
+                     './testsave/ph_test_8.h5',
+                     './testsave/ph_test_9.h5',
+                     './testsave/ph_test_10.h5'])
         t1 = time.time()
         jh.start(n_threads=n_threads)
         dt = time.time() - t1
@@ -707,7 +722,8 @@ def test_run_job_single():
             assert dt > (n - 2) * mintime
             assert dt < (n - 2) * maxtime
         elif n_threads == 4:
-            pass
+            assert dt > (n - 4) / n_threads * mintime
+            assert dt < (n - 4) / n_threads * maxtime
         jh.remove_all_files(i_am_sure=True, totally_sure=True)
 
     def test5():
@@ -725,16 +741,28 @@ def test_run_job_single():
                      './testsave/ph_test_7.h5',
                      './testsave/done_test_0_save.h5'])
         elif n_threads == 4:
-            pass
+            pytouch(['./testsave/test_1_save.h5',
+                     './testsave/test_2_save.h5',
+                     './testsave/test_3_save.h5',
+                     './testsave/test_4_save.h5',
+                     './testsave/done_test_12_save.h5',
+                     './testsave/done_test_13_save.h5',
+                     './testsave/done_test_14_save.h5',
+                     './testsave/done_test_15_save.h5',
+                     './testsave/ph_test_7.h5',
+                     './testsave/ph_test_8.h5',
+                     './testsave/ph_test_9.h5',
+                     './testsave/ph_test_10.h5'])
         t1 = time.time()
         jh.start(n_threads=n_threads)
         dt = time.time() - t1
         # created savefiles shouldn't be skipped
         if n_threads == 1:
-            assert dt > (n / n_threads - 3) * mintime
-            assert dt < (n / n_threads - 3) * maxtime
+            assert dt > (n - 3) * mintime
+            assert dt < (n - 3) * maxtime
         elif n_threads == 4:
-            pass
+            assert dt > (n - 8) / n_threads * mintime
+            assert dt < (n - 8) / n_threads * maxtime
         jh.remove_all_files(i_am_sure=True, totally_sure=True)
 
     def test6():
@@ -767,7 +795,18 @@ def test_run_job_single():
                      './testsave/ph_test_7.h5',
                      './testsave/done_test_0_save.h5'])
         elif n_threads == 4:
-            pass
+            pytouch(['./testsave/test_1_save.h5',
+                     './testsave/test_2_save.h5',
+                     './testsave/test_3_save.h5',
+                     './testsave/test_4_save.h5',
+                     './testsave/done_test_12_save.h5',
+                     './testsave/done_test_13_save.h5',
+                     './testsave/done_test_14_save.h5',
+                     './testsave/done_test_15_save.h5',
+                     './testsave/ph_test_7.h5',
+                     './testsave/ph_test_8.h5',
+                     './testsave/ph_test_9.h5',
+                     './testsave/ph_test_10.h5'])
         t1 = time.time()
         jh.start(n_threads=n_threads)
         dt = time.time() - t1
@@ -776,7 +815,8 @@ def test_run_job_single():
             assert dt > (n / n_threads - 3) * mintime
             assert dt < (n / n_threads - 3) * maxtime
         elif n_threads == 4:
-            pass
+            assert dt > (n - 8) / n_threads * mintime
+            assert dt < (n - 8) / n_threads * maxtime
         jh.remove_all_files(i_am_sure=True, totally_sure=True)
 
     # single threaded
@@ -795,15 +835,15 @@ def test_run_job_single():
                   './testsave', 'test_*_save.h5',
                   n, {})
     jh.remove_all_files(i_am_sure=True, totally_sure=True)
-    test1()
-    test2()
-    test3()
-    test4()
-    test5()
-    test6()
+    # test1()
+    # test2()
+    # test3()
+    # test4()
+    # test5()
+    # test6()
     do_work = get_test_work_function(
         mintime=mintime, maxtime=maxtime, nosave=True)
-    test7()
+    # test7()
 
     # multi threaded
     n_threads = 4
@@ -811,6 +851,7 @@ def test_run_job_single():
     # check that the number of files processed is unambiguous (multi thread)
     assert (maxtime - mintime) * (float(n) / n_threads) < mintime
     # pre-clean, in case last run was interrupted
+    do_work = get_test_work_function(mintime=mintime, maxtime=maxtime)
     jh = test_job(do_work,
                   './testload', 'test_*.h5',
                   './testsave', 'test_*_save.h5',
@@ -852,4 +893,4 @@ if __name__ == '__main__':
     test_put_glob_contents()
     test_get_filename_function()
 
-    test_run_job_single()
+    test_run_job()
