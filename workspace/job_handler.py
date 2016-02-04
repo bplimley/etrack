@@ -10,6 +10,7 @@ import multiprocessing
 import numpy as np
 import ipdb as pdb
 import types
+import functools
 
 
 class JobHandler(object):
@@ -68,7 +69,7 @@ class JobHandler(object):
         # work_function (required)
         if not isinstance(work_function, types.FunctionType):
             raise JobError('JobHandler requires a valid work function')
-        self.full_work_function = work_function
+        self.vanilla_work_function = work_function
 
         # in_place_flag (defaults to False)
         if 'in_place_flag' in kwargs:
@@ -121,9 +122,6 @@ class JobHandler(object):
         else:
             self.default_threads = 1
 
-        # initialize do_work with defaults
-        self.set_work_function(verbosity=self.default_verbosity)
-
         # ~~~ path and filename args ~~~
         # loadglob (required)
         if not isstrlike(kwargs['loadglob']):
@@ -153,6 +151,9 @@ class JobHandler(object):
                 self.savepath = kwargs['savepath']
             else:
                 self.savepath = self.loadpath
+        else:
+            self.savepath = None
+            self.savefilefun = None
 
         if self.phflag:
             # phglob
@@ -171,6 +172,9 @@ class JobHandler(object):
                 self.phpath = kwargs['phpath']
             else:
                 self.phpath = self.savepath
+        else:
+            self.phpath = None
+            self.phfilefunc = None
 
         if self.doneflag:
             # doneglob
@@ -189,10 +193,9 @@ class JobHandler(object):
                 self.donepath = kwargs['donepath']
             else:
                 self.donepath = self.savepath
-
-    def set_work_function(self, verbosity, dry_run=False):
-
-        self.do_work = self.get_work_function(v=verbosity, dry_run=dry_run)
+        else:
+            self.donepath = None
+            self.donefilefunc = None
 
     def start(self, verbosity=None, dry_run=False, n_threads=None):
 
@@ -201,7 +204,15 @@ class JobHandler(object):
         if n_threads is None:
             n_threads = self.default_threads
 
-        self.set_work_function(verbosity=verbosity, dry_run=dry_run)
+        do_work = functools.partial(
+            enhanced_work_function,
+            vanilla_work_function=self.vanilla_work_function,
+            v=verbosity, dry_run=dry_run,
+            loadpath=self.loadpath, in_place_flag=self.in_place_flag,
+            savefilefunc=self.savefilefunc, savepath=self.savepath,
+            doneflag=self.doneflag,
+            donefilefunc=self.donefilefunc, donepath=self.donepath,
+            phflag=self.phflag, phfilefunc=self.phfilefunc, phpath=self.phpath)
 
         flist_with_path = glob.glob(os.path.join(self.loadpath, self.loadglob))
         flist = [os.path.split(f)[-1] for f in flist_with_path]
@@ -211,106 +222,10 @@ class JobHandler(object):
             n_threads, time.ctime()))
 
         if n_threads == 1:
-            [self.do_work(f) for f in flist]
+            [do_work(f) for f in flist]
         else:
             p = multiprocessing.Pool(processes=n_threads)
-            p.map(self.do_work, flist)
-
-    def get_work_function(self, v=1, dry_run=False):
-        """
-        Make a version of self.full_work_function, with hidden input args.
-
-        self.full_work_function(filename, verbosity, dry_run)
-        self.short_work_function(filename)
-        """
-
-        def short_work_function(filename, v=v, dry_run=dry_run):
-            vprint(v, 3, ('Entering work function with v={}, dry_run={}, ' +
-                   'loadfile={}').format(v, dry_run, filename))
-
-            # construct the relevant file paths and names
-            loadfile = os.path.join(self.loadpath, filename)
-            # if savepath == loadpath,
-            # the glob will try to load test_24_save.h5 as well as test_24.h5.
-            # It will throw a GlobError. Catch it and skip the file.
-            try:
-                if self.doneflag:
-                    donefile = os.path.join(
-                        self.donepath, self.donefilefunc(filename))
-                    vprint(v, 4, 'Donefile is {}'.format(donefile))
-                if self.phflag:
-                    phfile = os.path.join(
-                        self.phpath, self.phfilefunc(filename))
-                    vprint(v, 4, 'Placeholder is {}'.format(phfile))
-                if not self.in_place_flag:
-                    savefile = os.path.join(
-                        self.savepath, self.savefilefunc(filename))
-                    vprint(v, 4, 'Savefile is {}'.format(savefile))
-            except GlobError:
-                vprint(v, 3, 'Glob mismatch on {}, skipping at {}'.format(
-                    filename, time.ctime()))
-                return None
-
-            # skip?
-            if self.doneflag and os.path.exists(donefile):
-                vprint(v, 2, 'Found donefile {}, skipping at {}'.format(
-                    donefile, time.ctime()))
-                return None
-            if self.phflag and os.path.exists(phfile):
-                vprint(v, 2, 'Found placeholder {}, skipping at {}'.format(
-                    phfile, time.ctime()))
-                return None
-            if (not self.in_place_flag and not self.doneflag
-                    and os.path.exists(savefile)):
-                # savefile only causes skip if not using donefiles
-                vprint(v, 2, 'Found savefile {}, skipping at {}'.format(
-                    savefile, time.ctime()))
-                return None
-
-            # make placeholder
-            if self.phflag:
-                if dry_run:
-                    vprint(v, 3,
-                           '[dry_run] Creating placeholder {} at {}'.format(
-                               phfile, time.ctime()))
-                else:
-                    vprint(v, 3, 'Creating placeholder {} at {}'.format(
-                        phfile, time.ctime()))
-                    with open(phfile, 'w') as phf:
-                        phf.write('placeholder')
-            # perform work
-            vprint(v, 1, 'Starting {} at {}'.format(loadfile, time.ctime()))
-            if self.in_place_flag:
-                self.full_work_function(loadfile, verbosity=v, dry_run=dry_run)
-            else:
-                self.full_work_function(
-                    loadfile, savefile, verbosity=v, dry_run=dry_run)
-
-            vprint(v, 2, 'Finishing {} at {}'.format(loadfile, time.ctime()))
-            # finished
-            if self.doneflag:
-                if dry_run:
-                    vprint(v, 3, '[dry_run] Writing donefile {} at {}'.format(
-                        donefile, time.ctime()))
-                else:
-                    vprint(v, 3, 'Writing donefile {} at {}'.format(
-                        donefile, time.ctime()))
-                    with open(donefile, 'w') as df:
-                        df.write('completed')
-            if self.phflag:
-                if dry_run:
-                    vprint(v, 3,
-                           '[dry_run] Removing placeholder {} at {}'.format(
-                               phfile, time.ctime()))
-                else:
-                    vprint(v, 3, 'Removing placeholder {} at {}'.format(
-                        phfile, time.ctime()))
-                    os.remove(phfile)
-
-            vprint(v, 4, 'Exiting work function from {} at {}'.format(
-                loadfile, time.ctime()))
-
-        return short_work_function
+            p.map(do_work, flist)
 
     def remove_ph_files(self):
         if self.phflag:
@@ -347,6 +262,165 @@ class JobHandler(object):
         self.remove_done_files()
         self.remove_save_files(i_am_sure=i_am_sure)
         self.remove_load_files(i_am_sure=i_am_sure, totally_sure=totally_sure)
+
+
+def do_job(
+        vanilla_work_function, loadpath, loadglob,
+        v=1, dry_run=False, only_numeric=True,
+        in_place_flag=False, savepath=None, saveglob=None,
+        doneflag=None, donepath=None, doneglob=None,
+        phflag=True, phpath=None, phglob=None,
+        n_threads=multiprocessing.cpu_count()):
+
+    if not isinstance(vanilla_work_function, types.FunctionType):
+        raise JobError('requires a valid work function')
+
+    if loadpath is None:
+        loadpath = ''
+    elif not isstrlike(loadpath):
+        raise JobError('loadpath should be a string')
+    if not isstrlike(loadglob):
+        raise JobError('loadglob should be a string')
+
+    if not in_place_flag and (saveglob is None or savepath is None):
+        raise JobError(
+            'JobHandler requires a savepath and saveglob unless ' +
+            'in_place_flag is True')
+
+    if doneflag is None and doneglob is not None:
+        doneflag = True
+    elif doneflag is None:
+        doneflag = False
+    if doneflag and donepath is None:
+        donepath = savepath
+    if doneflag and doneglob is None:
+        doneglob = 'done_' + saveglob
+
+    if phflag and phpath is None:
+        phpath = savepath
+    if phflag and phglob is None:
+        phglob = 'ph_' + loadglob
+
+    if not in_place_flag:
+        savefilefunc = get_filename_function(loadglob, saveglob,
+                                             only_numeric=only_numeric)
+    else:
+        savefilefunc = None
+    if doneflag:
+        donefilefunc = get_filename_function(loadglob, doneglob,
+                                             only_numeric=only_numeric)
+    else:
+        donefilefunc = None
+    if phflag:
+        phfilefunc = get_filename_function(loadglob, phglob,
+                                           only_numeric=only_numeric)
+    else:
+        phfilefunc = None
+
+    partial_func = functools.partial(
+        enhanced_work_function,
+        vanilla_work_function=vanilla_work_function,
+        v=v, dry_run=dry_run,
+        loadpath=loadpath, in_place_flag=in_place_flag,
+        savefilefunc=savefilefunc, savepath=savepath,
+        doneflag=doneflag, donefilefunc=donefilefunc, donepath=donepath,
+        phflag=phflag, phfilefunc=phfilefunc, phpath=phpath)
+
+    flist_with_path = glob.glob(os.path.join(loadpath, loadglob))
+    flist = [os.path.split(f)[-1] for f in flist_with_path]
+    flist.sort()
+
+    vprint(v, 2, '~~~ Beginning job with {} threads at {}'.format(
+        n_threads, time.ctime()))
+    p = multiprocessing.Pool(processes=n_threads)
+    p.map(partial_func, flist)
+
+
+def enhanced_work_function(
+        filename, vanilla_work_function=None,
+        v=1, dry_run=False,
+        loadpath=None, in_place_flag=None,
+        savefilefunc=None, savepath=None,
+        doneflag=None, donefilefunc=None, donepath=None,
+        phflag=None, phfilefunc=None, phpath=None):
+
+    vprint(v, 3, ('Entering work function with v={}, dry_run={}, ' +
+           'loadfile={}').format(v, dry_run, filename))
+
+    # construct the relevant file paths and names
+    loadfile = os.path.join(loadpath, filename)
+    # if savepath == loadpath,
+    # the glob will try to load test_24_save.h5 as well as test_24.h5.
+    # It will throw a GlobError. Catch it and skip the file.
+    try:
+        if doneflag:
+            donefile = os.path.join(donepath, donefilefunc(filename))
+            vprint(v, 4, 'Donefile is {}'.format(donefile))
+        if phflag:
+            phfile = os.path.join(phpath, phfilefunc(filename))
+            vprint(v, 4, 'Placeholder is {}'.format(phfile))
+        if not in_place_flag:
+            savefile = os.path.join(savepath, savefilefunc(filename))
+            vprint(v, 4, 'Savefile is {}'.format(savefile))
+    except GlobError:
+        vprint(v, 3, 'Glob mismatch on {}, skipping at {}'.format(
+            filename, time.ctime()))
+        return None
+
+    # skip?
+    if doneflag and os.path.exists(donefile):
+        vprint(v, 2, 'Found donefile {}, skipping at {}'.format(
+            donefile, time.ctime()))
+        return None
+    if phflag and os.path.exists(phfile):
+        vprint(v, 2, 'Found placeholder {}, skipping at {}'.format(
+            phfile, time.ctime()))
+        return None
+    if (not in_place_flag and not doneflag and os.path.exists(savefile)):
+        # savefile only causes skip if not using donefiles
+        vprint(v, 2, 'Found savefile {}, skipping at {}'.format(
+            savefile, time.ctime()))
+        return None
+
+    # make placeholder
+    if phflag:
+        if dry_run:
+            vprint(v, 3, '[dry_run] Creating placeholder {} at {}'.format(
+                phfile, time.ctime()))
+        else:
+            vprint(v, 3, 'Creating placeholder {} at {}'.format(
+                phfile, time.ctime()))
+            with open(phfile, 'w') as phf:
+                phf.write('placeholder')
+    # perform work
+    vprint(v, 1, 'Starting {} at {}'.format(loadfile, time.ctime()))
+    if in_place_flag:
+        vanilla_work_function(loadfile, verbosity=v, dry_run=dry_run)
+    else:
+        vanilla_work_function(loadfile, savefile, verbosity=v, dry_run=dry_run)
+
+    vprint(v, 2, 'Finishing {} at {}'.format(loadfile, time.ctime()))
+    # finished
+    if doneflag:
+        if dry_run:
+            vprint(v, 3, '[dry_run] Writing donefile {} at {}'.format(
+                donefile, time.ctime()))
+        else:
+            vprint(v, 3, 'Writing donefile {} at {}'.format(
+                donefile, time.ctime()))
+            with open(donefile, 'w') as df:
+                df.write('completed')
+    if phflag:
+        if dry_run:
+            vprint(v, 3, '[dry_run] Removing placeholder {} at {}'.format(
+                phfile, time.ctime()))
+        else:
+            vprint(v, 3, 'Removing placeholder {} at {}'.format(
+                phfile, time.ctime()))
+            os.remove(phfile)
+
+    vprint(v, 4, 'Exiting work function from {} at {}'.format(
+        loadfile, time.ctime()))
 
 
 def vprint(verbosity, vmin, textstring):
@@ -829,6 +903,11 @@ def test_run_job():
     assert (maxtime - mintime) * n < mintime
     do_work = get_test_work_function(mintime=mintime, maxtime=maxtime)
 
+    # temp test
+    do_job(do_work, loadpath='./testload', loadglob='test_*.h5',
+           v=2, savepath='./testsave', saveglob='test_*_save.h5')
+    pdb.set_trace()
+
     # pre-clean, in case last run was interrupted
     jh = test_job(do_work,
                   './testload', 'test_*.h5',
@@ -886,7 +965,33 @@ def test_job(work_function, loadpath, loadglob,
     return jh
 
 
+class testclass(object):
+    def amethod(self, filename):
+        print('anotherfunc' + filename)
+
+
+def mapfunc(c, v, dry_run, filename):
+    if v > 2:
+        print('v')
+    if not dry_run:
+        c.amethod(filename)
+
+
+def maptest():
+
+    c = testclass()
+    f = functools.partial(mapfunc, c, 3, False)
+    flist = ['asdf' + str(n) + '.test' for n in range(4)]
+
+    f('./asdf.test')
+
+    p = multiprocessing.Pool(processes=4)
+    p.map(f, flist)
+
+
 if __name__ == '__main__':
+    # maptest()
+
     test_isstrlike()
     test_split_glob()
     test_get_glob_content()
@@ -894,3 +999,6 @@ if __name__ == '__main__':
     test_get_filename_function()
 
     test_run_job()
+
+    if False:
+        pdb.set_trace()
