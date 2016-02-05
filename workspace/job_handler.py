@@ -13,6 +13,98 @@ import types
 import functools
 
 
+def checkfile(filepath):
+    """
+    Check whether a file exists. filepath includes path and name.
+    """
+
+    return os.path.isfile(filepath)
+
+
+def phcheck(phfilepath, v=1):
+    """
+    Check whether a placeholder file exists at phfilepath.
+    """
+
+    if checkfile(phfilepath):
+        phfile = os.path.split(phfilepath)[-1]
+        vprint(v, 2, 'Found placeholder {}, skipping at {}'.format(
+            phfile, time.ctime()))
+        return True
+    else:
+        return False
+
+
+def donecheck(donefilepath, v=1):
+    """
+    Check whether a done file exists at donefilepath.
+    """
+
+    if checkfile(donefilepath):
+        donefile = os.path.split(donefilepath)[-1]
+        vprint(v, 2, 'Found donefile {}, skipping at {}'.format(
+            donefile, time.ctime()))
+        return True
+    else:
+        return False
+
+
+def savecheck(savefilepath, v=1):
+    """
+    Check whether a save file exists at savefilepath.
+    """
+
+    if checkfile(savefilepath):
+        savefile = os.path.split(savefilepath)[-1]
+        vprint(v, 2, 'Found savefile {}, skipping at {}'.format(
+            savefile, time.ctime()))
+        return True
+    else:
+        return False
+
+
+def writeph(phfilepath, v=1):
+    """
+    Write a placeholder file at phfilepath.
+    """
+
+    phfile = os.path.split(phfilepath)[-1]
+    vprint(v, 3, 'Creating placeholder {} at {}'.format(
+        phfile, time.ctime()))
+    with open(phfilepath, 'w') as phf:
+        phf.write('placeholder')
+    return None
+
+
+def clearph(phfilepath, v=1):
+    """
+    Write a placeholder file at phfilepath.
+    """
+
+    phfile = os.path.split(phfilepath)[-1]
+    vprint(v, 3, 'Removing placeholder {} at {}'.format(
+        phfile, time.ctime()))
+    try:
+        os.remove(phfile)
+    except OSError:
+        vprint(v, 1, '! Missing placeholder {} at {}'.format(
+            phfile, time.ctime()))
+    return None
+
+
+def writedone(donefilepath, v=1):
+    """
+    Write a donefile at donefilepath.
+    """
+
+    donefile = os.path.split(donefilepath)[-1]
+    vprint(v, 3, 'Creating donefile {} at {}'.format(
+        donefile, time.ctime()))
+    with open(donefilepath, 'w') as donef:
+        donef.write('done')
+    return None
+
+
 class JobHandler(object):
     """
     Create an object representing a file-by-file processing job.
@@ -368,18 +460,12 @@ def enhanced_work_function(
         return None
 
     # skip?
-    if doneflag and os.path.exists(donefile):
-        vprint(v, 2, 'Found donefile {}, skipping at {}'.format(
-            donefile, time.ctime()))
+    if doneflag and donecheck(donefile, v=v):
         return None
-    if phflag and os.path.exists(phfile):
-        vprint(v, 2, 'Found placeholder {}, skipping at {}'.format(
-            phfile, time.ctime()))
+    if phflag and phcheck(phfile, v=v):
         return None
-    if (not in_place_flag and not doneflag and os.path.exists(savefile)):
+    if (not in_place_flag and not doneflag and savecheck(savefile, v=v)):
         # savefile only causes skip if not using donefiles
-        vprint(v, 2, 'Found savefile {}, skipping at {}'.format(
-            savefile, time.ctime()))
         return None
 
     # make placeholder
@@ -388,10 +474,7 @@ def enhanced_work_function(
             vprint(v, 3, '[dry_run] Creating placeholder {} at {}'.format(
                 phfile, time.ctime()))
         else:
-            vprint(v, 3, 'Creating placeholder {} at {}'.format(
-                phfile, time.ctime()))
-            with open(phfile, 'w') as phf:
-                phf.write('placeholder')
+            writeph(phfile, v=v)
     # perform work
     vprint(v, 1, 'Starting {} at {}'.format(loadfile, time.ctime()))
     if in_place_flag:
@@ -406,18 +489,13 @@ def enhanced_work_function(
             vprint(v, 3, '[dry_run] Writing donefile {} at {}'.format(
                 donefile, time.ctime()))
         else:
-            vprint(v, 3, 'Writing donefile {} at {}'.format(
-                donefile, time.ctime()))
-            with open(donefile, 'w') as df:
-                df.write('completed')
+            writedone(donefile, v=v)
     if phflag:
         if dry_run:
             vprint(v, 3, '[dry_run] Removing placeholder {} at {}'.format(
                 phfile, time.ctime()))
         else:
-            vprint(v, 3, 'Removing placeholder {} at {}'.format(
-                phfile, time.ctime()))
-            os.remove(phfile)
+            clearph(phfile, v=v)
 
     vprint(v, 4, 'Exiting work function from {} at {}'.format(
         loadfile, time.ctime()))
