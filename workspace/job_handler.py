@@ -128,10 +128,10 @@ def clearph(phfilepath, v=1):
     vprint(v, 3, 'Removing placeholder {} at {}'.format(
         phfile, time.ctime()))
     try:
-        os.remove(phfile)
+        os.remove(phfilepath)
     except OSError:
         vprint(v, 1, '! Missing placeholder {} at {}'.format(
-            phfile, time.ctime()))
+            phfilepath, time.ctime()))
     return None
 
 
@@ -321,24 +321,22 @@ class JobOptions(object):
         """
 
         loadfile = os.path.join(self.loadpath, loadname)
-        savename = self.savefilefunc(loadname)
-        savefile = os.path.join(self.savepath, savename)
-        phname = self.phfilefunc(loadname)
-        phfile = os.path.join(phpath, phname)
-        donename = self.donefilefunc(loadname)
-        donefile = os.path.join(donepath, donename)
 
-        if self.phflag:
-            if phcheck(phfile, v=self.v):
-                return None, None
         if self.doneflag:
+            donename = self.donefilefunc(loadname)
+            donefile = os.path.join(self.donepath, donename)
             if donecheck(donefile, v=self.v):
                 return None, None
         if not self.in_place_flag:
+            savename = self.savefilefunc(loadname)
+            savefile = os.path.join(self.savepath, savename)
             if savecheck(savefile, v=self.v):
                 return None, None
-
         if self.phflag:
+            phname = self.phfilefunc(loadname)
+            phfile = os.path.join(self.phpath, phname)
+            if phcheck(phfile, v=self.v):
+                return None, None
             writeph(phfile, v=self.v)
 
         return loadfile, savefile
@@ -348,10 +346,14 @@ class JobOptions(object):
         Clean up after one file finishes.
         """
 
-        if self.phflag:
-            clearph(phfile, v=self.v)
         if self.doneflag:
+            donename = self.donefilefunc(loadname)
+            donefile = os.path.join(self.donepath, donename)
             writedone(donefile, v=self.v)
+        if self.phflag:
+            phname = self.phfilefunc(loadname)
+            phfile = os.path.join(self.phpath, phname)
+            clearph(phfile, v=self.v)
 
     def remove_ph_files(self):
         if self.phflag:
@@ -673,69 +675,175 @@ def pytouch(flist):
             f.write(' ')
 
 
-def remove_test_files(rmpath, rmglob, n):
-    for i in range(n):
-        filename = os.path.join(rmpath, put_glob_content(str(i), rmglob))
-        os.remove(filename)
+def remove_test_files():
+    paths = ['./testload', './testsave']
+    for p in paths:
+        flist = glob.glob(os.path.join(p, '*'))
+        for f in flist:
+            os.remove(f)
 
 
-def test_run_job():
+def default_work(loadfile, savefile):
+    f = get_test_work_function(mintime=4, maxtime=4.25,
+                               myverbosity=False, nosave=False)
+    return f(loadfile, savefile)
 
-    def test1():
-        # pdb.set_trace()
-        # separate dirs, default settings, starting clean
-        jh = test_job(do_work,
-                      './testload', 'test_*.h5',
-                      './testsave', 'test_*_save.h5',
-                      n, {'verbosity': v})
-        t1 = time.time()
-        jh.start(n_threads=n_threads)
-        dt = time.time() - t1
-        assert dt > n / n_threads * mintime
-        assert dt < n / n_threads * maxtime
-        jh.remove_all_files(i_am_sure=True, totally_sure=True)
 
-    def test2():
-        # separate dirs, default settings, starting with save and ph
-        jh = test_job(do_work,
-                      './testload', 'test_*.h5',
-                      './testsave', 'test_*_save.h5',
-                      n, {'verbosity': v})
-        if n_threads == 1:
-            pytouch(['./testsave/test_1_save.h5', './testsave/test_2_save.h5',
-                     './testsave/ph_test_7.h5'])
-        elif n_threads == 4:
-            pytouch(['./testsave/test_1_save.h5',
-                     './testsave/test_2_save.h5',
-                     './testsave/test_3_save.h5',
-                     './testsave/test_4_save.h5',
-                     './testsave/ph_test_7.h5',
-                     './testsave/ph_test_8.h5',
-                     './testsave/ph_test_9.h5',
-                     './testsave/ph_test_10.h5'])
-        t1 = time.time()
-        jh.start(n_threads=n_threads)
-        dt = time.time() - t1
-        if n_threads == 1:
-            assert dt > (n - 3) * mintime
-            assert dt < (n - 3) * maxtime
-        elif n_threads == 4:
-            assert dt > (n - 8) / n_threads * mintime
-            assert dt < (n - 8) / n_threads * maxtime
-        jh.remove_all_files(i_am_sure=True, totally_sure=True)
+######################################################
+#                    Test runfiles                   #
+######################################################
 
-    def test3():
-        # same dir, defaults, starting clean
-        jh = test_job(do_work,
-                      './testload', 'test_*.h5',
-                      './testload', 'test_*_save.h5',
-                      n, {'verbosity': v})
-        t1 = time.time()
-        jh.start(n_threads=n_threads)
-        dt = time.time() - t1
-        assert dt > n / n_threads * mintime
-        assert dt < n / n_threads * maxtime
-        jh.remove_all_files(i_am_sure=True, totally_sure=True)
+def run_test_file_A(loadname):
+    # separate dirs, default settings
+    # test scripts 1 and 2
+
+    # paths, globs, flags
+    loadpath = './testload'
+    loadglob = 'test_*.h5'
+    savepath = './testsave'
+    saveglob = 'test_*_save.h5'
+    in_place_flag = False
+    phflag = True
+    doneflag = False
+
+    # setup
+    opts = JobOptions(
+        loadpath=loadpath, loadglob=loadglob,
+        savepath=savepath, saveglob=saveglob,
+        in_place_flag=in_place_flag, phflag=phflag, doneflag=doneflag,
+        verbosity=2)
+    # decide to skip or not; construct full filenames
+    loadfile, savefile = opts.pre_job_tasks(loadname)
+    if loadfile is not None and savefile is not None:
+        # do the work
+        default_work(loadfile, savefile)
+    # clean up
+    opts.post_job_tasks(loadname)
+
+
+def run_test_file_B(loadname):
+    # same dir, default settings
+    # test scripts 3
+
+    # paths, globs, flags
+    loadpath = './testload'
+    loadglob = 'test_*.h5'
+    savepath = loadpath
+    saveglob = 'test_*_save.h5'
+    in_place_flag = False
+    phflag = True
+    doneflag = False
+
+    # setup
+    opts = JobOptions(
+        loadpath=loadpath, loadglob=loadglob,
+        savepath=savepath, saveglob=saveglob,
+        in_place_flag=in_place_flag, phflag=phflag, doneflag=doneflag,
+        verbosity=2)
+    # decide to skip or not; construct full filenames
+    loadfile, savefile = opts.pre_job_tasks(loadname)
+    if loadfile is not None and savefile is not None:
+        # do the work
+        default_work(loadfile, savefile)
+    # clean up
+    opts.post_job_tasks(loadname)
+
+
+######################################################
+#                    Test scripts                    #
+######################################################
+
+def test1():
+    # separate dirs, default settings, starting clean
+    loadpath = './testload'
+    loadglob = 'test_*.h5'
+    n = 20
+    create_test_files(loadpath, loadglob, n)
+    flist = [os.path.split(f)[-1]
+             for f in glob.glob(os.path.join(loadpath, loadglob))]
+    multi_process = False
+
+    if multi_process:
+        p = multiprocessing.Pool(processes=4)
+
+    t1 = time.time()
+    if multi_process:
+        p.map(run_test_file_A, flist)
+    else:
+        [run_test_file_A(f) for f in flist]
+    dt = time.time() - t1
+    assert dt > n / 4 * mintime
+    assert dt < n / 4 * maxtime
+    opts.remove_all_files(i_am_sure=True, totally_sure=True)
+    remove_test_files()
+
+
+def test2():
+    # separate dirs, default settings, starting with save and ph
+    loadpath = './testload'
+    loadglob = 'test_*.h5'
+    n = 20
+    create_test_files(loadpath, loadglob, n)
+    flist = [os.path.split(f)[-1]
+             for f in glob.glob(os.path.join(loadpath, loadglob))]
+    p = multiprocessing.Pool(processes=4)
+
+    pytouch(['./testsave/test_1_save.h5',
+             './testsave/test_2_save.h5',
+             './testsave/test_3_save.h5',
+             './testsave/test_4_save.h5',
+             './testsave/ph_test_7.h5',
+             './testsave/ph_test_8.h5',
+             './testsave/ph_test_9.h5',
+             './testsave/ph_test_10.h5'])
+
+    t1 = time.time()
+    p.map(run_test_file_A, flist)
+    dt = time.time() - t1
+    assert dt > (n / 4 - 2) * mintime
+    assert dt < (n / 4 - 2) * maxtime
+    opts.remove_all_files(i_am_sure=True, totally_sure=True)
+    remove_test_files()
+
+
+def test3():
+    # same dirs, default settings, starting clean
+    loadpath = './testload'
+    loadglob = 'test_*.h5'
+    n = 20
+    create_test_files(loadpath, loadglob, n)
+    flist = [os.path.split(f)[-1]
+             for f in glob.glob(os.path.join(loadpath, loadglob))]
+    p = multiprocessing.Pool(processes=4)
+
+    t1 = time.time()
+    p.map(run_test_file_B, flist)
+    dt = time.time() - t1
+    assert dt > n / 4 * mintime
+    assert dt < n / 4 * maxtime
+    opts.remove_all_files(i_am_sure=True, totally_sure=True)
+    remove_test_files()
+
+
+def run_test_scripts():
+    # start clean
+    loadpath = './testload'
+    loadglob = 'test_*.h5'
+    savepath = './testsave'
+    saveglob = 'test_*_save.h5'
+    create_test_files(loadpath, loadglob, 20)
+    create_test_files(savepath, saveglob, 0)
+    remove_test_files()
+
+    print('Test 1...')
+    test1()
+    print('...success!\nTest 2...')
+    test2()
+    print('...success!\nTest 3...')
+    test3()
+    print('...success!\n')
+
+    pdb.set_trace()
 
     def test4():
         # no ph, start with save (and ph)
@@ -860,112 +968,15 @@ def test_run_job():
             assert dt < (n - 8) / n_threads * maxtime
         jh.remove_all_files(i_am_sure=True, totally_sure=True)
 
-    # single threaded
-    n_threads = 1
-    v = 2
-    n = 10
-    mintime = 4
-    maxtime = 4.25
-    # check that the number of files processed is unambiguous (single thread)
-    assert (maxtime - mintime) * n < mintime
-    do_work = get_test_work_function(mintime=mintime, maxtime=maxtime)
-
-    # temp test
-    do_job(do_work, loadpath='./testload', loadglob='test_*.h5',
-           v=2, savepath='./testsave', saveglob='test_*_save.h5')
-    pdb.set_trace()
-
-    # pre-clean, in case last run was interrupted
-    jh = test_job(do_work,
-                  './testload', 'test_*.h5',
-                  './testsave', 'test_*_save.h5',
-                  n, {})
-    jh.remove_all_files(i_am_sure=True, totally_sure=True)
-    # test1()
-    # test2()
-    # test3()
-    # test4()
-    # test5()
-    # test6()
-    do_work = get_test_work_function(
-        mintime=mintime, maxtime=maxtime, nosave=True)
-    # test7()
-
-    # multi threaded
-    n_threads = 4
-    n = 20
-    # check that the number of files processed is unambiguous (multi thread)
-    assert (maxtime - mintime) * (float(n) / n_threads) < mintime
-    # pre-clean, in case last run was interrupted
-    do_work = get_test_work_function(mintime=mintime, maxtime=maxtime)
-    jh = test_job(do_work,
-                  './testload', 'test_*.h5',
-                  './testsave', 'test_*_save.h5',
-                  n, {})
-    jh.remove_all_files(i_am_sure=True, totally_sure=True)
-    test1()
-    test2()
-    test3()
-    test4()
-    test5()
-    test6()
-    do_work = get_test_work_function(
-        mintime=mintime, maxtime=maxtime, nosave=True)
-    test7()
-
-
-def test_job(work_function, loadpath, loadglob,
-             savepath, saveglob,
-             n, handler_kwargs):
-    # setup
-    print(' ')
-    create_test_files(loadpath, loadglob, n)
-    create_test_files(savepath, saveglob, 0)
-
-    # "real work"
-    jh = JobHandler(
-        work_function,
-        loadpath=loadpath, loadglob=loadglob,
-        savepath=savepath, saveglob=saveglob,
-        **handler_kwargs)
-
-    return jh
-
-
-class testclass(object):
-    def amethod(self, filename):
-        print('anotherfunc' + filename)
-
-
-def mapfunc(c, v, dry_run, filename):
-    if v > 2:
-        print('v')
-    if not dry_run:
-        c.amethod(filename)
-
-
-def maptest():
-
-    c = testclass()
-    f = functools.partial(mapfunc, c, 3, False)
-    flist = ['asdf' + str(n) + '.test' for n in range(4)]
-
-    f('./asdf.test')
-
-    p = multiprocessing.Pool(processes=4)
-    p.map(f, flist)
-
 
 if __name__ == '__main__':
-    # maptest()
-
     test_isstrlike()
     test_split_glob()
     test_get_glob_content()
     test_put_glob_contents()
     test_get_filename_function()
 
-    test_run_job()
+    run_test_scripts()
 
     if False:
         pdb.set_trace()
