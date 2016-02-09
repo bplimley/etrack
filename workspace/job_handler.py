@@ -22,8 +22,8 @@ def job_template(loadname):
       4. edit paths, globs, and flags
       5. in the main script:
          flist = glob.glob(os.path.join(loadpath, loadglob))
-         p = multiprocessing.Pool(processes=n)
-         p.map(runmyjob, flist)
+         p = multiprocessing.Pool(processes=n, maxtasksperchild=25)
+         p.map(runmyjob, flist, chunksize=25)
     """
 
     # paths, globs, flags
@@ -45,8 +45,8 @@ def job_template(loadname):
     if loadfile is not None and savefile is not None:
         # do the work
         main_work_function(loadfile, savefile)
-    # clean up
-    opts.post_job_tasks(loadname)
+        # clean up
+        opts.post_job_tasks(loadname)
 
 
 def main_work_function(loadfile, savefile):
@@ -277,7 +277,11 @@ class JobOptions(object):
                     raise JobError('phpath should be a string')
                 self.phpath = kwargs['phpath']
             else:
-                self.phpath = self.savepath
+                if self.in_place_flag:
+                    # no savepath
+                    self.phpath = self.loadpath
+                else:
+                    self.phpath = self.savepath
         else:
             self.phpath = None
             self.phfilefunc = None
@@ -289,7 +293,11 @@ class JobOptions(object):
                     raise JobError('doneglob should be a string')
                 self.doneglob = kwargs['doneglob']
             else:
-                self.doneglob = 'done_' + self.saveglob
+                if self.in_place_flag:
+                    # no saveglob or savepath
+                    self.doneglob = 'done_' + self.loadglob
+                else:
+                    self.doneglob = 'done_' + self.saveglob
             self.donefilefunc = get_filename_function(
                 self.loadglob, self.doneglob, only_numeric=self.only_numeric)
             # donepath (defaults to savepath if doneglob exists)
@@ -298,7 +306,11 @@ class JobOptions(object):
                     raise JobError('donepath should be a string')
                 self.donepath = kwargs['donepath']
             else:
-                self.donepath = self.savepath
+                if self.in_place_flag:
+                    # no saveglob or savepath
+                    self.donepath = self.loadpath
+                else:
+                    self.donepath = self.savepath
         else:
             self.donepath = None
             self.donefilefunc = None
@@ -327,11 +339,15 @@ class JobOptions(object):
             donefile = os.path.join(self.donepath, donename)
             if donecheck(donefile, v=self.v):
                 return None, None
-        if not self.in_place_flag:
+        if self.in_place_flag:
+            savefile = None
+        else:
             savename = self.savefilefunc(loadname)
             savefile = os.path.join(self.savepath, savename)
-            if savecheck(savefile, v=self.v):
-                return None, None
+            if not self.doneflag:
+                # savecheck is verbose, so these ifs are nested
+                if savecheck(savefile, v=self.v):
+                    return None, None
         if self.phflag:
             phname = self.phfilefunc(loadname)
             phfile = os.path.join(self.phpath, phname)
@@ -689,6 +705,12 @@ def default_work(loadfile, savefile):
     return f(loadfile, savefile)
 
 
+def default_work_nosave(loadfile):
+    f = get_test_work_function(mintime=4, maxtime=4.25,
+                               myverbosity=False, nosave=True)
+    return f(loadfile)
+
+
 ######################################################
 #                    Test runfiles                   #
 ######################################################
@@ -715,15 +737,18 @@ def run_test_file_A(loadname):
     # decide to skip or not; construct full filenames
     loadfile, savefile = opts.pre_job_tasks(loadname)
     if loadfile is not None and savefile is not None:
+        print('Starting ' + loadname + ' at ' + str(time.ctime()))
         # do the work
         default_work(loadfile, savefile)
-    # clean up
-    opts.post_job_tasks(loadname)
+        # clean up
+        opts.post_job_tasks(loadname)
+    else:
+        print('--Skipping ' + loadname + ' at ' + time.ctime())
 
 
 def run_test_file_B(loadname):
     # same dir, default settings
-    # test scripts 3
+    # test script 3
 
     # paths, globs, flags
     loadpath = './testload'
@@ -743,10 +768,103 @@ def run_test_file_B(loadname):
     # decide to skip or not; construct full filenames
     loadfile, savefile = opts.pre_job_tasks(loadname)
     if loadfile is not None and savefile is not None:
+        print('Starting ' + loadname + ' at ' + str(time.ctime()))
         # do the work
         default_work(loadfile, savefile)
-    # clean up
-    opts.post_job_tasks(loadname)
+        # clean up
+        opts.post_job_tasks(loadname)
+    else:
+        print('--Skipping ' + loadname + ' at ' + time.ctime())
+
+
+def run_test_file_C(loadname):
+    # separate dirs, no PH
+    # test script 4
+
+    # paths, globs, flags
+    loadpath = './testload'
+    loadglob = 'test_*.h5'
+    savepath = './testsave'
+    saveglob = 'test_*_save.h5'
+    in_place_flag = False
+    phflag = False
+    doneflag = False
+
+    # setup
+    opts = JobOptions(
+        loadpath=loadpath, loadglob=loadglob,
+        savepath=savepath, saveglob=saveglob,
+        in_place_flag=in_place_flag, phflag=phflag, doneflag=doneflag,
+        verbosity=2)
+    # decide to skip or not; construct full filenames
+    loadfile, savefile = opts.pre_job_tasks(loadname)
+    if loadfile is not None and savefile is not None:
+        print('Starting ' + loadname + ' at ' + str(time.ctime()))
+        # do the work
+        default_work(loadfile, savefile)
+        # clean up
+        opts.post_job_tasks(loadname)
+    else:
+        print('--Skipping ' + loadname + ' at ' + time.ctime())
+
+
+def run_test_file_D(loadname):
+    # donefiles (and ph and save)
+    # test script 5
+
+    # paths, globs, flags
+    loadpath = './testload'
+    loadglob = 'test_*.h5'
+    savepath = './testsave'
+    saveglob = 'test_*_save.h5'
+    in_place_flag = False
+    phflag = True
+    doneflag = True
+
+    # setup
+    opts = JobOptions(
+        loadpath=loadpath, loadglob=loadglob,
+        savepath=savepath, saveglob=saveglob,
+        in_place_flag=in_place_flag, phflag=phflag, doneflag=doneflag,
+        verbosity=2)
+    # decide to skip or not; construct full filenames
+    loadfile, savefile = opts.pre_job_tasks(loadname)
+    if loadfile is not None and savefile is not None:
+        print('Starting ' + loadname + ' at ' + str(time.ctime()))
+        # do the work
+        default_work(loadfile, savefile)
+        # clean up
+        opts.post_job_tasks(loadname)
+    else:
+        print('--Skipping ' + loadname + ' at ' + time.ctime())
+
+
+def run_test_file_E(loadname):
+    # in_place_flag and donefiles (and ph and save)
+    # test script 6
+
+    # paths, globs, flags
+    loadpath = './testload'
+    loadglob = 'test_*.h5'
+    in_place_flag = True
+    phflag = True
+    doneflag = True
+
+    # setup
+    opts = JobOptions(
+        loadpath=loadpath, loadglob=loadglob,
+        in_place_flag=in_place_flag, phflag=phflag, doneflag=doneflag,
+        verbosity=2)
+    # decide to skip or not; construct full filenames
+    loadfile, _ = opts.pre_job_tasks(loadname)
+    if loadfile is not None:
+        print('Starting ' + loadname + ' at ' + str(time.ctime()))
+        # do the work
+        default_work_nosave(loadfile)
+        # clean up
+        opts.post_job_tasks(loadname)
+    else:
+        print('--Skipping ' + loadname + ' at ' + time.ctime())
 
 
 ######################################################
@@ -757,24 +875,29 @@ def test1():
     # separate dirs, default settings, starting clean
     loadpath = './testload'
     loadglob = 'test_*.h5'
+    mintime = 4
+    maxtime = 4.25
     n = 20
     create_test_files(loadpath, loadglob, n)
     flist = [os.path.split(f)[-1]
              for f in glob.glob(os.path.join(loadpath, loadglob))]
-    multi_process = False
+    flist.sort()
+    multi_process = True
 
     if multi_process:
+        print('Multiprocessing')
         p = multiprocessing.Pool(processes=4)
 
+    print('Starting Test 1...')
     t1 = time.time()
     if multi_process:
-        p.map(run_test_file_A, flist)
+        p.map(run_test_file_A, flist, chunksize=1)
     else:
         [run_test_file_A(f) for f in flist]
     dt = time.time() - t1
+    print(dt)
     assert dt > n / 4 * mintime
     assert dt < n / 4 * maxtime
-    opts.remove_all_files(i_am_sure=True, totally_sure=True)
     remove_test_files()
 
 
@@ -782,6 +905,8 @@ def test2():
     # separate dirs, default settings, starting with save and ph
     loadpath = './testload'
     loadglob = 'test_*.h5'
+    mintime = 4
+    maxtime = 4.25
     n = 20
     create_test_files(loadpath, loadglob, n)
     flist = [os.path.split(f)[-1]
@@ -798,11 +923,10 @@ def test2():
              './testsave/ph_test_10.h5'])
 
     t1 = time.time()
-    p.map(run_test_file_A, flist)
+    p.map(run_test_file_A, flist, chunksize=1)
     dt = time.time() - t1
     assert dt > (n / 4 - 2) * mintime
     assert dt < (n / 4 - 2) * maxtime
-    opts.remove_all_files(i_am_sure=True, totally_sure=True)
     remove_test_files()
 
 
@@ -810,6 +934,8 @@ def test3():
     # same dirs, default settings, starting clean
     loadpath = './testload'
     loadglob = 'test_*.h5'
+    mintime = 4
+    maxtime = 4.25
     n = 20
     create_test_files(loadpath, loadglob, n)
     flist = [os.path.split(f)[-1]
@@ -817,11 +943,112 @@ def test3():
     p = multiprocessing.Pool(processes=4)
 
     t1 = time.time()
-    p.map(run_test_file_B, flist)
+    p.map(run_test_file_B, flist, chunksize=1)
     dt = time.time() - t1
     assert dt > n / 4 * mintime
     assert dt < n / 4 * maxtime
-    opts.remove_all_files(i_am_sure=True, totally_sure=True)
+    remove_test_files()
+
+
+def test4():
+    # separate dirs, no ph, start with ph and save
+    loadpath = './testload'
+    loadglob = 'test_*.h5'
+    mintime = 4
+    maxtime = 4.25
+    n = 20
+    create_test_files(loadpath, loadglob, n)
+    flist = [os.path.split(f)[-1]
+             for f in glob.glob(os.path.join(loadpath, loadglob))]
+    p = multiprocessing.Pool(processes=4)
+
+    pytouch(['./testsave/test_1_save.h5',
+             './testsave/test_2_save.h5',
+             './testsave/test_3_save.h5',
+             './testsave/test_4_save.h5',
+             './testsave/ph_test_7.h5',
+             './testsave/ph_test_8.h5',
+             './testsave/ph_test_9.h5',
+             './testsave/ph_test_10.h5'])
+
+    t1 = time.time()
+    p.map(run_test_file_C, flist, chunksize=1)
+    dt = time.time() - t1
+    assert dt > (n / 4 - 1) * mintime
+    assert dt < (n / 4 - 1) * maxtime
+    remove_test_files()
+
+
+def test5():
+    # separate dirs, donefiles, start with done and ph and save
+    loadpath = './testload'
+    loadglob = 'test_*.h5'
+    mintime = 4
+    maxtime = 4.25
+    n = 20
+    create_test_files(loadpath, loadglob, n)
+    flist = [os.path.split(f)[-1]
+             for f in glob.glob(os.path.join(loadpath, loadglob))]
+    p = multiprocessing.Pool(processes=4)
+
+    pytouch(['./testsave/test_1_save.h5',
+             './testsave/test_2_save.h5',
+             './testsave/test_3_save.h5',
+             './testsave/test_4_save.h5',
+             './testsave/done_test_12_save.h5',
+             './testsave/done_test_13_save.h5',
+             './testsave/done_test_14_save.h5',
+             './testsave/done_test_15_save.h5',
+             './testsave/ph_test_7.h5',
+             './testsave/ph_test_8.h5',
+             './testsave/ph_test_9.h5',
+             './testsave/ph_test_10.h5'])
+
+    t1 = time.time()
+    p.map(run_test_file_D, flist, chunksize=1)
+    dt = time.time() - t1
+    assert dt > (n / 4 - 2) * mintime
+    assert dt < (n / 4 - 2) * maxtime
+    remove_test_files()
+
+
+def test6():
+    # in_place, donefiles, start with done and ph and save
+    loadpath = './testload'
+    loadglob = 'test_*.h5'
+    mintime = 4
+    maxtime = 4.25
+    n = 20
+    create_test_files(loadpath, loadglob, n)
+    flist = [os.path.split(f)[-1]
+             for f in glob.glob(os.path.join(loadpath, loadglob))]
+    flist.sort()
+    multi_process = True
+    if multi_process:
+        p = multiprocessing.Pool(processes=4)
+
+    # all files in dir testload, because there is no save dir
+    pytouch(['./testload/test_1_save.h5',
+             './testload/test_2_save.h5',
+             './testload/test_3_save.h5',
+             './testload/test_4_save.h5',
+             './testload/done_test_12.h5',
+             './testload/done_test_13.h5',
+             './testload/done_test_14.h5',
+             './testload/done_test_15.h5',
+             './testload/ph_test_7.h5',
+             './testload/ph_test_8.h5',
+             './testload/ph_test_9.h5',
+             './testload/ph_test_10.h5'])
+
+    t1 = time.time()
+    if multi_process:
+        p.map(run_test_file_E, flist, chunksize=1)
+    else:
+        [run_test_file_E(f) for f in flist]
+    dt = time.time() - t1
+    assert dt > (n / 4 - 2) * mintime
+    assert dt < (n / 4 - 2) * maxtime
     remove_test_files()
 
 
@@ -837,136 +1064,17 @@ def run_test_scripts():
 
     print('Test 1...')
     test1()
-    print('...success!\nTest 2...')
+    print('...success!\n\nTest 2...')
     test2()
-    print('...success!\nTest 3...')
+    print('...success!\n\nTest 3...')
     test3()
+    print('...success!\n\nTest 4...')
+    test4()
+    print('...success!\n\nTest 5...')
+    test5()
+    print('...success!\n\nTest 6...')
+    test6()
     print('...success!\n')
-
-    pdb.set_trace()
-
-    def test4():
-        # no ph, start with save (and ph)
-        jh = test_job(do_work,
-                      './testload', 'test_*.h5',
-                      './testsave', 'test_*_save.h5',
-                      n, {'verbosity': v, 'phflag': False})
-        if n_threads == 1:
-            pytouch(['./testsave/test_1_save.h5', './testsave/test_2_save.h5',
-                     './testsave/ph_test_7.h5'])
-        elif n_threads == 4:
-            pytouch(['./testsave/test_1_save.h5',
-                     './testsave/test_2_save.h5',
-                     './testsave/test_3_save.h5',
-                     './testsave/test_4_save.h5',
-                     './testsave/ph_test_7.h5',
-                     './testsave/ph_test_8.h5',
-                     './testsave/ph_test_9.h5',
-                     './testsave/ph_test_10.h5'])
-        t1 = time.time()
-        jh.start(n_threads=n_threads)
-        dt = time.time() - t1
-        # the created ph shouldn't cause a skip
-        if n_threads == 1:
-            assert dt > (n - 2) * mintime
-            assert dt < (n - 2) * maxtime
-        elif n_threads == 4:
-            assert dt > (n - 4) / n_threads * mintime
-            assert dt < (n - 4) / n_threads * maxtime
-        jh.remove_all_files(i_am_sure=True, totally_sure=True)
-
-    def test5():
-        # donefiles, start with save and ph and done
-        jh = test_job(do_work,
-                      './testload', 'test_*.h5',
-                      './testsave', 'test_*_save.h5',
-                      n, {'verbosity': v, 'doneflag': True})
-        if n_threads == 1:
-            pytouch(['./testsave/test_1_save.h5',
-                     './testsave/test_2_save.h5',
-                     './testsave/test_3_save.h5',
-                     './testsave/test_4_save.h5',
-                     './testsave/ph_test_6.h5',
-                     './testsave/ph_test_7.h5',
-                     './testsave/done_test_0_save.h5'])
-        elif n_threads == 4:
-            pytouch(['./testsave/test_1_save.h5',
-                     './testsave/test_2_save.h5',
-                     './testsave/test_3_save.h5',
-                     './testsave/test_4_save.h5',
-                     './testsave/done_test_12_save.h5',
-                     './testsave/done_test_13_save.h5',
-                     './testsave/done_test_14_save.h5',
-                     './testsave/done_test_15_save.h5',
-                     './testsave/ph_test_7.h5',
-                     './testsave/ph_test_8.h5',
-                     './testsave/ph_test_9.h5',
-                     './testsave/ph_test_10.h5'])
-        t1 = time.time()
-        jh.start(n_threads=n_threads)
-        dt = time.time() - t1
-        # created savefiles shouldn't be skipped
-        if n_threads == 1:
-            assert dt > (n - 3) * mintime
-            assert dt < (n - 3) * maxtime
-        elif n_threads == 4:
-            assert dt > (n - 8) / n_threads * mintime
-            assert dt < (n - 8) / n_threads * maxtime
-        jh.remove_all_files(i_am_sure=True, totally_sure=True)
-
-    def test6():
-        # dry_run
-        jh = test_job(do_work,
-                      './testload', 'test_*.h5',
-                      './testsave', 'test_*_save.h5',
-                      n, {'verbosity': v})
-        t1 = time.time()
-        jh.start(dry_run=True, n_threads=n_threads)
-        dt = time.time() - t1
-        assert dt > n / n_threads * mintime
-        assert dt < n / n_threads * maxtime
-        assert not os.path.exists('./testsave/test_3_save.h5')
-        jh.remove_all_files(i_am_sure=True, totally_sure=True)
-
-    def test7():
-        # in place. start with save and ph and done
-        jh = test_job(do_work,
-                      './testload', 'test_*.h5',
-                      './testsave', 'test_*_save.h5',
-                      n, {'verbosity': v, 'in_place_flag': True,
-                          'doneflag': True})
-        if n_threads == 1:
-            pytouch(['./testsave/test_1_save.h5',
-                     './testsave/test_2_save.h5',
-                     './testsave/test_3_save.h5',
-                     './testsave/test_4_save.h5',
-                     './testsave/ph_test_6.h5',
-                     './testsave/ph_test_7.h5',
-                     './testsave/done_test_0_save.h5'])
-        elif n_threads == 4:
-            pytouch(['./testsave/test_1_save.h5',
-                     './testsave/test_2_save.h5',
-                     './testsave/test_3_save.h5',
-                     './testsave/test_4_save.h5',
-                     './testsave/done_test_12_save.h5',
-                     './testsave/done_test_13_save.h5',
-                     './testsave/done_test_14_save.h5',
-                     './testsave/done_test_15_save.h5',
-                     './testsave/ph_test_7.h5',
-                     './testsave/ph_test_8.h5',
-                     './testsave/ph_test_9.h5',
-                     './testsave/ph_test_10.h5'])
-        t1 = time.time()
-        jh.start(n_threads=n_threads)
-        dt = time.time() - t1
-        # created savefiles shouldn't be skipped
-        if n_threads == 1:
-            assert dt > (n / n_threads - 3) * mintime
-            assert dt < (n / n_threads - 3) * maxtime
-        elif n_threads == 4:
-            assert dt > (n - 8) / n_threads * mintime
-            assert dt < (n - 8) / n_threads * maxtime
-        jh.remove_all_files(i_am_sure=True, totally_sure=True)
 
 
 if __name__ == '__main__':
