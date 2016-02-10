@@ -93,29 +93,39 @@ class G4Track(object):
 
         cheat = evt['cheat']['0']
 
-        # h5 attributes
-        kwargs = {
-            'energy_tot_kev': cheat.attrs['Etot'],
-            'energy_dep_kev': cheat.attrs['Edep'],
-            'energy_esc_kev': evt.attrs['Eesc'],
-            'energy_xray_kev': cheat.attrs['Exray'],
-            'energy_brems_kev': cheat.attrs['Ebrems'],
-            'x0': cheat.attrs['x0'],
-            'first_step_vector': cheat.attrs['firstStepVector'],
-            'alpha_deg': cheat.attrs['alpha'],
-            'beta_deg': cheat.attrs['beta']
-        }
+        try:
+            # h5 attributes
+            kwargs = {
+                'energy_tot_kev': cheat.attrs['Etot'],
+                'energy_dep_kev': cheat.attrs['Edep'],
+                'energy_esc_kev': evt.attrs['Eesc'],
+                'energy_xray_kev': cheat.attrs['Exray'],
+                'energy_brems_kev': cheat.attrs['Ebrems'],
+                'x0': cheat.attrs['x0'],
+                'first_step_vector': cheat.attrs['firstStepVector'],
+                'alpha_deg': cheat.attrs['alpha'],
+                'beta_deg': cheat.attrs['beta']
+            }
+        except KeyError:
+            # found this in HTbatch01_h5m/MultiAngle_100_6.h5 track 117
+            print('Unexpected missing attributes in ' + evt.name + '!')
+            return None
 
-        # h5 datasets
-        data = cheat['x']
-        x = np.zeros(data.shape)
-        data.read_direct(x)
-        kwargs['x'] = x
+        try:
+            # h5 datasets
+            data = cheat['x']
+            x = np.zeros(data.shape)
+            data.read_direct(x)
+            kwargs['x'] = x
 
-        data = cheat['dE']
-        dE = np.zeros(data.shape)
-        data.read_direct(dE)
-        kwargs['dE'] = dE
+            data = cheat['dE']
+            dE = np.zeros(data.shape)
+            data.read_direct(dE)
+            kwargs['dE'] = dE
+        except KeyError:
+            # hypothetical
+            print('Unexpected missing dataset in ' + evt.name + '!')
+            return None
 
         g4track = G4Track(matrix=matrix, **kwargs)
         return g4track
@@ -324,10 +334,15 @@ class Track(object):
         HDF5 file is the December 2015 format from MATLAB.
         """
 
-        errorcode = pixnoise.attrs['errorcode']
+        try:
+            errorcode = pixnoise.attrs['errorcode']
+        except KeyError:
+            # found this in HTbatch01_h5m/MultiAngle_HT_100_12.h5 track 127
+            errorcode = 97
         if errorcode != 0:
             # for now, only accept tracks without errors
             return errorcode
+
         # algorithm_error = (errorcode == 4 or errorcode == 5)
         # good_algorithm = (errorcode == 0)
         # has_algorithm = good_algorithm or algorithm_error
@@ -356,15 +371,26 @@ class Track(object):
         kwargs = {}
         kwargs['is_modeled'] = True
         kwargs['g4track'] = g4track
-        kwargs['pixel_size_um'] = pixnoise.attrs['pixel_size_um']
-        kwargs['noise_ev'] = pixnoise.attrs['noise_ev']
-        kwargs['energy_kev'] = pixnoise.attrs['Etot']
+        try:
+            kwargs['pixel_size_um'] = pixnoise.attrs['pixel_size_um']
+            kwargs['noise_ev'] = pixnoise.attrs['noise_ev']
+            kwargs['energy_kev'] = pixnoise.attrs['Etot']
+        except KeyError:
+            # hypothetical
+            errorcode = 98
+            return errorcode
 
         track = Track(img, **kwargs)
 
         # algorithm info
-        alpha = pixnoise.attrs['alpha']
-        beta = pixnoise.attrs['beta']
+        try:
+            alpha = pixnoise.attrs['alpha']
+            beta = pixnoise.attrs['beta']
+        except KeyError:
+            # found this in HTbatch01_h5m/MultiAngle_100_3.h5 track 00097
+            # yes, with errorcode 0. maybe something crashed?
+            errorcode = 99
+            return errorcode
         info = MatlabAlgorithmInfo.from_h5pixnoise(pixnoise)
 
         track.add_algorithm('matlab HT v1.5',
