@@ -9,15 +9,55 @@ import time
 import multiprocessing
 import numpy as np
 import ipdb as pdb
-import types
-import functools
 
 
-def job_template(loadname):
+# #########    begin copy to script file    ####################
+
+def run_main():
+
+    multi_flag = True   # run in parallel - turn off to debug
+    _, loadpath, savepath, loadglob, saveglob, v, n_proc = file_vars()
+
+    flist = glob.glob(os.path.join(loadpath, loadglob))
+    flist.sort()
+
+    if multi_flag:
+        p = multiprocessing.Pool(processes=n_proc, maxtasksperchild=25)
+        p.map(runfile, flist, chunksize=25)
+    else:
+        [runfile(f) for f in flist]
+
+
+def file_vars():
+    """
+    Define file path and globs here. Also server flag, and verbosity.
+
+    Gets loaded in run_main() as well as runfile(loadname).
+    """
+
+    server_flag = True
+    if server_flag:
+        n_threads = 11
+        loadpath = './loadpath'
+        savepath = './savepath'
+    else:
+        # e.g. LBL desktop
+        n_threads = 4
+        loadpath = './loadpath'
+        savepath = './savepath'
+    loadglob = 'load_*.h5'
+    saveglob = 'save_*.h5'
+
+    v = 1   # verbosity
+
+    return server_flag, loadpath, savepath, loadglob, saveglob, v, n_threads
+
+
+def runfile(loadname):
     """
     To use:
       1. make a copy in your script
-      2. edit template function name to e.g. runmyjob(loadname)
+      2. edit this function name to e.g. runmyjob(loadname)
       3. edit work function name from main_work_function below
       4. edit paths, globs, and flags
       5. in the main script:
@@ -26,11 +66,9 @@ def job_template(loadname):
          p.map(runmyjob, flist, chunksize=25)
     """
 
-    # paths, globs, flags
-    loadpath = './loadpath'
-    loadglob = 'load_*.h5'
-    savepath = './savepath'
-    saveglob = 'save_*.h5'
+    # drop the path part of loadname, if it is given
+    server_flag, loadpath, savepath, loadglob, saveglob, v, _ = file_vars()
+
     in_place_flag = False
     phflag = True
     doneflag = False
@@ -54,6 +92,8 @@ def main_work_function(loadfile, savefile):
     f = get_test_work_function(
         mintime=4, maxtime=4.25, myverbosity=False, nosave=False)
     return f(loadfile, savefile)
+
+# ###########     end copy to script file     #####################
 
 
 def checkfile(filepath):
