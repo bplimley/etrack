@@ -22,8 +22,8 @@ def run_main():
     flist.sort()
 
     if multi_flag:
-        p = multiprocessing.Pool(processes=n_proc, maxtasksperchild=25)
-        p.map(runfile, flist, chunksize=25)
+        p = multiprocessing.Pool(processes=n_proc, maxtasksperchild=5)
+        p.map(runfile, flist, chunksize=5)
     else:
         [runfile(f) for f in flist]
 
