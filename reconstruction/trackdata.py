@@ -391,7 +391,11 @@ class Track(object):
             # yes, with errorcode 0. maybe something crashed?
             errorcode = 99
             return errorcode
-        info = MatlabAlgorithmInfo.from_h5pixnoise(pixnoise)
+        try:
+            info = MatlabAlgorithmInfo.from_h5pixnoise(pixnoise)
+        except InputError:
+            errorcode = 88
+            return errorcode
 
         track.add_algorithm('matlab HT v1.5',
                             alpha_deg=alpha, beta_deg=beta,
