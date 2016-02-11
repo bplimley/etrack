@@ -47,20 +47,20 @@ def file_vars():
 
     Gets loaded in run_main() as well as runfile(loadname).
     """
-    LRC_flag = False
+    LRC_flag = True
     if LRC_flag:
-        n_threads = 11
+        n_threads = 4
         loadpath = '/global/home/users/bcplimley/multi_angle/HTbatch01_h5m/'
         savepath = '/global/home/users/bcplimley/multi_angle/HTbatch01_pyml/'
     else:
         # LBL desktop
-        n_threads = 4
+        n_threads = 2
         loadpath = '/media/plimley/TEAM 7B/HTbatch01_h5m/'
         savepath = '/media/plimley/TEAM 7B/HTbatch01_pyml/'
     loadglob = 'MultiAngle_HT_*_*.h5'
     saveglob = 'MultiAngle_HT_*_*_py.h5'
 
-    VERBOSITY = 3
+    VERBOSITY = 2
     v = VERBOSITY       # for conciseness
 
     return LRC_flag, loadpath, savepath, loadglob, saveglob, v, n_threads
@@ -122,7 +122,7 @@ def pyobj_from_h5(h5filename, v):
     n_to_run = 10000
     n_run = 0
 
-    with h5py.File(h5filename, 'r') as f:
+    with h5py.File(h5filename, 'r', driver='core') as f:
         # get max index number
         indices = []
         for key in f.keys():
@@ -167,7 +167,7 @@ def pyobjs_to_h5(g4tracks, pixnoise, filename, v):
     Given the python object lists, write to HDF5 file at filename.
     """
 
-    with h5py.File(filename, 'w', libver='latest') as f:
+    with h5py.File(filename, 'w', libver='latest', driver='core') as f:
         for ind in range(len(g4tracks)):
             pyobj_to_h5 = {}
             indstr = '{:05d}'.format(ind)
