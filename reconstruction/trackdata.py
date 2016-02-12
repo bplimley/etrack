@@ -364,7 +364,11 @@ class Track(object):
         # do_measurement = has_measurement
 
         # track info (not algorithm info)
-        data = pixnoise['img']
+        try:
+            data = pixnoise['img']
+        except KeyError:
+            errorcode = 96
+            return errorcode
         img = np.zeros(data.shape)
         data.read_direct(img)
 
