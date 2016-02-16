@@ -146,6 +146,25 @@ def savecheck(savefilepath, v=1):
         return False
 
 
+def cooldowncheck(loadfilepath, cooldown_minutes, v=1):
+    """
+    Check whether the file at filepath has been modified within the last
+    cooldown_minutes minutes.
+    """
+
+    mtime = os.stat(loadfilepath).st_mtime
+    cooldown_s = cooldown_minutes * 60.0
+
+    if time.time() - mtime < cooldown_s:
+        loadfile = os.path.split(loadfilepath)[-1]
+        vprint(v, 2, ('Loadfile {} is still within {}-minute cooldown ' +
+                      'period, skipping at {}').format(
+            loadfile, cooldown_minutes, time.ctime()))
+        return True
+    else:
+        return False
+
+
 def writeph(phfilepath, v=1):
     """
     Write a placeholder file at phfilepath.
@@ -200,7 +219,7 @@ class JobOptions(object):
         savefile.
       phflag: create placeholder files. (default: True)
         if phpath/phglob are not given, then phpath = savepath
-        and ph file will be 'ph_' + saveglob
+        and ph file will be 'ph_' + loadglob
       doneflag: create done-files. (default: False)
         if donepath/doneglob are not given, then donepath = savepath and
         doneglob = 'done_' + saveglob
@@ -208,6 +227,8 @@ class JobOptions(object):
       n_threads: default number of processes to run (multiprocessing) (int)
         (default: 1)
       only_numeric: flag for requiring * in globs to be only filled by digits
+      cooldown_minutes: how many minutes to wait after a loadfile's
+        modification timestamp
 
       loadpath, loadglob: location to load data from. (default loadpath: '')
       savepath, saveglob: location to save new results file to
@@ -267,6 +288,14 @@ class JobOptions(object):
             self.v = int(kwargs['verbosity'])
         else:
             self.v = 1
+
+        # cooldown (defaults to 0)
+        if 'cooldown_minutes' in kwargs:
+            self.cooldown_minutes = float(kwargs['cooldown_minutes'])
+            self.cooldown_flag = True
+        else:
+            self.cooldown_flag = False
+            self.cooldown_minutes = 0.0
 
         # ~~~ path and filename args ~~~
         # loadglob (required)
@@ -374,6 +403,10 @@ class JobOptions(object):
 
         loadfile = os.path.join(self.loadpath, loadname)
 
+        if self.cooldown_flag:
+            # modification time
+            if cooldowncheck(loadfile, self.cooldown_minutes, v=self.v):
+                return None, None
         if self.doneflag:
             donename = self.donefilefunc(loadname)
             donefile = os.path.join(self.donepath, donename)
@@ -907,6 +940,37 @@ def run_test_file_E(loadname):
         print('--Skipping ' + loadname + ' at ' + time.ctime())
 
 
+def run_test_file_F(loadname):
+    # separate dirs, no ph flag, cooldown
+    # test script 7
+
+    # paths, globs, flags
+    loadpath = './testload'
+    loadglob = 'test_*.h5'
+    savepath = './testsave'
+    saveglob = 'test_*_save.h5'
+    in_place_flag = False
+    phflag = False
+    doneflag = False
+
+    # setup
+    opts = JobOptions(
+        loadpath=loadpath, loadglob=loadglob,
+        savepath=savepath, saveglob=saveglob,
+        in_place_flag=in_place_flag, phflag=phflag, doneflag=doneflag,
+        cooldown_minutes=15, verbosity=2)
+    # decide to skip or not; construct full filenames
+    loadfile, savefile = opts.pre_job_tasks(loadname)
+    if loadfile is not None and savefile is not None:
+        print('Starting ' + loadname + ' at ' + str(time.ctime()))
+        # do the work
+        default_work(loadfile, savefile)
+        # clean up
+        opts.post_job_tasks(loadname)
+    else:
+        print('--Skipping ' + loadname + ' at ' + time.ctime())
+
+
 ######################################################
 #                    Test scripts                    #
 ######################################################
@@ -1092,6 +1156,44 @@ def test6():
     remove_test_files()
 
 
+def test7():
+    # test cooldown
+    cooldown_minutes = 15
+    loadpath = './testload'
+    loadglob = 'test_*.h5'
+    mintime = 4
+    maxtime = 4.25
+    n = 20
+    create_test_files(loadpath, loadglob, n)
+    flist = [os.path.split(f)[-1]
+             for f in glob.glob(os.path.join(loadpath, loadglob))]
+    flist.sort()
+    multi_process = True
+    if multi_process:
+        p = multiprocessing.Pool(processes=4)
+
+    pytouch(['./testsave/ph_test_1.h5',
+             './testsave/ph_test_2.h5',
+             './testsave/ph_test_3.h5',
+             './testsave/ph_test_4.h5'])
+    # make most of the files cold
+    cold_list = flist[:-4]
+    cold_time = time.time() - (cooldown_minutes + 5) * 60
+    for f in [os.path.join(loadpath, fn) for fn in cold_list]:
+        os.utime(f, (cold_time, cold_time))
+    # the last 4 files will be hot (this prep takes <<15 minutes)
+
+    t1 = time.time()
+    if multi_process:
+        p.map(run_test_file_F, flist, chunksize=1)
+    else:
+        [run_test_file_E(f) for f in flist]
+    dt = time.time() - t1
+    assert dt > (n / 4 - 1) * mintime
+    assert dt < (n / 4 - 1) * maxtime
+    remove_test_files()
+
+
 def run_test_scripts():
     # start clean
     loadpath = './testload'
@@ -1114,6 +1216,8 @@ def run_test_scripts():
     test5()
     print('...success!\n\nTest 6...')
     test6()
+    print('...success!\n\nTest 7...')
+    test7()
     print('...success!\n')
 
 
