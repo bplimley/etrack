@@ -10,7 +10,17 @@ import thinning
 import trackplot
 
 
-def reconstruct(original_image_kev, pixel_size_um=10.5):
+def reconstruct(track_object):
+    img = track_object.image
+    if track_object.pixel_size_um:
+        pixel_size_um = track_object.pixel_size_um
+    else:
+        pixel_size_um = 10.5
+
+    return reconstruct_from_image(img, pixel_size_um=pixel_size_um)
+
+
+def reconstruct_from_image(original_image_kev, pixel_size_um=10.5):
     """
     Perform trajectory reconstruction on CCD electron track image.
 
