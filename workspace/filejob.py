@@ -722,6 +722,7 @@ def get_test_work_function(mintime=4, maxtime=5,
                       loadfile, verbosity, dry_run))
             sleeptime = mintime + np.random.random() * (maxtime - mintime)
             time.sleep(sleeptime)
+            os.utime(loadfile, None)    # touch it
             if myverbosity:
                 print(('/ test_work loadfile={} verbosity={} ' +
                        'dry_run={} /').format(
@@ -755,13 +756,16 @@ def create_test_files(writepath, writeglob, n):
 
 
 def pytouch(flist):
+    some_old_time = time.time() - 24 * 60 * 60
     if isinstance(flist, list) or isinstance(flist, tuple):
         for fpath in flist:
             with open(fpath, 'w') as f:
                 f.write(' ')
+            os.utime(fpath, (some_old_time, some_old_time))
     elif isstrlike(flist):
         with open(flist, 'w') as f:
             f.write(' ')
+        os.utime(flist, (some_old_time, some_old_time))
 
 
 def remove_test_files():
@@ -941,7 +945,7 @@ def run_test_file_E(loadname):
 
 
 def run_test_file_F(loadname):
-    # separate dirs, no ph flag, cooldown
+    # separate dirs, defaults, cooldown
     # test script 7
 
     # paths, globs, flags
@@ -950,7 +954,7 @@ def run_test_file_F(loadname):
     savepath = './testsave'
     saveglob = 'test_*_save.h5'
     in_place_flag = False
-    phflag = False
+    phflag = True
     doneflag = False
 
     # setup
@@ -999,9 +1003,12 @@ def test1():
     else:
         [run_test_file_A(f) for f in flist]
     dt = time.time() - t1
-    print(dt)
     assert dt > n / 4 * mintime
     assert dt < n / 4 * maxtime
+
+    fnfunc = get_filename_function(loadglob, 'test_*_save.h5')
+    for f in [os.path.join('./testsave', fnfunc(fn)) for fn in flist]:
+        assert os.path.isfile(f)
     remove_test_files()
 
 
@@ -1031,6 +1038,17 @@ def test2():
     dt = time.time() - t1
     assert dt > (n / 4 - 2) * mintime
     assert dt < (n / 4 - 2) * maxtime
+
+    fnfunc = get_filename_function(loadglob, 'test_*_save.h5')
+    for f in [os.path.join('./testsave', fnfunc(fn)) for fn in flist]:
+        filenum = int(
+            get_glob_content(os.path.split(f)[-1], 'test_*_save.h5')[0])
+        if filenum == 0 or (filenum > 4 and filenum < 7) or filenum > 10:
+            assert os.path.isfile(f)
+        elif filenum >= 7 and filenum <= 10:
+            assert not os.path.isfile(f)
+        else:
+            assert time.time() - os.stat(f).st_mtime > 24 * 60 * 60
     remove_test_files()
 
 
@@ -1051,6 +1069,10 @@ def test3():
     dt = time.time() - t1
     assert dt > n / 4 * mintime
     assert dt < n / 4 * maxtime
+
+    fnfunc = get_filename_function(loadglob, 'test_*_save.h5')
+    for f in [os.path.join(loadpath, fnfunc(fn)) for fn in flist]:
+        assert os.path.isfile(f)
     remove_test_files()
 
 
@@ -1080,6 +1102,17 @@ def test4():
     dt = time.time() - t1
     assert dt > (n / 4 - 1) * mintime
     assert dt < (n / 4 - 1) * maxtime
+
+    fnfunc = get_filename_function(loadglob, 'test_*_save.h5')
+    for f in [os.path.join('./testsave', fnfunc(fn)) for fn in flist]:
+        filenum = int(
+            get_glob_content(os.path.split(f)[-1], 'test_*_save.h5')[0])
+        if filenum == 0 or filenum > 4:
+            assert os.path.isfile(f)
+        elif filenum >= 1 and filenum <= 4:
+            assert time.time() - os.stat(f).st_mtime > 24 * 60 * 60
+        else:
+            assert not os.path.isfile(f)
     remove_test_files()
 
 
@@ -1113,6 +1146,16 @@ def test5():
     dt = time.time() - t1
     assert dt > (n / 4 - 2) * mintime
     assert dt < (n / 4 - 2) * maxtime
+
+    fnfunc = get_filename_function(loadglob, 'test_*_save.h5')
+    for f in [os.path.join('./testsave', fnfunc(fn)) for fn in flist]:
+        filenum = int(
+            get_glob_content(os.path.split(f)[-1], 'test_*_save.h5')[0])
+        if filenum < 7 or filenum == 11 or filenum > 15:
+            assert os.path.isfile(f)
+            assert time.time() - os.stat(f).st_mtime < 24 * 60 * 60
+        else:
+            assert not os.path.isfile(f)
     remove_test_files()
 
 
@@ -1145,6 +1188,11 @@ def test6():
              './testload/ph_test_9.h5',
              './testload/ph_test_10.h5'])
 
+    # make the files "old" and see if they get updated by work
+    old_time = time.time() - 24 * 60 * 60
+    for f in [os.path.join(loadpath, fn) for fn in flist]:
+        os.utime(f, (old_time, old_time))
+
     t1 = time.time()
     if multi_process:
         p.map(run_test_file_E, flist, chunksize=1)
@@ -1153,12 +1201,19 @@ def test6():
     dt = time.time() - t1
     assert dt > (n / 4 - 2) * mintime
     assert dt < (n / 4 - 2) * maxtime
+
+    for f in [os.path.join(loadpath, fn) for fn in flist]:
+        filenum = int(get_glob_content(os.path.split(f)[-1], loadglob)[0])
+        if filenum < 7 or filenum == 11 or filenum > 15:
+            assert time.time() - os.stat(f).st_mtime < 60 * 60
+        else:
+            assert time.time() - os.stat(f).st_mtime > 60 * 60
     remove_test_files()
 
 
 def test7():
     # test cooldown
-    cooldown_minutes = 15
+    # cooldown_minutes = 15
     loadpath = './testload'
     loadglob = 'test_*.h5'
     mintime = 4
@@ -1172,16 +1227,14 @@ def test7():
     if multi_process:
         p = multiprocessing.Pool(processes=4)
 
-    pytouch(['./testsave/ph_test_1.h5',
-             './testsave/ph_test_2.h5',
-             './testsave/ph_test_3.h5',
-             './testsave/ph_test_4.h5'])
-    # make most of the files cold
-    cold_list = flist[:-4]
-    cold_time = time.time() - (cooldown_minutes + 5) * 60
-    for f in [os.path.join(loadpath, fn) for fn in cold_list]:
-        os.utime(f, (cold_time, cold_time))
-    # the last 4 files will be hot (this prep takes <<15 minutes)
+    # files from create_test_files / pytouch are cold.
+    # make a few hot.
+    hot_list = ['./testload/test_11.h5',
+                './testload/test_12.h5',
+                './testload/test_13.h5',
+                './testload/test_14.h5']
+    for f in hot_list:
+        os.utime(f, (time.time(), time.time()))
 
     t1 = time.time()
     if multi_process:
@@ -1191,6 +1244,15 @@ def test7():
     dt = time.time() - t1
     assert dt > (n / 4 - 1) * mintime
     assert dt < (n / 4 - 1) * maxtime
+
+    fnfunc = get_filename_function(loadglob, 'test_*_save.h5')
+    for f in [os.path.join('./testsave', fnfunc(fn)) for fn in flist]:
+        filenum = int(
+            get_glob_content(os.path.split(f)[-1], 'test_*_save.h5')[0])
+        if filenum < 11 or filenum > 14:
+            assert os.path.isfile(f)
+        else:
+            assert not os.path.isfile(f)
     remove_test_files()
 
 
