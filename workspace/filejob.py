@@ -18,6 +18,9 @@ def run_main():
     multi_flag = True   # run in parallel - turn off to debug
     _, loadpath, savepath, loadglob, saveglob, v, n_proc = file_vars()
 
+    if not os.path.isdir(savepath):
+        os.mkdir(savepath)
+
     flist = glob.glob(os.path.join(loadpath, loadglob))
     flist.sort()
 
@@ -82,16 +85,25 @@ def runfile(loadname):
     loadfile, savefile = opts.pre_job_tasks(loadname)
     if loadfile is not None and savefile is not None:
         # do the work
-        main_work_function(loadfile, savefile)
+        main_work_function(loadfile, savefile, v)
         # clean up
         opts.post_job_tasks(loadname)
 
 
-def main_work_function(loadfile, savefile):
+def main_work_function(loadfile, savefile, v):
     # for testing only!
+    vprint(v, 1, 'Starting {} at {}'.format(loadfile, time.time()))
     f = get_test_work_function(
         mintime=4, maxtime=4.25, myverbosity=False, nosave=False)
+    vprint(v, 2, 'Finishing {} at {}'.format(savefile, time.time()))
     return f(loadfile, savefile)
+
+    # actually:
+    # with h5py.File(loadfile, 'r', driver='core') as f:
+    #     ...
+
+# if __name__ == '__main__':
+#     run_main()
 
 # ###########     end copy to script file     #####################
 
@@ -538,10 +550,14 @@ def get_glob_content(filename, globname, only_numeric=True):
 
     If filename doesn't match globname, raise a JobError.
 
+    If filename actually includes a path, the path will be stripped away.
+
     E.g.:
     get_glob_content('MultiAngle_24_12.h5', MultiAngle_*_*.h5)
     # ['24', '12']
     """
+
+    filename = os.path.split(filename)[-1]
 
     if not isstrlike(globname):
         raise GlobError('globname must be a string type')
