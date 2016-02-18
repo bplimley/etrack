@@ -214,6 +214,7 @@ def pyml_run_algs(loadfile, savefile, v):
     except IOError:
         vprint(v, 1, 'IOError: Unable to open file (I think) for {}'.format(
             loadfile))
+        continue
 
     # AlgorithmResults objects
     alglist2 = alglist.keys() + ['matlab HT v1.5']
