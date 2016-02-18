@@ -147,7 +147,12 @@ def pyml_run_algs(loadfile, savefile, v):
                 pass
 
             for pnname in pnlist:
-                pn = trk[pnname]
+                try:
+                    pn = trk[pnname]
+                except KeyError:
+                    vprint(v, 1, '**Missing key {} in {}{}, skipping'.format(
+                        pnname, loadfile, trk.name))
+                    continue
                 vprint(v, 3, 'Running {}{} at {}'.format(
                     loadfile, pn.name, time.ctime()))
                 # load track
