@@ -29,13 +29,12 @@ def run_main():
     pnlist = ['pix10_5noise0', 'pix2_5noise0']
     alglist = ['python HT v1.5', 'python HT v1.5a', 'python HT v1.5b']
 
-    firstfile = True
     AR = {}
     for fname in flist:
         with h5py.File(fname, 'r') as h5f:
 
             for pn in pnlist:
-                if firstfile:
+                if pn not in AR:
                     AR[pn] = {}
                 for alg in alglist:
                     try:
@@ -43,12 +42,10 @@ def run_main():
                             h5f[pn][alg])
                     except ZeroDivisionError:
                         continue
-                    if firstfile:
-                        AR[pn][alg] = this_AR
-                    else:
+                    try:
                         AR[pn][alg] += this_AR
-
-        firstfile = False
+                    except KeyError:
+                        AR[pn][alg] = this_AR
 
     print('saving to {}'.format(os.path.join(savepath, savename)))
     with h5py.File(os.path.join(savepath, savename), 'w') as fsave:
