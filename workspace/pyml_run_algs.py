@@ -120,94 +120,100 @@ def pyml_run_algs(loadfile, savefile, v):
             AR[pnname][algname] = []
 
     vprint(v, 1, '\nStarting {} at {}'.format(loadfile, time.ctime()))
-    with h5py.File(loadfile, 'a', driver='core') as h5load:
-        filename = h5load.filename
-        n = 0
-        if progressflag:
-            pbar = progressbar.ProgressBar(
-                widgets=[progressbar.Percentage(), ' ', progressbar.Bar(), ' ',
-                         progressbar.ETA()], maxval=len(h5load))
-            pbar.start()
-
-        keylist = h5load.keys()
-        keylist.sort()
-        for ind in keylist:
-            if int(ind) % 10 == 0:
-                vprint(v, 2, '    Running {} #{} at {}'.format(
-                    loadfile, ind, time.ctime()))
-            trk = h5load[ind]
-            h5_to_pydict = {}
-            pydict_to_pyobj = {}
-            pyobj_to_h5 = {}
-
-            n += 1
-            if n > 50:
-                # pdb.set_trace()
-                continue  # TODO temp!
-                pass
-
-            for pnname in pnlist:
-                try:
-                    pn = trk[pnname]
-                except KeyError:
-                    vprint(v, 1, '**Missing key {} in {}{}, skipping'.format(
-                        pnname, loadfile, trk.name))
-                    continue
-                vprint(v, 3, 'Running {}{} at {}'.format(
-                    loadfile, pn.name, time.ctime()))
-                # load track
-                try:
-                    this_track = trackdata.Track.from_hdf5(
-                        pn,
-                        h5_to_pydict=h5_to_pydict,
-                        pydict_to_pyobj=pydict_to_pyobj)
-                except trackio.InterfaceError:
-                    vprint(v, 3, 'InterfaceError at {}{}'.format(
-                        loadfile, pn.name))
-                    continue
-                tracklist[pnname].append(this_track)
-                # each algorithm version
-                for algname, algfunc in alglist.items():
-                    vprint(v, 4, 'Running alg {} at {}'.format(
-                        algname, time.ctime()))
-                    # check for result
-                    if algname not in this_track.algorithms:
-                        # run algorithm
-                        try:
-                            _, HTinfo = algfunc.reconstruct(this_track)
-                        except algfunc.InfiniteLoop:
-                            continue
-                        except algfunc.NoEndsFound:
-                            continue
-                        # trim memory usage!
-                        if hasattr(HTinfo, 'ridge'):
-                            if HTinfo.ridge:
-                                for ridgept in HTinfo.ridge:
-                                    ridgept.cuts = None
-                                    ridgept.best_cut = None
-                        # write into track object
-                        try:
-                            this_track.add_algorithm(
-                                algname,
-                                alpha_deg=HTinfo.alpha_deg,
-                                beta_deg=HTinfo.beta_deg,
-                                info=HTinfo)
-                            # write into HDF5
-                            trackio.write_object_to_hdf5(
-                                this_track.algorithms[algname],
-                                pn['algorithms'], algname,
-                                pyobj_to_h5=pyobj_to_h5)
-                        except trackdata.InputError:
-                            # already has this algorithm
-                            pass
-
+    try:
+        with h5py.File(loadfile, 'a', driver='core') as h5load:
+            filename = h5load.filename
+            n = 0
             if progressflag:
-                pbar.update(n)
-        if progressflag:
-            pbar.finish()
-        # h5load gets closed
-        vprint(v, 2, '\n  Finished loading {} at {}'.format(
-            loadfile, time.ctime()))
+                pbar = progressbar.ProgressBar(
+                    widgets=[progressbar.Percentage(), ' ',
+                             progressbar.Bar(), ' ',
+                             progressbar.ETA()], maxval=len(h5load))
+                pbar.start()
+
+            keylist = h5load.keys()
+            keylist.sort()
+            for ind in keylist:
+                if int(ind) % 10 == 0:
+                    vprint(v, 2, '    Running {} #{} at {}'.format(
+                        loadfile, ind, time.ctime()))
+                trk = h5load[ind]
+                h5_to_pydict = {}
+                pydict_to_pyobj = {}
+                pyobj_to_h5 = {}
+
+                n += 1
+                if n > 50:
+                    # pdb.set_trace()
+                    continue  # TODO temp!
+                    pass
+
+                for pnname in pnlist:
+                    try:
+                        pn = trk[pnname]
+                    except KeyError:
+                        vprint(v, 1,
+                               '**Missing key {} in {}{}, skipping'.format(
+                                   pnname, loadfile, trk.name))
+                        continue
+                    vprint(v, 3, 'Running {}{} at {}'.format(
+                        loadfile, pn.name, time.ctime()))
+                    # load track
+                    try:
+                        this_track = trackdata.Track.from_hdf5(
+                            pn,
+                            h5_to_pydict=h5_to_pydict,
+                            pydict_to_pyobj=pydict_to_pyobj)
+                    except trackio.InterfaceError:
+                        vprint(v, 3, 'InterfaceError at {}{}'.format(
+                            loadfile, pn.name))
+                        continue
+                    tracklist[pnname].append(this_track)
+                    # each algorithm version
+                    for algname, algfunc in alglist.items():
+                        vprint(v, 4, 'Running alg {} at {}'.format(
+                            algname, time.ctime()))
+                        # check for result
+                        if algname not in this_track.algorithms:
+                            # run algorithm
+                            try:
+                                _, HTinfo = algfunc.reconstruct(this_track)
+                            except algfunc.InfiniteLoop:
+                                continue
+                            except algfunc.NoEndsFound:
+                                continue
+                            # trim memory usage!
+                            if hasattr(HTinfo, 'ridge'):
+                                if HTinfo.ridge:
+                                    for ridgept in HTinfo.ridge:
+                                        ridgept.cuts = None
+                                        ridgept.best_cut = None
+                            # write into track object
+                            try:
+                                this_track.add_algorithm(
+                                    algname,
+                                    alpha_deg=HTinfo.alpha_deg,
+                                    beta_deg=HTinfo.beta_deg,
+                                    info=HTinfo)
+                                # write into HDF5
+                                trackio.write_object_to_hdf5(
+                                    this_track.algorithms[algname],
+                                    pn['algorithms'], algname,
+                                    pyobj_to_h5=pyobj_to_h5)
+                            except trackdata.InputError:
+                                # already has this algorithm
+                                pass
+
+                if progressflag:
+                    pbar.update(n)
+            if progressflag:
+                pbar.finish()
+            # h5load gets closed
+            vprint(v, 2, '\n  Finished loading {} at {}'.format(
+                loadfile, time.ctime()))
+    except IOError:
+        vprint(v, 1, 'IOError: Unable to open file (I think) for {}'.format(
+            loadfile))
 
     # AlgorithmResults objects
     alglist2 = alglist.keys() + ['matlab HT v1.5']
@@ -220,11 +226,15 @@ def pyml_run_algs(loadfile, savefile, v):
         loadfile, time.ctime()))
 
     # write to savefile
-    with h5py.File(savefile, 'w', driver='core') as h5save:
-        for pnname, AR_pn in AR.items():
-            pngroup = h5save.create_group(pnname)
-            for algname, this_AR in AR_pn.items():
-                trackio.write_object_to_hdf5(this_AR, pngroup, algname)
+    try:
+        with h5py.File(savefile, 'w', driver='core') as h5save:
+            for pnname, AR_pn in AR.items():
+                pngroup = h5save.create_group(pnname)
+                for algname, this_AR in AR_pn.items():
+                    trackio.write_object_to_hdf5(this_AR, pngroup, algname)
+    except IOError:
+        vprint(v, 1, 'IOError: Unable to create file (I think) for {}'.format(
+            savefile))
 
 
 if __name__ == '__main__':
