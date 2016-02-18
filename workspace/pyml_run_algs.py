@@ -15,6 +15,7 @@ import glob
 import h5py
 import multiprocessing
 import ipdb as pdb
+import progressbar
 
 import trackdata
 import trackio
@@ -27,7 +28,7 @@ from filejob import JobOptions, vprint
 
 def run_main():
 
-    multi_flag = False   # run in parallel - turn off to debug
+    multi_flag = True   # run in parallel - turn off to debug
     _, loadpath, savepath, loadglob, saveglob, v, n_proc = file_vars()
 
     if not os.path.isdir(savepath):
@@ -50,9 +51,9 @@ def file_vars():
     Gets loaded in run_main() as well as runfile(loadname).
     """
 
-    server_flag = False
+    server_flag = True
     if server_flag:
-        n_threads = 11
+        n_threads = 12
         loadpath = '/global/home/users/bcplimley/multi_angle/HTbatch01_pyml'
         savepath = '/global/home/users/bcplimley/multi_angle/HTbatch01_AR'
     else:
@@ -63,7 +64,7 @@ def file_vars():
     loadglob = 'MultiAngle_HT_*_*_py.h5'
     saveglob = 'MultiAngle_HT_*_*_AR.h5'
 
-    v = 2   # verbosity
+    v = 1   # verbosity
 
     return server_flag, loadpath, savepath, loadglob, saveglob, v, n_threads
 
@@ -104,6 +105,8 @@ def runfile(loadname):
 
 def pyml_run_algs(loadfile, savefile, v):
 
+    progressflag = False     # turn off for parallel
+
     pnlist = ['pix10_5noise0', 'pix2_5noise0']
     alglist = {'python HT v1.5': ht,
                'python HT v1.5a': ht2,
@@ -116,16 +119,37 @@ def pyml_run_algs(loadfile, savefile, v):
         for algname in alglist.keys():
             AR[pnname][algname] = []
 
-    vprint(v, 1, 'Starting {} at {}'.format(loadfile, time.ctime()))
+    vprint(v, 1, '\nStarting {} at {}'.format(loadfile, time.ctime()))
     with h5py.File(loadfile, 'a', driver='core') as h5load:
         filename = h5load.filename
-        for trk in h5load.values():
+        n = 0
+        if progressflag:
+            pbar = progressbar.ProgressBar(
+                widgets=[progressbar.Percentage(), ' ', progressbar.Bar(), ' ',
+                         progressbar.ETA()], maxval=len(h5load))
+            pbar.start()
+
+        keylist = h5load.keys()
+        keylist.sort()
+        for ind in keylist:
+            if int(ind) % 10 == 0:
+                vprint(v, 2, '    Running {} #{} at {}'.format(
+                    loadfile, ind, time.ctime()))
+            trk = h5load[ind]
             h5_to_pydict = {}
             pydict_to_pyobj = {}
             pyobj_to_h5 = {}
 
+            n += 1
+            if n > 50:
+                # pdb.set_trace()
+                # continue  # TODO temp!
+                pass
+
             for pnname in pnlist:
                 pn = trk[pnname]
+                vprint(v, 3, 'Running {}{} at {}'.format(
+                    loadfile, pn.name, time.ctime()))
                 # load track
                 try:
                     this_track = trackdata.Track.from_hdf5(
@@ -133,28 +157,49 @@ def pyml_run_algs(loadfile, savefile, v):
                         h5_to_pydict=h5_to_pydict,
                         pydict_to_pyobj=pydict_to_pyobj)
                 except trackio.InterfaceError:
-                    vprint(v, 2, 'InterfaceError at {}{}'.format(
+                    vprint(v, 3, 'InterfaceError at {}{}'.format(
                         loadfile, pn.name))
                     continue
                 tracklist[pnname].append(this_track)
                 # each algorithm version
                 for algname, algfunc in alglist.items():
-                    vprint(v, 3, 'Running alg {} at {}'.format(
+                    vprint(v, 4, 'Running alg {} at {}'.format(
                         algname, time.ctime()))
                     # run algorithm
-                    HToutput, HTinfo = algfunc.reconstruct(this_track)
+                    try:
+                        _, HTinfo = algfunc.reconstruct(this_track)
+                    except algfunc.InfiniteLoop:
+                        continue
+                    except algfunc.NoEndsFound:
+                        continue
+                    # trim memory usage!
+                    if hasattr(HTinfo, 'ridge'):
+                        if HTinfo.ridge:
+                            for ridgept in HTinfo.ridge:
+                                ridgept.cuts = None
+                                ridgept.best_cut = None
                     # write into track object
-                    this_track.add_algorithm(
-                        algname,
-                        alpha_deg=HTinfo.alpha_deg, beta_deg=HTinfo.beta_deg,
-                        info=HTinfo)
-                    # write into HDF5
-                    trackio.write_object_to_hdf5(
-                        this_track.algorithms[algname],
-                        pn['algorithms'], algname,
-                        pyobj_to_h5=pyobj_to_h5)
+                    try:
+                        this_track.add_algorithm(
+                            algname,
+                            alpha_deg=HTinfo.alpha_deg,
+                            beta_deg=HTinfo.beta_deg,
+                            info=HTinfo)
+                        # write into HDF5
+                        trackio.write_object_to_hdf5(
+                            this_track.algorithms[algname],
+                            pn['algorithms'], algname,
+                            pyobj_to_h5=pyobj_to_h5)
+                    except trackdata.InputError:
+                        # already has this algorithm
+                        pass
+
+            if progressflag:
+                pbar.update(n)
+        if progressflag:
+            pbar.finish()
         # h5load gets closed
-        vprint(v, 2, '  Finished loading {} at {}'.format(
+        vprint(v, 2, '\n  Finished loading {} at {}'.format(
             loadfile, time.ctime()))
 
     # AlgorithmResults objects
@@ -163,7 +208,7 @@ def pyml_run_algs(loadfile, savefile, v):
             this_AR = evaluation.AlgorithmResults.from_track_array(
                 tracklist[pnname], alg_name=algname, filename=filename)
             AR[pnname][algname] = this_AR
-    vprint(v, 2, '  Created AR objects for {} at {}'.format(
+    vprint(v, 2, '\n  Created AR objects for {} at {}'.format(
         loadfile, time.ctime()))
 
     # write to savefile
