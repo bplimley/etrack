@@ -64,7 +64,7 @@ def file_vars():
     loadglob = 'MultiAngle_HT_*_*_py.h5'
     saveglob = 'MultiAngle_HT_*_*_AR.h5'
 
-    v = 2   # verbosity
+    v = 1   # verbosity
 
     return server_flag, loadpath, savepath, loadglob, saveglob, v, n_threads
 
@@ -145,7 +145,7 @@ def pyml_run_algs(loadfile, savefile, v):
                 n += 1
                 if n > 50:
                     # pdb.set_trace()
-                    continue  # TODO temp!
+                    # continue  # TODO temp!
                     pass
 
                 for pnname in pnlist:
