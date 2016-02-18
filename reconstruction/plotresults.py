@@ -167,10 +167,11 @@ def run_main():
     # 2016-02-17
     import h5py
 
-    loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1455770994'
+    loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1455774217'
 
     pnlist = ['pix10_5noise0', 'pix2_5noise0']
-    alglist = ['python HT v1.5', 'python HT v1.5a', 'python HT v1.5b']
+    alglist = ['python HT v1.5', 'python HT v1.5a', 'python HT v1.5b',
+               'matlab HT v1.5']
 
     with h5py.File(loadfile, 'r') as h5f:
         AR = {}
@@ -180,18 +181,19 @@ def run_main():
                 AR[pn][alg] = evaluation.AlgorithmResults.from_hdf5(
                     h5f[pn][alg])
 
-    colors = 'kbrgcm'
+    colors = ['k', 'b', 'r', 'g', 'c', 'm', '0.7', 'y']
     n = 0
     plt.figure()
     for pn in pnlist:
         for alg in alglist:
             kwargs = {'color': colors[n], 'label': pn + ' ' + alg}
+            this_AR = AR[pn][alg].select(beta_true_max=30)
+
             plot_series(
-                AR[pn][alg], bin_edges=range(0, 500, 100), plot_kwargs=kwargs)
+                this_AR, bin_edges=range(0, 500, 100), plot_kwargs=kwargs)
             n += 1
     plt.legend()
     plt.show()
-
 
 
 if __name__ == '__main__':

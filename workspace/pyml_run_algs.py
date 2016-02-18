@@ -55,7 +55,7 @@ def file_vars():
     if server_flag:
         n_threads = 12
         loadpath = '/global/home/users/bcplimley/multi_angle/HTbatch01_pyml'
-        savepath = '/global/home/users/bcplimley/multi_angle/HTbatch01_AR'
+        savepath = '/global/home/users/bcplimley/multi_angle/HTbatch01_ARnew'
     else:
         # LBL desktop
         n_threads = 4
@@ -64,7 +64,7 @@ def file_vars():
     loadglob = 'MultiAngle_HT_*_*_py.h5'
     saveglob = 'MultiAngle_HT_*_*_AR.h5'
 
-    v = 1   # verbosity
+    v = 2   # verbosity
 
     return server_flag, loadpath, savepath, loadglob, saveglob, v, n_threads
 
@@ -143,7 +143,7 @@ def pyml_run_algs(loadfile, savefile, v):
             n += 1
             if n > 50:
                 # pdb.set_trace()
-                # continue  # TODO temp!
+                continue  # TODO temp!
                 pass
 
             for pnname in pnlist:
@@ -165,34 +165,36 @@ def pyml_run_algs(loadfile, savefile, v):
                 for algname, algfunc in alglist.items():
                     vprint(v, 4, 'Running alg {} at {}'.format(
                         algname, time.ctime()))
-                    # run algorithm
-                    try:
-                        _, HTinfo = algfunc.reconstruct(this_track)
-                    except algfunc.InfiniteLoop:
-                        continue
-                    except algfunc.NoEndsFound:
-                        continue
-                    # trim memory usage!
-                    if hasattr(HTinfo, 'ridge'):
-                        if HTinfo.ridge:
-                            for ridgept in HTinfo.ridge:
-                                ridgept.cuts = None
-                                ridgept.best_cut = None
-                    # write into track object
-                    try:
-                        this_track.add_algorithm(
-                            algname,
-                            alpha_deg=HTinfo.alpha_deg,
-                            beta_deg=HTinfo.beta_deg,
-                            info=HTinfo)
-                        # write into HDF5
-                        trackio.write_object_to_hdf5(
-                            this_track.algorithms[algname],
-                            pn['algorithms'], algname,
-                            pyobj_to_h5=pyobj_to_h5)
-                    except trackdata.InputError:
-                        # already has this algorithm
-                        pass
+                    # check for result
+                    if algname not in this_track.algorithms:
+                        # run algorithm
+                        try:
+                            _, HTinfo = algfunc.reconstruct(this_track)
+                        except algfunc.InfiniteLoop:
+                            continue
+                        except algfunc.NoEndsFound:
+                            continue
+                        # trim memory usage!
+                        if hasattr(HTinfo, 'ridge'):
+                            if HTinfo.ridge:
+                                for ridgept in HTinfo.ridge:
+                                    ridgept.cuts = None
+                                    ridgept.best_cut = None
+                        # write into track object
+                        try:
+                            this_track.add_algorithm(
+                                algname,
+                                alpha_deg=HTinfo.alpha_deg,
+                                beta_deg=HTinfo.beta_deg,
+                                info=HTinfo)
+                            # write into HDF5
+                            trackio.write_object_to_hdf5(
+                                this_track.algorithms[algname],
+                                pn['algorithms'], algname,
+                                pyobj_to_h5=pyobj_to_h5)
+                        except trackdata.InputError:
+                            # already has this algorithm
+                            pass
 
             if progressflag:
                 pbar.update(n)
@@ -203,8 +205,9 @@ def pyml_run_algs(loadfile, savefile, v):
             loadfile, time.ctime()))
 
     # AlgorithmResults objects
+    alglist2 = alglist.keys() + ['matlab HT v1.5']
     for pnname in pnlist:
-        for algname in alglist.keys():
+        for algname in alglist2:
             this_AR = evaluation.AlgorithmResults.from_track_array(
                 tracklist[pnname], alg_name=algname, filename=filename)
             AR[pnname][algname] = this_AR

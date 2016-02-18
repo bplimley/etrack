@@ -15,7 +15,7 @@ import trackio
 def run_main():
     serverflag = True
     if serverflag:
-        loadpath = '/global/home/users/bcplimley/multi_angle/HTbatch01_AR/'
+        loadpath = '/global/home/users/bcplimley/multi_angle/HTbatch01_ARnew/'
         savepath = loadpath
     else:
         loadpath = '/media/plimley/TEAM 7B/HTbatch01_AR/'
@@ -27,7 +27,8 @@ def run_main():
     print('flist contains {} files'.format(str(len(flist))))
 
     pnlist = ['pix10_5noise0', 'pix2_5noise0']
-    alglist = ['python HT v1.5', 'python HT v1.5a', 'python HT v1.5b']
+    alglist = ['python HT v1.5', 'python HT v1.5a', 'python HT v1.5b',
+               'matlab HT v1.5']
 
     AR = {}
     for fname in flist:
