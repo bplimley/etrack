@@ -13,7 +13,7 @@ import trackio
 
 
 def run_main():
-    serverflag = False
+    serverflag = True
     if serverflag:
         loadpath = '/global/home/users/bcplimley/multi_angle/HTbatch01_AR/'
         savepath = loadpath
@@ -38,8 +38,11 @@ def run_main():
                 if firstfile:
                     AR[pn] = {}
                 for alg in alglist:
-                    this_AR = evaluation.AlgorithmResults.from_hdf5(
-                        h5f[pn][alg])
+                    try:
+                        this_AR = evaluation.AlgorithmResults.from_hdf5(
+                            h5f[pn][alg])
+                    except ZeroDivisionError:
+                        continue
                     if firstfile:
                         AR[pn][alg] = this_AR
                     else:
