@@ -415,8 +415,9 @@ class AlgorithmResults(object):
           is_contained
         """
 
-        # start with all true
-        selection = (np.ones(len(self)) > 0)
+        if len(conditions) > 1:
+            # start with all true
+            selection = (np.ones(len(self)) > 0)
 
         for kw in conditions.keys():
             if kw.lower().startswith('beta') and not self.has_beta:
@@ -434,43 +435,31 @@ class AlgorithmResults(object):
                     'Cannot select using is_contained when is_contained '
                     'does not exist')
 
-            # by default, do not wrap the parameter in a function.
-            wrapper = lambda x: x
             if kw.lower() == 'beta_min' or kw.lower() == 'beta_true_min':
-                param = self.beta_true_deg
-                wrapper = np.abs
-                comparator = np.greater
+                this_selection = np.abs(self.beta_true_deg) > conditions[kw]
             elif kw.lower() == 'beta_max' or kw.lower() == 'beta_true_max':
-                param = self.beta_true_deg
-                wrapper = np.abs
-                comparator = np.less
+                this_selection = np.abs(self.beta_true_deg) < conditions[kw]
             elif kw.lower() == 'beta_meas_min':
-                param = self.beta_meas_deg
-                comparator = np.greater
+                this_selection = self.beta_meas_deg > conditions[kw]
             elif kw.lower() == 'beta_meas_max':
-                param = self.beta_meas_deg
-                comparator = np.less
+                this_selection = self.beta_meas_deg < conditions[kw]
             elif kw.lower() == 'energy_min':
-                param = self.energy_tot_kev
-                comparator = np.greater
+                this_selection = self.energy_tot_kev > conditions[kw]
             elif kw.lower() == 'energy_max':
-                param = self.energy_tot_kev
-                comparator = np.less
+                this_selection = self.energy_tot_kev < conditions[kw]
             elif kw.lower() == 'depth_min':
-                param = self.depth_um
-                comparator = np.greater
+                this_selection = self.depth_um > conditions[kw]
             elif kw.lower() == 'depth_max':
-                param = self.depth_um
-                comparator = np.less
+                this_selection = self.depth_um < conditions[kw]
             elif kw.lower() == 'is_contained':
-                param = self.is_contained
-                comparator = np.equal
+                this_selection = self.is_contained == conditions[kw]
             else:
                 raise SelectionError(
                     'Condition keyword not found: {}'.format(kw))
-
-            selection = np.logical_and(
-                selection, comparator(wrapper(param), conditions[kw.lower()]))
+            if len(conditions) > 1:
+                selection = np.logical_and(selection, this_selection)
+            else:
+                selection = this_selection.flatten()
 
         selected_data = dict()
         for attr in self.data_attrs():
@@ -772,6 +761,9 @@ class AlphaUncertainty(Uncertainty):
         alpha_meas_deg = np.array(alpha_meas_deg)
 
         dalpha = alpha_meas_deg - alpha_true_deg
+        bad_values = np.logical_or(np.isnan(dalpha), np.isinf(dalpha))
+        dalpha = dalpha[np.logical_not(bad_values)]
+
         dalpha = cls.adjust_dalpha(dalpha)
 
         return dalpha
