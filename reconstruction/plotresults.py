@@ -6,6 +6,7 @@ from __future__ import print_function
 
 import matplotlib.pyplot as plt
 import numpy as np
+import ipdb as pdb
 
 import evaluation
 import trackio
@@ -159,19 +160,129 @@ def plot_series(alg_results, vary='Etot', angle='alpha', metric=None,
     return line
 
 
+def plot_distribution(alg_results, angle='alpha', bin_size=None,
+                      density=None, plot_kwargs=None):
+    """
+    Plot the distribution of an AlgorithmResults object.
+    """
+
+    # TODO: input handling
+    if plot_kwargs is None:
+        plot_kwargs = {}
+    if density is None:
+        density = False
+
+    if angle == 'alpha':
+        delta = evaluation.AlphaUncertainty.delta_alpha(
+            alg_results.alpha_true_deg, alg_results.alpha_meas_deg)
+        histrange = (-180, 180)
+        if bin_size is None:
+            n_bins = np.ceil(4 * len(alg_results)**(1./3.))
+        else:
+            n_bins = np.ceil(360.0 / bin_size)
+        if n_bins % 2 == 1:
+            # odd number is better, gives a peak at 0
+            n_bins += 1
+
+    hist, bin_edges = np.histogram(delta, range=histrange, bins=n_bins)
+    hist = np.array([float(h) for h in hist])
+    if density:
+        # pdb.set_trace()
+        histsum = np.sum(hist)
+        hist /= histsum
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2.0
+    histerr = np.sqrt(hist)
+    if density:
+        histerr /= histsum
+
+    stepsflag = True
+    errflag = False
+    if stepsflag:
+        drawstyle = 'steps-mid'
+    else:
+        drawstyle = 'default'
+    if errflag:
+        plt.errorbar(bin_centers, hist, yerr=histerr, drawstyle=drawstyle,
+                     **plot_kwargs)
+    else:
+        plt.plot(bin_centers, hist, drawstyle=drawstyle, **plot_kwargs)
+
+    plt.ylabel('N')
+    plt.xlabel(angle)
+    plt.xlim(histrange)
+    plt.show()
+
+    return histsum
+
+
+def temp0(AR):
+    # plot vs pixelsize and energy
+    pnlist, alglist = get_lists()
+
+    # pnlist = [pnlist[1]]
+    alglist = alglist[:2]
+
+    # colors = ['k', 'b', 'r', 'g', 'c', 'm', '0.7', 'y']
+    colors = ['c', 'm', '0.7', 'y']
+    n = 0
+    plt.figure()
+    for pn in pnlist:
+        for alg in alglist:
+            kwargs = {'color': colors[n], 'label': pn + ' ' + alg}
+            this_AR = AR[pn][alg].select(is_contained=True)
+
+            plot_series(
+                this_AR, bin_edges=range(50, 500, 25), plot_kwargs=kwargs)
+            n += 1
+    plt.legend()
+    plt.show()
+
+
+def temp1(alg_results, titletext=''):
+    # plot distributions by energy
+    bin_edges = np.array([100, 200, 300, 400, 500])
+    bin_centers = (bin_edges[1:] + bin_edges[:-1]) / 2.0
+
+    colors = ['k', 'b', 'r', 'g', 'm', 'c', 'y', '0.7']
+    plt.figure()
+    for i, bin_center in enumerate(bin_centers):
+        Emin = bin_edges[i]
+        Emax = bin_edges[i + 1]
+        labeltext = str(Emin) + 'keV < E < ' + str(Emax) + 'keV'
+        this_AR = alg_results.select(
+            energy_min=Emin, energy_max=Emax)
+        this_AR.add_default_uncertainties()
+        this_FWHM = this_AR.alpha_unc.metrics['FWHM'].value
+        this_f = this_AR.alpha_unc.metrics['f'].value
+        labeltext += ', FWHM={:2.1f}, f={:2.1f}%'.format(this_FWHM, this_f)
+        plot_distribution(
+            this_AR, density=True,
+            plot_kwargs={'color': colors[i], 'label': labeltext})
+    plt.legend()
+    plt.title(titletext)
+    plt.show()
+
+
 class InputError(Exception):
     pass
+
+
+def get_lists():
+    pnlist = ['pix10_5noise0', 'pix2_5noise0']
+    alglist = ['matlab HT v1.5',
+               'python HT v1.5',
+               'python HT v1.5a',
+               'python HT v1.5b']
+    return pnlist, alglist
 
 
 def run_main():
     # 2016-02-17
     import h5py
 
-    loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1455774217'
+    loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1455825188'
 
-    pnlist = ['pix10_5noise0', 'pix2_5noise0']
-    alglist = ['python HT v1.5', 'python HT v1.5a', 'python HT v1.5b',
-               'matlab HT v1.5']
+    pnlist, alglist = get_lists()
 
     with h5py.File(loadfile, 'r') as h5f:
         AR = {}
@@ -181,19 +292,30 @@ def run_main():
                 AR[pn][alg] = evaluation.AlgorithmResults.from_hdf5(
                     h5f[pn][alg])
 
-    colors = ['k', 'b', 'r', 'g', 'c', 'm', '0.7', 'y']
-    n = 0
-    plt.figure()
-    for pn in pnlist:
-        for alg in alglist:
-            kwargs = {'color': colors[n], 'label': pn + ' ' + alg}
-            this_AR = AR[pn][alg].select(beta_true_max=30)
+    # temp0(AR)
 
-            plot_series(
-                this_AR, bin_edges=range(0, 500, 100), plot_kwargs=kwargs)
-            n += 1
-    plt.legend()
+    ax = plt.axes()
+    this_AR = AR['pix10_5noise0']['matlab HT v1.5'].select(
+        energy_min=250, energy_max=300, is_contained=True)
+    this_AR.add_default_uncertainties()
+    print('  FWHM: {:2.1f} +- {:1.1f}'.format(
+        this_AR.alpha_unc.metrics['FWHM'].value,
+        this_AR.alpha_unc.metrics['FWHM'].uncertainty[0]))
+    print('  f:    {:2.1f} +- {:1.1f}'.format(
+        this_AR.alpha_unc.metrics['f'].value,
+        this_AR.alpha_unc.metrics['f'].uncertainty[0]))
+    histsum = plot_distribution(this_AR, bin_size=3, density=True)
+
+    # xx = np.linspace(-180, 180, num=3600)
+    # yfit = 2 / histsum * this_AR.alpha_unc.fit.eval(x=xx)
+    # plt.plot(xx, yfit, 'r', lw=2, label='python fit')
+    plt.title('250 keV < E < 300 keV, contained electrons, Matlab alg v1.5')
     plt.show()
+
+    this_AR.alpha_unc.fit.plot()
+    plt.show()
+
+    # temp1(AR['pix10_5noise0']['matlab HT v1.5'], titletext='10um matlab')
 
 
 if __name__ == '__main__':
