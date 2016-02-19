@@ -53,21 +53,24 @@ def run_main():
             loadfile = os.path.join(loadpath, loadname)
         else:
             loadfile = fname
-        with h5py.File(loadfile, 'r') as h5f:
 
-            for pn in pnlist:
-                if pn not in AR:
-                    AR[pn] = {}
-                for alg in alglist:
-                    try:
-                        this_AR = evaluation.AlgorithmResults.from_hdf5(
-                            h5f[pn][alg])
-                    except ZeroDivisionError:
-                        continue
-                    try:
-                        AR[pn][alg] += this_AR
-                    except KeyError:
-                        AR[pn][alg] = this_AR
+        try:
+            with h5py.File(loadfile, 'r') as h5f:
+                for pn in pnlist:
+                    if pn not in AR:
+                        AR[pn] = {}
+                    for alg in alglist:
+                        try:
+                            this_AR = evaluation.AlgorithmResults.from_hdf5(
+                                h5f[pn][alg])
+                        except ZeroDivisionError:
+                            continue
+                        try:
+                            AR[pn][alg] += this_AR
+                        except KeyError:
+                            AR[pn][alg] = this_AR
+        except IOError:
+            print('IOError on {}; skipping'.format(loadfile))
 
     print('saving to {}'.format(os.path.join(savepath, savename)))
     with h5py.File(os.path.join(savepath, savename), 'w') as fsave:
