@@ -22,7 +22,7 @@ import trackio
 import evaluation
 import hybridtrack as ht
 import hybridtrack2 as ht2
-import hybridtrack2b as ht2b
+import hybridtrack2c as ht2c
 from filejob import JobOptions, vprint
 
 
@@ -107,10 +107,14 @@ def pyml_run_algs(loadfile, savefile, v):
 
     progressflag = False     # turn off for parallel
 
-    pnlist = ['pix10_5noise0', 'pix2_5noise0']
+    pnlist = ['pix10_5noise0',
+              'pix2_5noise0',
+              'pix5noise0',
+              'pix20noise0',
+              'pix40noise0']
     alglist = {'python HT v1.5': ht,
                'python HT v1.5a': ht2,
-               'python HT v1.5b': ht2b}
+               'python HT v1.5c': ht2c}
     tracklist = {}
     AR = {}
     for pnname in pnlist:
