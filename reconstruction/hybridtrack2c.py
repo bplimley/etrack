@@ -24,10 +24,7 @@ def reconstruct_from_image(original_image_kev, pixel_size_um=10.5):
     """
     Perform trajectory reconstruction on CCD electron track image.
 
-    HybridTrack algorithm, UPDATED from MATLAB code, 2015-12-10.
-    - moments-based cut width calculation. (already was basically a moment)
-    - don't use cut low threshold
-    - use centroid-adjusted ridge point for stepwise alpha calculation.
+    HybridTrack algorithm, UPDATED from MATLAB code, 2016-02-18.
     - first step alpha on [-180, 180]
 
     Inputs:
@@ -190,7 +187,6 @@ class ReconstructionInfo(object):
     """
 
     def __init__(self):
-        # TODO: fix this
         self.error = []
         self.threshold_used = []
         self.binary_image = []
@@ -518,7 +514,7 @@ class RidgePoint(object):
                 180)
             if self.step_alpha_deg > 180:
                 self.step_alpha_deg -= 360
-        elif True:     # this is the correct way to do it, but not MATLAB's
+        elif False:  # thought this was the best way to do it? but not MATLAB's
             # all subsequent points
             dpos = self.coordinates_pix - self.previous.coordinates_pix
             self.step_alpha_deg = 180/np.pi * np.arctan2(-dpos[1], -dpos[0])
@@ -571,7 +567,7 @@ class Cut(object):
         self.energy_kev = np.array(
             [float(interp(x, y)) for x, y in self.coordinates_pix])
 
-        self.exclude_points2(options)
+        self.exclude_points(options)
         self.measure_width_metric(options)
         # self.measure_fwhm(self)
         # self.measure_dedx(self, options)
@@ -632,7 +628,7 @@ class Cut(object):
         """
         distance_cropped = options.cut_distance_from_center_pix[
             self.first_index_to_keep:self.first_index_to_lose]
-        self.width_metric = np.sum(distance_cropped**2 * self.energy_kev)
+        self.width_metric = np.sum(distance_cropped * self.energy_kev)
 
     def measure_fwhm(self, options):
         """Measure the FWHM of the cut (only the best cut of each step)
