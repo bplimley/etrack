@@ -123,7 +123,7 @@ def pyml_run_algs(loadfile, savefile, v):
         for algname in alglist.keys():
             AR[pnname][algname] = []
 
-    vprint(v, 1, '\nStarting {} at {}'.format(loadfile, time.ctime()))
+    vprint(v, 1, 'Starting {} at {}'.format(loadfile, time.ctime()))
     try:
         with h5py.File(loadfile, 'a', driver='core') as h5load:
             filename = h5load.filename
