@@ -26,8 +26,14 @@ def run_main():
     flist = glob.glob(os.path.join(loadpath, loadglob))
     print('flist contains {} files'.format(str(len(flist))))
 
-    pnlist = ['pix10_5noise0', 'pix2_5noise0']
-    alglist = ['python HT v1.5', 'python HT v1.5a', 'python HT v1.5b',
+    pnlist = ['pix10_5noise0',
+              'pix2_5noise0',
+              'pix5noise0',
+              'pix20noise0',
+              'pix40noise0']
+    alglist = ['python HT v1.5',
+               'python HT v1.5a',
+               'python HT v1.5c',
                'matlab HT v1.5']
 
     AR = {}
