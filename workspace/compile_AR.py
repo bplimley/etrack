@@ -10,20 +10,29 @@ import ipdb as pdb
 
 import evaluation
 import trackio
+from filejob import get_filename_function
 
 
 def run_main():
     serverflag = True
+    doneflag = True     # only take files that have an associated done file
+
     if serverflag:
         loadpath = '/global/home/users/bcplimley/multi_angle/HTbatch01_ARnew/'
         savepath = loadpath
     else:
         loadpath = '/media/plimley/TEAM 7B/HTbatch01_AR/'
         savepath = loadpath
+
     loadglob = 'MultiAngle_HT_*_*_AR.h5'
     savename = 'compile_AR_' + str(int(time.time()))
+    doneglob = 'done_MultiAngle_HT_*_*_AR.h5'
 
-    flist = glob.glob(os.path.join(loadpath, loadglob))
+    if doneflag:
+        flist = glob.glob(os.path.join(loadpath, doneglob))
+        done2load = get_filename_function(doneglob, loadglob)
+    else:
+        flist = glob.glob(os.path.join(loadpath, loadglob))
     print('flist contains {} files'.format(str(len(flist))))
 
     pnlist = ['pix10_5noise0',
@@ -38,7 +47,13 @@ def run_main():
 
     AR = {}
     for fname in flist:
-        with h5py.File(fname, 'r') as h5f:
+        if doneflag:
+            donename = os.path.split(fname)[-1]
+            loadname = done2load(donename)
+            loadfile = os.path.join(loadpath, loadname)
+        else:
+            loadfile = fname
+        with h5py.File(loadfile, 'r') as h5f:
 
             for pn in pnlist:
                 if pn not in AR:
