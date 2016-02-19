@@ -87,7 +87,7 @@ def runfile(loadname):
 
     in_place_flag = False
     phflag = True
-    doneflag = False
+    doneflag = True
 
     # setup
     opts = JobOptions(
