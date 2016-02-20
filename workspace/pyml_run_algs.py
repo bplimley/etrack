@@ -33,7 +33,7 @@ from filejob import JobOptions, vprint
 def run_main():
 
     multi_flag = True   # run in parallel - turn off to debug
-    _, loadpath, savepath, loadglob, saveglob, v, n_proc = file_vars()
+    _, loadpath, savepath, loadglob, saveglob, doneglob, v, n_proc = file_vars()
 
     if not os.path.isdir(savepath):
         os.mkdir(savepath)
@@ -67,10 +67,11 @@ def file_vars():
         savepath = '/media/plimley/TEAM 7B/HTbatch01_AR'
     loadglob = 'MultiAngle_HT_*_*_py.h5'
     saveglob = 'MultiAngle_HT_*_*_AR.h5'
+    doneglob = 'done2_MultiAngle_HT_*_*_AR.h5'
 
     v = 1   # verbosity
 
-    return server_flag, loadpath, savepath, loadglob, saveglob, v, n_threads
+    return server_flag, loadpath, savepath, loadglob, saveglob, doneglob, v, n_threads
 
 
 def runfile(loadname):
@@ -87,7 +88,7 @@ def runfile(loadname):
     """
 
     # drop the path part of loadname, if it is given
-    server_flag, loadpath, savepath, loadglob, saveglob, v, _ = file_vars()
+    server_flag, loadpath, savepath, loadglob, saveglob, doneglob, v, _ = file_vars()
 
     in_place_flag = False
     phflag = True
@@ -97,7 +98,8 @@ def runfile(loadname):
     opts = JobOptions(
         loadpath=loadpath, loadglob=loadglob,
         savepath=savepath, saveglob=saveglob,
-        in_place_flag=in_place_flag, phflag=phflag, doneflag=doneflag)
+        in_place_flag=in_place_flag, phflag=phflag, doneflag=doneflag,
+        doneglob=doneglob)
     # decide to skip or not; construct full filenames
     loadfile, savefile = opts.pre_job_tasks(loadname)
     if loadfile is not None and savefile is not None:
