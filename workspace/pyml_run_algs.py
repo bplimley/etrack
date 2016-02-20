@@ -22,7 +22,11 @@ import trackio
 import evaluation
 import hybridtrack as ht
 import hybridtrack2 as ht2
+import hybridtrack2b as ht2b
 import hybridtrack2c as ht2c
+import hybridtrack2d as ht2d
+import hybridtrack2e as ht2e
+import hybridtrack2f as ht2f
 from filejob import JobOptions, vprint
 
 
@@ -114,7 +118,11 @@ def pyml_run_algs(loadfile, savefile, v):
               'pix40noise0']
     alglist = {'python HT v1.5': ht,
                'python HT v1.5a': ht2,
-               'python HT v1.5c': ht2c}
+               'python HT v1.5b': ht2b,
+               'python HT v1.5c': ht2c,
+               'python HT v1.5d': ht2d,
+               'python HT v1.5e': ht2e,
+               'python HT v1.5f': ht2f}
     tracklist = {}
     AR = {}
     for pnname in pnlist:
