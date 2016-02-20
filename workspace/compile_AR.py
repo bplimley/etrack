@@ -26,7 +26,7 @@ def run_main():
 
     loadglob = 'MultiAngle_HT_*_*_AR.h5'
     savename = 'compile_AR_' + str(int(time.time()))
-    doneglob = 'done_MultiAngle_HT_*_*_AR.h5'
+    doneglob = 'done2_MultiAngle_HT_*_*_AR.h5'
 
     if doneflag:
         flist = glob.glob(os.path.join(loadpath, doneglob))
@@ -44,6 +44,9 @@ def run_main():
                'python HT v1.5a',
                'python HT v1.5b',
                'python HT v1.5c',
+               'python HT v1.5d',
+               'python HT v1.5e',
+               'python HT v1.5f',
                'matlab HT v1.5']
 
     AR = {}
@@ -65,6 +68,8 @@ def run_main():
                             this_AR = evaluation.AlgorithmResults.from_hdf5(
                                 h5f[pn][alg])
                         except ZeroDivisionError:
+                            print('ZeroDivisionError on {} - {}'.format(
+                                pn, alg))
                             continue
                         try:
                             AR[pn][alg] += this_AR
