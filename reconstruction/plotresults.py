@@ -219,22 +219,24 @@ def temp0(AR):
     # plot vs pixelsize and energy
     pnlist, alglist = get_lists()
 
-    # pnlist = [pnlist[1]]
-    alglist = alglist[:2]
+    pnlist = [pnlist[0]]
+    alglist = alglist[1:]
 
-    # colors = ['k', 'b', 'r', 'g', 'c', 'm', '0.7', 'y']
-    colors = ['c', 'm', '0.7', 'y']
+    colors = ['k', 'b', 'r', 'g', 'c', 'm', '0.7', 'y']
+    # colors = ['c', 'm', '0.7', 'y']
     n = 0
     plt.figure()
     for pn in pnlist:
         for alg in alglist:
-            kwargs = {'color': colors[n], 'label': pn + ' ' + alg}
+            this_color = colors[n % len(colors)]
+            kwargs = {'color': this_color, 'label': pn + ' ' + alg}
             this_AR = AR[pn][alg].select(is_contained=True)
 
             plot_series(
                 this_AR, bin_edges=range(50, 500, 25), plot_kwargs=kwargs)
             n += 1
     plt.legend()
+    plt.ylim((0, 90))
     plt.show()
 
 
@@ -268,11 +270,16 @@ class InputError(Exception):
 
 
 def get_lists():
-    pnlist = ['pix10_5noise0', 'pix2_5noise0']
+    pnlist = ['pix2_5noise0',
+              'pix5noise0',
+              'pix10_5noise0',
+              'pix20noise0',
+              'pix40noise0']
     alglist = ['matlab HT v1.5',
                'python HT v1.5',
-               'python HT v1.5a',
-               'python HT v1.5b']
+               'python HT v1.5c',
+               'python HT v1.5b',
+               'python HT v1.5a']
     return pnlist, alglist
 
 
@@ -280,7 +287,7 @@ def run_main():
     # 2016-02-17
     import h5py
 
-    loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1455825188'
+    loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1455922417'
 
     pnlist, alglist = get_lists()
 
@@ -292,30 +299,30 @@ def run_main():
                 AR[pn][alg] = evaluation.AlgorithmResults.from_hdf5(
                     h5f[pn][alg])
 
-    # temp0(AR)
+    temp0(AR)
 
-    ax = plt.axes()
-    this_AR = AR['pix10_5noise0']['matlab HT v1.5'].select(
-        energy_min=250, energy_max=300, is_contained=True)
-    this_AR.add_default_uncertainties()
-    print('  FWHM: {:2.1f} +- {:1.1f}'.format(
-        this_AR.alpha_unc.metrics['FWHM'].value,
-        this_AR.alpha_unc.metrics['FWHM'].uncertainty[0]))
-    print('  f:    {:2.1f} +- {:1.1f}'.format(
-        this_AR.alpha_unc.metrics['f'].value,
-        this_AR.alpha_unc.metrics['f'].uncertainty[0]))
-    histsum = plot_distribution(this_AR, bin_size=3, density=True)
-
-    # xx = np.linspace(-180, 180, num=3600)
-    # yfit = 2 / histsum * this_AR.alpha_unc.fit.eval(x=xx)
-    # plt.plot(xx, yfit, 'r', lw=2, label='python fit')
-    plt.title('250 keV < E < 300 keV, contained electrons, Matlab alg v1.5')
-    plt.show()
-
-    this_AR.alpha_unc.fit.plot()
-    plt.show()
-
-    # temp1(AR['pix10_5noise0']['matlab HT v1.5'], titletext='10um matlab')
+    # ax = plt.axes()
+    # this_AR = AR['pix10_5noise0']['matlab HT v1.5'].select(
+    #     energy_min=250, energy_max=300, is_contained=True)
+    # this_AR.add_default_uncertainties()
+    # print('  FWHM: {:2.1f} +- {:1.1f}'.format(
+    #     this_AR.alpha_unc.metrics['FWHM'].value,
+    #     this_AR.alpha_unc.metrics['FWHM'].uncertainty[0]))
+    # print('  f:    {:2.1f} +- {:1.1f}'.format(
+    #     this_AR.alpha_unc.metrics['f'].value,
+    #     this_AR.alpha_unc.metrics['f'].uncertainty[0]))
+    # histsum = plot_distribution(this_AR, bin_size=3, density=True)
+    #
+    # # xx = np.linspace(-180, 180, num=3600)
+    # # yfit = 2 / histsum * this_AR.alpha_unc.fit.eval(x=xx)
+    # # plt.plot(xx, yfit, 'r', lw=2, label='python fit')
+    # plt.title('250 keV < E < 300 keV, contained electrons, Matlab alg v1.5')
+    # plt.show()
+    #
+    # this_AR.alpha_unc.fit.plot()
+    # plt.show()
+    #
+    # # temp1(AR['pix10_5noise0']['matlab HT v1.5'], titletext='10um matlab')
 
 
 if __name__ == '__main__':

@@ -42,6 +42,7 @@ def run_main():
               'pix40noise0']
     alglist = ['python HT v1.5',
                'python HT v1.5a',
+               'python HT v1.5b',
                'python HT v1.5c',
                'matlab HT v1.5']
 
