@@ -761,8 +761,9 @@ class AlphaUncertainty(Uncertainty):
         alpha_meas_deg = np.array(alpha_meas_deg)
 
         dalpha = alpha_meas_deg - alpha_true_deg
-        bad_values = np.logical_or(np.isnan(dalpha), np.isinf(dalpha))
-        dalpha = dalpha[np.logical_not(bad_values)]
+        if isinstance(dalpha, np.ndarray):
+            bad_values = np.logical_or(np.isnan(dalpha), np.isinf(dalpha))
+            dalpha = dalpha[np.logical_not(bad_values)]
 
         dalpha = cls.adjust_dalpha(dalpha)
 
@@ -2033,7 +2034,7 @@ def test_IO():
 
         # from_hdf5_tracks
         loadfile2 = ('/media/plimley/TEAM 7B/HTbatch01_pyml/' +
-                     'MultiAngle_HT_56_12_py.h5')
+                     'MultiAngle_HT_10_3_py.h5')
         with h5py.File(loadfile2, 'r') as h5f:
             ar1 = AlgorithmResults.from_hdf5_tracks(
                 h5f, subgroup_name='pix10_5noise0', alg_name='matlab HT v1.5')
@@ -2041,9 +2042,9 @@ def test_IO():
                 h5f, subgroup_name='pix10_5noise0', alg_name='python HT v1.5')
             ar3 = AlgorithmResults.from_hdf5_tracks(
                 h5f, subgroup_name='pix10_5noise0', alg_name='python HT v1.5a')
-            assert len(ar1) == 931
-            assert len(ar2) == 931
-            assert len(ar3) == 931
+            assert len(ar1) == 940
+            assert len(ar2) == 940
+            assert len(ar3) == 940
             assert ar1.filename[0] == loadfile2
             assert ar2.filename[0] == loadfile2
             assert ar3.filename[0] == loadfile2
@@ -2054,9 +2055,9 @@ def test_IO():
                 h5f, subgroup_name='pix2_5noise0', alg_name='python HT v1.5')
             ar3 = AlgorithmResults.from_hdf5_tracks(
                 h5f, subgroup_name='pix2_5noise0', alg_name='python HT v1.5a')
-            assert len(ar1) == 930
-            assert len(ar2) == 930
-            assert len(ar3) == 930
+            assert len(ar1) == 929
+            assert len(ar2) == 929
+            assert len(ar3) == 929
             assert ar1.filename[0] == loadfile2
             assert ar2.filename[0] == loadfile2
             assert ar3.filename[0] == loadfile2
