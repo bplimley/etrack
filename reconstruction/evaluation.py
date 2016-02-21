@@ -415,62 +415,81 @@ class AlgorithmResults(object):
           is_contained
         """
 
-        if len(conditions) > 1:
-            # start with all true
-            selection = (np.ones(len(self)) > 0)
-
-        for kw in conditions.keys():
-            if kw.lower().startswith('beta') and not self.has_beta:
-                raise SelectionError(
-                    'Cannot select using beta when beta does not exist')
-            elif (kw.lower().startswith('energy') and
-                    self.energy_tot_kev is None):
-                raise SelectionError(
-                    'Cannot select using energy when energy does not exist')
-            elif kw.lower().startswith('depth') and self.depth_um is None:
-                raise SelectionError(
-                    'Cannot select using depth when depth does not exist')
-            elif kw.lower() == 'is_contained' and self.is_contained is None:
-                raise SelectionError(
-                    'Cannot select using is_contained when is_contained '
-                    'does not exist')
-
-            if kw.lower() == 'beta_min' or kw.lower() == 'beta_true_min':
-                this_selection = np.abs(self.beta_true_deg) > conditions[kw]
-            elif kw.lower() == 'beta_max' or kw.lower() == 'beta_true_max':
-                this_selection = np.abs(self.beta_true_deg) < conditions[kw]
-            elif kw.lower() == 'beta_meas_min':
-                this_selection = self.beta_meas_deg > conditions[kw]
-            elif kw.lower() == 'beta_meas_max':
-                this_selection = self.beta_meas_deg < conditions[kw]
-            elif kw.lower() == 'energy_min':
-                this_selection = self.energy_tot_kev > conditions[kw]
-            elif kw.lower() == 'energy_max':
-                this_selection = self.energy_tot_kev < conditions[kw]
-            elif kw.lower() == 'depth_min':
-                this_selection = self.depth_um > conditions[kw]
-            elif kw.lower() == 'depth_max':
-                this_selection = self.depth_um < conditions[kw]
-            elif kw.lower() == 'is_contained':
-                this_selection = self.is_contained == conditions[kw]
-            else:
-                raise SelectionError(
-                    'Condition keyword not found: {}'.format(kw))
-            if len(conditions) > 1:
-                selection = np.logical_and(selection, this_selection)
-            else:
-                selection = this_selection.flatten()
-
-        selected_data = dict()
-        for attr in self.data_attrs():
-            if getattr(self, attr) is None:
-                selected_data[attr] = None
-            else:
-                selected_data[attr] = getattr(self, attr)[selection]
+        selected_data = self.construct_selection(**conditions)
 
         return AlgorithmResults(parent=self,
                                 filename=self.filename,
                                 **selected_data)
+
+    def construct_selection(self, selected_data=None, **conditions):
+
+        # pdb.set_trace()
+        if selected_data is None:
+            selected_data = dict()
+        for attr in self.data_attrs():
+            if attr not in selected_data:
+                selected_data[attr] = getattr(self, attr)
+
+        kw, val = conditions.popitem()
+
+        if kw.lower().startswith('beta') and not self.has_beta:
+            raise SelectionError(
+                'Cannot select using beta when beta does not exist')
+        elif (kw.lower().startswith('energy') and
+                self.energy_tot_kev is None):
+            raise SelectionError(
+                'Cannot select using energy when energy does not exist')
+        elif kw.lower().startswith('depth') and self.depth_um is None:
+            raise SelectionError(
+                'Cannot select using depth when depth does not exist')
+        elif kw.lower() == 'is_contained' and self.is_contained is None:
+            raise SelectionError(
+                'Cannot select using is_contained when is_contained '
+                'does not exist')
+
+        if kw.lower() == 'beta_min' or kw.lower() == 'beta_true_min':
+            data = np.abs(selected_data['beta_true_deg'])
+            this_selection = data > val
+        elif kw.lower() == 'beta_max' or kw.lower() == 'beta_true_max':
+            data = np.abs(selected_data['beta_true_deg'])
+            this_selection = data < val
+        elif kw.lower() == 'beta_meas_min':
+            data = selected_data['beta_meas_deg']
+            this_selection = data > val
+        elif kw.lower() == 'beta_meas_max':
+            data = selected_data['beta_meas_deg']
+            this_selection = data < val
+        elif kw.lower() == 'energy_min':
+            data = selected_data['energy_tot_kev']
+            this_selection = data > val
+        elif kw.lower() == 'energy_max':
+            data = selected_data['energy_tot_kev']
+            this_selection = data < val
+        elif kw.lower() == 'depth_min':
+            data = selected_data['depth_um']
+            this_selection = data > val
+        elif kw.lower() == 'depth_max':
+            data = selected_data['depth_um']
+            this_selection = data < val
+        elif kw.lower() == 'is_contained':
+            data = selected_data['is_contained']
+            this_selection = data == val
+        else:
+            raise SelectionError(
+                'Condition keyword not found: {}'.format(kw))
+        selection = this_selection.flatten()
+
+        for attr in self.data_attrs():
+            if selected_data[attr] is not None:
+                selected_data[attr] = selected_data[attr][selection]
+
+        # recurse
+        if conditions:
+            # pdb.set_trace()
+            selected_data = self.construct_selection(
+                selected_data=selected_data, **conditions)
+
+        return selected_data
 
     def add_uncertainty(self, uncertainty_class):
         """
@@ -501,7 +520,8 @@ class AlgorithmResults(object):
         """
 
         self.add_uncertainty(DefaultAlphaUncertainty)
-        self.add_uncertainty(DefaultBetaUncertainty)
+        if self.has_beta:
+            self.add_uncertainty(DefaultBetaUncertainty)
 
     def list_uncertainties(self, angle_type=None):
         """
@@ -663,6 +683,11 @@ class Uncertainty(object):
 
     def compute_metrics(self):
         pass
+
+    def print_metrics(self):
+        for mname, metric in self.metrics.iteritems():
+            print(mname + ': {:5f} +- {:5f}'.format(
+                metric.value, metric.uncertainty[0]))
 
     @classmethod
     def classname_extract(cls, obj):
@@ -1515,13 +1540,19 @@ def test_alg_results():
         len1 = 1000
 
         # basic
-        x = generate_random_alg_results(length=len1)
         x = generate_random_alg_results(length=len1, has_beta=False)
         y = x.select(energy_min=300)
         assert not y.has_beta
         assert type(y) is AlgorithmResults
-        x.select(energy_min=300, energy_max=400, depth_min=200)
-        x.select(is_contained=True, depth_min=200)
+        assert not np.any(y.energy_tot_kev < 300)
+
+        y = x.select(energy_min=300, energy_max=400, depth_min=200)
+        assert not np.any(y.energy_tot_kev < 300)
+        assert not np.any(y.energy_tot_kev > 400)
+        assert not np.any(y.depth_um < 200)
+        y = x.select(is_contained=True, depth_min=200)
+        assert np.all(y.is_contained)
+        assert not np.any(y.depth_um < 200)
 
         # handle all-false result
         y = x.select(energy_min=300, energy_max=300,
