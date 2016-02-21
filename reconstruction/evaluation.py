@@ -767,9 +767,8 @@ class AlphaUncertainty(Uncertainty):
     angle_type = 'alpha'
 
     def compute_delta(self, alg_results):
-        dalpha = self.delta_alpha(alg_results.alpha_true_deg,
-                                  alg_results.alpha_meas_deg)
-        self.delta = np.abs(dalpha.flatten())
+        self.delta = self.delta_alpha(alg_results.alpha_true_deg,
+                                      alg_results.alpha_meas_deg)
 
     @classmethod
     def delta_alpha(cls, alpha_true_deg, alpha_meas_deg):
@@ -860,6 +859,8 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
     def prepare_data(self):
         """
         """
+
+        self.delta = np.abs(self.delta.flatten())
 
         # resolution calculation is from MATLAB
         self.resolution = np.minimum(100.0 * 180.0 / self.n_values, 15)
@@ -965,6 +966,138 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
             axis_max=100.0)
         self.metrics = {'FWHM': fwhm_param,
                         'f': f_param}
+
+
+class AGPCFree(AlphaGaussPlusConstant):
+
+    name = 'Alpha Gaussian + constant with variable mean'
+    class_name = 'AGPCFree'
+    __version__ = '0.1'
+
+    def prepare_data(self):
+        """
+        """
+
+        # resolution calculation is from MATLAB
+        self.resolution = np.minimum(100.0 * 360.0 / self.n_values, 30)
+        n_bins = np.ceil(360 / self.resolution)
+        nhist, edges = np.histogram(
+            self.delta, bins=n_bins, range=(-180.0, 180.0))
+
+        self.nhist = nhist
+        self.xhist = (edges[:-1] + edges[1:]) / 2
+
+        # manual estimate
+        halfmax = self.nhist.ptp()/2
+        left_ind = np.nonzero(self.nhist > halfmax)[0][0]
+        right_ind = np.nonzero(self.nhist > halfmax)[0][-1]
+        try:
+            right_estimate = (
+                self.xhist[right_ind] +
+                (self.xhist[right_ind + 1] - self.xhist[right_ind]) *
+                (halfmax - self.nhist[right_ind]) /
+                (self.nhist[right_ind + 1] - self.nhist[right_ind]))
+            left_estimate = (
+                self.xhist[left_ind] +
+                (self.xhist[left_ind - 1] - self.xhist[left_ind]) *
+                (halfmax - self.nhist[left_ind]) /
+                (self.nhist[left_ind - 1] - self.nhist[left_ind]))
+            self.fwhm_estimate = right_estimate - left_estimate
+        except IndexError:
+            # this occurs when f is small, crossing_ind + 1 may be past
+            #   the end of the histogram.
+            self.fwhm_estimate = 50
+
+    def perform_fit(self):
+        """
+        """
+
+        # constant + forward peak
+        model = lmfit.models.ConstantModel() + lmfit.models.GaussianModel()
+        # How this is working:
+        #   res and n are defined as parameters, for use in expressions.
+        #   f is defined from amplitude.
+        #   f_random is constrained to be 1 - f.
+        #   c is set not to be varied, but to depend on f_random.
+        #   center is fixed to 0.
+        #   (FWHM is already defined for the Gaussian.)
+        amplitude_estimate = (self.nhist.ptp() * np.sqrt(2*np.pi) *
+                              self.fwhm_estimate / 2.355)
+        init_values = {'c': self.nhist.min(),
+                       'center': 0,
+                       'amplitude': amplitude_estimate,
+                       'sigma': self.fwhm_estimate / 2.355}
+        weights = np.sqrt(1 / (self.nhist + 0.25))  # avoid zeros
+        params = model.make_params(**init_values)
+        params.add('res', vary=False, value=self.resolution)
+        params.add('n', vary=False, value=self.n_values)
+        params.add('f', vary=False, expr='amplitude / 2 / res / n')
+        params.add('f_random', vary=False, expr='1 - f')
+        params['c'].set(value=None, vary=False,
+                        expr='res * n * f_random / 180')
+        # params['center'].vary = False
+        self.fit = model.fit(self.nhist, x=self.xhist,
+                             params=params, weights=weights)
+
+        if (self.fit.params['f'].value <= 0 or
+                self.fit.params['fwhm'].value > 100):
+            # bad fit... don't use it
+            model = lmfit.models.ConstantModel()
+            params = model.make_params(c=self.nhist.mean())
+            params.add('res', vary=False, value=self.resolution)
+            params.add('n', vary=False, value=self.n_values)
+            params.add('f_random', vary=False, value=1.0)
+            params.add('fwhm', vary=False, value=np.nan)
+            params.add('f', vary=False, value=0.0)
+            params.add('center', vary=False, value=0.0)
+            self.fit = model.fit(self.nhist, x=self.xhist, params=params)
+
+        if not self.fit.success:
+            raise FittingError('Fit failed!')
+        else:
+            del(self.fwhm_estimate)
+
+    def compute_metrics(self):
+        """
+        """
+
+        if not self.fit.errorbars:
+            fwhm_unc = np.nan
+            f_unc = np.nan
+            center_unc = np.nan
+            print('FittingWarning: Could not compute errorbars in fit')
+        else:
+            fwhm_unc = self.fit.params['fwhm'].stderr
+            f_unc = self.fit.params['f'].stderr * 100
+            center_unc = self.fit.params['center'].stderr
+
+        fwhm_param = UncertaintyParameter(
+            name='FWHM',
+            fit_name=self.classname_extract(self),
+            value=self.fit.params['fwhm'].value,
+            uncertainty=(fwhm_unc, fwhm_unc),
+            units='degrees',
+            axis_min=0.0,
+            axis_max=120.0)
+        f_param = UncertaintyParameter(
+            name='peak fraction',
+            fit_name=self.classname_extract(self),
+            value=self.fit.params['f'].value * 100,
+            uncertainty=(f_unc, f_unc),
+            units='%',
+            axis_min=0.0,
+            axis_max=100.0)
+        center_param = UncertaintyParameter(
+            name='center',
+            fit_name=self.classname_extract(self),
+            value=self.fit.params['center'].value,
+            uncertainty=(center_unc, center_unc),
+            units='degrees',
+            axis_min=-10.0,
+            axis_max=10.0)
+        self.metrics = {'FWHM': fwhm_param,
+                        'f': f_param,
+                        'center': center_param}
 
 
 class AlphaGaussPlusConstantPlusBackscatter(AlphaGaussPlusConstant):
@@ -1078,6 +1211,8 @@ class Alpha68(AlphaUncertainty):
         """
         Calculate threshold values for 68% and +/- 1sigma
         """
+
+        self.delta = np.abs(self.delta.flatten())
 
         # see CalculateUncertainties.m from 2010
         resolution = 0.01
