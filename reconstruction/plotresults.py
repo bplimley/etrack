@@ -219,11 +219,14 @@ def temp0(AR):
     # plot vs pixelsize and energy
     pnlist, alglist = get_lists()
 
-    pnlist = [pnlist[0]]
-    alglist = alglist[1:]
+    pnlist = pnlist[:2]
+    # pnlist = [pnlist[2]]
+    alglist = alglist[:-2]
+    # alglist = [alglist[2]]
 
-    colors = ['k', 'b', 'r', 'g', 'c', 'm', '0.7', 'y']
+    # colors = ['k', 'b', 'r', 'g', 'c', 'm', '0.7', 'y']
     # colors = ['c', 'm', '0.7', 'y']
+    colors = 'b' * 6 + 'r' * 6
     n = 0
     plt.figure()
     for pn in pnlist:
@@ -269,7 +272,7 @@ class InputError(Exception):
     pass
 
 
-def get_lists():
+def get_lists(pnlist=None, alglist=None):
     pnlist = ['pix2_5noise0',
               'pix5noise0',
               'pix10_5noise0',
@@ -278,8 +281,12 @@ def get_lists():
     alglist = ['matlab HT v1.5',
                'python HT v1.5',
                'python HT v1.5c',
+               'python HT v1.5d',
+               'python HT v1.5e',
+               'python HT v1.5f',
                'python HT v1.5b',
                'python HT v1.5a']
+
     return pnlist, alglist
 
 
@@ -287,7 +294,7 @@ def run_main():
     # 2016-02-17
     import h5py
 
-    loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1455922417'
+    loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1456005019'
 
     pnlist, alglist = get_lists()
 
@@ -296,6 +303,8 @@ def run_main():
         for pn in pnlist:
             AR[pn] = {}
             for alg in alglist:
+                # if pn.startswith('pix2_5noise0') and alg == 'python HT v1.5d':
+                #     pdb.set_trace()
                 AR[pn][alg] = evaluation.AlgorithmResults.from_hdf5(
                     h5f[pn][alg])
 
