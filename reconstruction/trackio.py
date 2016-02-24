@@ -381,7 +381,9 @@ def read_object_from_hdf5(h5group, h5_to_pydict=None, ext_data_format=None,
                 output = attr.dtype(output)
             elif attr.dtype == np.ndarray:
                 output = np.zeros(h5item.shape)
-                h5item.read_direct(output)
+                if len(output):
+                    h5item.read_direct(output)
+                # else, nothing to read, and it would raise a ZeroDivisionError
             elif attr.dtype == str:
                 # blech
                 raise InterfaceError("Don't store strings in datasets!" +
