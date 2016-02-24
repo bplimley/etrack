@@ -68,12 +68,13 @@ def run_main():
                             this_AR = evaluation.AlgorithmResults.from_hdf5(
                                 h5f[pn][alg])
                         except ZeroDivisionError:
-                            print('ZeroDivisionError on {} - {}'.format(
-                                pn, alg))
+                            print('ZeroDivisionError on {} - {} - {}'.format(
+                                loadname, pn, alg))
                             continue
                         except KeyError:
                             # happens once somewhere
-                            print('KeyError on {} - {}'.format(pn, alg))
+                            print('KeyError on {} - {} - {}'.format(
+                                loadname, pn, alg))
                             continue
                         try:
                             AR[pn][alg] += this_AR
