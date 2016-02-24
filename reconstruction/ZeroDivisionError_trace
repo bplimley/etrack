@@ -1,0 +1,80 @@
+---------------------------------------------------------------------------
+ZeroDivisionError                         Traceback (most recent call last)
+/global/home/users/bcplimley/gh/etrack/workspace/pyml_run_algs.py in <module>()
+    256
+    257 if __name__ == '__main__':
+--> 258     run_main()
+    259
+    260     if False:
+
+/global/home/users/bcplimley/gh/etrack/workspace/pyml_run_algs.py in run_main()
+     46         p.map(runfile, flist, chunksize=5)
+     47     else:
+---> 48         [runfile(f) for f in flist]
+     49
+     50
+
+/global/home/users/bcplimley/gh/etrack/workspace/pyml_run_algs.py in runfile(loadname)
+    105     if loadfile is not None and savefile is not None:
+    106         # do the work
+--> 107         pyml_run_algs(loadfile, savefile, v)
+    108         # clean up
+    109         opts.post_job_tasks(loadname)
+
+/global/home/users/bcplimley/gh/etrack/workspace/pyml_run_algs.py in pyml_run_algs(loadfile, savefile, v)
+    192                             # run algorithm
+    193                             try:
+--> 194                                 _, HTinfo = algfunc.reconstruct(this_track)
+    195                             except algfunc.InfiniteLoop:
+    196                                 continue
+
+/global/scratch/bcplimley/multi_angle/py/hybridtrack.pyc in reconstruct(track_object)
+     18         pixel_size_um = 10.5
+     19
+---> 20     return reconstruct_from_image(img, pixel_size_um=pixel_size_um)
+     21
+     22
+
+/global/scratch/bcplimley/multi_angle/py/hybridtrack.pyc in reconstruct_from_image(original_image_kev, pixel_size_um)
+     46
+     47     # ridge following
+---> 48     ridge_follow(prepared_image_kev, options, info)
+     49
+     50     compute_direction(track_energy_kev, options, info)
+
+/global/scratch/bcplimley/multi_angle/py/hybridtrack.pyc in ridge_follow(image, options, info)
+    374
+    375     while not ridge[-1].is_end:
+--> 376         ridge.append(ridge[-1].step())
+    377         if len(ridge) > 30:
+    378             # until this length, not worth the time
+
+/global/scratch/bcplimley/multi_angle/py/hybridtrack.pyc in step(self)
+    461         self.generate_all_cuts()
+    462         self.choose_best_cut()
+--> 463         self.adjust_to_centroid()
+    464         self.measure_step_alpha()
+    465         next_xy, next_dir_ind = self.estimate_next_step()
+
+/global/scratch/bcplimley/multi_angle/py/hybridtrack.pyc in adjust_to_centroid(self)
+    500         """
+    501         # final position and energy
+--> 502         self.coordinates_pix = self.best_cut.find_centroid()
+    503         self.energy_kev = self.info.interp(self.coordinates_pix[0],
+    504                                            self.coordinates_pix[1])
+
+/global/scratch/bcplimley/multi_angle/py/hybridtrack.pyc in find_centroid(self)
+    676             np.transpose(self.coordinates_pix),
+    677             weights=self.energy_kev,
+--> 678             axis=1)
+    679
+    680         return self.centroid_pix
+
+/global/home/users/bcplimley/lib/python2.7/site-packages/numpy/lib/function_base.pyc in average(a, axis, weights, returned)
+    537         if (scl == 0.0).any():
+    538             raise ZeroDivisionError(
+--> 539                 "Weights sum to zero, can't be normalized")
+    540
+    541         avg = np.multiply(a, wgt).sum(axis)/scl
+
+ZeroDivisionError: Weights sum to zero, can't be normalized
