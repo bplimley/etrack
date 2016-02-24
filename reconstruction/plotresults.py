@@ -219,14 +219,14 @@ def temp0(AR):
     # plot vs pixelsize and energy
     pnlist, alglist = get_lists()
 
-    pnlist = pnlist[:2]
+    # pnlist = pnlist[:2]
     # pnlist = [pnlist[2]]
-    alglist = alglist[:-2]
-    # alglist = [alglist[2]]
+    # alglist = alglist[:-2]
+    alglist = [alglist[1], alglist[3], alglist[4], alglist[5]]
 
-    # colors = ['k', 'b', 'r', 'g', 'c', 'm', '0.7', 'y']
+    colors = ['k', 'b', 'r', 'g', 'c', 'm', '0.7', 'y']
     # colors = ['c', 'm', '0.7', 'y']
-    colors = 'b' * 6 + 'r' * 6
+    # colors = 'b' * 6 + 'r' * 6
     n = 0
     plt.figure()
     for pn in pnlist:
@@ -294,7 +294,7 @@ def run_main():
     # 2016-02-17
     import h5py
 
-    loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1456005019'
+    loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1456347532'
 
     pnlist, alglist = get_lists()
 
