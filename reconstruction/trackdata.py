@@ -882,7 +882,7 @@ def test_Track():
 
     track = Track(image, is_modeled=True, pixel_size_um=10.5, noise_ev=0.0,
                   label='MultiAngle', energy_kev=np.sum(image))
-    options, info = hybridtrack.reconstruct(image)
+    options, info = hybridtrack.reconstruct(track)
 
     track.add_algorithm('python HT v1.5', 120.5, 43.5, info=info)
 
