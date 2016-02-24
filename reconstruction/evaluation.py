@@ -131,7 +131,7 @@ class AlgorithmResults(object):
         Use a classmethod constructor instead:
           AlgorithmResults.from_hdf5
           AlgorithmResults.from_pydict
-          AlgorithmResults.from_track_array
+          AlgorithmResults.from_track_list
           AlgorithmResults.from_hdf5_tracks
         """
 
@@ -274,10 +274,10 @@ class AlgorithmResults(object):
         return constructed_object
 
     @classmethod
-    def from_track_array(cls, tracks,
-                         alg_name='matlab HT v1.5', filename=None):
+    def from_track_list(cls, tracks,
+                        alg_name='matlab HT v1.5', filename=None):
         """
-        Construct AlgorithmResults instance from an array of trackdata.Track
+        Construct AlgorithmResults instance from a list of trackdata.Track
         objects.
 
         Inputs:
@@ -2183,7 +2183,7 @@ def test_IO():
 
     def test_from_files():
         # test AlgorithmResults.from_hdf5
-        # test AlgorithmResults.from_track_array
+        # test AlgorithmResults.from_track_list
         # test AlgorithmResults.from_hdf5_tracks
 
         # from_hdf5
@@ -2192,10 +2192,10 @@ def test_IO():
             AlgorithmResults.from_hdf5(h5f['ar'])
 
         import trackdata
-        # from_track_array
+        # from_track_list
         track_array = [trackdata.Track.generate_random(alg_name='asdf')
                        for _ in xrange(25)]
-        ar = AlgorithmResults.from_track_array(track_array, alg_name='asdf')
+        ar = AlgorithmResults.from_track_list(track_array, alg_name='asdf')
         assert len(ar) == 25
 
         # from_hdf5_tracks
