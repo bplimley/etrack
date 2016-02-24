@@ -71,6 +71,10 @@ def run_main():
                             print('ZeroDivisionError on {} - {}'.format(
                                 pn, alg))
                             continue
+                        except KeyError:
+                            # happens once somewhere
+                            print('KeyError on {} - {}'.format(pn, alg))
+                            continue
                         try:
                             AR[pn][alg] += this_AR
                         except KeyError:
