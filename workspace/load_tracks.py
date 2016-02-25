@@ -18,10 +18,11 @@ import plotresults
 
 def run_main(g4=None, trks=None, info=None, ind=None):
     n_processes = 1
-    T400flag = False
+    T400flag = True
+    tracks_only = True
 
     if T400flag:
-        loadfile = '..../MultiAngle_HT_100_11_py.h5'
+        loadfile = '/mnt/data/Dropbox/MATLAB/MultiAngle_HT_100_11_py.h5'
     else:
         loadfile = os.path.join(
             '/media/plimley/TEAM 7B/HTbatch01_pyml/',
@@ -41,10 +42,11 @@ def run_main(g4=None, trks=None, info=None, ind=None):
 
         print('{} tracks in target_list (energy and beta window)'.format(
             len(target_list)))
-        print('Running algorithm on target tracks...')
+        print('Running target tracks...')
 
+        if not tracks_only:
+            info = {2: [], 5: []}
         g4 = []
-        info = {2: [], 5: []}
         trks = {2: [], 5: []}
         ind = []
 
@@ -60,14 +62,16 @@ def run_main(g4=None, trks=None, info=None, ind=None):
                 this_g4 = trackdata.G4Track.from_hdf5(f[key]['g4track'])
                 this_trk2 = trackdata.Track.from_hdf5(f[key]['pix2_5noise0'])
                 this_trk5 = trackdata.Track.from_hdf5(f[key]['pix5noise0'])
-                _, this_info2 = hybridtrack2f.reconstruct(this_trk2)
-                _, this_info5 = hybridtrack2f.reconstruct(this_trk5)
+                if not tracks_only:
+                    _, this_info2 = hybridtrack2f.reconstruct(this_trk2)
+                    _, this_info5 = hybridtrack2f.reconstruct(this_trk5)
                 ind.append(int(key))
                 g4.append(this_g4)
                 trks[2].append(this_trk2)
                 trks[5].append(this_trk5)
-                info[2].append(this_info2)
-                info[5].append(this_info5)
+                if not tracks_only:
+                    info[2].append(this_info2)
+                    info[5].append(this_info5)
             except KeyError:
                 print('KeyError on {}'.format(key))
             except trackio.InterfaceError:
@@ -110,7 +114,10 @@ def run_main(g4=None, trks=None, info=None, ind=None):
             raw_input()
             plt.close('all')
 
-    return g4, trks, info, ind
+    if tracks_only:
+        return g4, trks, ind
+    else:
+        return g4, trks, info, ind
 
 if __name__ == '__main__':
     run_main()
