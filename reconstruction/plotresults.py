@@ -218,6 +218,82 @@ def plot_distribution(alg_results, angle='alpha', bin_size=None,
         return None
 
 
+def fwhm_vs_energy(AR, bin_edges=None, only_contained=True):
+    """
+    get the FWHM vs. E of an AlgorithmResults instance
+    """
+
+    if bin_edges=None:
+        bin_edges = range(50, 500, 50)
+    bin_centers = float(bin_edges[1:] + bin_edges[:-1]) / 2
+
+    if only_contained:
+        AR = AR.select(is_contained=True)
+
+    fwhm = np.zeros((len(bin_centers),))
+    fwhm_unc = np.zeros((len(bin_centers),))
+    for i in xrange(len(bin_centers)):
+        energy_min = bin_edges[i]
+        energy_max = bin_edges[i + 1]
+        this_AR = AR.select(energy_min=energy_min, energy_max=energy_max)
+        this_AR.add_default_uncertainties()
+        fwhm[i] = this_AR.alpha_unc.metrics['fwhm'].value
+        fwhm_unc[i] = this_AR.alpha_unc.metrics['fwhm'].uncertainty[0]
+
+    return fwhm, fwhm_unc, bin_centers
+
+
+def compare_AR(titletext=None, **kwargs):
+    """
+    Input key-value pairs, where key is a label (e.g. algname)
+    and value is the AR object (including all energies)
+
+    Plot the residuals.
+    """
+
+    only_contained = True
+    bin_edges = range(50, 500, 25)
+    colors = ['k', 'b', 'r', 'g', 'c', 'm', '0.7', 'y']
+
+    fwhm = {}
+    fwhm_unc = {}
+    for algname, this_AR in kwargs.iteritems():
+        fwhm[algname], fwhm_unc[algname], x = fwhm_vs_energy(
+            this_AR, bin_edges=bin_edges, only_contained=only_contained)
+    mean_values = [np.sum([f[i] for f in fwhm.values()])
+                   / length(fwhm) for i in xrange(len(x))]
+    residuals = {}
+    for algname in fwhm.keys():
+        residuals[algname] = fwhm[algname] - mean_values
+
+    plt.figure()
+    n = 0
+    for algname in fwhm.keys():
+        plt.errorbar(x, fwhm[algname], err=fwhm_unc[algname],
+                     color=colors[n % len(colors)], label=algname)
+    plt.xlabel('Energy [keV]')
+    plt.ylabel('FWHM [degrees]')
+    plt.legend()
+    if titletext:
+        plt.title(titletext)
+    plt.show()
+
+
+def compare_algorithms(ARdict):
+    """
+    Input:
+      ARdict has algorithm results in ARdict[pn][alg]
+    """
+
+    pnlist, alglist = get_lists()
+    algdict = {}
+
+    for pn in pnlist:
+        for alg in alglist:
+            algdict[alg] = ARdict[pn][alg]
+        compare_AR(titletext=pn, **algdict)
+
+
 def temp0(AR):
     # plot vs pixelsize and energy
     pnlist, alglist = get_lists()
