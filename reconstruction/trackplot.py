@@ -8,7 +8,7 @@ import ipdb as pdb
 # import hybridtrack
 
 
-def oneplot(HTinfo, g4=None):
+def oneplot(HTinfo, g4=None, titletext=None):
     """
     """
 
@@ -43,9 +43,13 @@ def oneplot(HTinfo, g4=None):
 
     # plot arrows
     plot_alpha_arrow(ax, HTinfo, fmtstring='g')
-    plt.show()
     if g4flag:
         plot_alpha_arrow(ax, HTinfo, alpha=g4.alpha_deg, fmtstring='m')
+    if titletext is not None:
+        plt.title(titletext)
+    plt.show()
+
+    return plt.gcf()
 
 
 def plot_track_image(img):

@@ -212,7 +212,10 @@ def plot_distribution(alg_results, angle='alpha', bin_size=None,
     plt.xlim(histrange)
     plt.show()
 
-    return histsum
+    if density:
+        return histsum
+    else:
+        return None
 
 
 def temp0(AR):
