@@ -1,0 +1,51 @@
+In [13]: for i in xrange(176):
+   ....:     this = trackdata.Track.from_hdf5(f['2.5'][str(i)], h5_to_pydict=d1, pydict_to_pyobj=d2)
+   ....:     this5 = trackdata.Track.from_hdf5(f['5'][str(i)], h5_to_pydict=d1, pydict_to_pyobj=d2)
+   ....:     trks[2].append(this)
+   ....:     trks[5].append(this5)
+   ....:     
+---------------------------------------------------------------------------
+InterfaceError                            Traceback (most recent call last)
+<ipython-input-13-5da35bd54aae> in <module>()
+      1 for i in xrange(176):
+----> 2     this = trackdata.Track.from_hdf5(f['2.5'][str(i)], h5_to_pydict=d1, pydict_to_pyobj=d2)
+      3     this5 = trackdata.Track.from_hdf5(f['5'][str(i)], h5_to_pydict=d1, pydict_to_pyobj=d2)
+      4     trks[2].append(this)
+      5     trks[5].append(this5)
+
+/home/plimley/gh/etrack/reconstruction/trackdata.py in from_hdf5(cls, h5group, h5_to_pydict, pydict_to_pyobj)
+    468 
+    469         read_dict = trackio.read_object_from_hdf5(
+--> 470             h5group, h5_to_pydict=h5_to_pydict)
+    471 
+    472         constructed_object = cls.from_pydict(
+
+/home/plimley/gh/etrack/reconstruction/trackio.py in read_object_from_hdf5(h5group, h5_to_pydict, ext_data_format, verbosity)
+    471                     continue
+    472                 output[attr.name][key] = read_item(
+--> 473                     attr, h5item, h5_to_pydict=h5_to_pydict)
+    474             for key, h5item in h5group[attr.name].attrs.iteritems():
+    475                 if key == 'obj_type':
+
+/home/plimley/gh/etrack/reconstruction/trackio.py in read_item(attr, h5item, h5_to_pydict)
+    396             # user object: recurse
+    397             output = read_object_from_hdf5(
+--> 398                 h5item, h5_to_pydict=h5_to_pydict, verbosity=verbosity)
+    399         elif attr.dtype is np.ndarray:
+    400             output = np.array(h5item)
+
+/home/plimley/gh/etrack/reconstruction/trackio.py in read_object_from_hdf5(h5group, h5_to_pydict, ext_data_format, verbosity)
+    441     for attr in data_format:
+    442         vprint('  Attribute {}'.format(attr.name))
+--> 443         hdf5_type = check_attr(h5group, attr)
+    444         if hdf5_type == 'none':
+    445             output[attr.name] = None
+
+/home/plimley/gh/etrack/reconstruction/trackio.py in check_attr(h5group, attr)
+    355                 raise InterfaceError(
+    356                     'Failed to find required attribute ' +
+--> 357                     '{} in HDF5 file'.format(attr.name))
+    358             hdf5_type = 'none'
+    359 
+
+InterfaceError: Failed to find required attribute alg_name in HDF5 file
