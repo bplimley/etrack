@@ -5,8 +5,8 @@ import lmfit
 import h5py
 import ipdb as pdb
 
-import trackio
-import dataformats
+from etrack.io import trackio
+from etrack.io.dataformats import get_format
 
 
 ##############################################################################
@@ -39,7 +39,7 @@ class AlgorithmResults(object):
 
     class_name = 'AlgorithmResults'
     __version__ = '0.1'
-    data_format = dataformats.get_format('AlgorithmResults')
+    data_format = get_format('AlgorithmResults')
 
     @classmethod
     def data_attrs(cls):
@@ -650,7 +650,7 @@ class Uncertainty(object):
     Either an alpha uncertainty or beta uncertainty object.
     """
 
-    data_format = dataformats.get_format('Uncertainty')
+    data_format = get_format('Uncertainty')
 
     def __init__(self, alg_results, construct_empty=False):
         """
@@ -854,7 +854,7 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
     class_name = 'AlphaGaussPlusConstant'
     __version__ = '0.1'
 
-    data_format = dataformats.get_format('AlphaGaussPlusConstant')
+    data_format = get_format('AlphaGaussPlusConstant')
 
     def prepare_data(self):
         """
@@ -1313,7 +1313,7 @@ class UncertaintyParameter(object):
 
     class_name = 'UncertaintyParameter'
     __version__ = '0.1'
-    data_format = dataformats.get_format('UncertaintyParameter')
+    data_format = get_format('UncertaintyParameter')
 
     def __init__(self, name=None, fit_name=None,
                  value=None, uncertainty=None, units=None,

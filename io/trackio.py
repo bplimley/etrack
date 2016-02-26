@@ -5,8 +5,8 @@ import h5py
 import ipdb as pdb
 import os
 
-import dataformats
-from dataformats import ClassAttr
+from etrack.io import dataformats
+from etrack.io.dataformats import ClassAttr
 
 
 ##############################################################################

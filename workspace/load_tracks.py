@@ -8,12 +8,9 @@ import matplotlib.pyplot as plt
 import ipdb as pdb
 import progressbar
 
-import hybridtrack2f
-import evaluation
-import trackdata
-import trackplot
-import trackio
-import plotresults
+from etrack.reconstruction import hybridtrack2f, evaluation, trackdata
+from etrack.visualization import trackplot, plotresults
+from etrack.io import trackio
 
 
 def run_main(g4=None, trks=None, info=None, ind=None):

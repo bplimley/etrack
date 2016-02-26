@@ -8,9 +8,9 @@ import glob
 import time
 import ipdb as pdb
 
-import evaluation
-import trackio
-from filejob import get_filename_function
+from etrack.reconstruction import evaluation
+from etrack.io import trackio
+from etrack.workspace.filejob import get_filename_function
 
 
 def run_main():

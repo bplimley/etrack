@@ -17,17 +17,16 @@ import multiprocessing
 import ipdb as pdb
 import progressbar
 
-import trackdata
-import trackio
-import evaluation
-import hybridtrack as ht
-import hybridtrack2 as ht2
-import hybridtrack2b as ht2b
-import hybridtrack2c as ht2c
-import hybridtrack2d as ht2d
-import hybridtrack2e as ht2e
-import hybridtrack2f as ht2f
-from filejob import JobOptions, vprint
+from etrack.reconstruction import trackdata, evaluation
+from etrack.io import trackio
+from etrack.reconstruction import hybridtrack as ht
+from etrack.reconstruction import hybridtrack2 as ht2
+from etrack.reconstruction import hybridtrack2b as ht2b
+from etrack.reconstruction import hybridtrack2c as ht2c
+from etrack.reconstruction import hybridtrack2d as ht2d
+from etrack.reconstruction import hybridtrack2e as ht2e
+from etrack.reconstruction import hybridtrack2f as ht2f
+from etrack.workspace.filejob import JobOptions, vprint
 
 
 def run_main():

@@ -2,7 +2,6 @@
 #
 
 import numpy as np
-import math
 
 nan = float('nan')
 
@@ -16,7 +15,7 @@ def loadG4Data(filename):
     I have maintained that here for now.
     """
 
-    f = open(filename,'r')
+    f = open(filename, 'r')
     n = 1
     data = []
     rows = f.readlines()
@@ -27,15 +26,15 @@ def loadG4Data(filename):
     return np.array(data)    # numpy
 
 
-def saveG4Data(matrix,filename):
+def saveG4Data(matrix, filename):
     """Write G4 data to file in NumPy format.
 
     (I considered HDF5 via PyTables, but that would require a little
     more work.)
     """
 
-    f = open(filename,'w')
-    np.save(f,np.array(matrix))
+    f = open(filename, 'w')
+    np.save(f, np.array(matrix))
     f.close()
 
     return 0
@@ -72,16 +71,16 @@ def separateElectrons(matrix):
     # careful, columns are indexed from 0!
     # column "1" = parentID; column "2" = step num
 
-    isInitialStep = np.logical_and(matrix[:,1]==0, matrix[:,2]==1)
-    initialStep = np.array(np.nonzero(isInitialStep),dtype=int)[0,:]
+    isInitialStep = np.logical_and(matrix[:, 1] == 0, matrix[:, 2] == 1)
+    initialStep = np.array(np.nonzero(isInitialStep), dtype=int)[0, :]
 
-    finalStep = np.zeros(initialStep.shape,dtype=int)
+    finalStep = np.zeros(initialStep.shape, dtype=int)
     finalStep[:-1] = [initialStep[i+1]-1 for i in range(len(initialStep)-1)]
-    finalStep[-1] = matrix.shape[0]-1;
+    finalStep[-1] = matrix.shape[0] - 1
 
     electron = [
-      np.array(matrix[initialStep[i]:finalStep[i],:])
-      for i in range(len(initialStep))]
+        np.array(matrix[initialStep[i]:finalStep[i], :])
+        for i in range(len(initialStep))]
 
     return electron
 
@@ -97,11 +96,11 @@ def measureEnergyKev(electron):
     indFinalE = 12
     inddE = 13
 
-    if electron.shape[0]==0:
+    if electron.shape[0] == 0:
         # nothing recorded! range cut too big
         return 0.0
 
-    energyEv = electron[0,indFinalE] + electron[0,inddE]
+    energyEv = electron[0, indFinalE] + electron[0, inddE]
     energyKev = energyEv / 1000.0
 
     return energyKev
@@ -126,45 +125,45 @@ def measureExtrapolatedRangeX(electron):
     indParentID = 1
     indStepNum = 2
     indCharge = 3
-    indInitPos = range(4,7)
-    indFinalPos = range(7,10)
+    indInitPos = range(4, 7)
+    indFinalPos = range(7, 10)
     indTrackLen = 10
     indStepLen = 11
     indFinalE = 12
     inddE = 13
 
-    if electron.shape[0]==0:
+    if electron.shape[0] == 0:
         # nothing recorded! range cut too big
         return 0.0
 
-    trackID = electron[:,indTrackID].astype(int)
+    trackID = electron[:, indTrackID].astype(int)
     parentID, charge = constructParticleTable(
-      electron,indTrackID,indParentID,indCharge)
+        electron, indTrackID, indParentID, indCharge)
     # parentID and charge are 1-indexed
     #   (i.e., charge[0] doesn't mean anything)
 
     # exclude electrons induced by secondary photons (e.g. bremsstrahlung)
     #   i.e., only include particles with a pure electron ancestry
     # start from all electrons, and remove any with photon ancestors.
-    isValid = charge==-1
-    wasValid = np.ones(len(isValid))>0    # better way to make boolean array?
-    while any(np.logical_xor(isValid,wasValid)):
+    isValid = charge == -1
+    wasValid = np.ones(len(isValid)) > 0    # better way to make boolean array?
+    while any(np.logical_xor(isValid, wasValid)):
         wasValid = isValid
         isValid = np.logical_and(
-          isValid,
-          np.logical_or(isValid[parentID], parentID==0))
+            isValid,
+            np.logical_or(isValid[parentID], parentID == 0))
 
-    firstStep = list(electron[:,indStepNum]).index(1)
-    x0 = electron[firstStep,indInitPos[0]]
+    firstStep = list(electron[:, indStepNum]).index(1)
+    x0 = electron[firstStep, indInitPos[0]]
 
     isValidStep = isValid[trackID]
-    rangeMm = max(electron[isValidStep,indInitPos[0]] - x0)
+    rangeMm = max(electron[isValidStep, indInitPos[0]] - x0)
     rangeUm = rangeMm * 1000
 
     return rangeUm
 
 
-def constructParticleTable(electron,indTrackID,indParentID,indCharge):
+def constructParticleTable(electron, indTrackID, indParentID, indCharge):
     """Return list of parentID, charge for all particles.
 
     For the range, it is important to understand where the secondary
@@ -176,11 +175,11 @@ def constructParticleTable(electron,indTrackID,indParentID,indCharge):
     particle ID.
     """
 
-    if electron.shape[0]==0:
+    if electron.shape[0] == 0:
         return None, None
 
     # N = int(max(electron[:,indTrackID]))
-    particleList = np.unique(electron[:,indTrackID]).astype(int)
+    particleList = np.unique(electron[:, indTrackID]).astype(int)
 
     # parentID and charge are initialized with zeros.
     # This should be okay because charge==0 means not an electron,
@@ -191,9 +190,9 @@ def constructParticleTable(electron,indTrackID,indParentID,indCharge):
     charge = np.zeros(max(particleList)+1)
 
     for i in particleList:
-        thisStartIndex = list(electron[:,indTrackID]).index(i)
-        parentID[i] = electron[thisStartIndex,indParentID]
-        charge[i] = electron[thisStartIndex,indCharge]
+        thisStartIndex = list(electron[:, indTrackID]).index(i)
+        parentID[i] = electron[thisStartIndex, indParentID]
+        charge[i] = electron[thisStartIndex, indCharge]
 
     # if any(isnan(parentID)) or any(isnan(charge)),
     #   this does NOT generate an error but produces the most negative
@@ -210,18 +209,18 @@ class G4Electron():
     indParentID = 1
     indStepNum = 2
     indCharge = 3
-    indInitPos = range(4,7)
-    indFinalPos = range(7,10)
+    indInitPos = range(4, 7)
+    indFinalPos = range(7, 10)
     indTrackLen = 10
     indStepLen = 11
     indFinalE = 12
     inddE = 13
 
-    def __init__(self,G4matrix=None):
+    def __init__(self, G4matrix=None):
         if G4matrix is not None:
             self.set_matrix(G4matrix)
 
-    def set_matrix(self,G4matrix):
+    def set_matrix(self, G4matrix):
         """Set G4 matrix, updating energy and particle table."""
 
         self.__mat = G4matrix
@@ -242,7 +241,7 @@ class G4Electron():
 
     def construct_particle_table(self):
         self.__particle_table = (
-            constructParticleTable(self.get_matrix,0,1,3))
+            constructParticleTable(self.get_matrix, 0, 1, 3))
 
     def get_particle_table(self):
         return self.__particle_table

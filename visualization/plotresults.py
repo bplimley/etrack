@@ -8,10 +8,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import ipdb as pdb
 
-import evaluation
-import trackio
-import dataformats
-from filejob import isstrlike
+from etrack.reconstruction import evaluation
+from etrack.io import trackio, dataformats
+from etrack.workspace.filejob import isstrlike
 
 
 def plot_series(alg_results, vary='Etot', angle='alpha', metric=None,

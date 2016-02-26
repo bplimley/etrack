@@ -2,7 +2,7 @@
 
 import numpy as np
 
-import hybridtrack
+from etrack.reconstruction import hybridtrack
 
 
 def reconstruct(original_image_kev, pixel_size_um=10.5):

@@ -7,10 +7,8 @@ import h5py
 import datetime
 import ipdb as pdb
 
-import hybridtrack
-import dataformats
-import trackio
-
+from etrack.reconstruction import hybridtrack
+from etrack.io import dataformats, trackio
 
 ##############################################################################
 #                                  G4Track                                   #

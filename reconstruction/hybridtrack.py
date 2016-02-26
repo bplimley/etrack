@@ -5,9 +5,8 @@ import ipdb as pdb
 import scipy.ndimage
 import scipy.interpolate
 
-import dedxref
-import thinning
-import trackplot
+from etrack.reconstruction import dedxref, thinning
+from etrack.visualization import trackplot
 
 
 def reconstruct(track_object):

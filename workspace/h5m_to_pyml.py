@@ -19,11 +19,9 @@ import numpy as np
 import ipdb as pdb
 import multiprocessing
 
-import trackio
-import trackdata
-import evaluation
-import hybridtrack
-import filejob
+from etrack.io import trackio
+from etrack.reconstruction import trackdata, evaluation, hybridtrack
+from etrack.workspace import filejob
 
 
 def run_main():
