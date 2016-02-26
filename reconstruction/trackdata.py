@@ -684,7 +684,12 @@ class AlgorithmOutput(object):
       alpha_deg: the alpha value measured by this algorithm, in degrees
       beta_deg: the beta value measured by this algorithm, in degrees
       info (optional): can contain more information from algorithm
+
+    This class is just not useful right now.
     """
+
+    # TODO: start over with hybridtrack output inheriting from AlgorithmOutput,
+    #   or so
 
     __version__ = '0.2'
     class_name = 'AlgorithmOutput'
@@ -731,6 +736,18 @@ class AlgorithmOutput(object):
         pydict_to_pyobj[id(read_dict)] = constructed_object
 
         return constructed_object
+
+    @classmethod
+    def from_hybridtrack_info(cls, info, alg_name):
+        """
+        Initialize an AlgorithmOutput object from the output of a hybridtrack
+        reconstruction algorithm.
+        """
+
+        if not hasattr(info, 'alpha_deg') or not hasattr(info, 'beta_deg'):
+            raise InputError('No algorithm result to use')
+
+        return cls(alg_name, info.alpha_deg, info.beta_deg, info=info)
 
 
 ##############################################################################

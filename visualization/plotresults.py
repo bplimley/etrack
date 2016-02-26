@@ -222,9 +222,9 @@ def fwhm_vs_energy(AR, bin_edges=None, only_contained=True):
     get the FWHM vs. E of an AlgorithmResults instance
     """
 
-    if bin_edges=None:
+    if bin_edges is None:
         bin_edges = range(50, 500, 50)
-    bin_centers = float(bin_edges[1:] + bin_edges[:-1]) / 2
+    bin_centers = (np.array(bin_edges[1:]) + np.array(bin_edges[:-1])) / 2
 
     if only_contained:
         AR = AR.select(is_contained=True)
@@ -235,9 +235,10 @@ def fwhm_vs_energy(AR, bin_edges=None, only_contained=True):
         energy_min = bin_edges[i]
         energy_max = bin_edges[i + 1]
         this_AR = AR.select(energy_min=energy_min, energy_max=energy_max)
-        this_AR.add_default_uncertainties()
-        fwhm[i] = this_AR.alpha_unc.metrics['fwhm'].value
-        fwhm_unc[i] = this_AR.alpha_unc.metrics['fwhm'].uncertainty[0]
+        if len(this_AR) > 25:
+            this_AR.add_default_uncertainties()
+            fwhm[i] = this_AR.alpha_unc.metrics['FWHM'].value
+            fwhm_unc[i] = this_AR.alpha_unc.metrics['FWHM'].uncertainty[0]
 
     return fwhm, fwhm_unc, bin_centers
 
@@ -260,7 +261,7 @@ def compare_AR(titletext=None, **kwargs):
         fwhm[algname], fwhm_unc[algname], x = fwhm_vs_energy(
             this_AR, bin_edges=bin_edges, only_contained=only_contained)
     mean_values = [np.sum([f[i] for f in fwhm.values()])
-                   / length(fwhm) for i in xrange(len(x))]
+                   / len(fwhm) for i in xrange(len(x))]
     residuals = {}
     for algname in fwhm.keys():
         residuals[algname] = fwhm[algname] - mean_values
@@ -268,8 +269,9 @@ def compare_AR(titletext=None, **kwargs):
     plt.figure()
     n = 0
     for algname in fwhm.keys():
-        plt.errorbar(x, fwhm[algname], err=fwhm_unc[algname],
+        plt.errorbar(x, residuals[algname], yerr=fwhm_unc[algname],
                      color=colors[n % len(colors)], label=algname)
+        n += 1
     plt.xlabel('Energy [keV]')
     plt.ylabel('FWHM [degrees]')
     plt.legend()
@@ -278,19 +280,24 @@ def compare_AR(titletext=None, **kwargs):
     plt.show()
 
 
-def compare_algorithms(ARdict):
+def compare_algorithms(ARdict, pnlist=None, alglist=None):
     """
     Input:
       ARdict has algorithm results in ARdict[pn][alg]
     """
 
-    pnlist, alglist = get_lists()
+    if pnlist is None:
+        pnlist = ARdict.keys()
+        pnlist.sort()
+    if alglist is None:
+        alglist = ARdict[pnlist[0]].keys()
+        alglist.sort()
     algdict = {}
 
     for pn in pnlist:
         for alg in alglist:
             algdict[alg] = ARdict[pn][alg]
-        compare_AR(titletext=pn, **algdict)
+        compare_AR(titletext=str(pn), **algdict)
 
 
 def temp0(AR):
@@ -386,7 +393,8 @@ def run_main():
                 AR[pn][alg] = evaluation.AlgorithmResults.from_hdf5(
                     h5f[pn][alg])
 
-    temp0(AR)
+    # temp0(AR)
+    return AR
 
     # ax = plt.axes()
     # this_AR = AR['pix10_5noise0']['matlab HT v1.5'].select(
@@ -414,3 +422,7 @@ def run_main():
 
 if __name__ == '__main__':
     run_main()
+
+    if False:
+        pdb.set_trace()
+        pass

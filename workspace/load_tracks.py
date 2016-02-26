@@ -15,7 +15,7 @@ from etrack.io import trackio
 
 def run_main(g4=None, trks=None, info=None, ind=None):
     n_processes = 1
-    T400flag = True
+    T400flag = False
     tracks_only = True
 
     if T400flag:
