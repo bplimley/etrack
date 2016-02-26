@@ -947,7 +947,7 @@ if __name__ == '__main__':
 
     image = test_input()
 
-    __, info = reconstruct(image)
+    __, info = reconstruct_from_image(image)
 
     print('')
     if True:

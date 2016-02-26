@@ -793,7 +793,7 @@ def test_Track():
 
     def test_Track_read(track):
         # test Track data format
-        import trackio
+        from etrack.io import trackio
         import os
 
         filebase = ''.join(

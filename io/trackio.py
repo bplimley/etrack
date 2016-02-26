@@ -797,7 +797,7 @@ def test_IO_data_types(filename):
         """
 
         # don't import at top of file! circular import with evaluation.py
-        import evaluation
+        from etrack.reconstruction import evaluation
 
         # Real Classes:
         # single user-defined object
@@ -834,7 +834,7 @@ def test_IO_obj_dict(filename):
     test obj_dict hardlink capability
     """
 
-    import evaluation
+    from etrack.reconstruction import evaluation
 
     # first, check a single object which is listed in obj_dict
     alg_results = evaluation.generate_random_alg_results(length=10000)
@@ -894,7 +894,7 @@ def test_IO_overwrite(filename):
     test the ability to overwrite objects in an existing HDF5 file
     """
 
-    import evaluation
+    from etrack.reconstruction import evaluation
 
     # simple overwrite
     alg_results = evaluation.generate_random_alg_results(length=10000)
@@ -942,7 +942,7 @@ def test_write_objects_to_hdf5():
     test the multiple-object form of writing
     """
 
-    import evaluation
+    from etrack.reconstruction import evaluation
 
     filename = generate_random_filename(ext='')
     filename_h5 = filename + '.h5'
