@@ -243,7 +243,7 @@ def prepare_image(image_kev, options):
     buffer_width_um = 0.55 * options.cut_total_length_pix
     buffer_width_pix = np.ceil(buffer_width_um / options.pixel_size_um)
     orig_size = np.array(np.shape(image_kev))
-    new_image_size = (orig_size + 2 * buffer_width_pix * np.ones(2))
+    new_image_size = [int(s + 2 * buffer_width_pix) for s in orig_size]
     new_image_kev = np.zeros(new_image_size)
 
     indices_of_original = [
@@ -957,40 +957,41 @@ if __name__ == '__main__':
 
     image = test_input()
 
-    __, info = reconstruct(image)
+    __, info = reconstruct_from_image(image)
 
+    v = 1
     print('')
-    if True:
+    if v >= 2:
         print('Track energy: {:.2f}'.format(info.track_energy_kev))
         print('')
-    if False:
+    if v >= 3:
         print('Low threshold used: {}'.format(info.threshold_used))
-    if False:
+    if v >= 3:
         print('Binary image:')
         print(info.binary_image + 0)
         print('')
-    if False:
+    if v >= 3:
         print('Thinned image:')
         print(info.thinned_image + 0)
         print('')
-    if False:
+    if v >= 3:
         print('ends_xy:')
         print(info.ends_xy)
         print('')
-    if False:
+    if v >= 3:
         print('start_coordinates:')
         print(info.start_coordinates)
         print('')
-    if False:
+    if v >= 3:
         print('start_direction_deg:')
         print(info.start_direction_deg)
         print('')
-    if False:
+    if v >= 3:
         print('ridge point coordinates:')
         for r in info.ridge:
             print('({:.4f}, {:.4f})').format(*r.coordinates_pix)
         print('')
-    if True:
+    if v >= 2:
         print('steps alpha:')
         for r in info.ridge:
             if r.step_alpha_deg is not None:
@@ -998,18 +999,20 @@ if __name__ == '__main__':
             else:
                 print('None')
         print('')
-    if True:
+    if v >= 2:
         print('dedx_meas, dedx_ref:')
         print('{:.4f}, {:.4f}'.format(
             info.dedx_meas_kevum, info.dedx_ref_kevum))
         print('')
-    if True:
+    if v >= 2:
         print('measurement start and end:')
         print(info.measurement_start_pt, info.measurement_end_pt)
         print('')
-    if True:
-        print('measured alpha, beta:')
-        print('{:.2f}, {:.2f}'.format(info.alpha_deg, info.beta_deg))
+    if v >= 1:
+        print('measured alpha, beta: {:.2f}, {:.2f}'.format(
+            info.alpha_deg, info.beta_deg))
+        print('compare, previous measured alpha, beta: {:.2f}, {:.2f}'.format(
+            345., 22.54))
         print('')
 
     if False:
