@@ -109,7 +109,7 @@ class ReconstructionOptions(object):
         #   angle_increment_deg and can be multipled by it to get degrees.
 
         # search_angle_indices must be a multiple of 2
-        # The maximum angular change in a single step is search_angle_indices/2
+        # The maximum angular change in a single step is search_angle_ind/2.
         # Therefore, larger search_angle allows tighter turns. But at 4 steps
         #   per pixel, search_angle does not need to be large. And regardless,
         #   search_angle_deg / 2 should be << 90, to minimize potential of
@@ -237,7 +237,8 @@ def prepare_image(image_kev, options):
     #   in any direction. it only needs to handle the ridge points going off
     #   the edge.
 
-    # TODO: reduce buffer_width to... one pixel?
+    # TODO: reduce or remove buffer_width
+    # requires changing Cut.__init__() and/or Cut.exclude_points()
 
     buffer_width_um = 0.55 * options.cut_total_length_pix
     buffer_width_pix = np.ceil(buffer_width_um / options.pixel_size_um)
