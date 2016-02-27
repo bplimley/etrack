@@ -114,10 +114,14 @@ class ReconstructionOptions(object):
         #   per pixel, search_angle does not need to be large. And regardless,
         #   search_angle_deg / 2 should be << 90, to minimize potential of
         #   walking onto an elbow or turning around.
+        # must be a multiple of 2*angle_increment_deg
         # [smaller = faster]
-        # TODO: this could be smaller for smaller pixel sizes, depending on
-        #   the position_step_size
-        search_angle_deg = 48   # must be a multiple of 2*angle_increment_deg
+        base_search_angle_deg = 48
+        search_angle_deg = base_search_angle_deg * np.sqrt(
+            self.pixel_size_um / 10.5)
+        # nearest valid value
+        incr = float(2 * self.angle_increment_deg)
+        search_angle_deg = incr * np.round(search_angle_deg / incr)
         self.search_angle_ind = (search_angle_deg /
                                  self.angle_increment_deg)
 
