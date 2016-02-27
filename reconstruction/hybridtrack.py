@@ -94,7 +94,7 @@ class ReconstructionOptions(object):
         self.cut_sampling_interval_pix = 0.25
 
         # [smaller = faster]
-        cut_total_length_um = 105
+        cut_total_length_um = 84
         self.cut_total_length_pix = (cut_total_length_um /
                                      self.pixel_size_um)
 
