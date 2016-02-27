@@ -23,13 +23,15 @@ def reconstruct_from_image(original_image_kev, pixel_size_um=10.5):
     """
     Perform trajectory reconstruction on CCD electron track image.
 
-    HybridTrack algorithm, copied from MATLAB code, 2015-08-26.
+    HybridTrack algorithm 1.51. Feb 27, 2016.
 
     Inputs:
       pixel_size_um: pitch of pixels (default 10.5 um)
 
     Output:
-      TBD.
+      options, info
+
+    Find result in info.alpha_deg and info.beta_deg.
     """
 
     # currently, only default options are supported, set in class def
@@ -506,12 +508,15 @@ class RidgePoint(object):
         """Measure the direction from previous ridge point to this one.
         """
         if self.previous is None:
-            # first point. (this behavior matches MATLAB)
+            # first point.
             self.step_alpha_deg = ((
                 self.best_cut.angle_ind * self.options.angle_increment_deg) +
                 180)
-        elif False:     # this is the correct way to do it, but not MATLAB's
-            # TODO: make this True
+            if self.step_alpha_deg > 180:
+                self.step_alpha_deg -= 360
+        elif False:  # thought this was the best way to do it, was wrong...
+            # this is only better for around 10.5um pixel size
+
             # all subsequent points
             dpos = self.coordinates_pix - self.previous.coordinates_pix
             self.step_alpha_deg = 180/np.pi * np.arctan2(-dpos[1], -dpos[0])
@@ -522,7 +527,7 @@ class RidgePoint(object):
             #   estimate_next_step uses best_ind, not step_alpha_deg, for
             #   direction to the next step.
         else:
-            # to match MATLAB calculation:
+            # this is MATLAB's method, and turns out to work well.
             # ignore centroid adjustment, i.e. just use the best cut direction.
             self.step_alpha_deg = (
                 self.previous.best_cut.angle_ind *
@@ -577,6 +582,13 @@ class Cut(object):
         x_cut, y_cut = zip(*cut_coordinates)
         x0, y0 = self.center
         self.coordinates_pix = zip(x0 + np.array(x_cut), y0 + np.array(y_cut))
+
+    def exclude_points2(self, options):
+        """
+        DON'T exclude points, just add attributes for compatibility.
+        """
+        self.first_index_to_keep = 0
+        self.first_index_to_lose = len(self.energy_kev)
 
     def exclude_points(self, options):
         """
@@ -766,9 +778,6 @@ def diffusion_skip_points(ridge, options):
     width_meas_length_pts = int(width_meas_length_pts)  # used as index
     width_values = [r.fwhm_um for r in ridge[:width_meas_length_pts]]
 
-    # TODO: remove this MATLAB bug
-    width_values[0] = 0
-
     # measure width
     measured_width_um = options.measurement_func(width_values)
 
@@ -947,7 +956,7 @@ if __name__ == '__main__':
 
     image = test_input()
 
-    __, info = reconstruct_from_image(image)
+    __, info = reconstruct(image)
 
     print('')
     if True:
