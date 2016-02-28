@@ -20,12 +20,9 @@ import progressbar
 from etrack.reconstruction import trackdata, evaluation
 from etrack.io import trackio
 from etrack.reconstruction import hybridtrack as ht
-from etrack.reconstruction import hybridtrack2 as ht2
-from etrack.reconstruction import hybridtrack2b as ht2b
-from etrack.reconstruction import hybridtrack2c as ht2c
-from etrack.reconstruction import hybridtrack2d as ht2d
-from etrack.reconstruction import hybridtrack2e as ht2e
-from etrack.reconstruction import hybridtrack2f as ht2f
+from alg_151a.etrack.reconstruction import hybridtrack as ht_a
+from alg_151b.etrack.reconstruction import hybridtrack as ht_b
+from alg_151c.etrack.reconstruction import hybridtrack as ht_c
 from etrack.workspace.filejob import JobOptions, vprint
 
 
@@ -58,12 +55,12 @@ def file_vars():
     if server_flag:
         n_threads = 12
         loadpath = '/global/home/users/bcplimley/multi_angle/HTbatch01_pyml'
-        savepath = '/global/home/users/bcplimley/multi_angle/HTbatch01_ARnew'
+        savepath = '/global/home/users/bcplimley/multi_angle/HTbatch01_AR151'
     else:
         # LBL desktop
         n_threads = 4
         loadpath = '/media/plimley/TEAM 7B/HTbatch01_pyml'
-        savepath = '/media/plimley/TEAM 7B/HTbatch01_AR'
+        savepath = '/media/plimley/TEAM 7B/HTbatch01_AR151'
     loadglob = 'MultiAngle_HT_*_*_py.h5'
     saveglob = 'MultiAngle_HT_*_*_AR.h5'
     doneglob = 'done2_MultiAngle_HT_*_*_AR.h5'
@@ -91,7 +88,7 @@ def runfile(loadname):
 
     in_place_flag = False
     phflag = True
-    doneflag = True
+    doneflag = False
 
     # setup
     opts = JobOptions(
@@ -112,18 +109,27 @@ def pyml_run_algs(loadfile, savefile, v):
 
     progressflag = False     # turn off for parallel
 
-    pnlist = ['pix10_5noise0',
-              'pix2_5noise0',
-              'pix5noise0',
-              'pix20noise0',
-              'pix40noise0']
-    alglist = {'python HT v1.5': ht,
-               'python HT v1.5a': ht2,
-               'python HT v1.5b': ht2b,
-               'python HT v1.5c': ht2c,
-               'python HT v1.5d': ht2d,
-               'python HT v1.5e': ht2e,
-               'python HT v1.5f': ht2f}
+    pnlist = [
+        'pix2_5noise0',
+        'pix5noise0',
+        'pix5noise15',
+        'pix10_5noise0',
+        'pix10_5noise15',
+        'pix10_5noise20',
+        'pix10_5noise50',
+        'pix10_5noise100',
+        'pix10_5noise200',
+        'pix10_5noise500',
+        'pix10_5noise1000',
+        'pix10_5noise2000',
+        'pix20noise0',
+        'pix40noise0',
+    ]
+    alglist = {'python HT v1.51': ht,
+               'python HT v1.51a': ht_a,
+               'python HT v1.51b': ht_b,
+               'python HT v1.51c': ht_c,
+               }
     tracklist = {}
     AR = {}
     for pnname in pnlist:
