@@ -8,14 +8,14 @@ import matplotlib.pyplot as plt
 import ipdb as pdb
 import progressbar
 
-from etrack.reconstruction import hybridtrack2f, evaluation, trackdata
+from etrack.reconstruction import hybridtrack, evaluation, trackdata
 from etrack.visualization import trackplot, plotresults
 from etrack.io import trackio
 
 
 def run_main(g4=None, trks=None, info=None, ind=None):
     n_processes = 1
-    T400flag = False
+    T400flag = True
     tracks_only = True
 
     if T400flag:

@@ -15,7 +15,7 @@ def runalgorithm(track_list, reconstruct_dict):
     """
     Inputs:
       track_list: list of m tracks to process
-      reconstruct_list: list of n reconstruct functions to run on each track
+      reconstruct_list: list of n reconstruct MODULES to run on each track
 
     Output:
       np.array (m x n) of da results.
@@ -43,13 +43,15 @@ def runalgorithm(track_list, reconstruct_dict):
                 skipcount[n] += 1
             else:
                 try:
-                    _, this_info = reconstruct_dict[alg_name](track)
+                    _, this_info = reconstruct_dict[alg_name].reconstruct(track)
                     track.add_algorithm(
                         alg_name, this_info.alpha_deg, this_info.beta_deg)
                     this_da = this_info.alpha_deg - track.g4track.alpha_deg
                     result[m, n] = this_da
-                except IOError:
-                    # placeholder except block
+                except reconstruct_dict[alg_name].InfiniteLoop:
+                    result[m, n] = np.nan
+                    errorcount[n] += 1
+                except reconstruct_dict[alg_name].NoEndsFound:
                     result[m, n] = np.nan
                     errorcount[n] += 1
         t2 = time.time()
