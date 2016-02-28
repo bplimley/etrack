@@ -239,7 +239,7 @@ def pyml_run_algs(loadfile, savefile, v):
     alglist2 = alglist.keys() + ['matlab HT v1.5']
     for pnname in pnlist:
         for algname in alglist2:
-            this_AR = evaluation.AlgorithmResults.from_track_array(
+            this_AR = evaluation.AlgorithmResults.from_track_list(
                 tracklist[pnname], alg_name=algname, filename=filename)
             AR[pnname][algname] = this_AR
     vprint(v, 2, '\n  Created AR objects for {} at {}'.format(
