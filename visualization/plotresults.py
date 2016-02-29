@@ -305,7 +305,7 @@ def compare_AR(titletext=None, **kwargs):
         plt.title(titletext)
     plt.show()
 
-    if True:
+    if False:
         f = {}
         f_unc = {}
         for algname, this_AR in kwargs.iteritems():
@@ -427,7 +427,7 @@ def get_lists(pnlist=None, alglist=None):
     ]
     alglist = [
         'python HT v1.52',
-        'python HT v1.52a',
+#        'python HT v1.52a',
         'python HT v1.52b',
         'python HT v1.52c',
         'python HT v1.52d',
@@ -440,7 +440,8 @@ def run_main():
     # 2016-02-17
     import h5py
 
-    loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1456706720'
+    # loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1456706720'
+    loadfile = '/home/plimley/gh/etrack/workspace/compile_AR_1456770251.h5'
 
     pnlist, alglist = get_lists()
 
@@ -455,6 +456,18 @@ def run_main():
                     h5f[pn][alg])
 
     # temp0(AR)
+
+    pnlist_temp = [
+        'pix2_5noise0',
+        'pix5noise0',
+        'pix5noise15',
+        'pix10_5noise0',
+        'pix10_5noise15',
+        'pix20noise0',
+        'pix40noise0',
+    ]
+    # compare_algorithms(AR, pnlist=pnlist_temp)
+
     return AR
 
     # ax = plt.axes()
