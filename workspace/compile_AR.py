@@ -15,10 +15,10 @@ from etrack.workspace.filejob import get_filename_function
 
 def run_main():
     serverflag = True
-    doneflag = True     # only take files that have an associated done file
+    doneflag = False     # only take files that have an associated done file
 
     if serverflag:
-        loadpath = '/global/home/users/bcplimley/multi_angle/HTbatch01_ARnew/'
+        loadpath = '/global/home/users/bcplimley/multi_angle/HTbatch01_AR151/'
         savepath = loadpath
     else:
         loadpath = '/media/plimley/TEAM 7B/HTbatch01_AR/'
@@ -26,7 +26,7 @@ def run_main():
 
     loadglob = 'MultiAngle_HT_*_*_AR.h5'
     savename = 'compile_AR_' + str(int(time.time()))
-    doneglob = 'done2_MultiAngle_HT_*_*_AR.h5'
+    doneglob = 'done_MultiAngle_HT_*_*_AR.h5'
 
     if doneflag:
         flist = glob.glob(os.path.join(loadpath, doneglob))
@@ -35,19 +35,28 @@ def run_main():
         flist = glob.glob(os.path.join(loadpath, loadglob))
     print('flist contains {} files'.format(str(len(flist))))
 
-    pnlist = ['pix10_5noise0',
-              'pix2_5noise0',
-              'pix5noise0',
-              'pix20noise0',
-              'pix40noise0']
-    alglist = ['python HT v1.5',
-               'python HT v1.5a',
-               'python HT v1.5b',
-               'python HT v1.5c',
-               'python HT v1.5d',
-               'python HT v1.5e',
-               'python HT v1.5f',
-               'matlab HT v1.5']
+    pnlist = [
+        'pix2_5noise0',
+        'pix5noise0',
+        'pix5noise15',
+        'pix10_5noise0',
+        'pix10_5noise15',
+        'pix10_5noise20',
+        'pix10_5noise50',
+        'pix10_5noise100',
+        'pix10_5noise200',
+        'pix10_5noise500',
+        'pix10_5noise1000',
+        'pix10_5noise2000',
+        'pix20noise0',
+        'pix40noise0',
+    ]
+    alglist = [
+        'python HT v1.51',
+        'python HT v1.51a',
+        'python HT v1.51b',
+        'python HT v1.51c',
+    ]
 
     AR = {}
     for fname in flist:
