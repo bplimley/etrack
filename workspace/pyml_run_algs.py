@@ -128,7 +128,8 @@ def pyml_run_algs(loadfile, savefile, v):
     ]
     alglist = {
         'python HT v1.52': ht,
-        'python HT v1.52a': ht_a,
+#        'python HT v1.52a': ht_a,
+# 1.52a causes RuntimeWarning and possibly breaks something more...
         'python HT v1.52b': ht_b,
         'python HT v1.52c': ht_c,
         'python HT v1.52d': ht_d,
@@ -239,7 +240,7 @@ def pyml_run_algs(loadfile, savefile, v):
         return None
 
     # AlgorithmResults objects
-    alglist2 = alglist.keys() + ['matlab HT v1.5']
+    alglist2 = alglist.keys()  # + ['matlab HT v1.5']
     for pnname in pnlist:
         for algname in alglist2:
             this_AR = evaluation.AlgorithmResults.from_track_list(
@@ -255,6 +256,7 @@ def pyml_run_algs(loadfile, savefile, v):
                 pngroup = h5save.create_group(pnname)
                 for algname, this_AR in AR_pn.items():
                     trackio.write_object_to_hdf5(this_AR, pngroup, algname)
+        vprint(v, 1, 'Finished saving {} at {}'.format(savefile, time.ctime())
     except IOError:
         vprint(v, 1, 'IOError: Unable to create file (I think) for {}'.format(
             savefile))
