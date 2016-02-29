@@ -67,6 +67,7 @@ def run_main():
             loadfile = os.path.join(loadpath, loadname)
         else:
             loadfile = fname
+            loadname = fname
 
         try:
             with h5py.File(loadfile, 'r') as h5f:
