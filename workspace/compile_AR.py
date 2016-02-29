@@ -53,7 +53,6 @@ def run_main():
     ]
     alglist = [
         'python HT v1.52',
-        'python HT v1.52a',
         'python HT v1.52b',
         'python HT v1.52c',
         'python HT v1.52d',
