@@ -16,6 +16,7 @@ import h5py
 import multiprocessing
 import ipdb as pdb
 import progressbar
+import psutil
 
 from etrack.reconstruction import trackdata, evaluation
 from etrack.io import trackio
@@ -142,7 +143,8 @@ def pyml_run_algs(loadfile, savefile, v):
         for algname in alglist.keys():
             AR[pnname][algname] = []
 
-    vprint(v, 1, 'Starting {} at {}'.format(loadfile, time.ctime()))
+    vprint(v, 1, 'Starting {} at {} with {}% mem usage'.format(
+        loadfile, time.ctime(), psutil.phymem_usage().percent))
     try:
         with h5py.File(loadfile, 'a', driver='core') as h5load:
             filename = h5load.filename
@@ -232,8 +234,10 @@ def pyml_run_algs(loadfile, savefile, v):
             if progressflag:
                 pbar.finish()
             # h5load gets closed
-            vprint(v, 2, '\n  Finished loading {} at {}'.format(
-                loadfile, time.ctime()))
+            vprint(
+                v, 1.5,
+                '\n  Finished loading {} at {} with {}% mem usage'.format(
+                loadfile, time.ctime(), psutil.phymem_usage().percent))
     except IOError:
         vprint(v, 1, 'IOError: Unable to open file (I think) for {}'.format(
             loadfile))
