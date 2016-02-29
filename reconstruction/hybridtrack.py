@@ -856,6 +856,8 @@ def select_measurement_points2(ridge, options, energy_kev, beta_deg=None,
     end = 2 * start
     if end > len(ridge):
         end = len(ridge)
+    if start >= len(ridge):
+        start = len(ridge) - 1  # for lack of a better plan
 
     return int(start), int(end)     # these become indices
 
