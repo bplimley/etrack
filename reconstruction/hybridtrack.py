@@ -745,14 +745,14 @@ def compute_direction(energy_kev, options, info):
     dedx_ref = dedxref.dedx(energy_kev)
 
     # first estimate of beta, using initial guess of beta = 45
-    start, end = select_measurement_points(
+    start, end = select_measurement_points2(
         info.ridge, options, energy_kev,
         beta_deg=options.initial_beta_guess_deg)
     dedx_meas = measure_track_dedx(info.ridge, options, start, end)
     first_cosbeta_estimate = np.minimum(dedx_ref / dedx_meas, 1)
 
     # second and final estimate of beta, using first estimate of beta
-    start, end = select_measurement_points(
+    start, end = select_measurement_points2(
         info.ridge, options, energy_kev,
         cos_beta=first_cosbeta_estimate)
     dedx_meas = measure_track_dedx(info.ridge, options, start, end)
@@ -820,6 +820,7 @@ def base_measurement_points(energy_kev):
 def select_measurement_points(ridge, options, energy_kev, beta_deg=None,
                               cos_beta=None):
     """
+    original Matlab version
     """
 
     if beta_deg is None and cos_beta is None:
@@ -842,6 +843,21 @@ def select_measurement_points(ridge, options, energy_kev, beta_deg=None,
     return int(start), int(end)     # these become indices
 
 
+def select_measurement_points2(ridge, options, energy_kev, beta_deg=None,
+                               cos_beta=None):
+    """
+    for v1.52 - simply use more points (for small pixel size)
+    """
+
+    n_points_to_skip_from_diffusion = diffusion_skip_points(ridge, options)
+
+    start = n_points_to_skip_from_diffusion
+
+    end = 2 * start
+
+    return int(start), int(end)     # these become indices
+
+
 def measurement_debug(options, info, verbosity=1, MATLAB=False):
     """
     """
@@ -856,7 +872,7 @@ def measurement_debug(options, info, verbosity=1, MATLAB=False):
                 diffusion_skip_points(info.ridge, options)))
             print('Base measurement points: ({:.4f}, {:.4f})'.format(
                 *base_measurement_points(energy)))
-        start, end = select_measurement_points(
+        start, end = select_measurement_points2(
             info.ridge, options, energy, beta_deg=beta0)
         print('First selection: ({:d}, {:d})'.format(start, end))
         dedx1 = measure_track_dedx(info.ridge, options, start, end)
@@ -864,7 +880,7 @@ def measurement_debug(options, info, verbosity=1, MATLAB=False):
         if verbosity > 0:
             print('dE/dx estimate: {:.4f}'.format(dedx1))
             print('Cos(beta) estimate: {:.4f}'.format(cb))
-        start, end = select_measurement_points(
+        start, end = select_measurement_points2(
             info.ridge, options, energy, cos_beta=cb)
         print('Second selection: ({:d}, {:d})'.format(start, end))
         if verbosity > 0:
