@@ -25,7 +25,7 @@ def run_main():
         savepath = loadpath
 
     loadglob = 'MultiAngle_HT_*_*_AR.h5'
-    savename = 'compile_AR_' + str(int(time.time()))
+    savename = 'compile_AR_' + str(int(time.time())) + '.h5'
     doneglob = 'done_MultiAngle_HT_*_*_AR.h5'
 
     if doneflag:

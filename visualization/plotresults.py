@@ -409,19 +409,28 @@ class InputError(Exception):
 
 
 def get_lists(pnlist=None, alglist=None):
-    pnlist = ['pix2_5noise0',
-              'pix5noise0',
-              'pix10_5noise0',
-              'pix20noise0',
-              'pix40noise0']
-    alglist = ['matlab HT v1.5',
-               'python HT v1.5',
-               'python HT v1.5c',
-               'python HT v1.5d',
-               'python HT v1.5e',
-               'python HT v1.5f',
-               'python HT v1.5b',
-               'python HT v1.5a']
+    pnlist = [
+        'pix2_5noise0',
+        'pix5noise0',
+        'pix5noise15',
+        'pix10_5noise0',
+        'pix10_5noise15',
+        'pix10_5noise20',
+        'pix10_5noise50',
+        'pix10_5noise100',
+        'pix10_5noise200',
+        'pix10_5noise500',
+        'pix10_5noise1000',
+        'pix10_5noise2000',
+        'pix20noise0',
+        'pix40noise0',
+    ]
+    alglist = [
+        'python HT v1.51',
+        'python HT v1.51a',
+        'python HT v1.51b',
+        'python HT v1.51c',
+    ]
 
     return pnlist, alglist
 
@@ -430,7 +439,7 @@ def run_main():
     # 2016-02-17
     import h5py
 
-    loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1456347532_v1.5.h5'
+    loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1456706720'
 
     pnlist, alglist = get_lists()
 
