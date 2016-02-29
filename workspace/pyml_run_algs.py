@@ -144,7 +144,7 @@ def pyml_run_algs(loadfile, savefile, v):
             AR[pnname][algname] = []
 
     vprint(v, 1, 'Starting {} at {} with {}% mem usage'.format(
-        loadfile, time.ctime(), psutil.phymem_usage().percent))
+        loadfile, time.ctime(), psutil.virtual_memory().percent))
     try:
         with h5py.File(loadfile, 'a', driver='core') as h5load:
             filename = h5load.filename
@@ -237,7 +237,7 @@ def pyml_run_algs(loadfile, savefile, v):
             vprint(
                 v, 1.5,
                 '\n  Finished loading {} at {} with {}% mem usage'.format(
-                loadfile, time.ctime(), psutil.phymem_usage().percent))
+                loadfile, time.ctime(), psutil.virtual_memory().percent))
     except IOError:
         vprint(v, 1, 'IOError: Unable to open file (I think) for {}'.format(
             loadfile))
