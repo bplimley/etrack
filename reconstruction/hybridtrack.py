@@ -119,6 +119,8 @@ class ReconstructionOptions(object):
         base_search_angle_deg = 48
         search_angle_deg = base_search_angle_deg * np.sqrt(
             self.pixel_size_um / 10.5)
+        if search_angle_deg > 48:
+            search_angle_deg = 48
         # nearest valid value
         incr = float(2 * self.angle_increment_deg)
         search_angle_deg = incr * np.round(search_angle_deg / incr)
