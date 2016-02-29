@@ -853,7 +853,11 @@ def select_measurement_points2(ridge, options, energy_kev, beta_deg=None,
 
     start = n_points_to_skip_from_diffusion
 
-    end = 2 * start
+    end1 = 2 * start
+    end2 = start + 1.0 / options.position_step_size_pix
+    end = np.maximum(end1, end2)
+    if end > len(ridge):
+        end = len(ridge)
 
     return int(start), int(end)     # these become indices
 
