@@ -29,7 +29,7 @@ from etrack.workspace.filejob import JobOptions, vprint
 
 def run_main():
 
-    multi_flag = True   # run in parallel - turn off to debug
+    multi_flag = False   # run in parallel - turn off to debug
     _, loadpath, savepath, loadglob, saveglob, doneglob, v, n_proc = file_vars()
 
     if not os.path.isdir(savepath):
@@ -54,7 +54,7 @@ def file_vars():
 
     server_flag = True
     if server_flag:
-        n_threads = 12
+        n_threads = 8
         loadpath = '/global/home/users/bcplimley/multi_angle/HTbatch01_pyml'
         savepath = '/global/home/users/bcplimley/multi_angle/HTbatch01_AR151'
     else:
@@ -66,7 +66,7 @@ def file_vars():
     saveglob = 'MultiAngle_HT_*_*_AR.h5'
     doneglob = 'done2_MultiAngle_HT_*_*_AR.h5'
 
-    v = 1   # verbosity
+    v = 2   # verbosity
 
     return server_flag, loadpath, savepath, loadglob, saveglob, doneglob, v, n_threads
 
@@ -188,7 +188,7 @@ def pyml_run_algs(loadfile, savefile, v):
                             h5_to_pydict=h5_to_pydict,
                             pydict_to_pyobj=pydict_to_pyobj)
                     except trackio.InterfaceError:
-                        vprint(v, 3, 'InterfaceError at {}{}'.format(
+                        vprint(v, 2, 'InterfaceError at {}{}'.format(
                             loadfile, pn.name))
                         continue
                     tracklist[pnname].append(this_track)
@@ -256,7 +256,7 @@ def pyml_run_algs(loadfile, savefile, v):
                 pngroup = h5save.create_group(pnname)
                 for algname, this_AR in AR_pn.items():
                     trackio.write_object_to_hdf5(this_AR, pngroup, algname)
-        vprint(v, 1, 'Finished saving {} at {}'.format(savefile, time.ctime()))
+        vprint(v, 1.5, 'Finished saving {} at {}'.format(savefile, time.ctime()))
     except IOError:
         vprint(v, 1, 'IOError: Unable to create file (I think) for {}'.format(
             savefile))
