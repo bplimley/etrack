@@ -849,17 +849,15 @@ def select_measurement_points2(ridge, options, energy_kev, beta_deg=None,
     for v1.52 - simply use more points (for small pixel size)
     """
 
-    n_points_to_skip_from_diffusion = diffusion_skip_points(ridge, options)
-
-    start = n_points_to_skip_from_diffusion
-
-    start_old, end_old = select_measurement_points(
+    start, end_old = select_measurement_points(
         ridge, options, energy_kev, beta_deg=beta_deg, cos_beta=cos_beta)
 
     end1 = 2 * start
     end2 = start + 1.0 / options.position_step_size_pix
-    end3 = end_old - start_old
+    end3 = end_old
     end = np.max([end1, end2, end3])
+    if end > len(ridge):
+        end = len(ridge)
 
     return int(start), int(end)     # these become indices
 
