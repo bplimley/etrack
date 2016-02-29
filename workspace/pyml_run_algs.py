@@ -131,7 +131,7 @@ def pyml_run_algs(loadfile, savefile, v):
         'python HT v1.52a': ht_a,
         'python HT v1.52b': ht_b,
         'python HT v1.52c': ht_c,
-        'python HT v1.52c': ht_c,
+        'python HT v1.52d': ht_d,
     }
     tracklist = {}
     AR = {}
