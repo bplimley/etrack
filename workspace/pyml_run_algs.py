@@ -29,7 +29,7 @@ from etrack.workspace.filejob import JobOptions, vprint
 
 def run_main():
 
-    multi_flag = False   # run in parallel - turn off to debug
+    multi_flag = True   # run in parallel - turn off to debug
     _, loadpath, savepath, loadglob, saveglob, doneglob, v, n_proc = file_vars()
 
     if not os.path.isdir(savepath):
@@ -54,7 +54,7 @@ def file_vars():
 
     server_flag = True
     if server_flag:
-        n_threads = 8
+        n_threads = 6
         loadpath = '/global/home/users/bcplimley/multi_angle/HTbatch01_pyml'
         savepath = '/global/home/users/bcplimley/multi_angle/HTbatch01_AR151'
     else:
@@ -66,7 +66,7 @@ def file_vars():
     saveglob = 'MultiAngle_HT_*_*_AR.h5'
     doneglob = 'done2_MultiAngle_HT_*_*_AR.h5'
 
-    v = 2   # verbosity
+    v = 1.5   # verbosity
 
     return server_flag, loadpath, savepath, loadglob, saveglob, doneglob, v, n_threads
 
