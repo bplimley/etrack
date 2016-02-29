@@ -856,8 +856,14 @@ def select_measurement_points2(ridge, options, energy_kev, beta_deg=None,
     end2 = start + 1.0 / options.position_step_size_pix
     end3 = end_old
     end = np.max([end1, end2, end3])
+    if start >= len(ridge):
+        start = len(ridge) - 1
+    elif start < 0:
+        start = 0
     if end > len(ridge):
         end = len(ridge)
+    elif end < 1:
+        end = 1
 
     return int(start), int(end)     # these become indices
 
