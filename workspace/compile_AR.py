@@ -52,10 +52,11 @@ def run_main():
         'pix40noise0',
     ]
     alglist = [
-        'python HT v1.51',
-        'python HT v1.51a',
-        'python HT v1.51b',
-        'python HT v1.51c',
+        'python HT v1.52',
+        'python HT v1.52a',
+        'python HT v1.52b',
+        'python HT v1.52c',
+        'python HT v1.52d',
     ]
 
     AR = {}

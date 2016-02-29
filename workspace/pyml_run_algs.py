@@ -20,9 +20,10 @@ import progressbar
 from etrack.reconstruction import trackdata, evaluation
 from etrack.io import trackio
 from etrack.reconstruction import hybridtrack as ht
-from alg_151a.etrack.reconstruction import hybridtrack as ht_a
-from alg_151b.etrack.reconstruction import hybridtrack as ht_b
-from alg_151c.etrack.reconstruction import hybridtrack as ht_c
+from alg_152a.etrack.reconstruction import hybridtrack as ht_a
+from alg_152b.etrack.reconstruction import hybridtrack as ht_b
+from alg_152c.etrack.reconstruction import hybridtrack as ht_c
+from alg_152d.etrack.reconstruction import hybridtrack as ht_d
 from etrack.workspace.filejob import JobOptions, vprint
 
 
@@ -125,11 +126,13 @@ def pyml_run_algs(loadfile, savefile, v):
         'pix20noise0',
         'pix40noise0',
     ]
-    alglist = {'python HT v1.51': ht,
-               'python HT v1.51a': ht_a,
-               'python HT v1.51b': ht_b,
-               'python HT v1.51c': ht_c,
-               }
+    alglist = {
+        'python HT v1.52': ht,
+        'python HT v1.52a': ht_a,
+        'python HT v1.52b': ht_b,
+        'python HT v1.52c': ht_c,
+        'python HT v1.52c': ht_c,
+    }
     tracklist = {}
     AR = {}
     for pnname in pnlist:
