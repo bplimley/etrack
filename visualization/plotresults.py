@@ -243,6 +243,32 @@ def fwhm_vs_energy(AR, bin_edges=None, only_contained=True):
     return fwhm, fwhm_unc, bin_centers
 
 
+def f_vs_energy(AR, bin_edges=None, only_contained=True):
+    """
+    get the f vs. E of an AlgorithmResults instance
+    """
+
+    if bin_edges is None:
+        bin_edges = range(50, 500, 50)
+    bin_centers = (np.array(bin_edges[1:]) + np.array(bin_edges[:-1])) / 2
+
+    if only_contained:
+        AR = AR.select(is_contained=True)
+
+    f = np.zeros((len(bin_centers),))
+    f_unc = np.zeros((len(bin_centers),))
+    for i in xrange(len(bin_centers)):
+        energy_min = bin_edges[i]
+        energy_max = bin_edges[i + 1]
+        this_AR = AR.select(energy_min=energy_min, energy_max=energy_max)
+        if len(this_AR) > 25:
+            this_AR.add_default_uncertainties()
+            f[i] = this_AR.alpha_unc.metrics['f'].value
+            f_unc[i] = this_AR.alpha_unc.metrics['f'].uncertainty[0]
+
+    return f, f_unc, bin_centers
+
+
 def compare_AR(titletext=None, **kwargs):
     """
     Input key-value pairs, where key is a label (e.g. algname)
@@ -262,14 +288,14 @@ def compare_AR(titletext=None, **kwargs):
             this_AR, bin_edges=bin_edges, only_contained=only_contained)
     mean_values = [np.sum([f[i] for f in fwhm.values()])
                    / len(fwhm) for i in xrange(len(x))]
-    residuals = {}
+    residuals_FWHM = {}
     for algname in fwhm.keys():
-        residuals[algname] = fwhm[algname] - mean_values
+        residuals_FWHM[algname] = fwhm[algname] - mean_values
 
     plt.figure()
     n = 0
     for algname in fwhm.keys():
-        plt.errorbar(x, residuals[algname], yerr=fwhm_unc[algname],
+        plt.errorbar(x, residuals_FWHM[algname], yerr=fwhm_unc[algname],
                      color=colors[n % len(colors)], label=algname)
         n += 1
     plt.xlabel('Energy [keV]')
@@ -278,6 +304,31 @@ def compare_AR(titletext=None, **kwargs):
     if titletext:
         plt.title(titletext)
     plt.show()
+
+    if True:
+        f = {}
+        f_unc = {}
+        for algname, this_AR in kwargs.iteritems():
+            f[algname], f_unc[algname], x = f_vs_energy(
+                this_AR, bin_edges=bin_edges, only_contained=only_contained)
+        mean_values = [np.sum([fx[i] for fx in f.values()])
+                       / len(f) for i in xrange(len(x))]
+        residuals_f = {}
+        for algname in f.keys():
+            residuals_f[algname] = f[algname] - mean_values
+
+        plt.figure()
+        n = 0
+        for algname in fwhm.keys():
+            plt.errorbar(x, residuals_f[algname], yerr=f_unc[algname],
+                         color=colors[n % len(colors)], label=algname)
+            n += 1
+        plt.xlabel('Energy [keV]')
+        plt.ylabel('f [%]')
+        plt.legend()
+        if titletext:
+            plt.title(titletext)
+        plt.show()
 
 
 def compare_algorithms(ARdict, pnlist=None, alglist=None):
@@ -379,7 +430,7 @@ def run_main():
     # 2016-02-17
     import h5py
 
-    loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1456347532'
+    loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1456347532_v1.5.h5'
 
     pnlist, alglist = get_lists()
 
