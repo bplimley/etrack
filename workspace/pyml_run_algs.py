@@ -256,7 +256,7 @@ def pyml_run_algs(loadfile, savefile, v):
                 pngroup = h5save.create_group(pnname)
                 for algname, this_AR in AR_pn.items():
                     trackio.write_object_to_hdf5(this_AR, pngroup, algname)
-        vprint(v, 1, 'Finished saving {} at {}'.format(savefile, time.ctime())
+        vprint(v, 1, 'Finished saving {} at {}'.format(savefile, time.ctime()))
     except IOError:
         vprint(v, 1, 'IOError: Unable to create file (I think) for {}'.format(
             savefile))
