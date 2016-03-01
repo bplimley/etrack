@@ -12,8 +12,6 @@ def oneplot(HTinfo, g4=None, titletext=None):
     """
     """
 
-    plt.figure()
-
     if g4 is None:
         g4flag = False
     else:

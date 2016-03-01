@@ -440,8 +440,8 @@ def run_main():
     # 2016-02-17
     import h5py
 
-    # loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1456706720'
-    loadfile = '/home/plimley/gh/etrack/workspace/compile_AR_1456770251.h5'
+    loadfile = '/media/plimley/TEAM 7B/HTbatch01_AR/compile_AR_1456770251.h5'
+    # loadfile = '/home/plimley/gh/etrack/workspace/compile_AR_1456770251.h5'
 
     pnlist, alglist = get_lists()
 
@@ -460,9 +460,7 @@ def run_main():
     pnlist_temp = [
         'pix2_5noise0',
         'pix5noise0',
-        'pix5noise15',
         'pix10_5noise0',
-        'pix10_5noise15',
         'pix20noise0',
         'pix40noise0',
     ]
