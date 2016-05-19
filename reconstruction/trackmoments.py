@@ -34,18 +34,24 @@ class MomentsReconstruction(object):
 
         self.segment_initial_end()
 
-        self.compute_moments()
+        self.compute_first_moments()
+        self.compute_central_moments()
 
         self.compute_direction()
 
     def compute_first_moments(self):
-        clist = CoordinatesList.from_image(self.end_segment_image)
-        T = np.empty((2, 2))
-        for i in xrange(2):
-            for j in xrange(2):
-                if i + j < 2:
-                    T[i, j] = get_moment(clist.x, clist.y, clist.E, i, j)
-        self.first_moments = T
+
+        self.clist0 = CoordinatesList.from_image(self.end_segment_image)
+
+        self.first_moments = get_moments(self.clist0, maxmoment=1)
+
+    def compute_central_moments(self):
+        self.clist1 = CoordinatesList.from_clist(
+            self.clist0,
+            xoffset=self.first_moments[1, 0] / self.first_moments[0, 0],
+            yoffset=self.first_moments[0, 1] / self.first_moments[0, 0])
+
+        self.central_moments = get_moments(self.clist1, maxmoment=3)
 
 
 class CoordinatesList(object):
@@ -56,19 +62,47 @@ class CoordinatesList(object):
         self.E = Elist
 
     @classmethod
-    def from_image(cls, image, xoffset=0.0, yoffset=0.0):
+    def from_image(cls, image):
         xi = np.array(range(image.shape[0]))
         yi = np.array(range(image.shape[1]))
-        xi -= xoffset
-        yi -= yoffset
         xx, yy = np.meshgrid(xi, yi, indexing='ij')
 
         coordlist = cls(xx.flatten(), yy.flatten(), image.flatten())
         return coordlist
 
+    @classmethod
+    def from_clist(cls, clist, xoffset=0.0, yoffset=0.0):
+        xlist = clist.x - xoffset
+        ylist = clist.y - yoffset
+        coordlist = cls(xlist, ylist, clist.E)
+        return coordlist
 
-def get_moment(xlist, ylist, elist, r, s):
-    return np.sum(elist * xlist**r * ylist**s)
+
+def get_moment(clist, r, s):
+    return np.sum(clist.E * clist.x**r * clist.y**s)
+
+
+def get_moments(clist, maxmoment=1):
+    """
+    Get moments up to order maxmoment.
+
+    E.g.: maxmoment = 2, get T00; T10, T01; T20, T11, T02
+
+    Output:
+      array
+      T[0, 0]
+      T[1, 0]
+      T[0, 1]
+      T[i, j] is empty for i + j > maxmoment
+    """
+    arraymax = maxmoment + 1    # because moments start at 0
+    T = np.empty((arraymax, arraymax))
+    for i in xrange(arraymax):
+        for j in xrange(arraymax):
+            if i + j < arraymax:
+                T[i, j] = get_moment(clist.x, clist.y, clist.E, i, j)
+
+    return T
 
 
 def segment_initial_end(image_kev, options, info):
