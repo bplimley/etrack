@@ -42,7 +42,9 @@ class MomentsReconstruction(object):
         # 2ab.
         self.compute_central_moments()
         # 3ab.
-        self.get_optimal_rotation_angle()
+        self.compute_optimal_rotation_angle()
+        #  4.
+        self.compute_arc_parameters()
 
         self.compute_direction()
 
@@ -60,7 +62,7 @@ class MomentsReconstruction(object):
 
         self.central_moments = get_moments(self.clist1, maxmoment=3)
 
-    def get_optimal_rotation_angle(self):
+    def compute_optimal_rotation_angle(self):
         numerator = 2 * self.central_moments[1, 1]
         denominator = self.central_moments[2, 0] - self.central_moments[0, 2]
         theta0 = 0.5 * np.arctan(numerator / denominator)
@@ -88,6 +90,33 @@ class MomentsReconstruction(object):
         self.rotation_angle = theta[chosen_ind]
         self.clist2 = rotated_clists[chosen_ind]
         self.rotated_moments = rotated_moments[chosen_ind]
+
+    def compute_arc_parameters(self):
+        C_fit = -8.5467
+        T = self.rotated_moments
+        phi = C_fit * ((np.sqrt(T[0, 0]) * T[2, 1]) /
+                       (T[2, 0] - T[0, 2]) ** 1.5)
+        q1 = np.sqrt(2 - 2 * np.cos(phi) - phi * np.sin(phi))
+        q2 = np.sqrt((T[2, 0] - T[0, 2]) / T[0, 0])
+        q3 = np.sqrt(T[0, 0] ** 3 / (T[2, 0] - T[0, 2]))
+        self.R = (phi / q1 * q2)
+        self.Rphi = self.R * phi
+        self.eta0 = (q1 / phi ** 2) * q3
+
+        self.phi = phi
+        self.arc_center = np.array([T[1, 0], T[0, 1]]) / T[0, 0]
+
+    def compute_direction(self):
+        self.alpha = self.phi / 2 + self.rotation_angle
+        e_theta = np.array([np.cos(self.rotation_angle),
+                            np.sin(self.rotation_angle)])
+        e2 = np.array([np.cos(self.rotation_angle + np.pi / 2),
+                       np.sin(self.rotation_angle + np.pi / 2)])
+        q1 = self.R * np.sin(self.phi / 2) * e_theta
+        # np.sinc is a NORMALIZED sinc function - sin(pi*x)/(pi*x)
+        # TODO: probably want an UNNORMALIZED sinc here?
+        q2 = self.R * (np.cos(self.phi / 2) - np.sinc(self.phi)) * e2
+        self.x0 = self.arc_center - q1 + q2
 
 
 class CoordinatesList(object):
