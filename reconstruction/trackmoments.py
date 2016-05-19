@@ -11,6 +11,7 @@ from etrack.reconstruction import hybridtrack
 #   2b. recalculate moments relative to center
 #   3a. rotate image to principal axes of distribution
 #      (positive x-axis in direction of motion)
+#   3b. recalculate moments in rotated frame
 #   4. find the arc parameters in the principle axis frame
 #   5. find angle of entry, point of entry, arc length, and rate of
 #      charge deposition from arc parameters
@@ -33,9 +34,15 @@ class MomentsReconstruction(object):
             self.original_image_kev, self.options, self.info)
 
         self.segment_initial_end()
+        # get a sub-image containing the initial end
+        # also need a rough estimate of the electron direction (from thinned)
 
+        # 1.
         self.compute_first_moments()
+        # 2ab.
         self.compute_central_moments()
+        # 3ab.
+        self.get_optimal_rotation_angle()
 
         self.compute_direction()
 
@@ -53,13 +60,42 @@ class MomentsReconstruction(object):
 
         self.central_moments = get_moments(self.clist1, maxmoment=3)
 
+    def get_optimal_rotation_angle(self):
+        numerator = 2 * self.central_moments[1, 1]
+        denominator = self.central_moments[2, 0] - self.central_moments[0, 2]
+        theta0 = 0.5 * np.arctan(numerator / denominator)
+        # four possible quadrants
+        theta = np.array([0, np.pi / 2, np.pi, 3 * np.pi / 2]) + theta0
+        rotated_clists = [
+            CoordinatesList.from_clist(self.clist1, rotation_rad=t)
+            for t in theta]
+        rotated_moments = [
+            get_moments(this_clist, maxmoment=3)
+            for this_clist in rotated_clists]
+        # condition A: x-axis is longer than y-axis
+        condA = np.array([m[2, 0] - m[0, 2] > 0 for m in rotated_moments])
+        # condition B: direction of rough estimate
+        condB = np.abs(theta - self.rough_est) < np.pi / 2
+        # choose
+        cond_both = condA & condB
+        if not np.any(cond_both):
+            pass
+            # raise an exception
+        elif np.sum(cond_both) > 1:
+            pass
+            # raise a different exception
+        chosen_ind = np.nonzero(cond_both)
+        self.rotation_angle = theta[chosen_ind]
+        self.clist2 = rotated_clists[chosen_ind]
+        self.rotated_moments = rotated_moments[chosen_ind]
+
 
 class CoordinatesList(object):
 
     def __init__(self, xlist, ylist, Elist):
-        self.x = xlist
-        self.y = ylist
-        self.E = Elist
+        self.x = np.array(xlist)
+        self.y = np.array(ylist)
+        self.E = np.array(Elist)
 
     @classmethod
     def from_image(cls, image):
@@ -71,9 +107,15 @@ class CoordinatesList(object):
         return coordlist
 
     @classmethod
-    def from_clist(cls, clist, xoffset=0.0, yoffset=0.0):
-        xlist = clist.x - xoffset
-        ylist = clist.y - yoffset
+    def from_clist(cls, clist, xoffset=0.0, yoffset=0.0, rotation_rad=0.0):
+        # offset, if any
+        xtemp = clist.x - xoffset
+        ytemp = clist.y - yoffset
+        # rotation, if any
+        theta = rotation_rad
+        xlist = xtemp * np.cos(theta) + ytemp * np.sin(theta)
+        ylist = - xtemp * np.sin(theta) + ytemp * np.cos(theta)
+
         coordlist = cls(xlist, ylist, clist.E)
         return coordlist
 
