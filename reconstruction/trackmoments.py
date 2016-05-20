@@ -114,8 +114,7 @@ class MomentsReconstruction(object):
                        np.sin(self.rotation_angle + np.pi / 2)])
         q1 = self.R * np.sin(self.phi / 2) * e_theta
         # np.sinc is a NORMALIZED sinc function - sin(pi*x)/(pi*x)
-        # TODO: probably want an UNNORMALIZED sinc here?
-        q2 = self.R * (np.cos(self.phi / 2) - np.sinc(self.phi)) * e2
+        q2 = self.R * (np.cos(self.phi / 2) - np.sin(self.phi) / self.phi) * e2
         self.x0 = self.arc_center - q1 + q2
 
 
