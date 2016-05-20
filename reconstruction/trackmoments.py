@@ -173,24 +173,3 @@ def get_moments(clist, maxmoment=1):
                 T[i, j] = get_moment(clist.x, clist.y, clist.E, i, j)
 
     return T
-
-
-def segment_initial_end(image_kev, options, info):
-    """
-    """
-
-    pass
-
-
-def compute_moments(options, info):
-    """
-    """
-
-    pass
-
-
-def compute_direction(options, info):
-    """
-    """
-
-    pass
