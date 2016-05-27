@@ -225,6 +225,20 @@ class Track(object):
         'label',
     )
 
+    attr_types = {
+        'is_modeled': bool,
+        'is_measured': bool,
+        'pixel_size_um': float,
+        'noise_ev': float,
+        'g4track': object,
+        'energy_kev': float,
+        'x_offset_pix': float,
+        'y_offset_pix': float,
+        'timestamp': object,
+        'shutter_ind': int,
+        'label': str,
+    }
+
     def __init__(self, image, **kwargs):
         """
         Construct a track object.

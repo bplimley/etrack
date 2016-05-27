@@ -4,9 +4,36 @@ import numpy as np
 import lmfit
 import h5py
 import ipdb as pdb
+import pandas as pd
 
 from etrack.io import trackio
 from etrack.io.dataformats import get_format
+from etrack.reconstruction.trackdata import Track
+
+
+class TrackList(object):
+    """
+    Object containing electron track images and related information.
+    """
+
+    class_name = 'TrackList'
+    __version__ = '0.1'
+    data_format = get_format('TrackList')
+
+    def __init__(self, tracks=None, alg_results=None, ):
+        track_series = pd.Series(data=tracks)
+        attr_dict = {'tracks': track_series}
+        for attr in Track.attr_list:
+            data = np.array([getattr(t, attr) for t in tracks],
+                            dtype=Track.attr_types[attr])
+            attr_dict[attr] = pd.Series(data=data)
+
+        self.df = pd.DataFrame(attr_dict)
+
+    def __getattr__(self, name):
+        # TODO: decorate this to return a TrackList instead of a pd.DataFrame?
+        # http://stackoverflow.com/questions/13776504/how-are-arguments-passed-to-a-function-through-getattr
+        return self.df.name
 
 
 ##############################################################################
