@@ -21,6 +21,10 @@ class TrackList(object):
     data_format = get_format('TrackList')
 
     def __init__(self, tracks=None, alg_results=None, ):
+        """
+        Construct a TrackList instance. It's basically a pd.DataFrame
+        """
+
         track_series = pd.Series(data=tracks)
         attr_dict = {'tracks': track_series}
         for attr in Track.attr_list:
@@ -31,9 +35,35 @@ class TrackList(object):
         self.df = pd.DataFrame(attr_dict)
 
     def __getattr__(self, name):
-        # TODO: decorate this to return a TrackList instead of a pd.DataFrame?
-        # http://stackoverflow.com/questions/13776504/how-are-arguments-passed-to-a-function-through-getattr
-        return self.df.name
+        """
+        Gets called if you do self.xyz if xyz is not an attribute of tracklist.
+
+        Go into the pandas dataframe (self.df) and run that method. If it
+        returns a DataFrame, assign it into self.df.
+        """
+
+        if hasattr(self.df, name):
+            # is it a method or just an attribute?
+            if hasattr(getattr(self.df, name), '__call__'):
+                # it's a method. set up a wrapper function to call it.
+                # we can't return the method itself, or else you'll end up with
+                #   a DataFrame object instead of a TrackList object.
+                def wrapper(*args, **kwargs):
+                    """
+                    This wrapper function
+                    """
+                    out = getattr(self.df, name)(*args, **kwargs)
+                    if isinstance(out, pd.DataFrame):
+                        self.df = out
+                        return None
+                    else:
+                        return out
+                return wrapper
+            else:
+                # it's just an attribute. just return it I guess?
+                return getattr(self.df, name)
+        else:
+            raise AttributeError
 
 
 ##############################################################################
