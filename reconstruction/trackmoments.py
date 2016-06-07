@@ -48,6 +48,24 @@ class MomentsReconstruction(object):
 
         self.compute_direction()
 
+    @classmethod
+    def reconstruct_test(cls, end_segment_image, rough_est):
+        """
+        Run the moments on a (handpicked) track section.
+        """
+
+        mom = cls(None)
+        mom.end_segment_image = end_segment_image
+        mom.rough_est = rough_est
+
+        mom.compute_first_moments()
+        mom.compute_central_moments()
+        mom.compute_optimal_rotation_angle()
+        mom.compute_arc_parameters()
+        mom.compute_direction()
+
+        return mom
+
     def compute_first_moments(self):
 
         self.clist0 = CoordinatesList.from_image(self.end_segment_image)
@@ -86,7 +104,7 @@ class MomentsReconstruction(object):
         elif np.sum(cond_both) > 1:
             pass
             # raise a different exception
-        chosen_ind = np.nonzero(cond_both)
+        chosen_ind = np.nonzero(cond_both)[0][0]    # 1st dim, 1st entry
         self.rotation_angle = theta[chosen_ind]
         self.clist2 = rotated_clists[chosen_ind]
         self.rotated_moments = rotated_moments[chosen_ind]
@@ -170,6 +188,6 @@ def get_moments(clist, maxmoment=1):
     for i in xrange(arraymax):
         for j in xrange(arraymax):
             if i + j < arraymax:
-                T[i, j] = get_moment(clist.x, clist.y, clist.E, i, j)
+                T[i, j] = get_moment(clist, i, j)
 
     return T
