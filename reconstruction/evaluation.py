@@ -65,6 +65,62 @@ class TrackList(object):
         else:
             raise AttributeError
 
+    @classmethod
+    def from_hdf5_tracks(cls, h5file,
+                         subgroup_name=None, alg_name=None, filename=None):
+        """
+        Construct TrackList instance from an h5py.File or Group in
+        trackio.write_objects_to_hdf5 format.
+
+        subgroup_name: e.g. pix10_5noise0.
+        alg_name: the name of the algorithm, as stored in the Track object.
+        filename: optional, to be stored into AlgorithmResults.filename.
+        """
+
+        data_dict = {}
+        g4_dict = {}
+        h5name_dict = {}
+        alg_group_name = 'algorithms'
+
+        n = 0
+        for evt in h5file.values():
+            if subgroup_name is not None and subgroup_name not in evt:
+                continue
+
+            if subgroup_name is None:
+                pixnoise = evt
+            else:
+                pixnoise = evt[subgroup_name]
+
+            if alg_name is not None:
+                if (alg_group_name not in pixnoise or
+                        alg_name not in pixnoise[alg_group_name]):
+                    continue
+                alg_object = pixnoise[alg_group_name][alg_name]
+            g4_object = pixnoise['g4track']
+
+            for key, val in data_dict.iteritems():
+                if key == 'depth_um':
+                    val[n] = (g4_object.attrs['x0'][2] + 0.65) * 1000
+                    # now 0 should be pixel side, 650 back side
+                elif key == 'is_contained':
+                    # TODO: handle this using energy_esc
+                    pass
+                elif g4_dict[key]:
+                    val[n] = g4_object.attrs[h5name_dict[key]]
+                else:
+                    val[n] = alg_object.attrs[h5name_dict[key]]
+            n += 1
+
+        for key, val in data_dict.iteritems():
+            data_dict[key] = val[:n]
+
+        filename = evt.file.filename
+        constructed_object = AlgorithmResults(
+            parent=None, filename=filename, **data_dict)
+
+        return constructed_object
+
 
 ##############################################################################
 #                        Algorithm Results class                             #

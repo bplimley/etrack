@@ -66,6 +66,77 @@ class MomentsReconstruction(object):
 
         return mom
 
+    def segment_initial_end(self):
+        """
+        Get the image segment to use for moments, and the rough direction
+        estimate.
+        """
+
+        # copied from hybridtrack.get_starting_point()
+        min_index = self.info.ends_energy.argmin()
+        self.start_coordinates = self.info.ends_xy[min_index]
+        # start_coordinates are the end (extremity) of the thinned track
+
+        self.end_coordinates = self.info.start_coordinates
+        # end_coordinates are after walking up the track 40 um
+
+        # angle from start to end
+        dcoord = self.end_coordinates - self.start_coordinates
+        dir_estimate_rad = np.arctan2(dcoord[1], dcoord[0])
+
+        ## Segment the image
+        segment_width = 8   # pixels
+        segment_length = 8  # pixels
+
+
+        mod = dir_estimate_rad % (np.pi / 4)
+        if mod < np.pi / 6 or mod > np.pi / 3:
+            # close enough to orthogonal
+            # round to nearest pi/4
+            general_dir = np.round(dir_estimate_rad / (np.pi / 4))
+
+            # for whichver direction, start from start_coordinates and draw box
+            if general_dir == 0:
+                # +x direction
+                min_x = self.start_coordinates[0]
+                max_x = min_x + segment_length
+                min_y = self.start_coordinates[1] - segment_width / 2
+                max_y = self.start_coordinates[1] + segment_width / 2
+            elif general_dir == 1:
+                # +y direction
+                min_y = self.start_coordinates[1]
+                max_y = min_y + segment_length
+                min_x = self.start_coordinates[0] - segment_width / 2
+                max_x = self.start_coordinates[0] + segment_width / 2
+            elif general_dir == 2:
+                # -x direction
+                max_x = self.start_coordinates[0]
+                min_x = max_x - segment_length
+                min_y = self.start_coordinates[1] - segment_width / 2
+                max_y = self.start_coordinates[1] + segment_width / 2
+            elif general_dir == 3:
+                # -y direction
+                max_y = self.start_coordinates[1]
+                min_y = max_y - segment_length
+                min_x = self.start_coordinates[0] - segment_width / 2
+                max_x = self.start_coordinates[0] + segment_width / 2
+            else:
+                raise RuntimeError()
+            # don't go outside of image
+            min_x = np.maximum(min_x, 0)
+            max_x = np.minimum(max_x, self.original_image_kev.shape[0])
+            min_y = np.maximum(min_y, 0)
+            max_y = np.minimum(max_y, self.original_image_kev.shape[1])
+            # draw box
+            self.end_segment_image = self.original_image_kev[
+                min_x:max_x, min_y:max_y]
+
+        else:
+            # close to 45 degrees
+
+            # do this later
+            raise NotImplementedError
+
     def compute_first_moments(self):
 
         self.clist0 = CoordinatesList.from_image(self.end_segment_image)
@@ -191,3 +262,7 @@ def get_moments(clist, maxmoment=1):
                 T[i, j] = get_moment(clist, i, j)
 
     return T
+
+
+class MomentsError(Exception):
+    pass
