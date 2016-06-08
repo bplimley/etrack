@@ -10,11 +10,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import h5py
 import pandas as pd
+import time
 
 from etrack.reconstruction.trackdata import Track
 import etrack.io.trackio as trackio
 import etrack.reconstruction.trackmoments as tm
-from etrack.visualization.trackplot import plot_track_image
+import etrack.visualization.trackplot as tp
 
 
 def tracklist_from_h5(filename, energy_thresh_kev):
@@ -40,6 +41,7 @@ def tracklist_from_h5(filename, energy_thresh_kev):
         if t.energy_kev > energy_thresh:
             tracklist.append(t)
 
+    return tracklist
 
 filename = '/media/plimley/TEAM 7B/HTbatch01_pyml/MultiAngle_HT_100_11_py.h5'
 fn = 'pix10_5noise0'
@@ -48,13 +50,31 @@ energy_thresh = 300     # keV
 print('Compiling tracklist (energy_thresh = {} keV)'.format(energy_thresh))
 tracklist = tracklist_from_h5(filename, energy_thresh)
 
-print('Testing moments on entire tracks')
+print('Testing moments segmentation')
 index_error_count = 0
-for t in tracklist:
+notimplemented = 0
+for i in range(len(tracklist)):
+    t = tracklist[i]
     try:
-        tm.MomentsReconstruction.reconstruct_test(t.image, 0)
+        mom = tm.MomentsReconstruction(t.image)
+        mom.reconstruct()
     except IndexError:
         index_error_count += 1
+        continue
+    except NotImplementedError:
+        notimplemented += 1
+        continue
+
+    fig = tp.plot_moments_segment(mom.original_image_kev, mom.box)
+    titlestr = '#{}, rough_est={}*, start={}, end={}'.format(
+        i, mom.rough_est * 180 / np.pi,
+        mom.start_coordinates, mom.end_coordinates)
+    plt.title(titlestr)
+    plt.show()
+    # time.sleep(5)
+    plt.close()
 
 print('{} IndexErrors out of {} tracks'.format(
     index_error_count, len(tracklist)))
+print('{} NotImplementedErrors out of {} tracks'.format(
+    notimplemented, len(tracklist)))

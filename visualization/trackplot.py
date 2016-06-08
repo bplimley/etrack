@@ -157,12 +157,14 @@ def plot_moments_segment(full_image, box):
     box is [min_x, max_x, min_y, max_y]
     """
 
+    f = plt.figure()
     ax, im = plot_track_image(full_image)
 
     xc = np.array([box[0], box[0], box[1], box[1], box[0]])
     yc = np.array([box[2], box[3], box[3], box[2], box[2]])
-    plt.plot(xc, yc, fmstring='c', axes=ax)
+    plt.plot(yc, xc, 'c', axes=ax)
 
+    return f
 
 def get_colormap():
     """

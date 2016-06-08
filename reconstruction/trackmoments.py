@@ -82,44 +82,44 @@ class MomentsReconstruction(object):
 
         # angle from start to end
         dcoord = self.end_coordinates - self.start_coordinates
-        dir_estimate_rad = np.arctan2(dcoord[1], dcoord[0])
+        self.rough_est = np.arctan2(dcoord[1], dcoord[0])
 
         ## Segment the image
         segment_width = 8   # pixels
         segment_length = 8  # pixels
 
 
-        mod = dir_estimate_rad % (np.pi / 4)
+        mod = self.rough_est % (np.pi / 2)
         if mod < np.pi / 6 or mod > np.pi / 3:
             # close enough to orthogonal
             # round to nearest pi/4
-            general_dir = np.round(dir_estimate_rad / (np.pi / 4))
+            general_dir = np.round(self.rough_est / (np.pi / 2))
 
-            # for whichver direction, start from start_coordinates and draw box
-            if general_dir == 0:
+            # for whichever direction, start from end_coordinates and draw box
+            if general_dir == 0 or general_dir == -4:
                 # +x direction
-                min_x = self.start_coordinates[0]
-                max_x = min_x + segment_length
-                min_y = self.start_coordinates[1] - segment_width / 2
-                max_y = self.start_coordinates[1] + segment_width / 2
-            elif general_dir == 1:
-                # +y direction
-                min_y = self.start_coordinates[1]
-                max_y = min_y + segment_length
-                min_x = self.start_coordinates[0] - segment_width / 2
-                max_x = self.start_coordinates[0] + segment_width / 2
-            elif general_dir == 2:
-                # -x direction
-                max_x = self.start_coordinates[0]
+                max_x = self.end_coordinates[0]
                 min_x = max_x - segment_length
-                min_y = self.start_coordinates[1] - segment_width / 2
-                max_y = self.start_coordinates[1] + segment_width / 2
-            elif general_dir == 3:
-                # -y direction
-                max_y = self.start_coordinates[1]
+                min_y = self.end_coordinates[1] - segment_width / 2
+                max_y = self.end_coordinates[1] + segment_width / 2
+            elif general_dir == 1 or general_dir == -3:
+                # +y direction
+                max_y = self.end_coordinates[1]
                 min_y = max_y - segment_length
-                min_x = self.start_coordinates[0] - segment_width / 2
-                max_x = self.start_coordinates[0] + segment_width / 2
+                min_x = self.end_coordinates[0] - segment_width / 2
+                max_x = self.end_coordinates[0] + segment_width / 2
+            elif general_dir == 2 or general_dir == -2:
+                # -x direction
+                min_x = self.end_coordinates[0]
+                max_x = min_x + segment_length
+                min_y = self.end_coordinates[1] - segment_width / 2
+                max_y = self.end_coordinates[1] + segment_width / 2
+            elif general_dir == 3 or general_dir == -1:
+                # -y direction
+                min_y = self.end_coordinates[1]
+                max_y = min_y + segment_length
+                min_x = self.end_coordinates[0] - segment_width / 2
+                max_x = self.end_coordinates[0] + segment_width / 2
             else:
                 raise RuntimeError()
             # don't go outside of image
@@ -127,6 +127,7 @@ class MomentsReconstruction(object):
             max_x = np.minimum(max_x, self.original_image_kev.shape[0])
             min_y = np.maximum(min_y, 0)
             max_y = np.minimum(max_y, self.original_image_kev.shape[1])
+            self.box = np.array([min_x, max_x, min_y, max_y])
             # draw box
             self.end_segment_image = self.original_image_kev[
                 min_x:max_x, min_y:max_y]
