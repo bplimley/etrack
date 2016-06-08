@@ -85,8 +85,8 @@ class MomentsReconstruction(object):
         self.rough_est = np.arctan2(dcoord[1], dcoord[0])
 
         ## Segment the image
-        segment_width = 8   # pixels
-        segment_length = 8  # pixels
+        segment_width = 10   # pixels
+        segment_length = 9  # pixels
 
 
         mod = self.rough_est % (np.pi / 2)
