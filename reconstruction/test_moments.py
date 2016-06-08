@@ -43,6 +43,41 @@ def tracklist_from_h5(filename, energy_thresh_kev):
 
     return tracklist
 
+def test_moments_segmentation(tracklist):
+    """
+    Check the bounding box for trackmoments
+    """
+
+    print('Testing moments segmentation')
+    index_error_count = 0
+    notimplemented = 0
+    for i in range(len(tracklist)):
+        t = tracklist[i]
+        try:
+            mom = tm.MomentsReconstruction(t.image)
+            mom.reconstruct()
+        except IndexError:
+            index_error_count += 1
+            continue
+        except NotImplementedError:
+            notimplemented += 1
+            continue
+
+        fig = tp.plot_moments_segment(mom.original_image_kev, mom.box)
+        titlestr = '#{}, rough_est={}*, start={}, end={}'.format(
+            i, mom.rough_est * 180 / np.pi,
+            mom.start_coordinates, mom.end_coordinates)
+        plt.title(titlestr)
+        plt.show()
+        # time.sleep(5)
+        plt.close()
+
+    print('{} IndexErrors out of {} tracks'.format(
+        index_error_count, len(tracklist)))
+    print('{} NotImplementedErrors out of {} tracks'.format(
+        notimplemented, len(tracklist)))
+
+
 filename = '/media/plimley/TEAM 7B/HTbatch01_pyml/MultiAngle_HT_100_11_py.h5'
 fn = 'pix10_5noise0'
 
@@ -50,31 +85,4 @@ energy_thresh = 300     # keV
 print('Compiling tracklist (energy_thresh = {} keV)'.format(energy_thresh))
 tracklist = tracklist_from_h5(filename, energy_thresh)
 
-print('Testing moments segmentation')
-index_error_count = 0
-notimplemented = 0
-for i in range(len(tracklist)):
-    t = tracklist[i]
-    try:
-        mom = tm.MomentsReconstruction(t.image)
-        mom.reconstruct()
-    except IndexError:
-        index_error_count += 1
-        continue
-    except NotImplementedError:
-        notimplemented += 1
-        continue
-
-    fig = tp.plot_moments_segment(mom.original_image_kev, mom.box)
-    titlestr = '#{}, rough_est={}*, start={}, end={}'.format(
-        i, mom.rough_est * 180 / np.pi,
-        mom.start_coordinates, mom.end_coordinates)
-    plt.title(titlestr)
-    plt.show()
-    # time.sleep(5)
-    plt.close()
-
-print('{} IndexErrors out of {} tracks'.format(
-    index_error_count, len(tracklist)))
-print('{} NotImplementedErrors out of {} tracks'.format(
-    notimplemented, len(tracklist)))
+test_moments_segmentation(tracklist)
