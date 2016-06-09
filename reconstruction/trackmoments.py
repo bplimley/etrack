@@ -109,6 +109,8 @@ class MomentsReconstruction(object):
         dcoord = self.end_coordinates - self.start_coordinates
         self.rough_est = np.arctan2(dcoord[1], dcoord[0])
 
+        orig = self.original_image_kev
+
         # Segment the image
 
         segment_width = 10   # pixels
@@ -146,22 +148,131 @@ class MomentsReconstruction(object):
                 min_x = self.end_coordinates[0] - segment_width / 2
                 max_x = self.end_coordinates[0] + segment_width / 2
             else:
-                raise RuntimeError()
+                raise RuntimeError(
+                    'square, but general_dir = {}'.format(general_dir))
             # don't go outside of image
             min_x = np.maximum(min_x, 0)
-            max_x = np.minimum(max_x, self.original_image_kev.shape[0])
+            max_x = np.minimum(max_x, orig.shape[0])
             min_y = np.maximum(min_y, 0)
-            max_y = np.minimum(max_y, self.original_image_kev.shape[1])
-            self.box = np.array([min_x, max_x, min_y, max_y])
+            max_y = np.minimum(max_y, orig.shape[1])
+            self.box_x = np.array([
+                min_x, min_x, max_x, max_x, min_x])
+            self.box_y = np.array([
+                min_y, max_y, max_y, min_y, min_y])
             # draw box
-            self.end_segment_image = self.original_image_kev[
-                min_x:max_x, min_y:max_y]
+            self.end_segment_image = orig[min_x:max_x, min_y:max_y]
 
         else:
             # close to 45 degrees
 
-            # do this later
-            raise NotImplementedError
+            diag_hw = np.round(float(segment_width / 2) / np.sqrt(2))
+            diag_len = np.round(float(segment_length) / np.sqrt(2))
+            img_shape = orig.shape
+            xmesh, ymesh = np.meshgrid(
+                range(img_shape[0]), range(img_shape[1]), indexing='ij')
+
+            # for whichever direction, start from end_coordinates and draw box
+
+            # general_dir is from start toward end
+            general_dir = np.round(self.rough_est / (np.pi / 4)) * np.pi / 4
+            # bdir is from end toward start
+            bdir = general_dir + np.pi
+
+            xsign = np.sign(np.cos(bdir))
+            ysign = np.sign(np.sin(bdir))
+
+            x0 = self.end_coordinates[0]
+            y0 = self.end_coordinates[1]
+
+            # draw the box
+            self.box_x = np.array([
+                x0 - xsign * diag_hw,
+                x0 - xsign * diag_hw + xsign * diag_len,
+                x0 + xsign * diag_hw + xsign * diag_len,
+                x0 + xsign * diag_hw,
+                x0 - xsign * diag_hw,
+            ])
+            self.box_y = np.array([
+                y0 + ysign * diag_hw,
+                y0 + ysign * diag_hw + ysign * diag_len,
+                y0 - ysign * diag_hw + ysign * diag_len,
+                y0 - ysign * diag_hw,
+                y0 + ysign * diag_hw,
+            ])
+
+            # make a list of pixels in the box
+
+            base_xpix, base_ypix = self.get_base_diagonal_box(
+                diag_hw, diag_len)
+            rot = bdir - np.pi / 4      # angle of rotation
+            # round to make sure they are integers
+            xpix = x0 + np.round(
+                base_xpix * np.cos(rot) - base_ypix * np.sin(rot))
+            ypix = y0 + np.round(
+                base_xpix * np.sin(rot) + base_ypix * np.cos(rot))
+            # exclude out-of-bounds points
+            shape = orig.shape
+            out_of_bounds = ((xpix < 0) | (ypix < 0) |
+                             (xpix >= shape[0]) | (ypix >= shape[1]))
+            xpix = xpix(np.logical_not(out_of_bounds))
+            ypix = ypix(np.logical_not(out_of_bounds))
+
+            # initialize segment image
+            min_x = np.min(xpix)
+            max_x = np.max(xpix)
+            min_y = np.min(ypix)
+            max_y = np.max(ypix)
+            seg_img = np.zeros((max_x - min_x + 1, max_y - min_y + 1))
+
+            # fill segment image
+            for i in xrange(len(xpix)):
+                seg_img[xpix[i] - min_x, ypix[i] - min_y] = orig[
+                    xpix[i], ypix[i]]
+
+            self.end_segment_image = seg_img
+
+    @classmethod
+    def get_base_diagonal_pixlist(cls, diag_hw, diag_len):
+        """
+        Get the diagonal pixel list for 45 degrees.
+        (To be rotated to other angles)
+        """
+
+        xlist = []
+        ylist = []
+
+        # major diagonals
+        xy0 = np.array([0, 0])
+        xy1 = np.array([diag_len, diag_len])
+        for i in range(-diag_hw, diag_hw):
+            offset = np.array([i, -i])
+            xt, yt = cls.list_diagonal_pixels(xy0 + offset, xy1 + offset)
+            xlist += xt
+            ylist += yt
+
+        # minor diagonals
+        xy0 = np.array([0, 1])
+        xy1 = np.array([diag_len - 1, diag_len])
+        for i in range(-diag_hw + 1, diag_hw):
+            offset = np.array([i, -i])
+            xt, yt = cls.list_diagonal_pixels(xy0 + offset, xy1 + offset)
+            xlist += xt
+            ylist += yt
+
+        return xlist, ylist
+
+    @classmethod
+    def list_diagonal_pixels(cls, xy0, xy1):
+        """
+        Return xlist, ylist, which list all the pixels on the 45-degree
+        diagonal between xy0 and xy1.
+        """
+
+        dxy = [np.sign(xy1[0] - xy0[0]), np.sign(xy1[1] - xy0[1])]
+        xlist = range(xy0[0], xy1[0], dxy[0])
+        ylist = range(xy0[1], xy1[1], dxy[1])
+
+        return xlist, ylist
 
     def get_coordlist(self):
         self.clist0 = CoordinatesList.from_image(self.end_segment_image)
