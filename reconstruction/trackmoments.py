@@ -305,15 +305,18 @@ class MomentsReconstruction(object):
         # condition A: x-axis is longer than y-axis
         condA = np.array([m[2, 0] - m[0, 2] > 0 for m in rotated_moments])
         # condition B: direction of rough estimate
-        condB = np.abs(theta - self.rough_est) < np.pi / 2
+        dtheta = theta - self.rough_est
+        dtheta[dtheta > np.pi] -= 2 * np.pi
+        condB = np.abs(dtheta) <= np.pi / 2
         # choose
         cond_both = condA & condB
         if not np.any(cond_both):
-            pass
-            # raise an exception
+            raise MomentsError('Rotation quadrant conditions not met')
         elif np.sum(cond_both) > 1:
             pass
-            # raise a different exception
+            # should throw out this event.
+            # raise MomentsError(
+            #     'Rotation quadrant conditions met more than once')
         chosen_ind = np.nonzero(cond_both)[0][0]    # 1st dim, 1st entry
         self.rotation_angle = theta[chosen_ind]
         self.clist2 = rotated_clists[chosen_ind]
