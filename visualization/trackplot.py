@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors
+import matplotlib.patches as patches
+import matplotlib
 
 import ipdb as pdb
 
@@ -165,6 +167,52 @@ def plot_moments_segment(full_image, box):
     plt.plot(yc, xc, 'c', axes=ax)
 
     return f
+
+
+def plot_clist_circles(clist):
+    """
+    Plot a CoordinatesList object, using different sized circles depending on
+    the total weighting at each coordinate.
+    """
+
+    # copies
+    xc = clist.x
+    yc = clist.y
+    Ec = clist.E
+
+    xnew = np.zeros_like(xc)
+    ynew = np.zeros_like(xc)
+    Enew = np.zeros_like(xc)
+
+    n = 0
+    for i in xrange(len(xc)):
+        try:
+            find_existing = np.nonzero((xnew == xc[i]) & (ynew == yc[i]))[0][0]
+        except IndexError:
+            xnew[n] = xc[i]
+            ynew[n] = yc[i]
+            Enew[n] = Ec[i]
+            n += 1
+        else:
+            Enew[find_existing] += Ec[i]
+
+    # normalize energy to 1
+    Enew = np.sqrt(Enew) / np.sqrt(np.max(Enew))
+
+    # make plot
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    for i in xrange(len(xnew)):
+        ax.add_patch(patches.Circle(
+            (xnew[i], ynew[i]), radius=Enew[i]/2, fill=True, alpha=0.4))
+        # plt.plot(xnew[i], ynew[i], 'ok', markersize=Enew[i])
+
+    plt.xlim((np.min(xnew) - 1, np.max(xnew) + 1))
+    plt.ylim((np.min(ynew) - 1, np.max(ynew) + 1))
+
+    # pdb.set_trace()
+    # pass
+
 
 def get_colormap():
     """
