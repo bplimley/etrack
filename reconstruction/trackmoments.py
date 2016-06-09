@@ -41,6 +41,7 @@ class MomentsReconstruction(object):
         # also need a rough estimate of the electron direction (from thinned)
 
         # 1.
+        self.get_coordlist()
         self.compute_first_moments()
         # 2ab.
         self.compute_central_moments()
@@ -59,6 +60,27 @@ class MomentsReconstruction(object):
 
         mom = cls(None)
         mom.end_segment_image = end_segment_image
+        mom.rough_est = rough_est
+
+        mom.get_coordlist()
+        mom.compute_first_moments()
+        mom.compute_central_moments()
+        mom.compute_optimal_rotation_angle()
+        mom.compute_arc_parameters()
+        mom.compute_direction()
+
+        return mom
+
+    @classmethod
+    def reconstruct_arc(cls, clist, rough_est):
+        """
+        Run the moments on a CoordinatesList object, e.g. from generate_arc().
+
+        Need to also provide a rough_est
+        """
+
+        mom = cls(None)
+        mom.clist0 = clist
         mom.rough_est = rough_est
 
         mom.compute_first_moments()
@@ -140,10 +162,10 @@ class MomentsReconstruction(object):
             # do this later
             raise NotImplementedError
 
-    def compute_first_moments(self):
-
+    def get_coordlist(self):
         self.clist0 = CoordinatesList.from_image(self.end_segment_image)
 
+    def compute_first_moments(self):
         self.first_moments = get_moments(self.clist0, maxmoment=1)
 
     def compute_central_moments(self):
