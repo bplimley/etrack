@@ -109,7 +109,8 @@ class MomentsReconstruction(object):
         dcoord = self.end_coordinates - self.start_coordinates
         self.rough_est = np.arctan2(dcoord[1], dcoord[0])
 
-        ## Segment the image
+        # Segment the image
+
         segment_width = 10   # pixels
         segment_length = 9  # pixels
 
@@ -307,7 +308,8 @@ def generate_arc(r=6, phi_d=90, center_angle_d=0,
           each pixel. [boolean] (default False)
 
     Output:
-      a CoordinatesList object
+      clist: a CoordinatesList object
+      rough_est: the initial direction (on the low-angle end)
     """
 
     phi_d = float(phi_d)
@@ -336,8 +338,10 @@ def generate_arc(r=6, phi_d=90, center_angle_d=0,
 
     clist = CoordinatesList(xlist, ylist, np.ones_like(xlist))
 
-    return clist
+    # direction is basically (dx, dy) which is phi0 + 90 degrees
+    rough_est = (phi0 + 90) * np.pi / 180
 
+    return clist, rough_est
 
 
 class MomentsError(Exception):
