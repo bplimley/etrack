@@ -91,7 +91,6 @@ class MomentsReconstruction(object):
         segment_width = 10   # pixels
         segment_length = 9  # pixels
 
-
         mod = self.rough_est % (np.pi / 2)
         if mod < np.pi / 6 or mod > np.pi / 3:
             # close enough to orthogonal
@@ -266,6 +265,57 @@ def get_moments(clist, maxmoment=1):
                 T[i, j] = get_moment(clist, i, j)
 
     return T
+
+
+def generate_arc(r=6, phi_d=90, center_angle_d=0,
+                 n_pts=1000, blur_sigma=0, pixelize=False):
+    """
+    Generate a CoordinatesList for a perfect arc.
+
+    Inputs:
+      r: arc radius [pixels] (default 6)
+      phi_d: total arc angular length [degrees] (default 90)
+      center_angle_d: where the arc is centered at; i.e. rotation. [degrees]
+          (default 0)
+      n_pts: total number of points generated. Equally spaced.
+          Each will signify 1 energy unit (default 1000)
+      blur_sigma: The sigma of a 2D Gaussian for randomly sampling the position
+          of each point. [pixels] (default 0, no blurring)
+      pixelize: Whether to pixelize the image and resample from the center of
+          each pixel. [boolean] (default False)
+
+    Output:
+      a CoordinatesList object
+    """
+
+    phi_d = float(phi_d)
+    n_pts = int(n_pts)
+    angular_interval_d = phi_d / (n_pts - 1)
+    phi0 = center_angle_d - phi_d / 2
+    phi1 = center_angle_d + phi_d / 2
+
+    phi_all_d = np.arange(phi0, phi1 + angular_interval_d, angular_interval_d)
+    phi_all_r = phi_all_d * np.pi / 180
+
+    xlist = r * np.cos(phi_all_r)
+    ylist = r * np.sin(phi_all_r)
+
+    if blur_sigma > 0:
+        xblur = np.random.randn(len(xlist)) * blur_sigma
+        yblur = np.random.randn(len(xlist)) * blur_sigma
+        xlist += xblur
+        ylist += yblur
+
+    if pixelize:
+        # each pixel is centered on an integer value
+        # round everything to nearest pixel
+        xlist = np.round(xlist)
+        ylist = np.round(ylist)
+
+    clist = CoordinatesList(xlist, ylist, np.ones_like(xlist))
+
+    return clist
+
 
 
 class MomentsError(Exception):
