@@ -67,7 +67,7 @@ def test_moments_segmentation(tracklist):
             notimplemented += 1
             continue
 
-        tp.plot_moments_segment(mom.original_image_kev, mom.box)
+        tp.plot_moments_segment(mom.original_image_kev, mom.box_x, mom.box_y)
         titlestr = '#{}, rough_est={}*, start={}, end={}'.format(
             i, mom.rough_est * 180 / np.pi,
             mom.start_coordinates, mom.end_coordinates)
@@ -136,10 +136,7 @@ def main1():
     plot the bounding box for segmentation
     """
 
-    filename = '/media/plimley/TEAM 7B/HTbatch01_pyml/MultiAngle_HT_100_11_py.h5'
-    energy_thresh = 300     # keV
-    print('Compiling tracklist (energy_thresh = {} keV)'.format(energy_thresh))
-    tracklist = tracklist_from_h5(filename, energy_thresh)
+    tracklist = get_tracklist(n_files=1)
 
     test_moments_segmentation(tracklist)
 

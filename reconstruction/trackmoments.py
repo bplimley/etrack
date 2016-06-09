@@ -165,8 +165,10 @@ class MomentsReconstruction(object):
         else:
             # close to 45 degrees
 
-            diag_hw = np.round(float(segment_width / 2) / np.sqrt(2))
-            diag_len = np.round(float(segment_length) / np.sqrt(2))
+            diag_hw = int(np.round(float(segment_width / 2) / np.sqrt(2)))
+            diag_len = segment_length
+            # don't divide by sqrt(2) because the choose_initial_end doesn't
+            #   distinguish between diagonal steps and orthogonal steps.
             img_shape = orig.shape
             xmesh, ymesh = np.meshgrid(
                 range(img_shape[0]), range(img_shape[1]), indexing='ij')
@@ -202,7 +204,7 @@ class MomentsReconstruction(object):
 
             # make a list of pixels in the box
 
-            base_xpix, base_ypix = self.get_base_diagonal_box(
+            base_xpix, base_ypix = self.get_base_diagonal_pixlist(
                 diag_hw, diag_len)
             rot = bdir - np.pi / 4      # angle of rotation
             # round to make sure they are integers
@@ -214,8 +216,8 @@ class MomentsReconstruction(object):
             shape = orig.shape
             out_of_bounds = ((xpix < 0) | (ypix < 0) |
                              (xpix >= shape[0]) | (ypix >= shape[1]))
-            xpix = xpix(np.logical_not(out_of_bounds))
-            ypix = ypix(np.logical_not(out_of_bounds))
+            xpix = xpix[np.logical_not(out_of_bounds)]
+            ypix = ypix[np.logical_not(out_of_bounds)]
 
             # initialize segment image
             min_x = np.min(xpix)
@@ -259,7 +261,7 @@ class MomentsReconstruction(object):
             xlist += xt
             ylist += yt
 
-        return xlist, ylist
+        return np.array(xlist), np.array(ylist)
 
     @classmethod
     def list_diagonal_pixels(cls, xy0, xy1):
