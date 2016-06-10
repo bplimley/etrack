@@ -92,6 +92,8 @@ def momentlist_from_tracklist(tracklist):
     first_moments = np.zeros((max_length, 2, 2))
     central_moments = np.zeros((max_length, 4, 4))
     rotated_moments = np.zeros((max_length, 4, 4))
+    R = np.zeros(max_length)
+    phi = np.zeros(max_length)
 
     n = 0
     index_error_count = 0
@@ -109,6 +111,10 @@ def momentlist_from_tracklist(tracklist):
             not_implemented_error_count += 1
             continue
 
+        # copy R, phi
+        R[n] = mom.R
+        phi[n] = mom.phi
+
         # copy moments
         for i in xrange(3):
             for j in xrange(3):
@@ -119,8 +125,9 @@ def momentlist_from_tracklist(tracklist):
                     rotated_moments[n, i, j] = mom.rotated_moments[i, j]
         n += 1
 
-    # pdb.set_trace()
     # remove extra entries
+    R.resize(n)
+    phi.resize(n)
     first_moments = first_moments.copy()
     first_moments.resize((n, 2, 2))
     central_moments = central_moments.copy()
@@ -128,7 +135,7 @@ def momentlist_from_tracklist(tracklist):
     rotated_moments = rotated_moments.copy()
     rotated_moments.resize((n, 4, 4))
 
-    return first_moments, central_moments, rotated_moments
+    return first_moments, central_moments, rotated_moments, R, phi
 
 
 def main1():
