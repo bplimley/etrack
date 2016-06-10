@@ -212,6 +212,75 @@ def plot_clist_circles(clist):
     # pass
 
 
+def plot_moments_arc(mom, debug=False, end_segment=False):
+    """
+    Plot the end segment image, with the arc calculated by moments overlaid.
+    """
+
+    phi2 = np.abs(mom.phi) / 2
+    # get center point of arc
+    center_in_rotated_frame = [0, -mom.R * np.sin(phi2) / phi2]
+    phi0 = np.pi / 2 - phi2
+    phi1 = np.pi / 2 + phi2
+
+    if debug:
+        plot_clist_circles(mom.clist2)
+        phi = np.linspace(phi0, phi1, 1000)
+        xy_rotated = [center_in_rotated_frame[0] + mom.R * np.cos(phi),
+                      center_in_rotated_frame[1] + mom.R * np.sin(phi)]
+        plot_arc(center_in_rotated_frame, mom.R, phi0, phi1, flipxy=False)
+
+    # rotation_angle was how the *coordinate frame* was rotated.
+    # so to reverse it, rotate the *points* by the same amount.
+    new_rotation_angle = mom.rotation_angle
+    center_in_central_frame = [
+        -center_in_rotated_frame[1] * np.sin(new_rotation_angle),
+        center_in_rotated_frame[1] * np.cos(new_rotation_angle)]
+    phi0 += new_rotation_angle
+    phi1 += new_rotation_angle
+
+    if debug:
+        plot_clist_circles(mom.clist1)
+        plot_arc(center_in_central_frame, mom.R, phi0, phi1, flipxy=False)
+
+    center_in_segment_frame = (
+        np.array(center_in_central_frame) +
+        np.array([mom.xoffset, mom.yoffset]))
+    if debug:
+        plot_clist_circles(mom.clist0)
+        plot_arc(center_in_segment_frame, mom.R, phi0, phi1, flipxy=False)
+
+    if not end_segment:
+        # gotta go back to the original image too
+        imgoffset = np.array([np.min(mom.box_x), np.min(mom.box_y)])
+        imgoffset[imgoffset < 0] = 0
+        center_in_image_frame = center_in_segment_frame + imgoffset
+
+    f = plt.figure()
+    if end_segment:
+        ax, im = plot_track_image(mom.end_segment_image)
+        plot_arc(center_in_segment_frame, mom.R, phi0, phi1)
+    else:
+        ax, im = plot_track_image(mom.original_image_kev)
+        plot_arc(center_in_image_frame, mom.R, phi0, phi1)
+    plt.show()
+
+    if debug:
+        import ipdb as pdb
+        pdb.set_trace()
+    return f
+
+
+def plot_arc(center, radius, phi0, phi1, flipxy=True):
+    phi = np.linspace(phi0, phi1, 1000)
+    x = center[0] + radius * np.cos(phi)
+    y = center[1] + radius * np.sin(phi)
+    if flipxy:
+        plt.plot(y, x, 'c', lw=4)
+    else:
+        plt.plot(x, y, 'c', lw=4)
+
+
 def get_colormap():
     """
     Return 'hot log' colormap, our standard colormap for electron tracks.

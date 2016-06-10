@@ -283,10 +283,10 @@ class MomentsReconstruction(object):
         self.first_moments = get_moments(self.clist0, maxmoment=1)
 
     def compute_central_moments(self):
+        self.xoffset = self.first_moments[1, 0] / self.first_moments[0, 0]
+        self.yoffset = self.first_moments[0, 1] / self.first_moments[0, 0]
         self.clist1 = CoordinatesList.from_clist(
-            self.clist0,
-            xoffset=self.first_moments[1, 0] / self.first_moments[0, 0],
-            yoffset=self.first_moments[0, 1] / self.first_moments[0, 0])
+            self.clist0, xoffset=self.xoffset, yoffset=self.yoffset)
 
         self.central_moments = get_moments(self.clist1, maxmoment=3)
 
@@ -307,6 +307,7 @@ class MomentsReconstruction(object):
         # condition B: direction of rough estimate
         dtheta = theta - self.rough_est
         dtheta[dtheta > np.pi] -= 2 * np.pi
+        dtheta[dtheta < -np.pi] += 2 * np.pi
         condB = np.abs(dtheta) <= np.pi / 2
         # choose
         cond_both = condA & condB
@@ -370,7 +371,7 @@ class CoordinatesList(object):
         # offset, if any
         xtemp = clist.x - xoffset
         ytemp = clist.y - yoffset
-        # rotation, if any
+        # rotation, if any. *coordinate frame* is rotated (theta -> -theta)
         theta = rotation_rad
         xlist = xtemp * np.cos(theta) + ytemp * np.sin(theta)
         ylist = - xtemp * np.sin(theta) + ytemp * np.cos(theta)

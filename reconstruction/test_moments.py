@@ -179,5 +179,120 @@ def main2():
     #
 
 
+def arc_test():
+    """
+    Use trackmoments.generate_arc() to make a bunch of arcs, and then see
+    how well algorithm does at reconstructing.
+    """
+
+    n = 10
+    rough_est = np.zeros(n)
+    alpha = np.zeros(n)
+    R = np.zeros(n)
+    phi = np.zeros(n)
+
+    print('ideal: pure points, phi=90, r=6')
+    center_angles = np.linspace(0, 360, n, endpoint=False)
+    for i in xrange(n):
+        arc, est = tm.generate_arc(
+            r=6, phi_d=90, center_angle_d=center_angles[i], n_pts=1000,
+            blur_sigma=0, pixelize=False)
+        mom = tm.MomentsReconstruction.reconstruct_arc(arc, est)
+        rough_est[i] = mom.rough_est * 180 / np.pi
+        alpha[i] = mom.alpha * 180 / np.pi
+        R[i] = mom.R
+        phi[i] = mom.phi * 180 / np.pi      # degrees now
+    print('True directions: {}'.format(rough_est))
+    print('Calc directions: {}'.format(alpha))
+    print('R: {}'.format(R))
+    print('phi: {}'.format(phi))
+    print('')
+
+    print('ideal, larger radius: pure points, phi=10, r=30')
+    center_angles = np.linspace(0, 360, n, endpoint=False)
+    for i in xrange(n):
+        arc, est = tm.generate_arc(
+            r=30, phi_d=10, center_angle_d=center_angles[i], n_pts=1000,
+            blur_sigma=0, pixelize=False)
+        mom = tm.MomentsReconstruction.reconstruct_arc(arc, est)
+        rough_est[i] = mom.rough_est * 180 / np.pi
+        alpha[i] = mom.alpha * 180 / np.pi
+        R[i] = mom.R
+        phi[i] = mom.phi * 180 / np.pi      # degrees now
+    print('True directions: {}'.format(rough_est))
+    print('Calc directions: {}'.format(alpha))
+    print('R: {}'.format(R))
+    print('phi: {}'.format(phi))
+    print('')
+
+    print('blurred: sigma = 1. phi=90, r=6')
+    center_angles = np.linspace(0, 360, n, endpoint=False)
+    for i in xrange(n):
+        arc, est = tm.generate_arc(
+            r=6, phi_d=90, center_angle_d=center_angles[i], n_pts=1000,
+            blur_sigma=1, pixelize=False)
+        mom = tm.MomentsReconstruction.reconstruct_arc(arc, est)
+        rough_est[i] = mom.rough_est * 180 / np.pi
+        alpha[i] = mom.alpha * 180 / np.pi
+        R[i] = mom.R
+        phi[i] = mom.phi * 180 / np.pi      # degrees now
+    print('True directions: {}'.format(rough_est))
+    print('Calc directions: {}'.format(alpha))
+    print('R: {}'.format(R))
+    print('phi: {}'.format(phi))
+    print('')
+
+    print('blurred and pixelized: sigma = 1. phi=90, r=6')
+    center_angles = np.linspace(0, 360, n, endpoint=False)
+    for i in xrange(n):
+        arc, est = tm.generate_arc(
+            r=6, phi_d=90, center_angle_d=center_angles[i], n_pts=1000,
+            blur_sigma=1, pixelize=True)
+        mom = tm.MomentsReconstruction.reconstruct_arc(arc, est)
+        rough_est[i] = mom.rough_est * 180 / np.pi
+        alpha[i] = mom.alpha * 180 / np.pi
+        R[i] = mom.R
+        phi[i] = mom.phi * 180 / np.pi      # degrees now
+    print('True directions: {}'.format(rough_est))
+    print('Calc directions: {}'.format(alpha))
+    print('R: {}'.format(R))
+    print('phi: {}'.format(phi))
+    print('')
+
+    print('blurred and pixelized: sigma = 1. phi=10, r=30')
+    center_angles = np.linspace(0, 360, n, endpoint=False)
+    for i in xrange(n):
+        arc, est = tm.generate_arc(
+            r=30, phi_d=10, center_angle_d=center_angles[i], n_pts=1000,
+            blur_sigma=1, pixelize=True)
+        mom = tm.MomentsReconstruction.reconstruct_arc(arc, est)
+        rough_est[i] = mom.rough_est * 180 / np.pi
+        alpha[i] = mom.alpha * 180 / np.pi
+        R[i] = mom.R
+        phi[i] = mom.phi * 180 / np.pi      # degrees now
+    print('True directions: {}'.format(rough_est))
+    print('Calc directions: {}'.format(alpha))
+    print('R: {}'.format(R))
+    print('phi: {}'.format(phi))
+    print('')
+
+    print('blurred and pixelized: sigma = 1. phi=10, r=30, n_pts = 10000')
+    center_angles = np.linspace(0, 360, n, endpoint=False)
+    for i in xrange(n):
+        arc, est = tm.generate_arc(
+            r=30, phi_d=10, center_angle_d=center_angles[i], n_pts=10000,
+            blur_sigma=1, pixelize=True)
+        mom = tm.MomentsReconstruction.reconstruct_arc(arc, est)
+        rough_est[i] = mom.rough_est * 180 / np.pi
+        alpha[i] = mom.alpha * 180 / np.pi
+        R[i] = mom.R
+        phi[i] = mom.phi * 180 / np.pi      # degrees now
+    print('True directions: {}'.format(rough_est))
+    print('Calc directions: {}'.format(alpha))
+    print('R: {}'.format(R))
+    print('phi: {}'.format(phi))
+    print('')
+
+
 if __name__ == '__main__':
     main2()
