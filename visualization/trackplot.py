@@ -212,7 +212,7 @@ def plot_clist_circles(clist):
     # pass
 
 
-def plot_moments_arc(mom, debug=False, end_segment=False):
+def plot_moments_arc(mom, debug=False, end_segment=False, box=False):
     """
     Plot the end segment image, with the arc calculated by moments overlaid.
     """
@@ -224,10 +224,8 @@ def plot_moments_arc(mom, debug=False, end_segment=False):
     phi1 = np.pi / 2 + phi2
 
     if debug:
+        # figure 1
         plot_clist_circles(mom.clist2)
-        phi = np.linspace(phi0, phi1, 1000)
-        xy_rotated = [center_in_rotated_frame[0] + mom.R * np.cos(phi),
-                      center_in_rotated_frame[1] + mom.R * np.sin(phi)]
         plot_arc(center_in_rotated_frame, mom.R, phi0, phi1, flipxy=False)
 
     # rotation_angle was how the *coordinate frame* was rotated.
@@ -240,6 +238,7 @@ def plot_moments_arc(mom, debug=False, end_segment=False):
     phi1 += new_rotation_angle
 
     if debug:
+        # figure 2
         plot_clist_circles(mom.clist1)
         plot_arc(center_in_central_frame, mom.R, phi0, phi1, flipxy=False)
 
@@ -247,6 +246,7 @@ def plot_moments_arc(mom, debug=False, end_segment=False):
         np.array(center_in_central_frame) +
         np.array([mom.xoffset, mom.yoffset]))
     if debug:
+        # figure 3
         plot_clist_circles(mom.clist0)
         plot_arc(center_in_segment_frame, mom.R, phi0, phi1, flipxy=False)
 
@@ -260,9 +260,13 @@ def plot_moments_arc(mom, debug=False, end_segment=False):
     if end_segment:
         ax, im = plot_track_image(mom.end_segment_image)
         plot_arc(center_in_segment_frame, mom.R, phi0, phi1)
+        if box:
+            plt.plot(mom.box_y - imgoffset[1], mom.box_x - imgoffset[0], 'c')
     else:
         ax, im = plot_track_image(mom.original_image_kev)
         plot_arc(center_in_image_frame, mom.R, phi0, phi1)
+        if box:
+            plt.plot(mom.box_y, mom.box_x, 'c')
     plt.show()
 
     if debug:

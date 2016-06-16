@@ -138,6 +138,12 @@ def momentlist_from_tracklist(tracklist):
     return first_moments, central_moments, rotated_moments, R, phi
 
 
+def plot_track_arc(track, debug=False):
+    mom = tm.MomentsReconstruction(track.image)
+    mom.reconstruct()
+    tp.plot_moments_arc(mom, debug=debug)
+
+
 def main1():
     """
     plot the bounding box for segmentation
