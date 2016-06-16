@@ -52,6 +52,8 @@ class MomentsReconstruction(object):
 
         self.compute_direction()
 
+        self.compute_pathology()
+
     @classmethod
     def reconstruct_test(cls, end_segment_image, rough_est):
         """
@@ -348,6 +350,17 @@ class MomentsReconstruction(object):
         # np.sinc is a NORMALIZED sinc function - sin(pi*x)/(pi*x)
         q2 = self.R * (np.cos(self.phi / 2) - np.sin(self.phi) / self.phi) * e2
         self.x0 = self.arc_center - q1 + q2
+
+    def compute_pathology(self):
+        # Test 1: The total arc-length should be longer than 3(?) pixels
+        self.arclength = self.Rphi
+        # Test 2: Radius should be much greater than arc-length
+        # self.phi
+        # Test 3: Certain moments are expected to ... be significantly smaller
+        self.pathology_ratio_3a = (
+            self.rotated_moments[1, 2] / self.rotated_moments[2, 1])
+        self.pathology_ratio_3b = (
+            self.rotated_moments[3, 0] / self.rotated_moments[0, 3])
 
 
 class CoordinatesList(object):
