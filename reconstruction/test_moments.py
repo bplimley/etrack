@@ -94,6 +94,9 @@ def momentlist_from_tracklist(tracklist):
     rotated_moments = np.zeros((max_length, 4, 4))
     R = np.zeros(max_length)
     phi = np.zeros(max_length)
+    arclength = np.zeros(max_length)
+    pr3a = np.zeros(max_length)
+    pr3b = np.zeros(max_length)
 
     n = 0
     index_error_count = 0
@@ -114,6 +117,9 @@ def momentlist_from_tracklist(tracklist):
         # copy R, phi
         R[n] = mom.R
         phi[n] = mom.phi
+        arclength[n] = mom.arclength
+        pr3a[n] = mom.pathology_ratio_3a
+        pr3b[n] = mom.pathology_ratio_3b
 
         # copy moments
         for i in xrange(3):
@@ -128,6 +134,9 @@ def momentlist_from_tracklist(tracklist):
     # remove extra entries
     R.resize(n)
     phi.resize(n)
+    arclength.resize(n)
+    pr3a.resize(n)
+    pr3b.resize(n)
     first_moments = first_moments.copy()
     first_moments.resize((n, 2, 2))
     central_moments = central_moments.copy()
@@ -135,13 +144,15 @@ def momentlist_from_tracklist(tracklist):
     rotated_moments = rotated_moments.copy()
     rotated_moments.resize((n, 4, 4))
 
-    return first_moments, central_moments, rotated_moments, R, phi
+    return first_moments, central_moments, rotated_moments, R, phi, arclength, pr3a, pr3b
 
 
-def plot_track_arc(track, debug=False):
+def plot_track_arc(track, debug=False, end_segment=False, box=False,
+                   title=None):
     mom = tm.MomentsReconstruction(track.image)
     mom.reconstruct()
-    tp.plot_moments_arc(mom, debug=debug)
+    tp.plot_moments_arc(
+        mom, debug=debug, end_segment=end_segment, box=box, title=title)
 
 
 def main1():
@@ -298,6 +309,66 @@ def arc_test():
     print('R: {}'.format(R))
     print('phi: {}'.format(phi))
     print('')
+
+
+def main3(tracklist=None):
+    """
+    Run moments algorithm on tracks, get delta-alpha, and plot histograms.
+    """
+
+    nf = 1
+    binwidth = 5    # degrees
+    if tracklist is None:
+        tracklist = get_tracklist(n_files=nf)
+
+    # run moments algorithm
+    mlist = [tm.MomentsReconstruction(t.image) for t in tracklist]
+    [m.reconstruct() for m in mlist]
+
+    # get delta alpha
+    da = np.array(
+        [mlist[i].alpha * 180 / np.pi - tracklist[i].g4track.alpha_deg
+         for i in xrange(len(tracklist))])
+    while np.any(da > 180):
+        da[da > 180] -= 360
+    while np.any(da < -180):
+        da[da < -180] += 360
+
+    # get moments
+    first, central, rotated, R, phi, arclen, pr3a, pr3b = momentlist_from_tracklist(tracklist)
+
+    # total da histogram
+    plt.figure()
+    n, bins = np.histogram(da, np.arange(-180, 180.1, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n, drawstyle='steps-mid')
+    plt.xlabel('Delta Alpha [degrees]')
+    plt.show()
+
+    # total arclen histogram
+    binwidth = 0.25
+    plt.figure()
+    n, bins = np.histogram(arclen, np.arange(0, 20, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n, drawstyle='steps-mid')
+    plt.xlabel('Arc length [pixels]')
+    plt.show()
+
+    # pr3a histogram
+    binwidth = 0.025
+    plt.figure()
+    n, bins = np.histogram(np.abs(pr3a), np.arange(0, 4, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n, drawstyle='steps-mid')
+    plt.xlabel('T12 / T21')
+    plt.show()
+
+    # pr3b histogram
+    binwidth = 2
+    plt.figure()
+    n, bins = np.histogram(np.abs(pr3b), np.arange(0, 500, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n, drawstyle='steps-mid')
+    plt.xlabel('T30 / T03')
+    plt.show()
+
+    pdb.set_trace()
 
 
 if __name__ == '__main__':
