@@ -212,7 +212,8 @@ def plot_clist_circles(clist):
     # pass
 
 
-def plot_moments_arc(mom, debug=False, end_segment=False, box=False):
+def plot_moments_arc(mom, debug=False, end_segment=False, box=False,
+                     title=None):
     """
     Plot the end segment image, with the arc calculated by moments overlaid.
     """
@@ -250,10 +251,11 @@ def plot_moments_arc(mom, debug=False, end_segment=False, box=False):
         plot_clist_circles(mom.clist0)
         plot_arc(center_in_segment_frame, mom.R, phi0, phi1, flipxy=False)
 
+    # offset is good to know anyway (see `if end_segment` / `if box` below)
+    imgoffset = np.array([np.min(mom.box_x), np.min(mom.box_y)])
+    imgoffset[imgoffset < 0] = 0
     if not end_segment:
         # gotta go back to the original image too
-        imgoffset = np.array([np.min(mom.box_x), np.min(mom.box_y)])
-        imgoffset[imgoffset < 0] = 0
         center_in_image_frame = center_in_segment_frame + imgoffset
 
     f = plt.figure()
@@ -267,6 +269,8 @@ def plot_moments_arc(mom, debug=False, end_segment=False, box=False):
         plot_arc(center_in_image_frame, mom.R, phi0, phi1)
         if box:
             plt.plot(mom.box_y, mom.box_x, 'c')
+    if title is not None:
+        plt.title(title)
     plt.show()
 
     if debug:
