@@ -340,32 +340,81 @@ def main3(tracklist=None):
     # total da histogram
     plt.figure()
     n, bins = np.histogram(da, np.arange(-180, 180.1, binwidth))
-    plt.plot(bins[:-1] + binwidth / 2, n, drawstyle='steps-mid')
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'k', drawstyle='steps-mid', label='all')
+    # da for pr3a < 0.5
+    lg = np.abs(pr3a) < 0.5
+    n, bins = np.histogram(da[lg], np.arange(-180, 180.1, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'b', drawstyle='steps-mid', label='T21/T12 < 0.5')
+    # da for pr3a < 0.2
+    lg = np.abs(pr3a) < 0.2
+    n, bins = np.histogram(da[lg], np.arange(-180, 180.1, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'm', drawstyle='steps-mid', label='T21/T12 < 0.2')
     plt.xlabel('Delta Alpha [degrees]')
+    plt.ylabel('fraction of tracks per {} degrees'.format(binwidth))
+    plt.legend()
     plt.show()
+
+    lg0 = np.abs(da) < 8
+    lg1 = np.abs(da) < 20
 
     # total arclen histogram
     binwidth = 0.25
     plt.figure()
     n, bins = np.histogram(arclen, np.arange(0, 20, binwidth))
-    plt.plot(bins[:-1] + binwidth / 2, n, drawstyle='steps-mid')
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'k', drawstyle='steps-mid', label='all')
+    # lg1
+    n, bins = np.histogram(arclen[lg1], np.arange(0, 20, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'r', drawstyle='steps-mid', label='|da| < 20 degrees')
+    # lg0
+    n, bins = np.histogram(arclen[lg0], np.arange(0, 20, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'c', drawstyle='steps-mid', label='|da| < 8 degrees')
     plt.xlabel('Arc length [pixels]')
+    plt.ylabel('fraction of tracks per {} arclength'.format(binwidth))
+    plt.legend()
     plt.show()
 
     # pr3a histogram
     binwidth = 0.025
     plt.figure()
     n, bins = np.histogram(np.abs(pr3a), np.arange(0, 4, binwidth))
-    plt.plot(bins[:-1] + binwidth / 2, n, drawstyle='steps-mid')
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'k', drawstyle='steps-mid', label='all')
+    # lg1
+    n, bins = np.histogram(np.abs(pr3a)[lg1], np.arange(0, 4, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'r', drawstyle='steps-mid', label='|da| < 20 degrees')
+    # lg0
+    n, bins = np.histogram(np.abs(pr3a)[lg0], np.arange(0, 4, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'c', drawstyle='steps-mid', label='|da| < 8 degrees')
     plt.xlabel('T12 / T21')
+    plt.ylabel('fraction of tracks per {} ratio'.format(binwidth))
+    plt.legend()
     plt.show()
 
     # pr3b histogram
     binwidth = 2
     plt.figure()
     n, bins = np.histogram(np.abs(pr3b), np.arange(0, 500, binwidth))
-    plt.plot(bins[:-1] + binwidth / 2, n, drawstyle='steps-mid')
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'k', drawstyle='steps-mid', label='all')
+    # lg1
+    n, bins = np.histogram(np.abs(pr3b)[lg1], np.arange(0, 500, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'r', drawstyle='steps-mid', label='|da| < 20 degrees')
+    # lg0
+    n, bins = np.histogram(np.abs(pr3b)[lg0], np.arange(0, 500, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'c', drawstyle='steps-mid', label='|da| < 8 degrees')
     plt.xlabel('T30 / T03')
+    plt.ylabel('fraction of tracks per {} ratio'.format(binwidth))
+    plt.legend()
     plt.show()
 
     pdb.set_trace()
