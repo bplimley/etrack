@@ -369,6 +369,7 @@ def main3(tracklist=None, mlist=None):
         plt.xlim([-180, 180])
         plt.xlabel('Delta Alpha [degrees]')
         plt.ylabel('fraction of tracks per {} degrees'.format(binwidth))
+        plt.title('Moments method')
         plt.legend()
         plt.show()
 
@@ -458,6 +459,105 @@ def main3(tracklist=None, mlist=None):
         plt.show()
 
     return moment_vars
+
+
+def main4(tracklist=None, HTalpha=None, mlist=None):
+    """
+    Plot HybridTrack results, and compare to moments.
+    """
+
+    # get moments
+    moment_vars = moments_from_momentlist(mlist)
+    first, central, rotated, R, phi, arclen, pr3a, pr3b = moment_vars
+
+    HT_da = np.array(
+        [HTalpha[i] - tracklist[i].g4track.alpha_deg
+         for i in xrange(len(tracklist))])
+    while np.any(HT_da > 180):
+        HT_da[HT_da > 180] -= 360
+    while np.any(HT_da < -180):
+        HT_da[HT_da < -180] += 360
+
+    MR_da = np.array(
+        [mlist[i].alpha * 180 / np.pi - tracklist[i].g4track.alpha_deg
+         for i in xrange(len(tracklist))])
+    while np.any(MR_da > 180):
+        MR_da[MR_da > 180] -= 360
+    while np.any(MR_da < -180):
+        MR_da[MR_da < -180] += 360
+
+    # da histograms
+
+    # full
+    binwidth = 3
+    plt.figure()
+    n, bins = np.histogram(MR_da, np.arange(-180, 180.1, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'k', lw=2, drawstyle='steps-mid', label='moments')
+    n, bins = np.histogram(HT_da, np.arange(-180, 180.1, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'b', lw=2, drawstyle='steps-mid', label='ridge-following')
+    plt.xlim([-180, 180])
+    plt.ylim([0, 0.12])
+    plt.xlabel('Delta Alpha [degrees]')
+    plt.ylabel('fraction of tracks per {} degrees'.format(binwidth))
+    plt.title('All tracks in set (E > 300 keV)')
+    plt.legend()
+    plt.show()
+
+    # phi < 90
+    plt.figure()
+    lg = np.abs(phi) < 90. / 180 * np.pi
+    n, bins = np.histogram(MR_da[lg], np.arange(-180, 180.1, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'k', lw=2, drawstyle='steps-mid', label='moments')
+    n, bins = np.histogram(HT_da[lg], np.arange(-180, 180.1, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'b', lw=2, drawstyle='steps-mid',
+             label='ridge-following')
+    plt.xlim([-180, 180])
+    plt.ylim([0, 0.12])
+    plt.xlabel('Delta Alpha [degrees]')
+    plt.ylabel('fraction of tracks per {} degrees'.format(binwidth))
+    plt.title('Phi < 90 degrees (E > 300 keV)')
+    plt.legend()
+    plt.show()
+
+    # phi < 45
+    plt.figure()
+    lg = np.abs(phi) < 45. / 180 * np.pi
+    n, bins = np.histogram(MR_da[lg], np.arange(-180, 180.1, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'k', lw=2, drawstyle='steps-mid', label='moments')
+    n, bins = np.histogram(HT_da[lg], np.arange(-180, 180.1, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'b', lw=2, drawstyle='steps-mid',
+             label='ridge-following')
+    plt.xlim([-180, 180])
+    plt.ylim([0, 0.12])
+    plt.xlabel('Delta Alpha [degrees]')
+    plt.ylabel('fraction of tracks per {} degrees'.format(binwidth))
+    plt.title('Phi < 45 degrees (E > 300 keV)')
+    plt.legend()
+    plt.show()
+
+    # phi < 15
+    plt.figure()
+    lg = np.abs(phi) < 15. / 180 * np.pi
+    n, bins = np.histogram(MR_da[lg], np.arange(-180, 180.1, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'k', lw=2, drawstyle='steps-mid', label='moments')
+    n, bins = np.histogram(HT_da[lg], np.arange(-180, 180.1, binwidth))
+    plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+             'b', lw=2, drawstyle='steps-mid',
+             label='ridge-following')
+    plt.xlim([-180, 180])
+    plt.ylim([0, 0.12])
+    plt.xlabel('Delta Alpha [degrees]')
+    plt.ylabel('fraction of tracks per {} degrees'.format(binwidth))
+    plt.title('Phi < 15 degrees (E > 300 keV)')
+    plt.legend()
+    plt.show()
 
 
 if __name__ == '__main__':
