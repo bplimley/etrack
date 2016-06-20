@@ -440,20 +440,20 @@ def main3(tracklist=None, mlist=None):
 
     if True:
         # pr3b histogram
-        binwidth = 10
+        binwidth = 0.0025
         plt.figure()
-        n, bins = np.histogram(np.abs(pr3b), np.arange(0, 500, binwidth))
+        n, bins = np.histogram(np.abs(1 / pr3b), np.arange(0, 1, binwidth))
         plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
                  'k', drawstyle='steps-mid', label='all')
         # lg1
-        n, bins = np.histogram(np.abs(pr3b)[lg1], np.arange(0, 500, binwidth))
+        n, bins = np.histogram(np.abs(1 / pr3b)[lg1], np.arange(0, 1, binwidth))
         plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
                  'r', drawstyle='steps-mid', label='|da| < 20 degrees')
         # lg0
-        n, bins = np.histogram(np.abs(pr3b)[lg0], np.arange(0, 500, binwidth))
+        n, bins = np.histogram(np.abs(1 / pr3b)[lg0], np.arange(0, 1, binwidth))
         plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
                  'c', drawstyle='steps-mid', label='|da| < 8 degrees')
-        plt.xlabel('T30 / T03')
+        plt.xlabel('T03 / T30')
         plt.ylabel('fraction of tracks per {} ratio'.format(binwidth))
         plt.legend()
         plt.show()
