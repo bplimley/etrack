@@ -93,6 +93,7 @@ def momentlist_from_tracklist(tracklist):
     t0 = time.time()
     for t in tracklist:
         mom = tm.MomentsReconstruction(t.image)
+        mom.track = t
         mom.reconstruct()
         momlist.append(mom)
     t1 = time.time()
@@ -116,6 +117,8 @@ def moments_from_momentlist(momentlist):
     arclength = np.zeros(max_length)
     pr3a = np.zeros(max_length)
     pr3b = np.zeros(max_length)
+    z = np.zeros(max_length)
+    E = np.zeros(max_length)
 
     n = 0
 
@@ -126,6 +129,8 @@ def moments_from_momentlist(momentlist):
         arclength[n] = mom.arclength
         pr3a[n] = mom.pathology_ratio_3a
         pr3b[n] = mom.pathology_ratio_3b
+        z[n] = mom.track.g4track.x0[-1]     # -0.65 to 0
+        E[n] = mom.track.g4track.energy_tot_kev
 
         # copy moments
         for i in xrange(3):
@@ -143,6 +148,8 @@ def moments_from_momentlist(momentlist):
     arclength.resize(n)
     pr3a.resize(n)
     pr3b.resize(n)
+    z.resize(n)
+    E.resize(n)
     first_moments = first_moments.copy()
     first_moments.resize((n, 2, 2))
     central_moments = central_moments.copy()
@@ -151,7 +158,7 @@ def moments_from_momentlist(momentlist):
     rotated_moments.resize((n, 4, 4))
 
     moment_vars = (first_moments, central_moments, rotated_moments,
-                   R, phi, arclength, pr3a, pr3b)
+                   R, phi, arclength, pr3a, pr3b, z, E)
     return moment_vars
 
 
@@ -343,7 +350,7 @@ def main3(tracklist=None, mlist=None):
 
     # get moments
     moment_vars = moments_from_momentlist(mlist)
-    first, central, rotated, R, phi, arclen, pr3a, pr3b = moment_vars
+    first, central, rotated, R, phi, arclen, pr3a, pr3b, z, E = moment_vars
 
     if False:
         # total da histogram
