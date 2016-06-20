@@ -331,6 +331,11 @@ def main3(tracklist=None, mlist=None):
     Run moments algorithm on tracks, get delta-alpha, and plot histograms.
     """
 
+    # z = -0.65 is the pixel plane (narrow tracks)
+    # z = 0 is the back plane (diffuse tracks)
+    zmin = -0.65
+    zmax = -0.0
+
     nf = 1
     binwidth = 5    # degrees
     if tracklist is None and mlist is None:
@@ -352,7 +357,20 @@ def main3(tracklist=None, mlist=None):
     moment_vars = moments_from_momentlist(mlist)
     first, central, rotated, R, phi, arclen, pr3a, pr3b, z, E = moment_vars
 
-    if False:
+    # depth selection
+    lgdepth = (z >= zmin) & (z <= zmax)
+
+    da = da[lgdepth]
+    R = R[lgdepth]
+    phi = phi[lgdepth]
+    arclen = arclen[lgdepth]
+    pr3a = pr3a[lgdepth]
+    pr3b = pr3b[lgdepth]
+    z = z[lgdepth]
+    E = E[lgdepth]
+    # haven't selected the raw moments yet (first, central, rotated)
+
+    if True:
         # total da histogram
         plt.figure()
         n, bins = np.histogram(da, np.arange(-180, 180.1, binwidth))
@@ -383,7 +401,7 @@ def main3(tracklist=None, mlist=None):
     lg0 = np.abs(da) < 8
     lg1 = np.abs(da) < 20
 
-    if False:
+    if True:
         # total arclen histogram
         binwidth = 0.25
         plt.figure()
@@ -403,7 +421,7 @@ def main3(tracklist=None, mlist=None):
         plt.legend()
         plt.show()
 
-    if False:
+    if True:
         # total phi histogram
         binwidth = 5
         plt.figure()
@@ -425,7 +443,7 @@ def main3(tracklist=None, mlist=None):
         plt.legend()
         plt.show()
 
-    if False:
+    if True:
         # pr3a histogram
         binwidth = 0.025
         plt.figure()
@@ -453,11 +471,13 @@ def main3(tracklist=None, mlist=None):
         plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
                  'k', drawstyle='steps-mid', label='all')
         # lg1
-        n, bins = np.histogram(np.abs(1 / pr3b)[lg1], np.arange(0, 1, binwidth))
+        n, bins = np.histogram(
+            np.abs(1 / pr3b)[lg1], np.arange(0, 1, binwidth))
         plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
                  'r', drawstyle='steps-mid', label='|da| < 20 degrees')
         # lg0
-        n, bins = np.histogram(np.abs(1 / pr3b)[lg0], np.arange(0, 1, binwidth))
+        n, bins = np.histogram(
+            np.abs(1 / pr3b)[lg0], np.arange(0, 1, binwidth))
         plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
                  'c', drawstyle='steps-mid', label='|da| < 8 degrees')
         plt.xlabel('T03 / T30')
