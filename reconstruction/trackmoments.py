@@ -19,7 +19,8 @@ from etrack.reconstruction import hybridtrack
 
 class MomentsReconstruction(object):
 
-    def __init__(self, original_image_kev, pixel_size_um=10.5):
+    def __init__(self, original_image_kev, pixel_size_um=10.5,
+                 starting_distance=63):
         """
         Init: Load options only
         """
@@ -27,7 +28,9 @@ class MomentsReconstruction(object):
         self.original_image_kev = original_image_kev
         self.options = hybridtrack.ReconstructionOptions(pixel_size_um)
         # increase walking distance from 4 pixels to 6 pixels - for now
-        self.options.ridge_starting_distance_from_track_end_um = 63
+        # hybridtrack default: 40 um
+        # initial testing before 6/21/16: 63 um
+        self.options.ridge_starting_distance_from_track_end_um = starting_distance
 
         self.info = hybridtrack.ReconstructionInfo()
 
