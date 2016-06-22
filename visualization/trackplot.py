@@ -213,7 +213,7 @@ def plot_clist_circles(clist):
 
 
 def plot_moments_arc(mom, debug=False, end_segment=False, box=False,
-                     title=None):
+                     entry_pt=True, title=None):
     """
     Plot the end segment image, with the arc calculated by moments overlaid.
     """
@@ -269,6 +269,10 @@ def plot_moments_arc(mom, debug=False, end_segment=False, box=False,
         plot_arc(center_in_image_frame, mom.R, phi0, phi1)
         if box:
             plt.plot(mom.box_y, mom.box_x, 'c')
+    if entry_pt:
+        # testing
+        plt.plot(mom.arc_center[1], mom.arc_center[0], '*b', lw=3, ms=10)
+        plt.plot(mom.x0[1], mom.x0[0], '^c', lw=3, ms=10)
     if title is not None:
         plt.title(title)
     plt.show()
