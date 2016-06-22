@@ -325,6 +325,15 @@ class MomentsReconstruction(object):
 
         self.central_to_segment = central_coords_to_end_segment_coords
 
+        def central_coords_to_full_image_coords(xy):
+            """
+            Convert x,y from the coordinate frame of the central moments
+            to the coordinate frame of the end segment image
+            """
+            return self.segment_to_full(self.central_to_segment(xy))
+
+        self.central_to_full = central_coords_to_full_image_coords
+
     def compute_optimal_rotation_angle(self):
         numerator = 2 * self.central_moments[1, 1]
         denominator = self.central_moments[2, 0] - self.central_moments[0, 2]
