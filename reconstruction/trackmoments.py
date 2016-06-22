@@ -241,6 +241,15 @@ class MomentsReconstruction(object):
 
             self.end_segment_offsets = np.array([min_x, min_y])
 
+            def end_segment_coords_to_full_image_coords(xy):
+                """
+                Convert x,y from the coordinate frame of the end segment image
+                to the coordinate frame of the full image
+                """
+                return np.array(xy) + self.end_segment_offsets
+
+            self.segment_to_full = end_segment_coords_to_full_image_coords
+
             if False and is45:
                 # debug
                 print('min_x, max_x = ({}, {})'.format(min_x, max_x))
@@ -307,6 +316,15 @@ class MomentsReconstruction(object):
 
         self.central_moments = get_moments(self.clist1, maxmoment=3)
 
+        def central_coords_to_end_segment_coords(xy):
+            """
+            Convert x,y from the coordinate frame of the central moments
+            to the coordinate frame of the end segment image
+            """
+            return xy + np.array([self.xoffset, self.yoffset])
+
+        self.central_to_segment = central_coords_to_end_segment_coords
+
     def compute_optimal_rotation_angle(self):
         numerator = 2 * self.central_moments[1, 1]
         denominator = self.central_moments[2, 0] - self.central_moments[0, 2]
@@ -339,6 +357,47 @@ class MomentsReconstruction(object):
         self.rotation_angle = theta[chosen_ind]
         self.clist2 = rotated_clists[chosen_ind]
         self.rotated_moments = rotated_moments[chosen_ind]
+
+        def rotated_coords_to_central_coords(xy):
+            """
+            Convert x,y from the coordinate frame of the rotated moments
+            to the coordinate frame of the central moments
+            """
+            xy = np.array(xy)
+            t = self.rotation_angle
+            if xy.ndim == 1:
+                x = xy[0]
+                y = xy[1]
+            elif xy.ndim == 2 and xy.shape[0] == 2:
+                x = xy[0, :].flatten()
+                y = xy[1, :].flatten()
+            else:
+                x = xy[:, 0].flatten()
+                y = xy[:, 1].flatten()
+            # rotate "forward" because CoordList rotates "backward"
+            x1 = x * np.cos(t) - y * np.sin(t)
+            y1 = x * np.sin(t) + y * np.cos(t)
+            return np.array([x1, y1])
+
+        self.rotated_to_central = rotated_coords_to_central_coords
+
+        def rotated_coords_to_end_segment_coords(xy):
+            """
+            Convert x,y from the coordinate frame of the rotated moments
+            to the coordinate frame of the end segment image.
+            """
+            return self.central_to_segment(self.rotated_to_central(xy))
+
+        self.rotated_to_segment = rotated_coords_to_end_segment_coords
+
+        def rotated_coords_to_full_image_coords(xy):
+            """
+            Convert x,y from the coordinate frame of the rotated moments
+            to the coordinate frame of the full image.
+            """
+            return self.segment_to_full(self.rotated_to_segment(xy))
+
+        self.rotated_to_full = rotated_coords_to_full_image_coords
 
     def compute_arc_parameters(self):
         C_fit = -8.5467
