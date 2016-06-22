@@ -169,6 +169,7 @@ class MomentsReconstruction(object):
 
         else:
             # close to 45 degrees
+            is45 = True
 
             diag_hw = int(np.round(float(segment_width / 2) / np.sqrt(2)))
             diag_len = segment_length
@@ -237,6 +238,15 @@ class MomentsReconstruction(object):
                     xpix[i], ypix[i]]
 
             self.end_segment_image = seg_img
+
+            if True and is45:
+                # debug
+                print('min_x, max_x = ({}, {})'.format(min_x, max_x))
+                print('box_x = {}'.format(self.box_x))
+                print('min_y, max_y = ({}, {})'.format(min_y, max_y))
+                print('box_y = {}'.format(self.box_y))
+
+                import ipdb as pdb; pdb.set_trace()
 
     @classmethod
     def get_base_diagonal_pixlist(cls, diag_hw, diag_len):
