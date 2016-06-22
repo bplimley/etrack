@@ -239,14 +239,16 @@ class MomentsReconstruction(object):
 
             self.end_segment_image = seg_img
 
-            if True and is45:
+            self.end_segment_offsets = np.array([min_x, min_y])
+
+            if False and is45:
                 # debug
                 print('min_x, max_x = ({}, {})'.format(min_x, max_x))
                 print('box_x = {}'.format(self.box_x))
                 print('min_y, max_y = ({}, {})'.format(min_y, max_y))
                 print('box_y = {}'.format(self.box_y))
 
-                import ipdb as pdb; pdb.set_trace()
+                # import ipdb as pdb; pdb.set_trace()
 
     @classmethod
     def get_base_diagonal_pixlist(cls, diag_hw, diag_len):
