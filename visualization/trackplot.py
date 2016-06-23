@@ -218,6 +218,8 @@ def plot_moments_arc(mom, debug=False, end_segment=False, box=False,
     Plot the end segment image, with the arc calculated by moments overlaid.
     """
 
+    # needs to be migrated to use e.g. mom.rotated_to_full(xy)
+
     phi2 = np.abs(mom.phi) / 2
     # get center point of arc
     center_in_rotated_frame = [0, -mom.R * np.sin(phi2) / phi2]
@@ -280,6 +282,101 @@ def plot_moments_arc(mom, debug=False, end_segment=False, box=False,
     if debug:
         import ipdb as pdb
         pdb.set_trace()
+    return f
+
+
+def plot_moments_track(mom, track):
+    """
+    Plot track for Don. Left pane shows full track, right pane is zoomed.
+    On each there is the segment box, the arc, the computed arrow, and the
+    Monte Carlo arrow.
+    """
+
+    # First: get all the coordinates we need.
+
+    # circle center: center of circle which contains the arc.
+    phi2 = np.abs(mom.phi) / 2
+    circle_center_rot = [0, -mom.R * np.sin(phi2) / phi2]
+
+    # arc points
+    phi0 = np.pi / 2 - phi2
+    phi1 = np.pi / 2 + phi2
+    phi = np.linspace(phi0, phi1, 1000)
+    arc_rot = np.array([mom.R * np.cos(phi) + circle_center_rot[0],
+                        mom.R * np.sin(phi) + circle_center_rot[1]])
+
+    # moments-calculated entry point EP a.k.a. x0
+    EP_rot = mom.x0
+
+    # geant4 entry point
+    # this is hard, TBD
+
+    # # transform into end segment image frame
+    # circle_center_segment = mom.rotated_to_segment(circle_center_rot)
+    # arc_segment = mom.rotated_to_segment(arc_rot)
+    # EP_segment = mom.rotated_to_segment(EP_rot)
+
+    # transform into full image frame
+    arc_full = mom.rotated_to_full(arc_rot)
+    EP_full = mom.rotated_to_full(EP_rot)
+
+    # moments-calculated direction alpha (radians) (in segment and full frames)
+    alpha = mom.alpha
+
+    # geant4 direction (converted to radians)
+    alpha_true = track.g4track.alpha_deg * np.pi / 180.0
+
+    def plot_arrow(start_xy, direction_rad, length=5, headlength=1,
+                   flipxy=True, color='c', lw=2):
+        headangle = 45 * np.pi / 180.0
+        leftangle = direction_rad + headangle
+        rightangle = direction_rad - headangle
+        head_dxy = np.array([length * np.cos(direction_rad),
+                             length * np.sin(direction_rad)])
+        dx = np.array([
+            0, head_dxy[0],
+            head_dxy[0] - headlength * np.cos(leftangle),
+            head_dxy[0],
+            head_dxy[0] - headlength * np.cos(rightangle)])
+        dy = np.array([
+            0, head_dxy[1],
+            head_dxy[1] - headlength * np.sin(leftangle),
+            head_dxy[1],
+            head_dxy[1] - headlength * np.sin(rightangle)])
+        x = start_xy[0] + dx
+        y = start_xy[1] + dy
+        if flipxy:
+            plt.plot(y, x, color, lw=lw)
+        else:
+            plt.plot(x, y, color, lw=lw)
+
+    # create figure
+    f = plt.figure(figsize=(16, 8))
+
+    # left plot: full image
+    plt.subplot(1, 2, 1)
+    cmap = get_colormap()
+    plt.imshow(mom.original_image_kev, cmap=cmap, aspect='equal',
+               interpolation='none', origin='lower')
+    plt.plot(mom.box_y, mom.box_x, 'c')
+    plt.plot(arc_full[1, :], arc_full[0, :], 'c', lw=2.5)
+    plot_arrow(EP_full[::-1], alpha, color='c')
+    plot_arrow(EP_full[::-1], alpha_true, color='g')
+
+    # right plot: zoomed
+    plt.subplot(1, 2, 2)
+    plt.imshow(mom.original_image_kev, cmap=cmap, aspect='equal',
+               interpolation='none', origin='lower')
+    plt.plot(mom.box_y, mom.box_x, 'c')
+    plt.plot(arc_full[1, :], arc_full[0, :], 'c', lw=2.5)
+    plot_arrow(EP_full[::-1], alpha, color='c')
+    plot_arrow(EP_full[::-1], alpha_true, color='g')
+
+    xoff = mom.end_segment_offsets[1]
+    yoff = mom.end_segment_offsets[0]
+    plt.xlim((xoff - 1, xoff + mom.end_segment_image.shape[1] + 1))
+    plt.ylim((yoff - 1, yoff + mom.end_segment_image.shape[0] + 1))
+
     return f
 
 
