@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors
 import matplotlib.patches as patches
 import matplotlib
+import scipy.interpolate
 
 import ipdb as pdb
 
@@ -292,29 +293,106 @@ def plot_g4points(track):
     For testing offset corrections for plot_moments_track...
     """
 
-    g4x_um = track.g4track.x
+    g4x, g4y = get_image_xy(track)
+
+    # actual plotting
+    plt.figure()
     ax, im = plot_track_image(track.image)
+
+    plt.plot(g4y, g4x, '.c')
+
+    plt.xlim((0, track.image.shape[1] - 1))
+    plt.ylim((0, track.image.shape[0] - 1))
+
+
+def get_image_xy(track):
+    """
+    Find the xy in image coordinates, of the Geant4 track.
+
+    Uses find_g4_offsets.
+
+    Returns x, y.
+    """
+
+    g4x_um = track.g4track.x
 
     minx = np.min(g4x_um[0, :])
     miny = np.min(g4x_um[1, :])
-    maxx = np.max(g4x_um[0, :])
-    maxy = np.max(g4x_um[1, :])
+    # maxx = np.max(g4x_um[0, :])
+    # maxy = np.max(g4x_um[1, :])
 
     try:
         pixsize = np.float(track.pixel_size_um)
     except TypeError:
         pixsize = 10.5
 
+    # align to a corner of pixel grid - "more minimum" than (minx, miny)
+    minx_aligned = minx - (minx % pixsize)
+    miny_aligned = miny - (miny % pixsize)
+
     # buffer is 8.5 pixels in ViewGeantTrack4.m. probably this is wrong
-    buf = 8.5 * pixsize
+    buf = 4.5 * pixsize
 
-    g4x_pix = np.array([(g4x_um[0, :] - minx + buf) / pixsize,
-                        (g4x_um[1, :] - miny + buf) / pixsize])
+    xoff = minx_aligned - buf
+    yoff = miny_aligned - buf
 
-    plt.plot(g4x_pix[1, :], g4x_pix[0, :], '.c')
+    g4x_pix = np.array([(g4x_um[0, :] - xoff) / pixsize,
+                        (g4x_um[1, :] - yoff) / pixsize])
 
-    plt.xlim((0, track.image.shape[1] - 1))
-    plt.ylim((0, track.image.shape[0] - 1))
+    xoff2, yoff2 = find_g4_offsets(g4x_pix, track.image)
+
+    g4x_pix[0, :] -= xoff2
+    g4x_pix[1, :] -= yoff2
+
+    return g4x_pix[0, :], g4x_pix[1, :]
+
+
+def find_g4_offsets(xfull, img):
+    """
+    x are the xy coordinates of a g4 track, in units of pixels.
+    img is the track image.
+
+    Move x around (by units of 1 pixel) until it fits on img best.
+    """
+
+    decimation = 10     # don't use all the points. 1 in 10 should be enough
+    x = xfull[:, ::decimation]
+
+    maxoffset = 5      # pixels
+
+    # brute force...
+    xoffs = range(-maxoffset, maxoffset)
+    yoffs = range(-maxoffset, maxoffset)
+    energy_sum = np.zeros((len(xoffs), len(yoffs)))
+
+    size = img.shape
+    interp = scipy.interpolate.RectBivariateSpline(
+        range(size[0]), range(size[1]), img, kx=1, ky=1)
+
+    for ix in xrange(len(xoffs)):
+        for iy in xrange(len(yoffs)):
+            thisx = x[0, :] - xoffs[ix]
+            thisy = x[1, :] - yoffs[iy]
+            energy_sum[ix, iy] = compute_energy_sum(thisx, thisy, interp)
+
+    maxval = np.max(energy_sum)
+    maxx, maxy = np.nonzero(energy_sum == maxval)
+
+    xoff = xoffs[maxx[0]]
+    yoff = yoffs[maxy[0]]
+
+    return xoff, yoff
+
+
+def compute_energy_sum(x, y, interp):
+    """
+    Compute the sum of interpolated energies for positions x, y
+    in image represented by object interp.
+    """
+    E = 0
+    for i in xrange(len(x)):
+        E += interp(x[i], y[i])
+    return E
 
 
 def plot_moments_track(mom, track, title=''):
