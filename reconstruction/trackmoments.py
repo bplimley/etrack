@@ -246,7 +246,9 @@ class MomentsReconstruction(object):
                 Convert x,y from the coordinate frame of the end segment image
                 to the coordinate frame of the full image
                 """
-                return np.array(xy) + self.end_segment_offsets
+                x, y = xy_split(xy)
+                return np.array([x + self.end_segment_offsets[0],
+                                 y + self.end_segment_offsets[1]])
 
             self.segment_to_full = end_segment_coords_to_full_image_coords
 
@@ -321,7 +323,8 @@ class MomentsReconstruction(object):
             Convert x,y from the coordinate frame of the central moments
             to the coordinate frame of the end segment image
             """
-            return xy + np.array([self.xoffset, self.yoffset])
+            x, y = xy_split(xy)
+            return np.array([x + self.xoffset, y + self.yoffset])
 
         self.central_to_segment = central_coords_to_end_segment_coords
 
@@ -372,17 +375,8 @@ class MomentsReconstruction(object):
             Convert x,y from the coordinate frame of the rotated moments
             to the coordinate frame of the central moments
             """
-            xy = np.array(xy)
+            x, y = xy_split(xy)
             t = self.rotation_angle
-            if xy.ndim == 1:
-                x = xy[0]
-                y = xy[1]
-            elif xy.ndim == 2 and xy.shape[0] == 2:
-                x = xy[0, :].flatten()
-                y = xy[1, :].flatten()
-            else:
-                x = xy[:, 0].flatten()
-                y = xy[:, 1].flatten()
             # rotate "forward" because CoordList rotates "backward"
             x1 = x * np.cos(t) - y * np.sin(t)
             y1 = x * np.sin(t) + y * np.cos(t)
@@ -555,6 +549,20 @@ def generate_arc(r=6, phi_d=90, center_angle_d=0,
     rough_est = (phi0 + 90) * np.pi / 180
 
     return clist, rough_est
+
+
+def xy_split(xy):
+    xy = np.array(xy)
+    if xy.ndim == 1:
+        x = xy[0]
+        y = xy[1]
+    elif xy.ndim == 2 and xy.shape[0] == 2:
+        x = xy[0, :].flatten()
+        y = xy[1, :].flatten()
+    else:
+        x = xy[:, 0].flatten()
+        y = xy[:, 1].flatten()
+    return x, y
 
 
 class MomentsError(Exception):
