@@ -285,7 +285,7 @@ def plot_moments_arc(mom, debug=False, end_segment=False, box=False,
     return f
 
 
-def plot_moments_track(mom, track):
+def plot_moments_track(mom, track, title=''):
     """
     Plot track for Don. Left pane shows full track, right pane is zoomed.
     On each there is the segment box, the arc, the computed arrow, and the
@@ -306,7 +306,7 @@ def plot_moments_track(mom, track):
                         mom.R * np.sin(phi) + circle_center_rot[1]])
 
     # moments-calculated entry point EP a.k.a. x0
-    EP_rot = mom.x0
+    EP_central = mom.x0
 
     # geant4 entry point
     # this is hard, TBD
@@ -318,7 +318,7 @@ def plot_moments_track(mom, track):
 
     # transform into full image frame
     arc_full = mom.rotated_to_full(arc_rot)
-    EP_full = mom.rotated_to_full(EP_rot)
+    EP_full = mom.central_to_full(EP_central)
 
     # moments-calculated direction alpha (radians) (in segment and full frames)
     alpha = mom.alpha
@@ -360,8 +360,13 @@ def plot_moments_track(mom, track):
                interpolation='none', origin='lower')
     plt.plot(mom.box_y, mom.box_x, 'c')
     plt.plot(arc_full[1, :], arc_full[0, :], 'c', lw=2.5)
-    plot_arrow(EP_full[::-1], alpha, color='c')
-    plot_arrow(EP_full[::-1], alpha_true, color='g')
+    plot_arrow(EP_full, alpha, color='c')
+    plot_arrow(EP_full, alpha_true, color='g')
+    plt.xlim((0, mom.original_image_kev.shape[1] - 1))
+    plt.ylim((0, mom.original_image_kev.shape[0] - 1))
+    plt.xlabel('x [pixels]')
+    plt.ylabel('y [pixels]')
+    plt.title(title)
 
     # right plot: zoomed
     plt.subplot(1, 2, 2)
@@ -369,13 +374,16 @@ def plot_moments_track(mom, track):
                interpolation='none', origin='lower')
     plt.plot(mom.box_y, mom.box_x, 'c')
     plt.plot(arc_full[1, :], arc_full[0, :], 'c', lw=2.5)
-    plot_arrow(EP_full[::-1], alpha, color='c')
-    plot_arrow(EP_full[::-1], alpha_true, color='g')
+    plot_arrow(EP_full, alpha, color='c')
+    plot_arrow(EP_full, alpha_true, color='g')
 
     xoff = mom.end_segment_offsets[1]
     yoff = mom.end_segment_offsets[0]
     plt.xlim((xoff - 1, xoff + mom.end_segment_image.shape[1] + 1))
     plt.ylim((yoff - 1, yoff + mom.end_segment_image.shape[0] + 1))
+    plt.xlabel('x [pixels]')
+    plt.ylabel('y [pixels]')
+    plt.title(title)
 
     return f
 

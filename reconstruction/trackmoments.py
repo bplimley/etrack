@@ -239,27 +239,27 @@ class MomentsReconstruction(object):
 
             self.end_segment_image = seg_img
 
-            self.end_segment_offsets = np.array([min_x, min_y])
+        self.end_segment_offsets = np.array([min_x, min_y])
 
-            def end_segment_coords_to_full_image_coords(xy):
-                """
-                Convert x,y from the coordinate frame of the end segment image
-                to the coordinate frame of the full image
-                """
-                x, y = xy_split(xy)
-                return np.array([x + self.end_segment_offsets[0],
-                                 y + self.end_segment_offsets[1]])
+        def end_segment_coords_to_full_image_coords(xy):
+            """
+            Convert x,y from the coordinate frame of the end segment image
+            to the coordinate frame of the full image
+            """
+            x, y = xy_split(xy)
+            return np.array([x + self.end_segment_offsets[0],
+                             y + self.end_segment_offsets[1]])
 
-            self.segment_to_full = end_segment_coords_to_full_image_coords
+        self.segment_to_full = end_segment_coords_to_full_image_coords
 
-            if False and is45:
-                # debug
-                print('min_x, max_x = ({}, {})'.format(min_x, max_x))
-                print('box_x = {}'.format(self.box_x))
-                print('min_y, max_y = ({}, {})'.format(min_y, max_y))
-                print('box_y = {}'.format(self.box_y))
+        if False and is45:
+            # debug
+            print('min_x, max_x = ({}, {})'.format(min_x, max_x))
+            print('box_x = {}'.format(self.box_x))
+            print('min_y, max_y = ({}, {})'.format(min_y, max_y))
+            print('box_y = {}'.format(self.box_y))
 
-                # import ipdb as pdb; pdb.set_trace()
+            # import ipdb as pdb; pdb.set_trace()
 
     @classmethod
     def get_base_diagonal_pixlist(cls, diag_hw, diag_len):
