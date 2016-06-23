@@ -285,6 +285,38 @@ def plot_moments_arc(mom, debug=False, end_segment=False, box=False,
     return f
 
 
+def plot_g4points(track):
+    """
+    Plot track image with 2D Geant4 positions overlaid.
+
+    For testing offset corrections for plot_moments_track...
+    """
+
+    g4x_um = track.g4track.x
+    ax, im = plot_track_image(track.image)
+
+    minx = np.min(g4x_um[0, :])
+    miny = np.min(g4x_um[1, :])
+    maxx = np.max(g4x_um[0, :])
+    maxy = np.max(g4x_um[1, :])
+
+    try:
+        pixsize = np.float(track.pixel_size_um)
+    except TypeError:
+        pixsize = 10.5
+
+    # buffer is 8.5 pixels in ViewGeantTrack4.m. probably this is wrong
+    buf = 8.5 * pixsize
+
+    g4x_pix = np.array([(g4x_um[0, :] - minx + buf) / pixsize,
+                        (g4x_um[1, :] - miny + buf) / pixsize])
+
+    plt.plot(g4x_pix[1, :], g4x_pix[0, :], '.c')
+
+    plt.xlim((0, track.image.shape[1] - 1))
+    plt.ylim((0, track.image.shape[0] - 1))
+
+
 def plot_moments_track(mom, track, title=''):
     """
     Plot track for Don. Left pane shows full track, right pane is zoomed.
@@ -294,37 +326,18 @@ def plot_moments_track(mom, track, title=''):
 
     # First: get all the coordinates we need.
 
-    # circle center: center of circle which contains the arc.
-    phi2 = np.abs(mom.phi) / 2
-    circle_center_rot = [0, -mom.R * np.sin(phi2) / phi2]
+    def get_arc(mom):
+        # circle center: center of circle which contains the arc.
+        phi2 = np.abs(mom.phi) / 2
+        circle_center_rot = [0, -mom.R * np.sin(phi2) / phi2]
 
-    # arc points
-    phi0 = np.pi / 2 - phi2
-    phi1 = np.pi / 2 + phi2
-    phi = np.linspace(phi0, phi1, 1000)
-    arc_rot = np.array([mom.R * np.cos(phi) + circle_center_rot[0],
-                        mom.R * np.sin(phi) + circle_center_rot[1]])
-
-    # moments-calculated entry point EP a.k.a. x0
-    EP_central = mom.x0
-
-    # geant4 entry point
-    # this is hard, TBD
-
-    # # transform into end segment image frame
-    # circle_center_segment = mom.rotated_to_segment(circle_center_rot)
-    # arc_segment = mom.rotated_to_segment(arc_rot)
-    # EP_segment = mom.rotated_to_segment(EP_rot)
-
-    # transform into full image frame
-    arc_full = mom.rotated_to_full(arc_rot)
-    EP_full = mom.central_to_full(EP_central)
-
-    # moments-calculated direction alpha (radians) (in segment and full frames)
-    alpha = mom.alpha
-
-    # geant4 direction (converted to radians)
-    alpha_true = track.g4track.alpha_deg * np.pi / 180.0
+        # arc points
+        phi0 = np.pi / 2 - phi2
+        phi1 = np.pi / 2 + phi2
+        phi = np.linspace(phi0, phi1, 1000)
+        arc_rot = np.array([mom.R * np.cos(phi) + circle_center_rot[0],
+                            mom.R * np.sin(phi) + circle_center_rot[1]])
+        return arc_rot
 
     def plot_arrow(start_xy, direction_rad, length=5, headlength=1,
                    flipxy=True, color='c', lw=2):
@@ -349,6 +362,26 @@ def plot_moments_track(mom, track, title=''):
             plt.plot(y, x, color, lw=lw)
         else:
             plt.plot(x, y, color, lw=lw)
+
+    # begin main function
+
+    arc_rot = get_arc(mom)
+
+    # moments-calculated entry point EP a.k.a. x0
+    EP_central = mom.x0
+
+    # geant4 entry point
+    # this is hard, TBD
+
+    # transform into full image frame
+    arc_full = mom.rotated_to_full(arc_rot)
+    EP_full = mom.central_to_full(EP_central)
+
+    # moments-calculated direction alpha (radians) (in segment and full frames)
+    alpha = mom.alpha
+
+    # geant4 direction (converted to radians)
+    alpha_true = track.g4track.alpha_deg * np.pi / 180.0
 
     # create figure
     f = plt.figure(figsize=(16, 8))
