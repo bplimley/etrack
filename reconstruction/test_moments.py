@@ -13,11 +13,103 @@ import pandas as pd
 import time
 import datetime
 import glob
+import os
+import collections
+from datetime import datetime as dt
 
 from etrack.reconstruction.trackdata import Track
 import etrack.io.trackio as trackio
 import etrack.reconstruction.trackmoments as tm
 import etrack.visualization.trackplot as tp
+
+
+def tracks_for_don(momlist, tracklist):
+    """
+    Moment reconstruction evaluation set for Don Gunter. 6/23/2016.
+
+    For 1000 tracks:
+    - make a dual-pane image showing true and computed directions, etc.
+    - record parameters into a CSV file.
+    """
+
+    nmax = 1000
+    savedir = '/media/plimley/TEAM 7B/tracks_for_Don/'
+    csv_name = 'parameters.csv'
+
+    make_figures = False
+
+    if make_figures:
+        # figure images
+        print('Making {} figures at {}...'.format(nmax, dt.now()))
+        for i in xrange(nmax):
+            if np.isnan(momlist[i].R):
+                titlestr = '{} [bad radius calculation]'.format(i)
+            else:
+                titlestr = '{}'.format(i)
+            f = tp.plot_moments_track(momlist[i], tracklist[i], title=titlestr)
+            plt.show()
+            fname = '{0:03d}.png'.format(i)
+            fpath = os.path.join(savedir, fname)
+            f.savefig(fpath, format='png', bbox_inches='tight', pad_inches=0.5)
+            plt.close(f)
+
+    # parameters for CSV file
+    print('Collecting parameters at {}...'.format(dt.now()))
+    params = collections.OrderedDict()
+    params['id'] = ['{0:03d}'.format(i) for i in xrange(nmax)]
+    params['E'] = np.array([t.energy_kev for t in tracklist[:nmax]])
+    da = np.array(
+        [momlist[i].alpha * 180 / np.pi - tracklist[i].g4track.alpha_deg
+         for i in xrange(nmax)])
+    while np.any(da > 180):
+        da[da > 180] -= 360
+    while np.any(da < -180):
+        da[da < -180] += 360
+    params['delta_alpha_deg'] = da
+    params['phi'] = np.array([m.phi for m in momlist[:nmax]])
+    params['R'] = np.array([m.R for m in momlist[:nmax]])
+    params['rotation_angle'] = np.array(
+        [m.rotation_angle for m in momlist[:nmax]])
+    params['T12/T21'] = np.array(
+        [m.pathology_ratio_3a for m in momlist[:nmax]])
+    params['T30/T03'] = np.array(
+        [m.pathology_ratio_3b for m in momlist[:nmax]])
+    TR = np.array([m.rotated_moments for m in momlist[:nmax]])
+    TC = np.array([m.central_moments for m in momlist[:nmax]])
+    T0 = np.array([m.first_moments for m in momlist[:nmax]])
+    ij_list = (
+        (0, 0),
+        (1, 0), (0, 1),
+        (2, 0), (1, 1), (0, 2),
+        (3, 0), (2, 1), (1, 2), (0, 3))
+    for i, j in ij_list:
+        key = 'T{}{}_R'.format(i, j)
+        params[key] = TR[:, i, j].flatten()
+    for i, j in ij_list:
+        key = 'T{}{}_C'.format(i, j)
+        params[key] = TC[:, i, j].flatten()
+    for i, j in ij_list[:3]:
+        key = 'T{}{}_0'.format(i, j)
+        params[key] = T0[:, i, j].flatten()
+
+    header = ','.join(['{}' for _ in xrange(len(params))]).format(
+        *params.keys()) + '\n'
+
+    print('Generating lines for data file at {}...'.format(dt.now()))
+    datalines = []
+    for i in xrange(nmax):
+        these_params = collections.OrderedDict()
+        for k in params.keys():
+            these_params[k] = params[k][i]
+        datalines.append(','.join(['{}' for _ in xrange(len(params))]).format(
+            *these_params.values()) + '\n')
+
+    print('Writing file at {}...'.format(dt.now()))
+    with open(os.path.join(savedir, csv_name), 'w') as fobj:
+        fobj.writelines([header])
+        fobj.writelines(datalines)
+
+    print('Done! at {}'.format(dt.now()))
 
 
 def tracklist_from_h5(filename, energy_thresh):
