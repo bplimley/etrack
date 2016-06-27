@@ -315,6 +315,7 @@ def get_image_xy(track):
     """
 
     g4x_um = track.g4track.x
+    img = track.image
 
     minx = np.min(g4x_um[0, :])
     miny = np.min(g4x_um[1, :])
@@ -339,7 +340,13 @@ def get_image_xy(track):
     g4x_pix = np.array([(g4x_um[0, :] - xoff) / pixsize,
                         (g4x_um[1, :] - yoff) / pixsize])
 
-    xoff2, yoff2 = find_g4_offsets(g4x_pix, track.image)
+    # check for bad track - like a brems interaction off in the distance
+    g4size = np.array([np.max(g4x_pix[0, :]) - np.min(g4x_pix[0, :]),
+                       np.max(g4x_pix[1, :]) - np.min(g4x_pix[1, :])])
+    if g4size[0] > img.shape[0] or g4size[1] > img.shape[1]:
+        raise RuntimeError('G4Track too big')
+
+    xoff2, yoff2 = find_g4_offsets(g4x_pix, img)
 
     g4x_pix[0, :] -= xoff2
     g4x_pix[1, :] -= yoff2
@@ -449,7 +456,8 @@ def plot_moments_track(mom, track, title=''):
     EP_central = mom.x0
 
     # geant4 entry point
-    # this is hard, TBD
+    g4x, g4y = get_image_xy(track)
+    g4x0 = np.array([g4x[0], g4y[0]])
 
     # transform into full image frame
     arc_full = mom.rotated_to_full(arc_rot)
@@ -472,11 +480,12 @@ def plot_moments_track(mom, track, title=''):
     plt.plot(mom.box_y, mom.box_x, 'c')
     plt.plot(arc_full[1, :], arc_full[0, :], 'c', lw=2.5)
     plot_arrow(EP_full, alpha, color='c')
-    plot_arrow(EP_full, alpha_true, color='g')
+    plot_arrow(g4x0, alpha_true, color='g')
     plt.xlim((0, mom.original_image_kev.shape[1] - 1))
     plt.ylim((0, mom.original_image_kev.shape[0] - 1))
-    plt.xlabel('x [pixels]')
-    plt.ylabel('y [pixels]')
+    plt.xlabel('y [pixels]')
+    plt.ylabel('x [pixels]')
+    plt.colorbar()
     plt.title(title)
 
     # right plot: zoomed
@@ -486,14 +495,15 @@ def plot_moments_track(mom, track, title=''):
     plt.plot(mom.box_y, mom.box_x, 'c')
     plt.plot(arc_full[1, :], arc_full[0, :], 'c', lw=2.5)
     plot_arrow(EP_full, alpha, color='c')
-    plot_arrow(EP_full, alpha_true, color='g')
+    plot_arrow(g4x0, alpha_true, color='g')
 
     xoff = mom.end_segment_offsets[1]
     yoff = mom.end_segment_offsets[0]
     plt.xlim((xoff - 1, xoff + mom.end_segment_image.shape[1] + 1))
     plt.ylim((yoff - 1, yoff + mom.end_segment_image.shape[0] + 1))
-    plt.xlabel('x [pixels]')
-    plt.ylabel('y [pixels]')
+    plt.xlabel('y [pixels]')
+    plt.ylabel('x [pixels]')
+    plt.colorbar()
     plt.title(title)
 
     return f
