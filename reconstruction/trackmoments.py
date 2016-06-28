@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import numpy as np
+import skimage.morphology as morph
 
 from etrack.reconstruction import hybridtrack
 
@@ -42,9 +43,6 @@ class MomentsReconstruction(object):
         self.segment_initial_end()
         # get a sub-image containing the initial end
         # also need a rough estimate of the electron direction (from thinned)
-
-        # look at number of edge pixels over threshold, and multiple segments
-        self.check_initial_end()
 
         # 1.
         self.get_coordlist()
@@ -204,14 +202,11 @@ class MomentsReconstruction(object):
         over_thresh_length = (
             over_thresh_pix *
             self.options.pixel_size_um * np.sqrt(dx**2 + dy**2))
-        print(over_thresh_length)
-        import ipdb as pdb; pdb.set_trace()
 
         if over_thresh_length > problem_length:
             # have we done this too much already?
             if self.options.ridge_starting_distance_from_track_end_um < 30:
-                # raise CheckSegmentBoxError('Couldn''t get a clean end segment')
-                print("Couldn't get a clean end segment")
+                raise CheckSegmentBoxError("Couldn't get a clean end segment")
                 return None
             # try again, with a shorter track segment
             self.options.ridge_starting_distance_from_track_end_um -= 10.5
@@ -298,6 +293,28 @@ class MomentsReconstruction(object):
         self.end_segment_image = seg_img
         self.end_segment_offsets = np.array([min_x, min_y])
 
+    def separate_segments(self):
+        """
+        Perform image segmentation on the "segment image", and remove any
+        segments that aren't the right part of the track.
+        """
+
+        # binary image
+        binary_segment_image = (
+            self.end_segment_image > self.options.low_threshold_kev)
+        # segmentation: labeled regions, 4-connectivity
+        labels = morph.label(binary_segment_image, connectivity=1)
+        chosen_label = labels[self.end_coordinates[0], self.end_coordinates[1]]
+        if labels[self.start_coordinates[0],
+                  self.start_coordinates[1]] != chosen_label:
+            raise RuntimeError('What the heck happened?')
+        binary_again = (labels == chosen_label)
+        # dilate this region, in order to capture information below threshold
+        #  (it won't include the other regions, because there must be a gap
+        #   between)
+        pix_to_keep = morph.binary_dilation(binary_again)
+        self.end_segment_image[np.logical_not(pix_to_keep)] = 0
+
     def segment_initial_end(self):
         """
         Get the image segment to use for moments, and the rough direction
@@ -311,6 +328,7 @@ class MomentsReconstruction(object):
         self.check_segment_box()
         self.get_pixlist()
         self.get_segment_image()
+        self.separate_segments()
 
         def end_segment_coords_to_full_image_coords(xy):
             """
@@ -322,17 +340,6 @@ class MomentsReconstruction(object):
                              y + self.end_segment_offsets[1]])
 
         self.segment_to_full = end_segment_coords_to_full_image_coords
-
-    def check_initial_end(self):
-        """
-        Check number of edge pixels over threshold. The segment border should
-        not run along part of the track.
-
-        Also check for multiple segments in the segment box, and remove the
-        extraneous one.
-        """
-
-
 
     @classmethod
     def get_base_diagonal_pixlist(cls, diag_hw, diag_len):
