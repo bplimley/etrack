@@ -99,10 +99,9 @@ class MomentsReconstruction(object):
 
         return mom
 
-    def segment_initial_end(self):
+    def get_segment_initial_values(self):
         """
-        Get the image segment to use for moments, and the rough direction
-        estimate.
+        Get start_coordinates, end_coordinates, and rough_est for segmenting.
         """
 
         # copied from hybridtrack.get_starting_point()
@@ -117,9 +116,10 @@ class MomentsReconstruction(object):
         dcoord = self.end_coordinates - self.start_coordinates
         self.rough_est = np.arctan2(dcoord[1], dcoord[0])
 
-        orig = self.original_image_kev
-
-        # Segment the image
+    def get_segment_box(self):
+        """
+        Get the x,y coordinates of the box containing the initial segment.
+        """
 
         segwid = 10   # pixels
         seglen = 11  # pixels
@@ -128,11 +128,11 @@ class MomentsReconstruction(object):
         if mod < np.pi / 6 or mod > np.pi / 3:
             # close enough to orthogonal
             general_dir = np.round(self.rough_est / (np.pi / 2)) * (np.pi / 2)
-            is45 = False
+            self.is45 = False
         else:
             # use a diagonal box (aligned to 45 degrees)
             general_dir = np.round(self.rough_est / (np.pi / 4)) * (np.pi / 4)
-            is45 = True
+            self.is45 = True
 
         # make box and rotate
         box_dx = np.array([0, -seglen, -seglen, 0, 0])
@@ -142,21 +142,35 @@ class MomentsReconstruction(object):
                       np.round(box_dy * np.sin(general_dir))).astype(int)
         box_dy_rot = (np.round(box_dx * np.sin(general_dir)) +
                       np.round(box_dy * np.cos(general_dir))).astype(int)
-        box_x = self.end_coordinates[0] + box_dx_rot
-        box_y = self.end_coordinates[1] + box_dy_rot
+        self.box_x = self.end_coordinates[0] + box_dx_rot
+        self.box_y = self.end_coordinates[1] + box_dy_rot
 
-        # get list of pixels that are inside the box (and within image bounds)
-        # diag_hw = int(np.round(float(segwid / 2) / np.sqrt(2)))
-        # diag_len = seglen
-        # # don't divide by sqrt(2) because the choose_initial_end doesn't
-        # #   distinguish between diagonal steps and orthogonal steps.
-        img_shape = orig.shape
-        xmesh, ymesh = np.meshgrid(
+    def check_segment_box(self):
+        """
+        Check whether the box intersects too many hot pixels.
+        That would indicate that we should draw a new box.
+        """
+
+        # xmesh, ymesh get used in get_pixlist, also. so save into self.
+        img_shape = self.original_image_kev.shape
+        self.xmesh, self.ymesh = np.meshgrid(
             range(img_shape[0]), range(img_shape[1]), indexing='ij')
+        # get the line that passes through the track
+        m = ((self.box_y[-1] - self.box_y[-2]) /
+             (self.box_x[-1] - self.box_x[-2]))
+        b = self.box_y[-1] - m * self.box_x[-1]
+
+    def get_pixlist(self):
+        """
+        get list of pixels that are inside the box (and within image bounds)
+        """
+
         # logical array representing pixels in the segment
-        if not is45:
-            segment_lg = ((xmesh >= np.min(box_x)) & (xmesh <= np.max(box_x)) &
-                          (ymesh >= np.min(box_y)) & (ymesh <= np.max(box_y)))
+        if not self.is45:
+            segment_lg = ((self.xmesh >= np.min(self.box_x)) &
+                          (self.xmesh <= np.max(self.box_x)) &
+                          (self.ymesh >= np.min(self.box_y)) &
+                          (self.ymesh <= np.max(self.box_y)))
         else:
             # need to compose the lines which form bounding box
             pairs = ((0, 1), (1, 2), (2, 3), (3, 0))
@@ -165,9 +179,9 @@ class MomentsReconstruction(object):
             for i in xrange(len(pairs)):
                 # generate the m, b for y = mx+b for line connecting this
                 #   pair of points
-                m[i] = ((box_y[pairs[i][1]] - box_y[pairs[i][0]]) /
-                        (box_x[pairs[i][1]] - box_x[pairs[i][0]]))
-                b[i] = box_y[pairs[i][0]] - m[i] * box_x[pairs[i][0]]
+                m[i] = ((self.box_y[pairs[i][1]] - self.box_y[pairs[i][0]]) /
+                        (self.box_x[pairs[i][1]] - self.box_x[pairs[i][0]]))
+                b[i] = self.box_y[pairs[i][0]] - m[i] * self.box_x[pairs[i][0]]
             # m should be alternating sign... (this is for testing)
             assert m[0] * m[1] == -1
             assert m[1] * m[2] == -1
@@ -188,33 +202,52 @@ class MomentsReconstruction(object):
                 min_ind[1] = 3
                 max_ind[1] = 1
             segment_lg = (
-                (ymesh >= m[min_ind[0]] * xmesh + b[min_ind[0]]) &
-                (ymesh >= m[min_ind[1]] * xmesh + b[min_ind[1]]) &
-                (ymesh <= m[max_ind[0]] * xmesh + b[max_ind[0]]) &
-                (ymesh <= m[max_ind[1]] * xmesh + b[max_ind[1]]))
+                (self.ymesh >= m[min_ind[0]] * self.xmesh + b[min_ind[0]]) &
+                (self.ymesh >= m[min_ind[1]] * self.xmesh + b[min_ind[1]]) &
+                (self.ymesh <= m[max_ind[0]] * self.xmesh + b[max_ind[0]]) &
+                (self.ymesh <= m[max_ind[1]] * self.xmesh + b[max_ind[1]]))
 
-        xpix = xmesh[segment_lg]
-        ypix = ymesh[segment_lg]
+        xpix = self.xmesh[segment_lg]
+        ypix = self.ymesh[segment_lg]
 
-        # initialize segment image
-        min_x = np.min(xpix)
-        max_x = np.max(xpix)
-        min_y = np.min(ypix)
-        max_y = np.max(ypix)
-        seg_img = np.zeros((max_x - min_x + 1, max_y - min_y + 1))
-
-        # fill segment image
-        for i in xrange(len(xpix)):
-            seg_img[xpix[i] - min_x, ypix[i] - min_y] = orig[
-                xpix[i], ypix[i]]
-
-        self.end_segment_image = seg_img
-        self.box_x = box_x
-        self.box_y = box_y
         self.xpix = xpix
         self.ypix = ypix
 
+    def get_segment_image(self):
+        """
+        Produce the actual segment image using xpix and ypix
+        """
+
+        # initialize segment image
+        min_x = np.min(self.xpix)
+        max_x = np.max(self.xpix)
+        min_y = np.min(self.ypix)
+        max_y = np.max(self.ypix)
+        seg_img = np.zeros((max_x - min_x + 1, max_y - min_y + 1))
+
+        # fill segment image
+        for i in xrange(len(self.xpix)):
+            xi = self.xpix[i] - min_x
+            yi = self.ypix[i] - min_y
+            seg_img[xi, yi] = self.original_image_kev[
+                self.xpix[i], self.ypix[i]]
+
+        self.end_segment_image = seg_img
         self.end_segment_offsets = np.array([min_x, min_y])
+
+    def segment_initial_end(self):
+        """
+        Get the image segment to use for moments, and the rough direction
+        estimate.
+
+        Calls get_segment_box(), get_pixlist(), get_segment_image().
+        """
+
+        self.get_segment_initial_values()
+        self.get_segment_box()
+        self.check_segment_box()
+        self.get_pixlist()
+        self.get_segment_image()
 
         def end_segment_coords_to_full_image_coords(xy):
             """
@@ -226,15 +259,6 @@ class MomentsReconstruction(object):
                              y + self.end_segment_offsets[1]])
 
         self.segment_to_full = end_segment_coords_to_full_image_coords
-
-        if False and is45:
-            # debug
-            print('min_x, max_x = ({}, {})'.format(min_x, max_x))
-            print('box_x = {}'.format(self.box_x))
-            print('min_y, max_y = ({}, {})'.format(min_y, max_y))
-            print('box_y = {}'.format(self.box_y))
-
-            # import ipdb as pdb; pdb.set_trace()
 
     def check_initial_end(self):
         """
