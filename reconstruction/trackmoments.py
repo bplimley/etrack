@@ -43,6 +43,9 @@ class MomentsReconstruction(object):
         # get a sub-image containing the initial end
         # also need a rough estimate of the electron direction (from thinned)
 
+        # look at number of edge pixels over threshold, and multiple segments
+        self.check_initial_end()
+
         # 1.
         self.get_coordlist()
         self.compute_first_moments()
@@ -118,126 +121,98 @@ class MomentsReconstruction(object):
 
         # Segment the image
 
-        segment_width = 10   # pixels
-        segment_length = 9  # pixels
+        segwid = 10   # pixels
+        seglen = 11  # pixels
 
         mod = self.rough_est % (np.pi / 2)
         if mod < np.pi / 6 or mod > np.pi / 3:
             # close enough to orthogonal
-            # round to nearest pi/4
-            general_dir = np.round(self.rough_est / (np.pi / 2))
-
-            # for whichever direction, start from end_coordinates and draw box
-            if general_dir == 0 or general_dir == -4:
-                # +x direction
-                max_x = self.end_coordinates[0]
-                min_x = max_x - segment_length
-                min_y = self.end_coordinates[1] - segment_width / 2
-                max_y = self.end_coordinates[1] + segment_width / 2
-            elif general_dir == 1 or general_dir == -3:
-                # +y direction
-                max_y = self.end_coordinates[1]
-                min_y = max_y - segment_length
-                min_x = self.end_coordinates[0] - segment_width / 2
-                max_x = self.end_coordinates[0] + segment_width / 2
-            elif general_dir == 2 or general_dir == -2:
-                # -x direction
-                min_x = self.end_coordinates[0]
-                max_x = min_x + segment_length
-                min_y = self.end_coordinates[1] - segment_width / 2
-                max_y = self.end_coordinates[1] + segment_width / 2
-            elif general_dir == 3 or general_dir == -1:
-                # -y direction
-                min_y = self.end_coordinates[1]
-                max_y = min_y + segment_length
-                min_x = self.end_coordinates[0] - segment_width / 2
-                max_x = self.end_coordinates[0] + segment_width / 2
-            else:
-                raise RuntimeError(
-                    'square, but general_dir = {}'.format(general_dir))
-            # don't go outside of image
-            min_x = np.maximum(min_x, 0)
-            max_x = np.minimum(max_x, orig.shape[0])
-            min_y = np.maximum(min_y, 0)
-            max_y = np.minimum(max_y, orig.shape[1])
-            self.box_x = np.array([
-                min_x, min_x, max_x, max_x, min_x])
-            self.box_y = np.array([
-                min_y, max_y, max_y, min_y, min_y])
-            # draw box
-            self.end_segment_image = orig[min_x:max_x, min_y:max_y]
-
+            general_dir = np.round(self.rough_est / (np.pi / 2)) * (np.pi / 2)
+            is45 = False
         else:
-            # close to 45 degrees
+            # use a diagonal box (aligned to 45 degrees)
+            general_dir = np.round(self.rough_est / (np.pi / 4)) * (np.pi / 4)
             is45 = True
 
-            diag_hw = int(np.round(float(segment_width / 2) / np.sqrt(2)))
-            diag_len = segment_length
-            # don't divide by sqrt(2) because the choose_initial_end doesn't
-            #   distinguish between diagonal steps and orthogonal steps.
-            img_shape = orig.shape
-            xmesh, ymesh = np.meshgrid(
-                range(img_shape[0]), range(img_shape[1]), indexing='ij')
+        # make box and rotate
+        box_dx = np.array([0, -seglen, -seglen, 0, 0])
+        box_dy = np.array(
+            [-segwid / 2, -segwid / 2, segwid / 2, segwid / 2, -segwid / 2])
+        box_dx_rot = (np.round(box_dx * np.cos(general_dir)) -
+                      np.round(box_dy * np.sin(general_dir))).astype(int)
+        box_dy_rot = (np.round(box_dx * np.sin(general_dir)) +
+                      np.round(box_dy * np.cos(general_dir))).astype(int)
+        box_x = self.end_coordinates[0] + box_dx_rot
+        box_y = self.end_coordinates[1] + box_dy_rot
 
-            # for whichever direction, start from end_coordinates and draw box
+        # get list of pixels that are inside the box (and within image bounds)
+        # diag_hw = int(np.round(float(segwid / 2) / np.sqrt(2)))
+        # diag_len = seglen
+        # # don't divide by sqrt(2) because the choose_initial_end doesn't
+        # #   distinguish between diagonal steps and orthogonal steps.
+        img_shape = orig.shape
+        xmesh, ymesh = np.meshgrid(
+            range(img_shape[0]), range(img_shape[1]), indexing='ij')
+        # logical array representing pixels in the segment
+        if not is45:
+            segment_lg = ((xmesh >= np.min(box_x)) & (xmesh <= np.max(box_x)) &
+                          (ymesh >= np.min(box_y)) & (ymesh <= np.max(box_y)))
+        else:
+            # need to compose the lines which form bounding box
+            pairs = ((0, 1), (1, 2), (2, 3), (3, 0))
+            m = np.zeros(4)
+            b = np.zeros(4)
+            for i in xrange(len(pairs)):
+                # generate the m, b for y = mx+b for line connecting this
+                #   pair of points
+                m[i] = ((box_y[pairs[i][1]] - box_y[pairs[i][0]]) /
+                        (box_x[pairs[i][1]] - box_x[pairs[i][0]]))
+                b[i] = box_y[pairs[i][0]] - m[i] * box_x[pairs[i][0]]
+            # m should be alternating sign... (this is for testing)
+            assert m[0] * m[1] == -1
+            assert m[1] * m[2] == -1
+            assert m[2] * m[3] == -1
+            assert m[3] * m[0] == -1
+            min_ind = np.zeros(2)
+            max_ind = np.zeros(2)
+            if b[0] < b[2]:
+                min_ind[0] = 0
+                max_ind[0] = 2
+            else:
+                min_ind[0] = 2
+                max_ind[0] = 0
+            if b[1] < b[3]:
+                min_ind[1] = 1
+                max_ind[1] = 3
+            else:
+                min_ind[1] = 3
+                max_ind[1] = 1
+            segment_lg = (
+                (ymesh >= m[min_ind[0]] * xmesh + b[min_ind[0]]) &
+                (ymesh >= m[min_ind[1]] * xmesh + b[min_ind[1]]) &
+                (ymesh <= m[max_ind[0]] * xmesh + b[max_ind[0]]) &
+                (ymesh <= m[max_ind[1]] * xmesh + b[max_ind[1]]))
 
-            # general_dir is from start toward end
-            general_dir = np.round(self.rough_est / (np.pi / 4)) * np.pi / 4
-            # bdir is from end toward start
-            bdir = general_dir + np.pi
+        xpix = xmesh[segment_lg]
+        ypix = ymesh[segment_lg]
 
-            xsign = np.sign(np.cos(bdir))
-            ysign = np.sign(np.sin(bdir))
+        # initialize segment image
+        min_x = np.min(xpix)
+        max_x = np.max(xpix)
+        min_y = np.min(ypix)
+        max_y = np.max(ypix)
+        seg_img = np.zeros((max_x - min_x + 1, max_y - min_y + 1))
 
-            x0 = self.end_coordinates[0]
-            y0 = self.end_coordinates[1]
+        # fill segment image
+        for i in xrange(len(xpix)):
+            seg_img[xpix[i] - min_x, ypix[i] - min_y] = orig[
+                xpix[i], ypix[i]]
 
-            # draw the box
-            self.box_x = np.array([
-                x0 - xsign * diag_hw,
-                x0 - xsign * diag_hw + xsign * diag_len,
-                x0 + xsign * diag_hw + xsign * diag_len,
-                x0 + xsign * diag_hw,
-                x0 - xsign * diag_hw,
-            ])
-            self.box_y = np.array([
-                y0 + ysign * diag_hw,
-                y0 + ysign * diag_hw + ysign * diag_len,
-                y0 - ysign * diag_hw + ysign * diag_len,
-                y0 - ysign * diag_hw,
-                y0 + ysign * diag_hw,
-            ])
-
-            # make a list of pixels in the box
-
-            base_xpix, base_ypix = self.get_base_diagonal_pixlist(
-                diag_hw, diag_len)
-            rot = bdir - np.pi / 4      # angle of rotation
-            # round to make sure they are integers
-            xpix = x0 + np.round(
-                base_xpix * np.cos(rot) - base_ypix * np.sin(rot))
-            ypix = y0 + np.round(
-                base_xpix * np.sin(rot) + base_ypix * np.cos(rot))
-            # exclude out-of-bounds points
-            shape = orig.shape
-            out_of_bounds = ((xpix < 0) | (ypix < 0) |
-                             (xpix >= shape[0]) | (ypix >= shape[1]))
-            xpix = xpix[np.logical_not(out_of_bounds)]
-            ypix = ypix[np.logical_not(out_of_bounds)]
-
-            # initialize segment image
-            min_x = np.min(xpix)
-            max_x = np.max(xpix)
-            min_y = np.min(ypix)
-            max_y = np.max(ypix)
-            seg_img = np.zeros((max_x - min_x + 1, max_y - min_y + 1))
-
-            # fill segment image
-            for i in xrange(len(xpix)):
-                seg_img[xpix[i] - min_x, ypix[i] - min_y] = orig[
-                    xpix[i], ypix[i]]
-
-            self.end_segment_image = seg_img
+        self.end_segment_image = seg_img
+        self.box_x = box_x
+        self.box_y = box_y
+        self.xpix = xpix
+        self.ypix = ypix
 
         self.end_segment_offsets = np.array([min_x, min_y])
 
@@ -260,6 +235,17 @@ class MomentsReconstruction(object):
             print('box_y = {}'.format(self.box_y))
 
             # import ipdb as pdb; pdb.set_trace()
+
+    def check_initial_end(self):
+        """
+        Check number of edge pixels over threshold. The segment border should
+        not run along part of the track.
+
+        Also check for multiple segments in the segment box, and remove the
+        extraneous one.
+        """
+
+
 
     @classmethod
     def get_base_diagonal_pixlist(cls, diag_hw, diag_len):
