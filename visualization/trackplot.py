@@ -153,7 +153,7 @@ def plot_alpha_arrow(ax, HTinfo,
     return a
 
 
-def plot_moments_segment(full_image, box_x, box_y):
+def plot_moments_segment(mom):
     """
     Plot a track image and draw a box where trackmoments wants to work.
 
@@ -161,9 +161,10 @@ def plot_moments_segment(full_image, box_x, box_y):
     """
 
     f = plt.figure()
-    ax, im = plot_track_image(full_image)
+    ax, im = plot_track_image(mom.original_image_kev)
 
-    plt.plot(box_y, box_x, 'c', axes=ax)
+    plt.plot(mom.box_y, mom.box_x, 'c', axes=ax)
+    # plt.plot(mom.ypix, mom.xpix, '*c', ms=8)
 
     return f
 

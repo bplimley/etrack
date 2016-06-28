@@ -144,34 +144,16 @@ def test_moments_segmentation(tracklist):
     Check the bounding box for trackmoments
     """
 
-    print('Testing moments segmentation')
-    index_error_count = 0
-    notimplemented = 0
     for i in range(len(tracklist)):
         t = tracklist[i]
-        try:
-            mom = tm.MomentsReconstruction(t.image)
-            mom.reconstruct()
-        except IndexError:
-            index_error_count += 1
-            continue
-        except NotImplementedError:
-            notimplemented += 1
-            continue
+        mom = tm.MomentsReconstruction(t.image)
+        mom.reconstruct()
 
-        tp.plot_moments_segment(mom.original_image_kev, mom.box_x, mom.box_y)
+        tp.plot_moments_segment(mom)
         titlestr = '#{}, rough_est={}*, start={}, end={}'.format(
             i, mom.rough_est * 180 / np.pi,
             mom.start_coordinates, mom.end_coordinates)
         plt.title(titlestr)
-        plt.show()
-        # time.sleep(5)
-        plt.close()
-
-    print('{} IndexErrors out of {} tracks'.format(
-        index_error_count, len(tracklist)))
-    print('{} NotImplementedErrors out of {} tracks'.format(
-        notimplemented, len(tracklist)))
 
 
 def momentlist_from_tracklist(tracklist):
