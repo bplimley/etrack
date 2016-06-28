@@ -170,18 +170,49 @@ class MomentsReconstruction(object):
         ycheck.append(self.box_y[-1])
         xcheck = np.array(xcheck)
         ycheck = np.array(ycheck)
+        lgbad = ((xcheck < 0) | (xcheck >= self.original_image_kev.shape[0]) |
+                 (ycheck < 0) | (ycheck >= self.original_image_kev.shape[1]))
+        xcheck = xcheck[np.logical_not(lgbad)]
+        ycheck = ycheck[np.logical_not(lgbad)]
 
         # threshold from HybridTrack options
         low_threshold_kev = self.options.low_threshold_kev
-        over_thresh_count = np.sum(
-            [self.original_image_kev[xcheck[i], ycheck[i]]
+
+        # see what pixels are over the threshold.
+        over_thresh = np.array(
+            [self.original_image_kev[xcheck[i], ycheck[i]] > low_threshold_kev
              for i in xrange(len(xcheck))])
-        over_thresh_length = over_thresh_count * self.options.pixel_size_um
+        # in order to avoid counting pixels from a separate segment,
+        #   start from end_coordinates and count outward until you hit a 0.
+        over_thresh_pix = 1
+        start_ind = np.nonzero(
+            (xcheck == self.end_coordinates[0]) &
+            (ycheck == self.end_coordinates[1]))[0][0]
+        # +dx, +dy side (start_ind+1 --> end):
+        for i in xrange(start_ind + 1, len(xcheck), 1):
+            if over_thresh[i]:
+                over_thresh_pix += 1
+            else:
+                break
+        # -dx, -dy side (start_ind-1 --> 0):
+        for i in xrange(start_ind - 1, -1, -1):
+            if over_thresh[i]:
+                over_thresh_pix += 1
+            else:
+                break
+
+        over_thresh_length = (
+            over_thresh_pix *
+            self.options.pixel_size_um * np.sqrt(dx**2 + dy**2))
+        print(over_thresh_length)
+        import ipdb as pdb; pdb.set_trace()
 
         if over_thresh_length > problem_length:
             # have we done this too much already?
             if self.options.ridge_starting_distance_from_track_end_um < 30:
-                raise CheckSegmentBoxError('Couldn''t get a clean end segment')
+                # raise CheckSegmentBoxError('Couldn''t get a clean end segment')
+                print("Couldn't get a clean end segment")
+                return None
             # try again, with a shorter track segment
             self.options.ridge_starting_distance_from_track_end_um -= 10.5
             # now, repeat what we've done so far
@@ -189,8 +220,8 @@ class MomentsReconstruction(object):
                 self.original_image_kev, self.options, self.info)
             self.get_segment_initial_values()
             self.get_segment_box()
-            self.check_segment_box()    # recursive, so watch out..
-
+            self.check_segment_box()
+            # recurse until ridge_starting_dist... < 30
 
     def get_pixlist(self):
         """
