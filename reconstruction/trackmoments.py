@@ -151,14 +151,46 @@ class MomentsReconstruction(object):
         That would indicate that we should draw a new box.
         """
 
+        problem_length = 60     # microns
+
         # xmesh, ymesh get used in get_pixlist, also. so save into self.
         img_shape = self.original_image_kev.shape
         self.xmesh, self.ymesh = np.meshgrid(
             range(img_shape[0]), range(img_shape[1]), indexing='ij')
-        # get the line that passes through the track
-        m = ((self.box_y[-1] - self.box_y[-2]) /
-             (self.box_x[-1] - self.box_x[-2]))
-        b = self.box_y[-1] - m * self.box_x[-1]
+        # get the pixels along the line segment that passes through the track,
+        #   by walking along from one endpoint toward the other.
+        xcheck = [self.box_x[-2]]
+        ycheck = [self.box_y[-2]]
+        dx = np.sign(self.box_x[-1] - self.box_x[-2])
+        dy = np.sign(self.box_y[-1] - self.box_y[-2])
+        while xcheck[-1] != self.box_x[-1] or ycheck[-1] != self.box_y[-1]:
+            xcheck.append(xcheck[-1] + dx)
+            ycheck.append(ycheck[-1] + dy)
+        xcheck.append(self.box_x[-1])
+        ycheck.append(self.box_y[-1])
+        xcheck = np.array(xcheck)
+        ycheck = np.array(ycheck)
+
+        # threshold from HybridTrack options
+        low_threshold_kev = self.options.low_threshold_kev
+        over_thresh_count = np.sum(
+            [self.original_image_kev[xcheck[i], ycheck[i]]
+             for i in xrange(len(xcheck))])
+        over_thresh_length = over_thresh_count * self.options.pixel_size_um
+
+        if over_thresh_length > problem_length:
+            # have we done this too much already?
+            if self.options.ridge_starting_distance_from_track_end_um < 30:
+                raise CheckSegmentBoxError('Couldn''t get a clean end segment')
+            # try again, with a shorter track segment
+            self.options.ridge_starting_distance_from_track_end_um -= 10.5
+            # now, repeat what we've done so far
+            hybridtrack.choose_initial_end(
+                self.original_image_kev, self.options, self.info)
+            self.get_segment_initial_values()
+            self.get_segment_box()
+            self.check_segment_box()    # recursive, so watch out..
+
 
     def get_pixlist(self):
         """
@@ -576,4 +608,8 @@ def xy_split(xy):
 
 
 class MomentsError(Exception):
+    pass
+
+
+class CheckSegmentBoxError(MomentsError):
     pass
