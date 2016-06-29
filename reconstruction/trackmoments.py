@@ -302,14 +302,15 @@ class MomentsReconstruction(object):
         # binary image
         binary_segment_image = (
             self.end_segment_image > self.options.low_threshold_kev)
-        # segmentation: labeled regions, 4-connectivity
-        labels = morph.label(binary_segment_image, connectivity=1)
+        # segmentation: labeled regions, 8-connectivity
+        labels = morph.label(binary_segment_image, connectivity=2)
         x1 = self.end_coordinates[0] - self.end_segment_offsets[0]
         y1 = self.end_coordinates[1] - self.end_segment_offsets[1]
         x2 = self.start_coordinates[0] - self.end_segment_offsets[0]
         y2 = self.start_coordinates[1] - self.end_segment_offsets[1]
         chosen_label = labels[x1, y1]
         if labels[x2, y2] != chosen_label:
+            # this happens with 4-connectivity. need to use 8-connectivity
             raise RuntimeError('What the heck happened?')
         binary_again = (labels == chosen_label)
         # dilate this region, in order to capture information below threshold
