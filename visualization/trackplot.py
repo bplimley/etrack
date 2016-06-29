@@ -451,24 +451,27 @@ def plot_moments_track(mom, track, title=''):
 
     # begin main function
 
-    arc_rot = get_arc(mom)
-
-    # moments-calculated entry point EP a.k.a. x0
-    EP_central = mom.x0
-
     # geant4 entry point
     g4x, g4y = get_image_xy(track)
     g4x0 = np.array([g4x[0], g4y[0]])
 
-    # transform into full image frame
-    arc_full = mom.rotated_to_full(arc_rot)
-    EP_full = mom.central_to_full(EP_central)
-
-    # moments-calculated direction alpha (radians) (in segment and full frames)
-    alpha = mom.alpha
-
     # geant4 direction (converted to radians)
     alpha_true = track.g4track.alpha_deg * np.pi / 180.0
+
+    good_moments = False
+    if mom is not None:
+        if not np.isnan(mom.rotation_angle):
+            good_moments = True
+    if good_moments:
+        arc_rot = get_arc(mom)
+        # moments-calculated entry point EP a.k.a. x0
+        EP_central = mom.x0
+        # transform into full image frame
+        arc_full = mom.rotated_to_full(arc_rot)
+        EP_full = mom.central_to_full(EP_central)
+        # moments-calculated direction alpha (radians)
+        #   (in segment and full frames)
+        alpha = mom.alpha
 
     # create figure
     f = plt.figure(figsize=(16, 8))
@@ -476,36 +479,38 @@ def plot_moments_track(mom, track, title=''):
     # left plot: full image
     plt.subplot(1, 2, 1)
     cmap = get_colormap()
-    plt.imshow(mom.original_image_kev, cmap=cmap, aspect='equal',
+    plt.imshow(track.image, cmap=cmap, aspect='equal',
                interpolation='none', origin='lower')
-    plt.plot(mom.box_y, mom.box_x, 'c')
-    plt.plot(arc_full[1, :], arc_full[0, :], 'c', lw=2.5)
-    plot_arrow(EP_full, alpha, color='c')
+    if good_moments:
+        plt.plot(mom.box_y, mom.box_x, 'c')
+        plt.plot(arc_full[1, :], arc_full[0, :], 'c', lw=2.5)
+        plot_arrow(EP_full, alpha, color='c')
     plot_arrow(g4x0, alpha_true, color='g')
-    plt.xlim((0, mom.original_image_kev.shape[1] - 1))
-    plt.ylim((0, mom.original_image_kev.shape[0] - 1))
+    plt.xlim((0, track.image.shape[1] - 1))
+    plt.ylim((0, track.image.shape[0] - 1))
     plt.xlabel('y [pixels]')
     plt.ylabel('x [pixels]')
     plt.colorbar()
     plt.title(title)
 
     # right plot: zoomed
-    plt.subplot(1, 2, 2)
-    plt.imshow(mom.original_image_kev, cmap=cmap, aspect='equal',
-               interpolation='none', origin='lower')
-    plt.plot(mom.box_y, mom.box_x, 'c')
-    plt.plot(arc_full[1, :], arc_full[0, :], 'c', lw=2.5)
-    plot_arrow(EP_full, alpha, color='c')
-    plot_arrow(g4x0, alpha_true, color='g')
+    if good_moments:
+        plt.subplot(1, 2, 2)
+        plt.imshow(mom.original_image_kev, cmap=cmap, aspect='equal',
+                   interpolation='none', origin='lower')
+        plt.plot(mom.box_y, mom.box_x, 'c')
+        plt.plot(arc_full[1, :], arc_full[0, :], 'c', lw=2.5)
+        plot_arrow(EP_full, alpha, color='c')
+        plot_arrow(g4x0, alpha_true, color='g')
 
-    xoff = mom.end_segment_offsets[1]
-    yoff = mom.end_segment_offsets[0]
-    plt.xlim((xoff - 1, xoff + mom.end_segment_image.shape[1] + 1))
-    plt.ylim((yoff - 1, yoff + mom.end_segment_image.shape[0] + 1))
-    plt.xlabel('y [pixels]')
-    plt.ylabel('x [pixels]')
-    plt.colorbar()
-    plt.title(title)
+        xoff = mom.end_segment_offsets[1]
+        yoff = mom.end_segment_offsets[0]
+        plt.xlim((xoff - 1, xoff + mom.end_segment_image.shape[1] + 1))
+        plt.ylim((yoff - 1, yoff + mom.end_segment_image.shape[0] + 1))
+        plt.xlabel('y [pixels]')
+        plt.ylabel('x [pixels]')
+        plt.colorbar()
+        plt.title(title)
 
     return f
 
