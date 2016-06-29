@@ -33,16 +33,20 @@ def tracks_for_don(momlist, tracklist):
     """
 
     nmax = 1000
-    savedir = '/media/plimley/TEAM 7B/tracks_for_Don/'
+    savedir = '/media/plimley/TEAM 7B/tracks_for_Don_2/'
     csv_name = 'parameters.csv'
 
-    make_figures = False
+    make_figures = True
 
     if make_figures:
         # figure images
         print('Making {} figures at {}...'.format(nmax, dt.now()))
         for i in xrange(nmax):
-            if np.isnan(momlist[i].R):
+            if momlist[i] is None:
+                titlestr = '{} [Rejected by edge check!]'.format(i)
+            elif np.isnan(momlist[i].rotation_angle):
+                titlestr = '{} [Rejected by edge check!]'.format(i)
+            elif np.isnan(momlist[i].R):
                 titlestr = '{} [bad radius calculation]'.format(i)
             else:
                 titlestr = '{}'.format(i)
@@ -168,7 +172,19 @@ def momentlist_from_tracklist(tracklist):
     for t in tracklist:
         mom = tm.MomentsReconstruction(t.image)
         mom.track = t
-        mom.reconstruct()
+        try:
+            mom.reconstruct()
+        except tm.CheckSegmentBoxError:
+            # fill in nan's for everything that tracks_for_don wants
+            mom.alpha = np.nan
+            mom.phi = np.nan
+            mom.R = np.nan
+            mom.rotation_angle = np.nan
+            mom.pathology_ratio_3a = np.nan
+            mom.pathology_ratio_3b = np.nan
+            mom.rotated_moments = np.empty((4, 4)) * np.nan
+            mom.central_moments = np.empty((4, 4)) * np.nan
+            mom.first_moments = np.empty((2, 2)) * np.nan
         momlist.append(mom)
     t1 = time.time()
     print('Reconstructed {} tracks in {} s ({} s/track)'.format(
@@ -200,7 +216,7 @@ def moments_from_momentlist(momentlist):
         # copy R, phi
         R[n] = mom.R
         phi[n] = mom.phi
-        arclength[n] = mom.arclength
+        arclength[n] = mom.Rphi
         pr3a[n] = mom.pathology_ratio_3a
         pr3b[n] = mom.pathology_ratio_3b
         z[n] = mom.track.g4track.x0[-1]     # -0.65 to 0
@@ -428,20 +444,21 @@ def main3(tracklist=None, mlist=None):
         da[da < -180] += 360
 
     # get moments
-    moment_vars = moments_from_momentlist(mlist)
-    first, central, rotated, R, phi, arclen, pr3a, pr3b, z, E = moment_vars
+    # moment_vars = moments_from_momentlist(mlist)
+    # first, central, rotated, R, phi, arclen, pr3a, pr3b, z, E = moment_vars
+    phi = np.array([mom.phi for mom in mlist])
 
     # depth selection
-    lgdepth = (z >= zmin) & (z <= zmax)
+    # lgdepth = (z >= zmin) & (z <= zmax)
 
-    da = da[lgdepth]
-    R = R[lgdepth]
-    phi = phi[lgdepth]
-    arclen = arclen[lgdepth]
-    pr3a = pr3a[lgdepth]
-    pr3b = pr3b[lgdepth]
-    z = z[lgdepth]
-    E = E[lgdepth]
+    # da = da[lgdepth]
+    # R = R[lgdepth]
+    # phi = phi[lgdepth]
+    # arclen = arclen[lgdepth]
+    # pr3a = pr3a[lgdepth]
+    # pr3b = pr3b[lgdepth]
+    # z = z[lgdepth]
+    # E = E[lgdepth]
     # haven't selected the raw moments yet (first, central, rotated)
 
     if True:
@@ -475,7 +492,7 @@ def main3(tracklist=None, mlist=None):
     lg0 = np.abs(da) < 8
     lg1 = np.abs(da) < 20
 
-    if True:
+    if False:
         # total arclen histogram
         binwidth = 0.25
         plt.figure()
@@ -495,7 +512,7 @@ def main3(tracklist=None, mlist=None):
         plt.legend()
         plt.show()
 
-    if True:
+    if False:
         # total phi histogram
         binwidth = 5
         plt.figure()
@@ -517,7 +534,7 @@ def main3(tracklist=None, mlist=None):
         plt.legend()
         plt.show()
 
-    if True:
+    if False:
         # pr3a histogram
         binwidth = 0.025
         plt.figure()
@@ -537,7 +554,7 @@ def main3(tracklist=None, mlist=None):
         plt.legend()
         plt.show()
 
-    if True:
+    if False:
         # pr3b histogram
         binwidth = 0.0025
         plt.figure()
@@ -559,7 +576,7 @@ def main3(tracklist=None, mlist=None):
         plt.legend()
         plt.show()
 
-    return moment_vars
+    # return moment_vars
 
 
 def main4(tracklist=None, HTalpha=None, mlist=None):
@@ -568,8 +585,9 @@ def main4(tracklist=None, HTalpha=None, mlist=None):
     """
 
     # get moments
-    moment_vars = moments_from_momentlist(mlist)
-    first, central, rotated, R, phi, arclen, pr3a, pr3b = moment_vars
+    # moment_vars = moments_from_momentlist(mlist)
+    # first, central, rotated, R, phi, arclen, pr3a, pr3b = moment_vars
+    phi = np.array([mom.phi for mom in mlist])
 
     HT_da = np.array(
         [HTalpha[i] - tracklist[i].g4track.alpha_deg
