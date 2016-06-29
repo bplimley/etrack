@@ -270,6 +270,7 @@ class MomentsReconstruction(object):
 
         self.xpix = xpix
         self.ypix = ypix
+        self.segment_lg = segment_lg
 
     def get_segment_image(self):
         """
@@ -327,15 +328,15 @@ class MomentsReconstruction(object):
         """
         # this is not the same binary_segment_image as in separate_segments,
         #   because now the segments have already been separated.
-        binary_segment_image = (
-            self.end_segment_image > self.options.low_threshold_kev)
-        # erase non-edge pixels
-        binary_segment_image[1:-1, 1:-1] = False
-        # count edge pixels
-        self.edge_pixel_count = np.sum(binary_segment_image)
-        # count segments of edge pixels. use 4-connectivity.
+        edge_pixels = self.segment_lg - morph.binary_erosion(self.segment_lg)
+        edge_pixels_over_thresh_image = np.zeros_like(self.original_image_kev)
+        edge_pixels_over_thresh_image[edge_pixels] = (
+            self.original_image_kev[edge_pixels] >
+            self.options.low_threshold_kev)
+        self.edge_pixel_count = np.sum(
+            edge_pixels_over_thresh_image).astype(int)
         _, self.edge_pixel_segments = morph.label(
-            binary_segment_image, connectivity=1, return_num=True)
+            edge_pixels_over_thresh_image, connectivity=2, return_num=True)
 
     def segment_initial_end(self):
         """

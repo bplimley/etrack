@@ -32,8 +32,8 @@ def tracks_for_don(momlist, tracklist):
     - record parameters into a CSV file.
     """
 
-    nmax = 1000
-    savedir = '/media/plimley/TEAM 7B/tracks_for_Don_2/'
+    nmax = 100
+    savedir = '/media/plimley/TEAM 7B/tracks_for_Don_3/'
     csv_name = 'parameters.csv'
 
     make_figures = True
@@ -48,6 +48,8 @@ def tracks_for_don(momlist, tracklist):
                 titlestr = '{} [Rejected by edge check!]'.format(i)
             elif np.isnan(momlist[i].R):
                 titlestr = '{} [bad radius calculation]'.format(i)
+            elif momlist[i].edge_pixel_segments > 1:
+                titlestr = '{} [edge segments > 1]'.format(i)
             else:
                 titlestr = '{}'.format(i)
             f = tp.plot_moments_track(momlist[i], tracklist[i], title=titlestr)
@@ -70,6 +72,10 @@ def tracks_for_don(momlist, tracklist):
     while np.any(da < -180):
         da[da < -180] += 360
     params['delta_alpha_deg'] = da
+    params['edge_pixel_count'] = np.array(
+        [m.edge_pixel_count for m in momlist[:nmax]])
+    params['edge_pixel_segments'] = np.array(
+        [m.edge_pixel_segments for m in momlist[:nmax]])
     params['phi'] = np.array([m.phi for m in momlist[:nmax]])
     params['R'] = np.array([m.R for m in momlist[:nmax]])
     params['rotation_angle'] = np.array(
@@ -185,6 +191,8 @@ def momentlist_from_tracklist(tracklist):
             mom.rotated_moments = np.empty((4, 4)) * np.nan
             mom.central_moments = np.empty((4, 4)) * np.nan
             mom.first_moments = np.empty((2, 2)) * np.nan
+            mom.edge_pixel_count = np.nan
+            mom.edge_pixel_segments = np.nan
         momlist.append(mom)
     t1 = time.time()
     print('Reconstructed {} tracks in {} s ({} s/track)'.format(
