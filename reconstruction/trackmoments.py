@@ -319,6 +319,24 @@ class MomentsReconstruction(object):
         pix_to_keep = morph.binary_dilation(binary_again)
         self.end_segment_image[np.logical_not(pix_to_keep)] = 0
 
+    def check_segment_indicators(self):
+        """
+        Check the number of pixels above threshold along the edge of the
+        segment image. Also measure number of separate segments of pixels
+        along the edge of the segment image.
+        """
+        # this is not the same binary_segment_image as in separate_segments,
+        #   because now the segments have already been separated.
+        binary_segment_image = (
+            self.end_segment_image > self.options.low_threshold_kev)
+        # erase non-edge pixels
+        binary_segment_image[1:-1, 1:-1] = False
+        # count edge pixels
+        self.edge_pixel_count = np.sum(binary_segment_image)
+        # count segments of edge pixels. use 4-connectivity.
+        _, self.edge_pixel_segments = morph.label(
+            binary_segment_image, connectivity=1, return_num=True)
+
     def segment_initial_end(self):
         """
         Get the image segment to use for moments, and the rough direction
@@ -333,6 +351,7 @@ class MomentsReconstruction(object):
         self.get_pixlist()
         self.get_segment_image()
         self.separate_segments()
+        self.check_segment_indicators()
 
         def end_segment_coords_to_full_image_coords(xy):
             """
