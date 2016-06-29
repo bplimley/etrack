@@ -326,12 +326,16 @@ class MomentsReconstruction(object):
         segment image. Also measure number of separate segments of pixels
         along the edge of the segment image.
         """
-        # this is not the same binary_segment_image as in separate_segments,
-        #   because now the segments have already been separated.
-        edge_pixels = self.segment_lg - morph.binary_erosion(self.segment_lg)
-        edge_pixels_over_thresh_image = np.zeros_like(self.original_image_kev)
+        x1 = self.end_segment_offsets[0]
+        x2 = x1 + self.end_segment_image.shape[0]
+        y1 = self.end_segment_offsets[1]
+        y2 = y1 + self.end_segment_image.shape[1]
+        segment_lg = self.segment_lg[x1:x2, y1:y2]  # in end segment coords
+        edge_pixels = segment_lg - morph.binary_erosion(segment_lg)
+        edge_pixels_over_thresh_image = np.zeros_like(
+            self.end_segment_image)
         edge_pixels_over_thresh_image[edge_pixels] = (
-            self.original_image_kev[edge_pixels] >
+            self.end_segment_image[edge_pixels] >
             self.options.low_threshold_kev)
         self.edge_pixel_count = np.sum(
             edge_pixels_over_thresh_image).astype(int)
