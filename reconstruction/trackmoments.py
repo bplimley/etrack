@@ -333,6 +333,8 @@ class MomentsReconstruction(object):
         y2 = y1 + self.end_segment_image.shape[1]
         segment_lg = self.segment_lg[x1:x2, y1:y2]  # in end segment coords
         edge_pixels = segment_lg - morph.binary_erosion(segment_lg)
+
+        # edge_pixel_count and edge_pixel_segments
         edge_pixels_over_thresh_image = np.zeros_like(
             self.end_segment_image)
         edge_pixels_over_thresh_image[edge_pixels] = (
@@ -342,6 +344,24 @@ class MomentsReconstruction(object):
             edge_pixels_over_thresh_image).astype(int)
         _, self.edge_pixel_segments = morph.label(
             edge_pixels_over_thresh_image, connectivity=2, return_num=True)
+
+        # edge_avg_dist
+        edge_values_image = np.zeros_like(self.end_segment_image)
+        edge_values_image[edge_pixels] = self.end_segment_image[edge_pixels]
+        max_edge_ind_flat = np.argmax(edge_values_image)
+        max_coords = np.unravel_index(
+            max_edge_ind_flat, edge_values_image.shape)
+        # debug
+        assert edge_values_image[max_coords[0], max_coords[1]] == np.max(
+            edge_values_image)
+
+        dist_sum = 0
+        x, y = np.nonzero(edge_pixels)
+        for i in xrange(len(x)):
+            dist_sum += (
+                self.end_segment_image[x[i], y[i]] *
+                np.sqrt((max_coords[0] - x[i])**2 + (max_coords[1] - y[i])**2))
+        self.edge_avg_dist = dist_sum / np.sum(edge_values_image)
 
     def segment_initial_end(self):
         """

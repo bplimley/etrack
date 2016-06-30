@@ -77,6 +77,9 @@ def tracks_for_don(momlist, tracklist):
         [m.edge_pixel_count for m in momlist[:nmax]])
     params['edge_pixel_segments'] = np.array(
         [m.edge_pixel_segments for m in momlist[:nmax]])
+    params['end_energy'] = np.array([m.end_energy for m in momlist[:nmax]])
+    params['edge_avg_dist'] = np.array(
+        [m.edge_avg_dist for m in momlist[:nmax]])
     params['phi'] = np.array([m.phi for m in momlist[:nmax]])
     params['R'] = np.array([m.R for m in momlist[:nmax]])
     params['rotation_angle'] = np.array(
