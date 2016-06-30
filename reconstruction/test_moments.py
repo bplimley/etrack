@@ -919,33 +919,33 @@ def main5(momlist1, momlist2, HTalpha, tracklist):
         r = np.sum(lg3) / float(len(HT_da))
         print('ridge-following end_energy <= 25 rate: {}'.format(r))
 
-        if True:
-            plt.figure()
-            n, bins = np.histogram(
-                MR1_da[lg1], np.arange(-180, 180.1, binwidth))
-            print('sum(n) = {}'.format(np.sum(n)))
-            plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
-                     'b', lw=2, drawstyle='steps-mid',
-                     label='moments-1 filtered')
-            n, bins = np.histogram(
-                MR3_da[lg2], np.arange(-180, 180.1, binwidth))
-            print('sum(n) = {}'.format(np.sum(n)))
-            plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
-                     'g', lw=2, drawstyle='steps-mid',
-                     label='moments-3 filtered')
-            n, bins = np.histogram(HT_da[lg3], np.arange(-180, 180.1, binwidth))
-            print('sum(n) = {}'.format(np.sum(n)))
-            plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
-                     'k', lw=2, drawstyle='steps-mid',
-                     label='ridge-following filtered')
-            plt.xlim([-180, 180])
-            plt.ylim([0, 0.12])
-            plt.xlabel('Delta Alpha [degrees]')
-            plt.ylabel('fraction of tracks per {} degrees'.format(binwidth))
-            plt.title('Filter moments by phi and edge_pixel* and ' +
-                      'end_energy')
-            plt.legend()
-            plt.show()
+    if True:
+        plt.figure()
+        n, bins = np.histogram(
+            MR1_da[lg1], np.arange(-180, 180.1, binwidth))
+        print('sum(n) = {}'.format(np.sum(n)))
+        plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+                 'b', lw=2, drawstyle='steps-mid',
+                 label='moments-1 filtered')
+        n, bins = np.histogram(
+            MR3_da[lg2], np.arange(-180, 180.1, binwidth))
+        print('sum(n) = {}'.format(np.sum(n)))
+        plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+                 'g', lw=2, drawstyle='steps-mid',
+                 label='moments-3 filtered')
+        n, bins = np.histogram(HT_da[lg3], np.arange(-180, 180.1, binwidth))
+        print('sum(n) = {}'.format(np.sum(n)))
+        plt.plot(bins[:-1] + binwidth / 2, n.astype(np.float) / np.sum(n),
+                 'k', lw=2, drawstyle='steps-mid',
+                 label='ridge-following filtered')
+        plt.xlim([-180, 180])
+        plt.ylim([0, 0.12])
+        plt.xlabel('Delta Alpha [degrees]')
+        plt.ylabel('fraction of tracks per {} degrees'.format(binwidth))
+        plt.title('Filter moments by phi and edge_pixel* and ' +
+                  'end_energy')
+        plt.legend()
+        plt.show()
 
 if __name__ == '__main__':
     main2()
