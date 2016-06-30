@@ -33,10 +33,10 @@ def tracks_for_don(momlist, tracklist):
     """
 
     nmax = 1000
-    savedir = '/media/plimley/TEAM 7B/tracks_for_Don_3/'
+    savedir = '/media/plimley/TEAM 7B/tracks_for_Don_4/'
     csv_name = 'parameters.csv'
 
-    make_figures = True
+    make_figures = False
 
     if make_figures:
         # figure images
@@ -49,11 +49,17 @@ def tracks_for_don(momlist, tracklist):
                 titlestr += ' [Failed edge check!]'
             elif np.isnan(momlist[i].R):
                 titlestr += ' [bad radius calculation]'
-
             if momlist[i].edge_pixel_segments > 1:
-                titlestr += ' [edge segments > 1]'
+                titlestr += ' [Warning: edge segments > 1]'
+            if momlist[i].edge_pixel_count > 4:
+                titlestr += ' [Warning: edge pixels > 4]'
+            if momlist[i].end_energy > 25:
+                titlestr += ' [Warning: end energy > 25keV]'
+            if momlist[i].phi > 1:
+                titlestr += ' [Warning: phi > 1 rad]'
 
-            f = tp.plot_moments_track(momlist[i], tracklist[i], title=titlestr)
+            f = tp.plot_moments_track(momlist[i], tracklist[i], title='')
+            f.suptitle(titlestr)
             plt.show()
             fname = '{0:03d}.png'.format(i)
             fpath = os.path.join(savedir, fname)
@@ -197,6 +203,8 @@ def momentlist_from_tracklist(tracklist):
             mom.first_moments = np.empty((2, 2)) * np.nan
             mom.edge_pixel_count = np.nan
             mom.edge_pixel_segments = np.nan
+            mom.edge_avg_dist = np.nan
+            mom.ends_energy = np.nan
         momlist.append(mom)
     t1 = time.time()
     print('Reconstructed {} tracks in {} s ({} s/track)'.format(
