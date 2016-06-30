@@ -260,7 +260,8 @@ def plot_moments_arc(mom, debug=False, end_segment=False, box=False,
     imgoffset[imgoffset < 0] = 0
     if not end_segment:
         # gotta go back to the original image too
-        center_in_image_frame = center_in_segment_frame + mom.end_segment_offsets
+        center_in_image_frame = (
+            center_in_segment_frame + mom.end_segment_offsets)
 
     f = plt.figure()
     if end_segment:

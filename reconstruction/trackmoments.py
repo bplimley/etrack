@@ -104,6 +104,7 @@ class MomentsReconstruction(object):
 
         # copied from hybridtrack.get_starting_point()
         min_index = self.info.ends_energy.argmin()
+        self.end_energy = self.info.ends_energy[min_index]
         self.start_coordinates = self.info.ends_xy[min_index]
         # start_coordinates are the end (extremity) of the thinned track
 
