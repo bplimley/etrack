@@ -958,5 +958,21 @@ def main5(momlist1, momlist2, HTalpha, tracklist):
         plt.legend()
         plt.show()
 
+
+def add_result(track, mom, algname='moments'):
+    """
+    Add a moments result to a Track object using Track.add_algorithm().
+    """
+    # if da is None:
+    #     da = mom.alpha * 180 / np.pi - track.g4track.alpha_deg
+    # while da > 180:
+    #     da -= 360
+    # while da < -180:
+    #     da += 360
+    # db = np.nan     # no beta measurement
+
+    track.add_algorithm(algname, mom.alpha * 180.0 / np.pi, np.nan)
+
+
 if __name__ == '__main__':
     main2()

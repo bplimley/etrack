@@ -18,7 +18,7 @@ class TrackList(object):
 
     class_name = 'TrackList'
     __version__ = '0.1'
-    data_format = get_format('TrackList')
+    # data_format = get_format('TrackList')
 
     def __init__(self, tracks=None, alg_results=None, ):
         """
