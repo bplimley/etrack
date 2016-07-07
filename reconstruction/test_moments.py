@@ -20,6 +20,7 @@ from datetime import datetime as dt
 from etrack.reconstruction.trackdata import Track
 import etrack.io.trackio as trackio
 import etrack.reconstruction.trackmoments as tm
+import etrack.reconstruction.evaluation as ev
 import etrack.visualization.trackplot as tp
 
 
@@ -138,7 +139,11 @@ def tracklist_from_h5(filename, energy_thresh):
     Save them into a list if their energy is above energy_thresh_kev.
     """
 
-    f = h5py.File(filename, 'r')
+    try:
+        f = h5py.File(filename, 'r')
+    except IOError:
+        print('!!! IOError on {} !!!'.format(filename))
+        return []
     fn = 'pix10_5noise0'
     tracklist = []
     for evtkey in f.keys():
@@ -190,7 +195,7 @@ def momentlist_from_tracklist(tracklist):
         mom.track = t
         try:
             mom.reconstruct()
-        except tm.CheckSegmentBoxError:
+        except (tm.CheckSegmentBoxError, RuntimeError):
             # fill in nan's for everything that tracks_for_don wants
             mom.alpha = np.nan
             mom.phi = np.nan
@@ -229,6 +234,7 @@ def moments_from_momentlist(momentlist):
     pr3b = np.zeros(max_length)
     z = np.zeros(max_length)
     E = np.zeros(max_length)
+    end_energy = np.zeros(max_length)
 
     n = 0
 
@@ -241,6 +247,7 @@ def moments_from_momentlist(momentlist):
         pr3b[n] = mom.pathology_ratio_3b
         z[n] = mom.track.g4track.x0[-1]     # -0.65 to 0
         E[n] = mom.track.g4track.energy_tot_kev
+        end_energy[n] = mom.end_energy
 
         # copy moments
         for i in xrange(3):
@@ -260,6 +267,7 @@ def moments_from_momentlist(momentlist):
     pr3b.resize(n)
     z.resize(n)
     E.resize(n)
+    end_energy.resize(n)
     first_moments = first_moments.copy()
     first_moments.resize((n, 2, 2))
     central_moments = central_moments.copy()
@@ -268,7 +276,7 @@ def moments_from_momentlist(momentlist):
     rotated_moments.resize((n, 4, 4))
 
     moment_vars = (first_moments, central_moments, rotated_moments,
-                   R, phi, arclength, pr3a, pr3b, z, E)
+                   R, phi, arclength, pr3a, pr3b, z, E, end_energy)
     return moment_vars
 
 
@@ -294,7 +302,7 @@ def get_tracklist(n_files=10):
 
     filename = '/media/plimley/TEAM 7B/HTbatch01_pyml/MultiAngle_HT_*_*_py.h5'
     flist = glob.glob(filename)
-    energy_thresh = 300     # keV
+    energy_thresh = 0     # keV
     tracklist = []
 
     # get a bunch of tracks: ~250 in energy window per file, ~100 without error
@@ -957,6 +965,103 @@ def main5(momlist1, momlist2, HTalpha, tracklist):
                   'end_energy')
         plt.legend()
         plt.show()
+
+
+def eval_by_energy(ARmom):
+    """
+    take an algresults object, divide up by energy bins, and get parameters
+    """
+    ARmom.has_beta = False
+    bin_edges = np.arange(0.0, 500.0, 50.0)
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2.0
+    ARlist = []
+
+    for i in xrange(len(bin_centers)):
+        Emin = bin_edges[i]
+        Emax = bin_edges[i + 1]
+        ARlist.append(ARmom.select(energy_min=Emin, energy_max=Emax))
+
+    FWHM, FWHM_unc, f, f_unc, f_rej, f_rej_unc = get_uncertainties(ARlist)
+    import ipdb; ipdb.set_trace()
+
+    # FWHM
+    plt.figure()
+    plt.errorbar(bin_centers, FWHM, yerr=FWHM_unc, fmt='o')
+    plt.xlim((0, 500))
+    plt.ylim((0, 100))
+    plt.xlabel('Energy [keV]')
+    plt.ylabel('FWHM [degrees]')
+
+    # f
+    plt.figure()
+    plt.errorbar(bin_centers, f, yerr=f_unc, fmt='o')
+    plt.xlim((0, 500))
+    plt.ylim((0, 100))
+    plt.xlabel('Energy [keV]')
+    plt.ylabel('Peak fraction, f [%]')
+
+    # f_rejected
+    plt.figure()
+    plt.errorbar(bin_centers, f_rej, yerr=f_rej_unc, fmt='o')
+    plt.xlim((0, 500))
+    plt.ylim((0, 100))
+    plt.xlabel('Energy [keV]')
+    plt.ylabel('Rejected fraction, f_rej [%]')
+
+
+def filter_momlist(momlist):
+    """
+    Filter a moments result list.
+
+    Return momlist_filtered, ends_good, moments_good.
+    """
+
+    phi_max = np.pi / 2     # 90 degrees
+    edge_segments_max = 1
+    edge_pixels_max = 4
+    end_energy_max = 25
+
+
+def get_uncertainties(ARlist):
+    """
+    Get FWHM, FWHM_unc, f, f_unc, f_rejected, f_rejected_unc (%)
+    """
+
+    FWHM = np.zeros(len(ARlist))
+    FWHM_unc = np.zeros(len(ARlist))
+    f = np.zeros(len(ARlist))
+    f_unc = np.zeros(len(ARlist))
+    f_rejected = np.zeros(len(ARlist))
+    f_rejected_unc = np.zeros(len(ARlist))
+
+    for i in xrange(len(ARlist)):
+        ARlist[i].has_beta = False
+        ARlist[i].add_default_uncertainties()
+        FWHM[i] = ARlist[i].alpha_unc.metrics['FWHM'].value
+        FWHM_unc[i] = ARlist[i].alpha_unc.metrics['FWHM'].uncertainty[0]
+        f[i] = ARlist[i].alpha_unc.metrics['f'].value
+        f_unc[i] = ARlist[i].alpha_unc.metrics['f'].uncertainty[0]
+        n_rejected = np.sum(np.isnan(ARlist[i].alpha_meas_deg)).astype(float)
+        n_total = len(ARlist[i].alpha_meas_deg)
+        f_rejected[i] = n_rejected / n_total * 100
+        f_rejected_unc[i] = np.sqrt(n_rejected) / n_total * 100
+
+    return FWHM, FWHM_unc, f, f_unc, f_rejected, f_rejected_unc
+
+
+def algresults_from_lists(tracklist, momlist, algname='moments'):
+    """
+    Create an AlgorithmResults instance from tracklist and momlist.
+    """
+    for i in xrange(len(tracklist)):
+        if algname in tracklist[i].algorithms:
+            del(tracklist[i].algorithms[algname])
+        add_result(tracklist[i], momlist[i], algname=algname)
+
+    algresults = ev.AlgorithmResults.from_track_list(
+        tracklist, alg_name=algname)
+
+    return algresults
 
 
 def add_result(track, mom, algname='moments'):
