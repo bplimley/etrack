@@ -1052,12 +1052,16 @@ def main6(momlist, HTalpha, tracklist):
 
     # add algorithm outputs to tracklist
     for i in xrange(len(tracklist)):
-        add_result(tracklist[i], momlist[i], algname='moments3')
-        tracklist[i].add_algorithm('python HT v1.51c', HTalpha[i], np.nan)
+        if 'moments3' not in tracklist[i].keys():
+            add_result(tracklist[i], momlist[i], algname='moments3')
+        if 'python HT v1.51c' not in tracklist[i].keys():
+            tracklist[i].add_algorithm('python HT v1.51c', HTalpha[i], np.nan)
 
     # filter tracklist
     tracklist_ends_good = np.array(tracklist)[ends_good]
-    tracklist_moments_good = np.array(tracklist)[moments_good]
+    tracklist_moments_good = np.array(tracklist)[ends_good & moments_good]
+    print('Tracks (all / ends_good / moments_good): {} / {} / {}'.format(
+        len(tracklist), len(tracklist_ends_good), len(tracklist_moments_good)))
 
     AR_HT_full = ev.AlgorithmResults.from_track_list(
         tracklist, alg_name='python HT v1.51c')
