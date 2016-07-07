@@ -1021,6 +1021,57 @@ def filter_momlist(momlist):
     edge_pixels_max = 4
     end_energy_max = 25
 
+    phi = np.array([m.phi for m in momlist])
+    edge_segments = np.array([m.edge_pixel_segments for m in momlist])
+    edge_pixels = np.array([m.edge_pixel_count for m in momlist])
+    end_energy = np.array([m.end_energy for m in momlist])
+
+    moments_good = (
+        (np.abs(phi) < phi_max) &
+        (edge_segments <= edge_segments_max) &
+        (edge_pixels <= edge_pixels_max))
+    # ends_good applies to hybridtrack also
+    ends_good = (end_energy <= end_energy_max)
+
+    all_good = moments_good & ends_good
+
+    momlist_filtered = np.array(momlist)[all_good]
+
+    return momlist_filtered, ends_good, moments_good
+
+
+def main6(momlist, HTalpha, tracklist):
+    """
+    Filtered and unfiltered moments and hybridtrack results.
+    """
+
+    _, ends_good, moments_good = filter_momlist(momlist)
+
+    bin_edges = np.arange(0, 500, 100).astype(float)
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+
+    # add algorithm outputs to tracklist
+    for i in xrange(len(tracklist)):
+        add_result(tracklist[i], momlist[i], algname='moments3')
+        tracklist[i].add_algorithm('python HT v1.51c', HTalpha[i], np.nan)
+
+    # filter tracklist
+    tracklist_ends_good = np.array(tracklist)[ends_good]
+    tracklist_moments_good = np.array(tracklist)[moments_good]
+
+    AR_HT_full = ev.AlgorithmResults.from_track_list(
+        tracklist, alg_name='python HT v1.51c')
+    AR_HT_good = ev.AlgorithmResults.from_track_list(
+        tracklist_ends_good, alg_name='python HT v1.51c')
+    AR_mom_full = ev.AlgorithmResults.from_track_list(
+        tracklist, alg_name='moments3')
+    AR_mom_ends = ev.AlgorithmResults.from_track_list(
+        tracklist_ends_good, alg_name='moments3')
+    AR_mom_good = ev.AlgorithmResults.from_track_list(
+        tracklist_moments_good, alg_name='moments3')
+
+    #
+
 
 def get_uncertainties(ARlist):
     """
