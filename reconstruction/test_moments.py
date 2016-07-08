@@ -1049,7 +1049,7 @@ def main6(momlist, HTalpha, tracklist):
 
     _, ends_good, moments_good = filter_momlist(momlist)
 
-    bin_edges = np.arange(0, 501, 50).astype(float)
+    bin_edges = np.arange(100, 501, 50).astype(float)
     bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
 
     # add algorithm outputs to tracklist
@@ -1082,115 +1082,174 @@ def main6(momlist, HTalpha, tracklist):
     FWHM_unc = {}
     f = {}
     f_unc = {}
+    f_fail = {}
+    f_fail_unc = {}
     f_rej = {}
     f_rej_unc = {}
+    n = {}
 
     for algkey in AR.iterkeys():
         FWHM[algkey] = {}
         FWHM_unc[algkey] = {}
         f[algkey] = {}
         f_unc[algkey] = {}
+        f_fail[algkey] = {}
+        f_fail_unc[algkey] = {}
         f_rej[algkey] = {}
         f_rej_unc[algkey] = {}
+        n[algkey] = {}
+
         for filterkey in AR[algkey].iterkeys():
             thisARlist = []
+            n[algkey][filterkey] = []
             for i in xrange(len(bin_centers)):
                 Emin = bin_edges[i]
                 Emax = bin_edges[i + 1]
-                thisARlist.append(AR[algkey][filterkey].select(
-                    energy_min=Emin, energy_max=Emax))
+                cur = AR[algkey][filterkey].select(
+                    energy_min=Emin, energy_max=Emax)
+                thisARlist.append(cur)
+                n[algkey][filterkey].append(len(cur))
             try:
                 (FWHM[algkey][filterkey],
                  FWHM_unc[algkey][filterkey],
                  f[algkey][filterkey],
-                 f_unc[algkey][filterkey],
-                 f_rej[algkey][filterkey],
-                 f_rej_unc[algkey][filterkey]) = get_uncertainties(thisARlist)
+                 f_unc[algkey][filterkey]) = get_uncertainties(thisARlist)
             except ZeroDivisionError:
                 print('ZeroDivisionError on {}:{}'.format(algkey, filterkey))
+    for algkey in AR.iterkeys():
+        for filterkey in AR[algkey].iterkeys():
+            f_rej[algkey][filterkey] = np.zeros(len(bin_centers))
+            f_rej_unc[algkey][filterkey] = np.zeros(len(bin_centers))
+            for i in xrange(len(bin_centers)):
+                if filterkey == 'full':
+                    f_rej[algkey][filterkey][i] = 0.0
+                    f_rej_unc[algkey][filterkey][i] = 0.0
+                else:
+                    n_tot = float(n[algkey]['full'][i])
+                    n_cur = float(n[algkey][filterkey][i])
+                    f_rej[algkey][filterkey][i] = (n_tot - n_cur) / n_tot * 100
+                    f_rej_unc[algkey][filterkey][i] = (
+                        np.sqrt(n_tot - n_cur) / n_tot * 100)
 
-    import ipdb; ipdb.set_trace()
-    # plot HT FWHM
-    plt.figure()
-    algkey, filterkey, fmt, label = 'HT', 'full', 'ok', 'All tracks'
-    plt.errorbar(
-        bin_centers, FWHM[algkey][filterkey],
-        yerr=FWHM_unc[algkey][filterkey],
-        fmt=fmt, label=label)
-    algkey, filterkey, fmt, label = 'HT', 'good', 'ob', 'End energy < 25 keV'
-    plt.errorbar(
-        bin_centers, FWHM[algkey][filterkey],
-        yerr=FWHM_unc[algkey][filterkey],
-        fmt=fmt, label=label)
-    plt.xlim((0, 500))
-    plt.ylim((0, 100))
-    plt.xlabel('Energy [keV]')
-    plt.ylabel('FWHM [degrees]')
-    plt.legend()
 
-    # plot M FWHM
-    plt.figure()
-    algkey, filterkey, fmt, label = 'mom', 'full', 'ok', 'All tracks'
-    plt.errorbar(
-        bin_centers, FWHM[algkey][filterkey],
-        yerr=FWHM_unc[algkey][filterkey],
-        fmt=fmt, label=label)
-    algkey, filterkey, fmt, label = 'mom', 'ends', 'ob', 'End energy < 25 keV'
-    plt.errorbar(
-        bin_centers, FWHM[algkey][filterkey],
-        yerr=FWHM_unc[algkey][filterkey],
-        fmt=fmt, label=label)
-    algkey, filterkey, fmt, label = 'mom', 'good', 'og', 'All filters applied'
-    plt.errorbar(
-        bin_centers, FWHM[algkey][filterkey],
-        yerr=FWHM_unc[algkey][filterkey],
-        fmt=fmt, label=label)
-    plt.xlim((0, 500))
-    plt.ylim((0, 100))
-    plt.xlabel('Energy [keV]')
-    plt.ylabel('FWHM [degrees]')
-    plt.legend()
+    # import ipdb; ipdb.set_trace()
+    lw = 2
+    ms = 8
 
-    # plot HT f
-    plt.figure()
-    algkey, filterkey, fmt, label = 'HT', 'full', 'ok', 'All tracks'
-    plt.errorbar(
-        bin_centers, f[algkey][filterkey],
-        yerr=f_unc[algkey][filterkey],
-        fmt=fmt, label=label)
-    algkey, filterkey, fmt, label = 'HT', 'good', 'ob', 'End energy < 25 keV'
-    plt.errorbar(
-        bin_centers, f[algkey][filterkey],
-        yerr=f_unc[algkey][filterkey],
-        fmt=fmt, label=label)
-    plt.xlim((0, 500))
-    plt.ylim((0, 100))
-    plt.xlabel('Energy [keV]')
-    plt.ylabel('Peak fraction, f [%]')
-    plt.legend()
+    # plot FWHM
+    if True:
+        plt.figure()
 
-    # plot M f
-    plt.figure()
-    algkey, filterkey, fmt, label = 'mom', 'full', 'ok', 'All tracks'
-    plt.errorbar(
-        bin_centers, f[algkey][filterkey],
-        yerr=f_unc[algkey][filterkey],
-        fmt=fmt, label=label)
-    algkey, filterkey, fmt, label = 'mom', 'ends', 'ob', 'End energy < 25 keV'
-    plt.errorbar(
-        bin_centers, f[algkey][filterkey],
-        yerr=f_unc[algkey][filterkey],
-        fmt=fmt, label=label)
-    algkey, filterkey, fmt, label = 'mom', 'good', 'og', 'All filters applied'
-    plt.errorbar(
-        bin_centers, f[algkey][filterkey],
-        yerr=f_unc[algkey][filterkey],
-        fmt=fmt, label=label)
-    plt.xlim((0, 500))
-    plt.ylim((0, 100))
-    plt.xlabel('Energy [keV]')
-    plt.ylabel('Peak fraction, f [%]')
-    plt.legend()
+        algkey, filterkey, mkr, mec, label = (
+            'HT', 'full', 'o', 'm', 'Ridge-follow [all]')
+        plt.errorbar(
+            bin_centers, FWHM[algkey][filterkey],
+            yerr=FWHM_unc[algkey][filterkey],
+            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+
+        algkey, filterkey, mkr, mec, label = (
+            'HT', 'good', '*', 'm', 'Ridge-follow [end<25keV]')
+        plt.errorbar(
+            bin_centers, FWHM[algkey][filterkey],
+            yerr=FWHM_unc[algkey][filterkey],
+            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+
+        algkey, filterkey, mkr, mec, label = (
+            'mom', 'full', 'o', 'b', 'Moments [all]')
+        plt.errorbar(
+            bin_centers, FWHM[algkey][filterkey],
+            yerr=FWHM_unc[algkey][filterkey],
+            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+
+        algkey, filterkey, mkr, mec, label = (
+            'mom', 'ends', '*', 'b', 'Moments [end<25keV]')
+        plt.errorbar(
+            bin_centers, FWHM[algkey][filterkey],
+            yerr=FWHM_unc[algkey][filterkey],
+            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+
+        algkey, filterkey, mkr, mec, label = (
+            'mom', 'good', 's', 'b', 'Moments [added filters]')
+        plt.errorbar(
+            bin_centers, FWHM[algkey][filterkey],
+            yerr=FWHM_unc[algkey][filterkey],
+            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+        plt.xlim((0, 500))
+        plt.ylim((0, 100))
+        plt.xlabel('Energy [keV]')
+        plt.ylabel('FWHM [degrees]')
+        plt.legend()
+
+    # plot f
+    if True:
+        plt.figure()
+
+        algkey, filterkey, mkr, mec, label = (
+            'HT', 'full', 'o', 'm', 'Ridge-follow [all]')
+        plt.errorbar(
+            bin_centers, f[algkey][filterkey],
+            yerr=f_unc[algkey][filterkey],
+            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+
+        algkey, filterkey, mkr, mec, label = (
+            'HT', 'good', '*', 'm', 'Ridge-follow [end<25keV]')
+        plt.errorbar(
+            bin_centers, f[algkey][filterkey],
+            yerr=f_unc[algkey][filterkey],
+            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+
+        algkey, filterkey, mkr, mec, label = (
+            'mom', 'full', 'o', 'b', 'Moments [all]')
+        plt.errorbar(
+            bin_centers, f[algkey][filterkey],
+            yerr=f_unc[algkey][filterkey],
+            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+
+        algkey, filterkey, mkr, mec, label = (
+            'mom', 'ends', '*', 'b', 'Moments [end<25keV]')
+        plt.errorbar(
+            bin_centers, f[algkey][filterkey],
+            yerr=f_unc[algkey][filterkey],
+            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+
+        algkey, filterkey, mkr, mec, label = (
+            'mom', 'good', 's', 'b', 'Moments [added filters]')
+        plt.errorbar(
+            bin_centers, f[algkey][filterkey],
+            yerr=f_unc[algkey][filterkey],
+            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+        plt.xlim((0, 500))
+        plt.ylim((0, 100))
+        plt.xlabel('Energy [keV]')
+        plt.ylabel('Peak fraction, f [%]')
+        plt.legend(loc='lower right')
+
+    # acceptance fractions
+    if True:
+        plt.figure()
+        algkey, filterkey, mkr, mec, label = (
+            'mom', 'full', 'o', 'k', 'All tracks')
+        plt.errorbar(
+            bin_centers, 100 - f_rej[algkey][filterkey],
+            yerr=f_rej_unc[algkey][filterkey],
+            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+        algkey, filterkey, mkr, mec, label = (
+            'mom', 'ends', 'o', 'b', 'End energy < 25 keV')
+        plt.errorbar(
+            bin_centers, 100 - f_rej[algkey][filterkey],
+            yerr=f_rej_unc[algkey][filterkey],
+            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+        algkey, filterkey, mkr, mec, label = (
+            'mom', 'good', 'o', 'g', 'All filters applied')
+        plt.errorbar(
+            bin_centers, 100 - f_rej[algkey][filterkey],
+            yerr=f_rej_unc[algkey][filterkey],
+            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+        plt.xlim((0, 500))
+        plt.ylim((0, 100))
+        plt.xlabel('Energy [keV]')
+        plt.ylabel('Filter acceptance fraction [%]')
+        plt.legend(loc='lower right')
 
 
 def get_uncertainties(ARlist):
@@ -1202,8 +1261,6 @@ def get_uncertainties(ARlist):
     FWHM_unc = np.zeros(len(ARlist))
     f = np.zeros(len(ARlist))
     f_unc = np.zeros(len(ARlist))
-    f_rejected = np.zeros(len(ARlist))
-    f_rejected_unc = np.zeros(len(ARlist))
 
     for i in xrange(len(ARlist)):
         ARlist[i].has_beta = False
@@ -1212,12 +1269,8 @@ def get_uncertainties(ARlist):
         FWHM_unc[i] = ARlist[i].alpha_unc.metrics['FWHM'].uncertainty[0]
         f[i] = ARlist[i].alpha_unc.metrics['f'].value
         f_unc[i] = ARlist[i].alpha_unc.metrics['f'].uncertainty[0]
-        n_rejected = np.sum(np.isnan(ARlist[i].alpha_meas_deg)).astype(float)
-        n_total = len(ARlist[i].alpha_meas_deg)
-        f_rejected[i] = n_rejected / n_total * 100
-        f_rejected_unc[i] = np.sqrt(n_rejected) / n_total * 100
 
-    return FWHM, FWHM_unc, f, f_unc, f_rejected, f_rejected_unc
+    return FWHM, FWHM_unc, f, f_unc
 
 
 def algresults_from_lists(tracklist, momlist, algname='moments'):
