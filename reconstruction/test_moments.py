@@ -1045,16 +1045,18 @@ def main6(momlist, HTalpha, tracklist):
     Filtered and unfiltered moments and hybridtrack results.
     """
 
+    HTalgname = 'matlab HT v1.5'
+
     _, ends_good, moments_good = filter_momlist(momlist)
 
-    bin_edges = np.arange(0, 500, 50).astype(float)
+    bin_edges = np.arange(0, 501, 50).astype(float)
     bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
 
     # add algorithm outputs to tracklist
     for i in xrange(len(tracklist)):
         if 'moments3' not in tracklist[i].keys():
             add_result(tracklist[i], momlist[i], algname='moments3')
-        if 'python HT v1.51c' not in tracklist[i].keys():
+        if 'python HT v1.51c' not in tracklist[i].keys() and HTalpha is not None:
             tracklist[i].add_algorithm('python HT v1.51c', HTalpha[i], np.nan)
 
     # filter tracklist
@@ -1065,9 +1067,9 @@ def main6(momlist, HTalpha, tracklist):
 
     AR = {'HT': {}, 'mom': {}}
     AR['HT']['full'] = ev.AlgorithmResults.from_track_list(
-        tracklist, alg_name='python HT v1.51c')
+        tracklist, alg_name=HTalgname)
     AR['HT']['good'] = ev.AlgorithmResults.from_track_list(
-        tracklist_ends_good, alg_name='python HT v1.51c')
+        tracklist_ends_good, alg_name=HTalgname)
     AR['mom']['full'] = ev.AlgorithmResults.from_track_list(
         tracklist, alg_name='moments3')
     AR['mom']['ends'] = ev.AlgorithmResults.from_track_list(
@@ -1090,21 +1092,105 @@ def main6(momlist, HTalpha, tracklist):
         f_unc[algkey] = {}
         f_rej[algkey] = {}
         f_rej_unc[algkey] = {}
-        for filterkey in AR.filterkeys():
+        for filterkey in AR[algkey].iterkeys():
             thisARlist = []
             for i in xrange(len(bin_centers)):
                 Emin = bin_edges[i]
                 Emax = bin_edges[i + 1]
                 thisARlist.append(AR[algkey][filterkey].select(
                     energy_min=Emin, energy_max=Emax))
-            (FWHM[algkey][filterkey],
-             FWHM_unc[algkey][filterkey],
-             f[algkey][filterkey],
-             f_unc[algkey][filterkey],
-             f_rej[algkey][filterkey],
-             f_rej_unc[algkey][filterkey]) = get_uncertainties(thisARlist)
+            try:
+                (FWHM[algkey][filterkey],
+                 FWHM_unc[algkey][filterkey],
+                 f[algkey][filterkey],
+                 f_unc[algkey][filterkey],
+                 f_rej[algkey][filterkey],
+                 f_rej_unc[algkey][filterkey]) = get_uncertainties(thisARlist)
+            except ZeroDivisionError:
+                print('ZeroDivisionError on {}:{}'.format(algkey, filterkey))
 
-    # plot
+    import ipdb; ipdb.set_trace()
+    # plot HT FWHM
+    plt.figure()
+    algkey, filterkey, fmt, label = 'HT', 'full', 'ok', 'All tracks'
+    plt.errorbar(
+        bin_centers, FWHM[algkey][filterkey],
+        yerr=FWHM_unc[algkey][filterkey],
+        fmt=fmt, label=label)
+    algkey, filterkey, fmt, label = 'HT', 'good', 'ob', 'End energy < 25 keV'
+    plt.errorbar(
+        bin_centers, FWHM[algkey][filterkey],
+        yerr=FWHM_unc[algkey][filterkey],
+        fmt=fmt, label=label)
+    plt.xlim((0, 500))
+    plt.ylim((0, 100))
+    plt.xlabel('Energy [keV]')
+    plt.ylabel('FWHM [degrees]')
+    plt.legend()
+
+    # plot M FWHM
+    plt.figure()
+    algkey, filterkey, fmt, label = 'mom', 'full', 'ok', 'All tracks'
+    plt.errorbar(
+        bin_centers, FWHM[algkey][filterkey],
+        yerr=FWHM_unc[algkey][filterkey],
+        fmt=fmt, label=label)
+    algkey, filterkey, fmt, label = 'mom', 'ends', 'ob', 'End energy < 25 keV'
+    plt.errorbar(
+        bin_centers, FWHM[algkey][filterkey],
+        yerr=FWHM_unc[algkey][filterkey],
+        fmt=fmt, label=label)
+    algkey, filterkey, fmt, label = 'mom', 'good', 'og', 'All filters applied'
+    plt.errorbar(
+        bin_centers, FWHM[algkey][filterkey],
+        yerr=FWHM_unc[algkey][filterkey],
+        fmt=fmt, label=label)
+    plt.xlim((0, 500))
+    plt.ylim((0, 100))
+    plt.xlabel('Energy [keV]')
+    plt.ylabel('FWHM [degrees]')
+    plt.legend()
+
+    # plot HT f
+    plt.figure()
+    algkey, filterkey, fmt, label = 'HT', 'full', 'ok', 'All tracks'
+    plt.errorbar(
+        bin_centers, f[algkey][filterkey],
+        yerr=f_unc[algkey][filterkey],
+        fmt=fmt, label=label)
+    algkey, filterkey, fmt, label = 'HT', 'good', 'ob', 'End energy < 25 keV'
+    plt.errorbar(
+        bin_centers, f[algkey][filterkey],
+        yerr=f_unc[algkey][filterkey],
+        fmt=fmt, label=label)
+    plt.xlim((0, 500))
+    plt.ylim((0, 100))
+    plt.xlabel('Energy [keV]')
+    plt.ylabel('Peak fraction, f [%]')
+    plt.legend()
+
+    # plot M f
+    plt.figure()
+    algkey, filterkey, fmt, label = 'mom', 'full', 'ok', 'All tracks'
+    plt.errorbar(
+        bin_centers, f[algkey][filterkey],
+        yerr=f_unc[algkey][filterkey],
+        fmt=fmt, label=label)
+    algkey, filterkey, fmt, label = 'mom', 'ends', 'ob', 'End energy < 25 keV'
+    plt.errorbar(
+        bin_centers, f[algkey][filterkey],
+        yerr=f_unc[algkey][filterkey],
+        fmt=fmt, label=label)
+    algkey, filterkey, fmt, label = 'mom', 'good', 'og', 'All filters applied'
+    plt.errorbar(
+        bin_centers, f[algkey][filterkey],
+        yerr=f_unc[algkey][filterkey],
+        fmt=fmt, label=label)
+    plt.xlim((0, 500))
+    plt.ylim((0, 100))
+    plt.xlabel('Energy [keV]')
+    plt.ylabel('Peak fraction, f [%]')
+    plt.legend()
 
 
 def get_uncertainties(ARlist):
