@@ -1047,7 +1047,7 @@ def main6(momlist, HTalpha, tracklist):
 
     _, ends_good, moments_good = filter_momlist(momlist)
 
-    bin_edges = np.arange(0, 500, 100).astype(float)
+    bin_edges = np.arange(0, 500, 50).astype(float)
     bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
 
     # add algorithm outputs to tracklist
@@ -1063,18 +1063,48 @@ def main6(momlist, HTalpha, tracklist):
     print('Tracks (all / ends_good / moments_good): {} / {} / {}'.format(
         len(tracklist), len(tracklist_ends_good), len(tracklist_moments_good)))
 
-    AR_HT_full = ev.AlgorithmResults.from_track_list(
+    AR = {'HT': {}, 'mom': {}}
+    AR['HT']['full'] = ev.AlgorithmResults.from_track_list(
         tracklist, alg_name='python HT v1.51c')
-    AR_HT_good = ev.AlgorithmResults.from_track_list(
+    AR['HT']['good'] = ev.AlgorithmResults.from_track_list(
         tracklist_ends_good, alg_name='python HT v1.51c')
-    AR_mom_full = ev.AlgorithmResults.from_track_list(
+    AR['mom']['full'] = ev.AlgorithmResults.from_track_list(
         tracklist, alg_name='moments3')
-    AR_mom_ends = ev.AlgorithmResults.from_track_list(
+    AR['mom']['ends'] = ev.AlgorithmResults.from_track_list(
         tracklist_ends_good, alg_name='moments3')
-    AR_mom_good = ev.AlgorithmResults.from_track_list(
+    AR['mom']['good'] = ev.AlgorithmResults.from_track_list(
         tracklist_moments_good, alg_name='moments3')
 
-    #
+    # by energy
+    FWHM = {}
+    FWHM_unc = {}
+    f = {}
+    f_unc = {}
+    f_rej = {}
+    f_rej_unc = {}
+
+    for algkey in AR.iterkeys():
+        FWHM[algkey] = {}
+        FWHM_unc[algkey] = {}
+        f[algkey] = {}
+        f_unc[algkey] = {}
+        f_rej[algkey] = {}
+        f_rej_unc[algkey] = {}
+        for filterkey in AR.filterkeys():
+            thisARlist = []
+            for i in xrange(len(bin_centers)):
+                Emin = bin_edges[i]
+                Emax = bin_edges[i + 1]
+                thisARlist.append(AR[algkey][filterkey].select(
+                    energy_min=Emin, energy_max=Emax))
+            (FWHM[algkey][filterkey],
+             FWHM_unc[algkey][filterkey],
+             f[algkey][filterkey],
+             f_unc[algkey][filterkey],
+             f_rej[algkey][filterkey],
+             f_rej_unc[algkey][filterkey]) = get_uncertainties(thisARlist)
+
+    # plot
 
 
 def get_uncertainties(ARlist):
