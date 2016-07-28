@@ -1145,35 +1145,35 @@ def main6(momlist, HTalpha, tracklist):
         plt.errorbar(
             bin_centers, FWHM[algkey][filterkey],
             yerr=FWHM_unc[algkey][filterkey],
-            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+            fmt=mkr + mec, marker=mkr, mfc=mec, mec=mec, lw=lw, ms=ms, label=label)
 
         algkey, filterkey, mkr, mec, label = (
             'HT', 'good', '*', 'm', 'Ridge-follow [end<25keV]')
         plt.errorbar(
             bin_centers, FWHM[algkey][filterkey],
             yerr=FWHM_unc[algkey][filterkey],
-            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+            fmt=mkr + mec, marker=mkr, mfc=mec, mec=mec, lw=lw, ms=ms, label=label)
 
         algkey, filterkey, mkr, mec, label = (
             'mom', 'full', 'o', 'b', 'Moments [all]')
         plt.errorbar(
             bin_centers, FWHM[algkey][filterkey],
             yerr=FWHM_unc[algkey][filterkey],
-            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+            fmt=mkr + mec, marker=mkr, mfc=mec, mec=mec, lw=lw, ms=ms, label=label)
 
         algkey, filterkey, mkr, mec, label = (
             'mom', 'ends', '*', 'b', 'Moments [end<25keV]')
         plt.errorbar(
             bin_centers, FWHM[algkey][filterkey],
             yerr=FWHM_unc[algkey][filterkey],
-            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+            fmt=mkr + mec, marker=mkr, mfc=mec, mec=mec, lw=lw, ms=ms, label=label)
 
         algkey, filterkey, mkr, mec, label = (
             'mom', 'good', 's', 'b', 'Moments [added filters]')
         plt.errorbar(
             bin_centers, FWHM[algkey][filterkey],
             yerr=FWHM_unc[algkey][filterkey],
-            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+            fmt=mkr + mec, marker=mkr, mfc=mec, mec=mec, lw=lw, ms=ms, label=label)
         plt.xlim((0, 500))
         plt.ylim((0, 100))
         plt.xlabel('Energy [keV]')
@@ -1189,35 +1189,35 @@ def main6(momlist, HTalpha, tracklist):
         plt.errorbar(
             bin_centers, f[algkey][filterkey],
             yerr=f_unc[algkey][filterkey],
-            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+            fmt=mkr + mec, marker=mkr, mfc=mec, mec=mec, lw=lw, ms=ms, label=label)
 
         algkey, filterkey, mkr, mec, label = (
             'HT', 'good', '*', 'm', 'Ridge-follow [end<25keV]')
         plt.errorbar(
             bin_centers, f[algkey][filterkey],
             yerr=f_unc[algkey][filterkey],
-            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+            fmt=mkr + mec, marker=mkr, mfc=mec, mec=mec, lw=lw, ms=ms, label=label)
 
         algkey, filterkey, mkr, mec, label = (
             'mom', 'full', 'o', 'b', 'Moments [all]')
         plt.errorbar(
             bin_centers, f[algkey][filterkey],
             yerr=f_unc[algkey][filterkey],
-            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+            fmt=mkr + mec, marker=mkr, mfc=mec, mec=mec, lw=lw, ms=ms, label=label)
 
         algkey, filterkey, mkr, mec, label = (
             'mom', 'ends', '*', 'b', 'Moments [end<25keV]')
         plt.errorbar(
             bin_centers, f[algkey][filterkey],
             yerr=f_unc[algkey][filterkey],
-            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+            fmt=mkr + mec, marker=mkr, mfc=mec, mec=mec, lw=lw, ms=ms, label=label)
 
         algkey, filterkey, mkr, mec, label = (
             'mom', 'good', 's', 'b', 'Moments [added filters]')
         plt.errorbar(
             bin_centers, f[algkey][filterkey],
             yerr=f_unc[algkey][filterkey],
-            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+            fmt=mkr + mec, marker=mkr, mfc=mec, mec=mec, lw=lw, ms=ms, label=label)
         plt.xlim((0, 500))
         plt.ylim((0, 100))
         plt.xlabel('Energy [keV]')
@@ -1232,19 +1232,19 @@ def main6(momlist, HTalpha, tracklist):
         plt.errorbar(
             bin_centers, 100 - f_rej[algkey][filterkey],
             yerr=f_rej_unc[algkey][filterkey],
-            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+            fmt=mkr + mec, marker=mkr, mfc=mec, mec=mec, lw=lw, ms=ms, label=label)
         algkey, filterkey, mkr, mec, label = (
             'mom', 'ends', 'o', 'b', 'End energy < 25 keV')
         plt.errorbar(
             bin_centers, 100 - f_rej[algkey][filterkey],
             yerr=f_rej_unc[algkey][filterkey],
-            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+            fmt=mkr + mec, marker=mkr, mfc=mec, mec=mec, lw=lw, ms=ms, label=label)
         algkey, filterkey, mkr, mec, label = (
             'mom', 'good', 'o', 'g', 'All filters applied')
         plt.errorbar(
             bin_centers, 100 - f_rej[algkey][filterkey],
             yerr=f_rej_unc[algkey][filterkey],
-            fmt=mkr, marker=mkr, mfc=None, mec=mec, lw=lw, ms=ms, label=label)
+            fmt=mkr + mec, marker=mkr, mfc=mec, mec=mec, lw=lw, ms=ms, label=label)
         plt.xlim((0, 500))
         plt.ylim((0, 100))
         plt.xlabel('Energy [keV]')
