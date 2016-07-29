@@ -59,7 +59,7 @@ class MomentsReconstruction(object):
         self.compute_pathology()
 
     @classmethod
-    def reconstruct_test(cls, end_segment_image, rough_est):
+    def from_end_segment(cls, end_segment_image, rough_est):
         """
         Run the moments on a (handpicked) track section.
         """
@@ -74,6 +74,7 @@ class MomentsReconstruction(object):
         mom.compute_optimal_rotation_angle()
         mom.compute_arc_parameters()
         mom.compute_direction()
+        mom.compute_pathology()
 
         return mom
 
