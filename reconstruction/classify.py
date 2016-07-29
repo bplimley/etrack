@@ -19,11 +19,11 @@ class Classifier(object):
         self.g4track = g4track
 
         assert g4track.x.shape[0] == 3, "x has funny shape"
-        self.x = g4track.x
+        self.x = np.copy(g4track.x)
 
-        self.E = g4track.dE
+        self.E = np.copy(g4track.dE.flatten())
 
-    def classify(self, scatterlen=50, overlapdist=50):
+    def classify(self, scatterlen_um=25, overlapdist_um=50):
         """
         Classify the Monte Carlo track as either:
           'good',
@@ -32,10 +32,13 @@ class Classifier(object):
           or no result, None.
 
         Optional input args:
-          scatterlen: length from initial end, in um, to look for
+          scatterlen_um: length from initial end, in um, to look for
             high-angle scatter. (default 50 um)
-          overlapdist: if points are
+          overlapdist_um: if points are
         """
+
+        self.scatterlen_um = scatterlen_um
+        self.overlapdist_um = overlapdist_um
 
         self.flag_backsteps()
         self.flag_newparticle()
@@ -83,26 +86,37 @@ class Classifier(object):
         The before and after positions of the backstep need to be switched.
         """
 
+        # how long of a segment are we looking at?
+        numsteps = self.scatterlen_um / BIG_STEP_UM * 2
+
         # only operate on the first particle
         new_particle_ind = np.nonzero(self.dx_newparticle_flag)[0][0]
+        assert new_particle_ind > numsteps, "Particle track too short"
+
         assert not self.dx_backward_flag[0], 'First step is backward??'
         # First, check that no backsteps are consecutive
-        consecutive = (self.dx_backward_flag[:new_particle_ind - 1] &
-                       self.dx_backward_flag[1:new_particle_ind])
+        consecutive = (self.dx_backward_flag[:numsteps - 1] &
+                       self.dx_backward_flag[1:numsteps])
         assert not np.any(consecutive), 'Found consecutive backsteps'
         consecutive_forward = (
-            np.logical_not(self.dx_backward_flag[:new_particle_ind - 1]) &
-            np.logical_not(self.dx_backward_flag[1:new_particle_ind]))
+            np.logical_not(self.dx_backward_flag[:numsteps - 1]) &
+            np.logical_not(self.dx_backward_flag[1:numsteps]))
         print("{} consecutive forward steps".format(
             np.sum(consecutive_forward)))
 
+        self.stepinds = np.arange(numsteps)
+        import ipdb; ipdb.set_trace()
+
         for ind in np.nonzero(self.dx_backward_flag)[0]:
-            if ind >= new_particle_ind:
+            if ind >= numsteps:
                 break
+            # import ipdb as pdb; pdb.set_trace()
             # swap before and after. dx is indexed as the delta.
             (self.x[:, ind], self.x[:, ind + 1]) = (
                 self.x[:, ind + 1], self.x[:, ind])
             (self.E[ind], self.E[ind + 1]) = (self.E[ind + 1], self.E[ind])
+            (self.stepinds[ind], self.stepinds[ind + 1]) = (
+                self.stepinds[ind + 1], self.stepinds[ind])
 
         self.flag_backsteps()
         self.flag_newparticle()
