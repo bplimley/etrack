@@ -23,7 +23,7 @@ class Classifier(object):
 
         self.E = np.copy(g4track.dE.flatten())
 
-    def classify(self, scatterlen_um=25, overlapdist_um=50):
+    def classify(self, scatterlen_um=25, overlapdist_um=40):
         """
         Classify the Monte Carlo track as either:
           'good',
@@ -43,6 +43,9 @@ class Classifier(object):
         self.flag_backsteps()
         self.flag_newparticle()
         self.reorder_backsteps()
+
+        self.check_early_scatter()
+        self.check_overlap()
 
     def flag_backsteps(self):
         """
@@ -113,13 +116,81 @@ class Classifier(object):
             # import ipdb as pdb; pdb.set_trace()
             # swap before and after. dx is indexed as the delta.
             (self.x[:, ind], self.x[:, ind + 1]) = (
-                self.x[:, ind + 1], self.x[:, ind])
-            (self.E[ind], self.E[ind + 1]) = (self.E[ind + 1], self.E[ind])
+                np.copy(self.x[:, ind + 1]),
+                np.copy(self.x[:, ind]))
+            (self.E[ind], self.E[ind + 1]) = (
+                np.copy(self.E[ind + 1]),
+                np.copy(self.E[ind]))
             (self.stepinds[ind], self.stepinds[ind + 1]) = (
-                self.stepinds[ind + 1], self.stepinds[ind])
+                np.copy(self.stepinds[ind + 1]),
+                np.copy(self.stepinds[ind]))
 
         self.flag_backsteps()
         self.flag_newparticle()
+
+        self.numsteps = numsteps
+
+    def check_early_scatter(self):
+        """
+        look for a >90 degree direction change within the first scatterlen_um
+        of track.
+
+        track should already be fixed using reorder_backsteps().
+        """
+
+        self.early_scatter = np.any(self.ddir[:self.numsteps] < 0)
+        if self.early_scatter:
+            print('Early scatter!')
+
+    def check_overlap(self):
+        """
+        look for a section of track overlapping with the initial scatterlen_um
+        of track.
+        """
+
+        self.overlap = False    # until shown otherwise
+
+        # see which points are within overlapdist_um of these points
+        # distance matrix: distance of all points from each of the first 50
+
+        # arrays of dimensions (self.x.shape[1], self.numsteps)
+        all_x, init_x = np.meshgrid(self.x[0, :self.numsteps], self.x[0, :])
+        all_y, init_y = np.meshgrid(self.x[1, :self.numsteps], self.x[1, :])
+
+        dist_matrix = (all_x - init_x)**2 + (all_y - init_y)**2
+        dist_vector = np.min(dist_matrix, axis=1)
+
+        # don't bother with sqrt
+        dist_threshold = self.overlapdist_um**2
+        too_close = dist_vector < dist_threshold
+
+        # the initial segment, and some points after it, are obviously
+        # going to be too close.
+
+        # first try: if at least overlapdist of consecutive points are
+        # too_close, then classify the track as overlapping
+        #   i.e. at least overlapdist consecutive points are within overlapdist
+        #   of the initial scatterlen segment.
+
+        # look for transitions from too_close to not too_close, and back
+        dclose = too_close[1:] - too_close[:-1]
+
+        # get indices of transitions.
+        # ignore first transition away from initial segment
+        going_out = np.nonzero(dclose == -1)[0]    # too_close to not too_close
+        going_out = going_out[1:]
+        going_in = np.nonzero(dclose == 1)[0]      # not too_close to too_close
+
+        # get the lengths of too_close segments
+        segment_len_threshold = self.overlapdist_um / BIG_STEP_UM * 2
+        for i, in_ind in enumerate(going_in):
+            try:
+                out_ind = going_out[i]
+            except IndexError:
+                out_ind = len(dclose)
+            if out_ind - in_ind > segment_len_threshold:
+                self.overlap = True
+                break
 
     def normalize_steps(self, dx, d=None):
         """
