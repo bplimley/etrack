@@ -107,12 +107,16 @@ class Classifier(object):
         numsteps = self.scatterlen_um / BIG_STEP_UM * 2
 
         # only operate on the first particle
-        new_particle_ind = np.nonzero(self.dx_newparticle_flag)[0][0]
+        try:
+            new_particle_ind = np.nonzero(self.dx_newparticle_flag)[0][0]
+        except IndexError:
+            # no new particles flagged. just ignore
+            new_particle_ind = numsteps + 1
         assert new_particle_ind > numsteps, "Particle track too short"
 
         i = 1
-        self.stepinds = np.arange(numsteps)
-        while i < numsteps:
+        self.stepinds = np.arange(numsteps + 1)
+        while i < numsteps and i < self.stepdirs.shape[1] - 1:
             ddir = np.sum(self.stepdirs[:, i] * self.stepdirs[:, i + 1],
                           axis=0)
             if ddir < -0.7 and self.d[i] < BIG_STEP_UM / 2:
@@ -144,7 +148,9 @@ class Classifier(object):
         """
 
         self.early_scatter = np.any(self.ddir[:self.numsteps] < 0)
-        if self.early_scatter:
+
+        verbose = False
+        if self.early_scatter and verbose:
             print('Early scatter!')
 
     def check_overlap(self):
