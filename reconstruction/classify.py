@@ -40,35 +40,36 @@ class Classifier(object):
         self.scatterlen_um = scatterlen_um
         self.overlapdist_um = overlapdist_um
 
-        self.flag_backsteps()
+        # self.flag_backsteps()
         self.flag_newparticle()
         self.reorder_backsteps()
 
         self.check_early_scatter()
         self.check_overlap()
 
-    def flag_backsteps(self):
-        """
-        Look for backwards steps (from misordering in DiffuseTrack).
-        Make an attribute that flags them.
-
-        Backwards steps are marked by <0.5um step and >90 degree from previous
-        step direction.
-        """
-
-        self.dx = self.x[:, 1:] - self.x[:, :-1]
-        # step lengths
-        self.d = np.linalg.norm(self.dx, axis=0)
-        # step directions
-        self.stepdirs = self.normalize_steps(self.dx, d=self.d)
-        # cos(difference in direction): dot product.
-        # (1 = same direction, 0 = 90 degree turn, -1 = opposite direction)
-        ddir = np.sum(self.stepdirs[:, 1:] * self.stepdirs[:, :-1], axis=0)
-        self.ddir = np.concatenate(([0], ddir))
-        # make it the same size as dx.
-        # ddir[i] is the difference between stepdirs[i-1] and stepdirs[i]
-
-        self.dx_backward_flag = (self.d < BIG_STEP_UM / 2) & (self.ddir < 0)
+    # def flag_backsteps(self):
+    #     """
+    #     Look for backwards steps (from misordering in DiffuseTrack).
+    #     Make an attribute that flags them.
+    #
+    #     Backwards steps are marked by <0.5um step and >90 degree from previous
+    #     step direction.
+    #     """
+    #
+    #     self.dx = self.x[:, 1:] - self.x[:, :-1]
+    #     # step lengths
+    #     self.d = np.linalg.norm(self.dx, axis=0)
+    #     # step directions
+    #     self.stepdirs = self.normalize_steps(self.dx, d=self.d)
+    #
+    #     # cos(difference in direction): dot product.
+    #     # (1 = same direction, 0 = 90 degree turn, -1 = opposite direction)
+    #     ddir = np.sum(self.stepdirs[:, 1:] * self.stepdirs[:, :-1], axis=0)
+    #     # make it the same size as dx.
+    #     # ddir[i] is the difference between stepdirs[i-1] and stepdirs[i]
+    #     self.ddir = np.concatenate(([0], ddir))
+    #
+    #     self.dx_backward_flag = (self.d < BIG_STEP_UM / 2) & (self.ddir < 0)
 
     def flag_newparticle(self):
         """
@@ -89,6 +90,19 @@ class Classifier(object):
         The before and after positions of the backstep need to be switched.
         """
 
+        self.dx = self.x[:, 1:] - self.x[:, :-1]
+        # step lengths
+        self.d = np.linalg.norm(self.dx, axis=0)
+        # step directions
+        self.stepdirs = self.normalize_steps(self.dx, d=self.d)
+
+        # cos(difference in direction): dot product.
+        # (1 = same direction, 0 = 90 degree turn, -1 = opposite direction)
+        ddir = np.sum(self.stepdirs[:, 1:] * self.stepdirs[:, :-1], axis=0)
+        # make it the same size as dx.
+        # ddir[i] is the difference between stepdirs[i-1] and stepdirs[i]
+        self.ddir = np.concatenate(([0], ddir))
+
         # how long of a segment are we looking at?
         numsteps = self.scatterlen_um / BIG_STEP_UM * 2
 
@@ -96,37 +110,28 @@ class Classifier(object):
         new_particle_ind = np.nonzero(self.dx_newparticle_flag)[0][0]
         assert new_particle_ind > numsteps, "Particle track too short"
 
-        assert not self.dx_backward_flag[0], 'First step is backward??'
-        # First, check that no backsteps are consecutive
-        consecutive = (self.dx_backward_flag[:numsteps - 1] &
-                       self.dx_backward_flag[1:numsteps])
-        assert not np.any(consecutive), 'Found consecutive backsteps'
-        consecutive_forward = (
-            np.logical_not(self.dx_backward_flag[:numsteps - 1]) &
-            np.logical_not(self.dx_backward_flag[1:numsteps]))
-        print("{} consecutive forward steps".format(
-            np.sum(consecutive_forward)))
-
+        i = 1
         self.stepinds = np.arange(numsteps)
-        import ipdb; ipdb.set_trace()
+        while i < numsteps:
+            ddir = np.sum(self.stepdirs[:, i] * self.stepdirs[:, i + 1],
+                          axis=0)
+            if ddir < -0.7 and self.d[i] < BIG_STEP_UM / 2:
+                # backstep. swap entries
+                (self.x[:, i], self.x[:, i + 1]) = (
+                    np.copy(self.x[:, i + 1]),
+                    np.copy(self.x[:, i]))
+                (self.E[i], self.E[i + 1]) = (
+                    np.copy(self.E[i + 1]),
+                    np.copy(self.E[i]))
+                (self.stepinds[i], self.stepinds[i + 1]) = (
+                    np.copy(self.stepinds[i + 1]),
+                    np.copy(self.stepinds[i]))
+                i += 2
+            else:
+                i += 1
 
-        for ind in np.nonzero(self.dx_backward_flag)[0]:
-            if ind >= numsteps:
-                break
-            # import ipdb as pdb; pdb.set_trace()
-            # swap before and after. dx is indexed as the delta.
-            (self.x[:, ind], self.x[:, ind + 1]) = (
-                np.copy(self.x[:, ind + 1]),
-                np.copy(self.x[:, ind]))
-            (self.E[ind], self.E[ind + 1]) = (
-                np.copy(self.E[ind + 1]),
-                np.copy(self.E[ind]))
-            (self.stepinds[ind], self.stepinds[ind + 1]) = (
-                np.copy(self.stepinds[ind + 1]),
-                np.copy(self.stepinds[ind]))
-
-        self.flag_backsteps()
-        self.flag_newparticle()
+        # self.flag_backsteps()
+        # self.flag_newparticle()
 
         self.numsteps = numsteps
 
@@ -162,7 +167,7 @@ class Classifier(object):
 
         # don't bother with sqrt
         dist_threshold = self.overlapdist_um**2
-        too_close = dist_vector < dist_threshold
+        too_close = (dist_vector < dist_threshold) + 0  # as an int
 
         # the initial segment, and some points after it, are obviously
         # going to be too close.
