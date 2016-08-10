@@ -72,6 +72,9 @@ class Classifier(object):
         else:
             self.wrong_end = False
 
+        self.g4xy = g4x, g4y
+        self.algxy = algx, algy
+
     def flag_newparticle(self):
         """
         Look for particle transitions - jumping to a new electron ID in Geant4.
