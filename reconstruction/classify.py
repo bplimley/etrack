@@ -102,6 +102,8 @@ class Classifier(object):
         # make it the same size as dx.
         # ddir[i] is the difference between stepdirs[i-1] and stepdirs[i]
         self.ddir = np.concatenate(([0], ddir))
+        # print('before: ddir[:50] = ')
+        # print(self.ddir[:50])
 
         # how long of a segment are we looking at?
         numsteps = self.scatterlen_um / BIG_STEP_UM * 2
@@ -136,6 +138,24 @@ class Classifier(object):
 
         # self.flag_backsteps()
         # self.flag_newparticle()
+
+        # repeat
+        self.dx = self.x[:, 1:] - self.x[:, :-1]
+        # step lengths
+        self.d = np.linalg.norm(self.dx, axis=0)
+        # step directions
+        self.stepdirs = self.normalize_steps(self.dx, d=self.d)
+
+        # cos(difference in direction): dot product.
+        # (1 = same direction, 0 = 90 degree turn, -1 = opposite direction)
+        ddir = np.sum(self.stepdirs[:, 1:] * self.stepdirs[:, :-1], axis=0)
+        # make it the same size as dx.
+        # ddir[i] is the difference between stepdirs[i-1] and stepdirs[i]
+        self.ddir = np.concatenate(([0], ddir))
+
+        # print('after: ddir[:50] = ')
+        # print(self.ddir[:50])
+
 
         self.numsteps = numsteps
 
