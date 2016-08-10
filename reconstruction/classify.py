@@ -104,6 +104,7 @@ class Classifier(object):
         self.ddir = np.concatenate(([0], ddir))
         # print('before: ddir[:50] = ')
         # print(self.ddir[:50])
+        self.x0 = np.copy(self.x)
         self.dx0 = np.copy(self.dx)
         self.d0 = np.copy(self.d)
         self.stepdirs0 = np.copy(self.stepdirs)
@@ -250,3 +251,17 @@ class Classifier(object):
         round to nearest half-big-step (nearest 0.5 um)
         """
         return np.round(d / (BIG_STEP_UM / 2)) * (BIG_STEP_UM / 2)
+
+
+def directional_distance(x):
+    """
+    Get the distance of each step, but with a sign corresponding to direction.
+    """
+    dx = x[:, 1:] - x[:, :-1]
+    d = np.linalg.norm(dx, axis=0)
+    stepdirs = dx / d
+    v0 = stepdirs[:, 0:1]
+    dirsign = np.sign(np.sum(stepdirs * v0, axis=0))
+
+    ddist = dirsign * d
+    return ddist
