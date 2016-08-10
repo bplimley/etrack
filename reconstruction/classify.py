@@ -23,7 +23,7 @@ class Classifier(object):
 
         self.E = np.copy(g4track.dE.flatten())
 
-    def classify(self, scatterlen_um=25, overlapdist_um=40):
+    def classify(self, scatterlen_um=25, overlapdist_um=40, verbose=False):
         """
         Classify the Monte Carlo track as either:
           'good',
@@ -42,7 +42,7 @@ class Classifier(object):
 
         # self.flag_backsteps()
         self.flag_newparticle()
-        self.reorder_backsteps()
+        self.reorder_backsteps(v=verbose)
 
         self.check_early_scatter()
         self.check_overlap()
@@ -84,7 +84,7 @@ class Classifier(object):
 
         self.dx_newparticle_flag = (self.d > BIG_STEP_UM * 1.5)
 
-    def reorder_backsteps(self):
+    def reorder_backsteps(self, v=False):
         """
         Reorder positions and energies according to dx_backward_flag.
         The before and after positions of the backstep need to be switched.
@@ -110,6 +110,32 @@ class Classifier(object):
         self.stepdirs0 = np.copy(self.stepdirs)
         self.ddir0 = np.copy(self.ddir)
 
+        #
+        strng1 = 'dir0:  '
+        strng2 = 'd0:    '
+        ddist = directional_distance(self.x)
+        for i in xrange(50):
+            if ddist[i] > 0:
+                strng1 += '+'
+            else:
+                strng1 += '-'
+            if self.d[i] < 0.49:
+                strng2 += '.'
+            elif self.d[i] < 0.5:
+                strng2 += '_'
+            elif self.d[i] < 0.99:
+                strng2 += '~'
+            elif self.d[i] < 1.0:
+                strng2 += '-'
+            elif self.d[i] < 1.48:
+                strng2 += '^'
+            elif self.d[i] < 1.5:
+                strng2 += '*'
+            else:
+                strng2 += '#'
+        print(strng1)
+        print(strng2)
+
         # how long of a segment are we looking at?
         numsteps = self.scatterlen_um / BIG_STEP_UM * 2
 
@@ -126,8 +152,20 @@ class Classifier(object):
         while i < numsteps and i < self.stepdirs.shape[1] - 1:
             ddir = np.sum(self.stepdirs[:, i] * self.stepdirs[:, i + 1],
                           axis=0)
-            if ddir < -0.7 and self.d[i] < BIG_STEP_UM / 2:
+            ansi_reset = '\033[0m'
+            ansi_yellow = '\033[33m' + '\033[1m'
+
+            if ddir < -0.7:
+                strng = ('{}. dx[i]={}, dx[i+1]={}. d={:.2f}. ' +
+                         ansi_yellow + 'ddir={:.2f}' + ansi_reset)
+            else:
+                strng = '{}. dx[i]={}, dx[i+1]={}. d={:.2f}. ddir={:.2f}'
+            if v:
+                print(strng.format(
+                    i, self.dx[:, i], self.dx[:, i + 1], self.d[i], ddir))
+            if ddir < -0.99:
                 # backstep. swap entries
+                print('Swapping {} and {}'.format(i, i+1))
                 (self.x[:, i], self.x[:, i + 1]) = (
                     np.copy(self.x[:, i + 1]),
                     np.copy(self.x[:, i]))
@@ -163,6 +201,33 @@ class Classifier(object):
         # make it the same size as dx.
         # ddir[i] is the difference between stepdirs[i-1] and stepdirs[i]
         self.ddir = np.concatenate(([0], ddir))
+
+        #
+        strng1 = 'dir1:  '
+        strng2 = 'd1:    '
+        ddist = directional_distance(self.x)
+        for i in xrange(50):
+            if ddist[i] > 0:
+                strng1 += '+'
+            else:
+                strng1 += '-'
+            if self.d[i] < 0.49:
+                strng2 += '.'
+            elif self.d[i] < 0.5:
+                strng2 += '_'
+            elif self.d[i] < 0.99:
+                strng2 += '~'
+            elif self.d[i] < 1.0:
+                strng2 += '-'
+            elif self.d[i] < 1.48:
+                strng2 += '^'
+            elif self.d[i] < 1.5:
+                strng2 += '*'
+            else:
+                strng2 += '#'
+        print()
+        print(strng1)
+        print(strng2)
 
         # print('after: ddir[:50] = ')
         # print(self.ddir[:50])
