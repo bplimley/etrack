@@ -40,36 +40,10 @@ class Classifier(object):
         self.scatterlen_um = scatterlen_um
         self.overlapdist_um = overlapdist_um
 
-        # self.flag_backsteps()
         self.flag_newparticle()
-        self.reorder_backsteps(v=verbose)
 
-        self.check_early_scatter()
+        self.check_early_scatter(v=verbose)
         self.check_overlap()
-
-    # def flag_backsteps(self):
-    #     """
-    #     Look for backwards steps (from misordering in DiffuseTrack).
-    #     Make an attribute that flags them.
-    #
-    #     Backwards steps are marked by <0.5um step and >90 degree from previous
-    #     step direction.
-    #     """
-    #
-    #     self.dx = self.x[:, 1:] - self.x[:, :-1]
-    #     # step lengths
-    #     self.d = np.linalg.norm(self.dx, axis=0)
-    #     # step directions
-    #     self.stepdirs = self.normalize_steps(self.dx, d=self.d)
-    #
-    #     # cos(difference in direction): dot product.
-    #     # (1 = same direction, 0 = 90 degree turn, -1 = opposite direction)
-    #     ddir = np.sum(self.stepdirs[:, 1:] * self.stepdirs[:, :-1], axis=0)
-    #     # make it the same size as dx.
-    #     # ddir[i] is the difference between stepdirs[i-1] and stepdirs[i]
-    #     self.ddir = np.concatenate(([0], ddir))
-    #
-    #     self.dx_backward_flag = (self.d < BIG_STEP_UM / 2) & (self.ddir < 0)
 
     def flag_newparticle(self):
         """
@@ -84,157 +58,7 @@ class Classifier(object):
 
         self.dx_newparticle_flag = (self.d > BIG_STEP_UM * 1.5)
 
-    def reorder_backsteps(self, v=False):
-        """
-        Reorder positions and energies according to dx_backward_flag.
-        The before and after positions of the backstep need to be switched.
-        """
-
-        self.dx = self.x[:, 1:] - self.x[:, :-1]
-        # step lengths
-        self.d = np.linalg.norm(self.dx, axis=0)
-        # step directions
-        self.stepdirs = self.normalize_steps(self.dx, d=self.d)
-
-        # cos(difference in direction): dot product.
-        # (1 = same direction, 0 = 90 degree turn, -1 = opposite direction)
-        ddir = np.sum(self.stepdirs[:, 1:] * self.stepdirs[:, :-1], axis=0)
-        # make it the same size as dx.
-        # ddir[i] is the difference between stepdirs[i-1] and stepdirs[i]
-        self.ddir = np.concatenate(([0], ddir))
-        # print('before: ddir[:50] = ')
-        # print(self.ddir[:50])
-        self.x0 = np.copy(self.x)
-        self.dx0 = np.copy(self.dx)
-        self.d0 = np.copy(self.d)
-        self.stepdirs0 = np.copy(self.stepdirs)
-        self.ddir0 = np.copy(self.ddir)
-
-        #
-        strng1 = 'dir0:  '
-        strng2 = 'd0:    '
-        ddist = directional_distance(self.x)
-        for i in xrange(50):
-            if ddist[i] > 0:
-                strng1 += '+'
-            else:
-                strng1 += '-'
-            if self.d[i] < 0.49:
-                strng2 += '.'
-            elif self.d[i] < 0.5:
-                strng2 += '_'
-            elif self.d[i] < 0.99:
-                strng2 += '~'
-            elif self.d[i] < 1.0:
-                strng2 += '-'
-            elif self.d[i] < 1.48:
-                strng2 += '^'
-            elif self.d[i] < 1.5:
-                strng2 += '*'
-            else:
-                strng2 += '#'
-        print(strng1)
-        print(strng2)
-
-        # how long of a segment are we looking at?
-        numsteps = self.scatterlen_um / BIG_STEP_UM * 2
-
-        # only operate on the first particle
-        try:
-            new_particle_ind = np.nonzero(self.dx_newparticle_flag)[0][0]
-        except IndexError:
-            # no new particles flagged. just ignore
-            new_particle_ind = numsteps + 1
-        assert new_particle_ind > numsteps, "Particle track too short"
-
-        i = 1
-        self.stepinds = np.arange(numsteps + 1)
-        while i < numsteps and i < self.stepdirs.shape[1] - 1:
-            ddir = np.sum(self.stepdirs[:, i] * self.stepdirs[:, i + 1],
-                          axis=0)
-            ansi_reset = '\033[0m'
-            ansi_yellow = '\033[33m' + '\033[1m'
-
-            if ddir < -0.7:
-                strng = ('{}. dx[i]={}, dx[i+1]={}. d={:.2f}. ' +
-                         ansi_yellow + 'ddir={:.2f}' + ansi_reset)
-            else:
-                strng = '{}. dx[i]={}, dx[i+1]={}. d={:.2f}. ddir={:.2f}'
-            if v:
-                print(strng.format(
-                    i, self.dx[:, i], self.dx[:, i + 1], self.d[i], ddir))
-            if ddir < -0.99:
-                # backstep. swap entries
-                print('Swapping {} and {}'.format(i, i+1))
-                (self.x[:, i], self.x[:, i + 1]) = (
-                    np.copy(self.x[:, i + 1]),
-                    np.copy(self.x[:, i]))
-                (self.E[i], self.E[i + 1]) = (
-                    np.copy(self.E[i + 1]),
-                    np.copy(self.E[i]))
-                (self.stepinds[i], self.stepinds[i + 1]) = (
-                    np.copy(self.stepinds[i + 1]),
-                    np.copy(self.stepinds[i]))
-
-                # update dx and stepdirs
-                self.dx[:, i:(i + 2)] = (self.x[:, (i + 1):(i + 3)] -
-                                         self.x[:, i:(i + 2)])
-                self.d[i:(i + 2)] = np.linalg.norm(
-                    self.dx[:, i:(i + 2)], axis=0)
-                self.stepdirs[:, i:(i + 2)] = self.normalize_steps(
-                    self.dx[:, i:(i + 2)], d=self.d[i:(i + 2)])
-            i += 1
-
-        # self.flag_backsteps()
-        # self.flag_newparticle()
-
-        # repeat
-        self.dx = self.x[:, 1:] - self.x[:, :-1]
-        # step lengths
-        self.d = np.linalg.norm(self.dx, axis=0)
-        # step directions
-        self.stepdirs = self.normalize_steps(self.dx, d=self.d)
-
-        # cos(difference in direction): dot product.
-        # (1 = same direction, 0 = 90 degree turn, -1 = opposite direction)
-        ddir = np.sum(self.stepdirs[:, 1:] * self.stepdirs[:, :-1], axis=0)
-        # make it the same size as dx.
-        # ddir[i] is the difference between stepdirs[i-1] and stepdirs[i]
-        self.ddir = np.concatenate(([0], ddir))
-
-        #
-        strng1 = 'dir1:  '
-        strng2 = 'd1:    '
-        ddist = directional_distance(self.x)
-        for i in xrange(50):
-            if ddist[i] > 0:
-                strng1 += '+'
-            else:
-                strng1 += '-'
-            if self.d[i] < 0.49:
-                strng2 += '.'
-            elif self.d[i] < 0.5:
-                strng2 += '_'
-            elif self.d[i] < 0.99:
-                strng2 += '~'
-            elif self.d[i] < 1.0:
-                strng2 += '-'
-            elif self.d[i] < 1.48:
-                strng2 += '^'
-            elif self.d[i] < 1.5:
-                strng2 += '*'
-            else:
-                strng2 += '#'
-        print()
-        print(strng1)
-        print(strng2)
-
-        # print('after: ddir[:50] = ')
-        # print(self.ddir[:50])
-
-        self.numsteps = numsteps
-
-    def check_early_scatter(self):
+    def check_early_scatter(self, v=False):
         """
         look for a >90 degree direction change within the first scatterlen_um
         of track.
@@ -242,10 +66,19 @@ class Classifier(object):
         track should already be fixed using reorder_backsteps().
         """
 
-        self.early_scatter = np.any(self.ddir[:self.numsteps] < 0)
+        angle_threshold_deg = 90
+        angle_threshold_rad = angle_threshold_deg / 180 * np.pi
+        angle_threshold_cos = np.cos(angle_threshold_rad)
 
-        verbose = False
-        if self.early_scatter and verbose:
+        self.scatterlen_steps = np.round(self.scatterlen_um / BIG_STEP_UM * 2)
+        self.x2 = self.x[:,:self.scatterlen_steps:2]
+        self.dx2 = self.x2[:, 1:] - self.x2[:, :-1]
+        self.dx2norm = self.normalize_steps(self.dx2)
+        self.ddir2 = np.sum(self.dx2norm[:, 1:] * self.dx2norm[:, :-1], axis=0)
+
+        self.early_scatter = np.any(self.ddir2 < angle_threshold_cos)
+
+        if self.early_scatter and v:
             print('Early scatter!')
 
     def check_overlap(self):
@@ -316,17 +149,3 @@ class Classifier(object):
         round to nearest half-big-step (nearest 0.5 um)
         """
         return np.round(d / (BIG_STEP_UM / 2)) * (BIG_STEP_UM / 2)
-
-
-def directional_distance(x):
-    """
-    Get the distance of each step, but with a sign corresponding to direction.
-    """
-    dx = x[:, 1:] - x[:, :-1]
-    d = np.linalg.norm(dx, axis=0)
-    stepdirs = dx / d
-    v0 = stepdirs[:, 0:1]
-    dirsign = np.sign(np.sum(stepdirs * v0, axis=0))
-
-    ddist = dirsign * d
-    return ddist
