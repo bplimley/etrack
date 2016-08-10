@@ -1,10 +1,11 @@
 # classify a g4track
 
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
-from etrack.reconstruction.trackdata import Track, G4Track
-import etrack.reconstruction.evaluation as ev
+from etrack.reconstruction.trackdata import G4Track
+# import etrack.reconstruction.evaluation as ev
+from etrack.visualization.trackplot import get_image_xy
 
 BIG_STEP_UM = 1.0   # micron
 
@@ -45,6 +46,32 @@ class Classifier(object):
         self.check_early_scatter(v=verbose)
         self.check_overlap()
 
+    def check_end(self, track, mom=None, HT=None, maxdist=3):
+        """
+        See if the algorithm's end segment was correct or not.
+        """
+
+        if mom is None and HT is None:
+            raise ValueError(
+                'Requires either a moments object or a HybridTrack object')
+
+        g4xfull, g4yfull = get_image_xy(track)
+        g4x, g4y = g4xfull[0], g4yfull[0]
+
+        # could throw an AttributeError if there were errors in the algorithm
+        if mom:
+            algx, algy = mom.start_coordinates
+        elif HT:
+            algx, algy = HT.start_coordinates
+        else:
+            raise ValueError('bad value in moments or HybridTrack object')
+
+        dist = np.sqrt((algx - g4x)**2 + (algy - g4y)**2)
+        if dist > maxdist:
+            self.wrong_end = True
+        else:
+            self.wrong_end = False
+
     def flag_newparticle(self):
         """
         Look for particle transitions - jumping to a new electron ID in Geant4.
@@ -58,25 +85,37 @@ class Classifier(object):
 
         self.dx_newparticle_flag = (self.d > BIG_STEP_UM * 1.5)
 
-    def check_early_scatter(self, v=False):
+    def check_early_scatter(self, v=False, scatter_type='total',
+                            angle_threshold_deg=30):
         """
         look for a >90 degree direction change within the first scatterlen_um
         of track.
 
-        track should already be fixed using reorder_backsteps().
+        v: verbosity (True: print "Early scatter!")
+        scatter_type:
+          'total': compare direction at end of segment, to beginning of segment
+          'discrete': look for a single scattering of more than angle
+        angle_threshold_deg: threshold angle. scattering through more than
+          this angle is flagged.
         """
 
-        angle_threshold_deg = 90
-        angle_threshold_rad = angle_threshold_deg / 180 * np.pi
+        angle_threshold_rad = np.float(angle_threshold_deg) / 180 * np.pi
         angle_threshold_cos = np.cos(angle_threshold_rad)
 
         self.scatterlen_steps = np.round(self.scatterlen_um / BIG_STEP_UM * 2)
-        self.x2 = self.x[:,:self.scatterlen_steps:2]
+        self.x2 = self.x[:, :self.scatterlen_steps:2]
         self.dx2 = self.x2[:, 1:] - self.x2[:, :-1]
         self.dx2norm = self.normalize_steps(self.dx2)
         self.ddir2 = np.sum(self.dx2norm[:, 1:] * self.dx2norm[:, :-1], axis=0)
 
-        self.early_scatter = np.any(self.ddir2 < angle_threshold_cos)
+        if scatter_type.lower() == 'total':
+            ddir = np.sum(self.dx2norm[:, 0] * self.dx2norm[:, -1])
+            self.early_scatter = (ddir < angle_threshold_cos)
+        elif scatter_type.lower() == 'discrete':
+            self.early_scatter = np.any(self.ddir2 < angle_threshold_cos)
+        else:
+            raise ValueError(
+                'scatter_type {} not recognized!'.format(scatter_type))
 
         if self.early_scatter and v:
             print('Early scatter!')
@@ -93,8 +132,10 @@ class Classifier(object):
         # distance matrix: distance of all points from each of the first 50
 
         # arrays of dimensions (self.x.shape[1], self.numsteps)
-        all_x, init_x = np.meshgrid(self.x[0, :self.numsteps], self.x[0, :])
-        all_y, init_y = np.meshgrid(self.x[1, :self.numsteps], self.x[1, :])
+        all_x, init_x = np.meshgrid(
+            self.x[0, :self.scatterlen_steps], self.x[0, :])
+        all_y, init_y = np.meshgrid(
+            self.x[1, :self.scatterlen_steps], self.x[1, :])
 
         dist_matrix = (all_x - init_x)**2 + (all_y - init_y)**2
         dist_vector = np.min(dist_matrix, axis=1)
