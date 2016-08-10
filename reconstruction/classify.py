@@ -144,9 +144,7 @@ class Classifier(object):
                     self.dx[:, i:(i + 2)], axis=0)
                 self.stepdirs[:, i:(i + 2)] = self.normalize_steps(
                     self.dx[:, i:(i + 2)], d=self.d[i:(i + 2)])
-                i += 2
-            else:
-                i += 1
+            i += 1
 
         # self.flag_backsteps()
         # self.flag_newparticle()
