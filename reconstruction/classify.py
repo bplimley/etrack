@@ -104,6 +104,10 @@ class Classifier(object):
         self.ddir = np.concatenate(([0], ddir))
         # print('before: ddir[:50] = ')
         # print(self.ddir[:50])
+        self.dx0 = np.copy(self.dx)
+        self.d0 = np.copy(self.d)
+        self.stepdirs0 = np.copy(self.stepdirs)
+        self.ddir0 = np.copy(self.ddir)
 
         # how long of a segment are we looking at?
         numsteps = self.scatterlen_um / BIG_STEP_UM * 2
@@ -132,6 +136,14 @@ class Classifier(object):
                 (self.stepinds[i], self.stepinds[i + 1]) = (
                     np.copy(self.stepinds[i + 1]),
                     np.copy(self.stepinds[i]))
+
+                # update dx and stepdirs
+                self.dx[:, i:(i + 2)] = (self.x[:, (i + 1):(i + 3)] -
+                                         self.x[:, i:(i + 2)])
+                self.d[i:(i + 2)] = np.linalg.norm(
+                    self.dx[:, i:(i + 2)], axis=0)
+                self.stepdirs[:, i:(i + 2)] = self.normalize_steps(
+                    self.dx[:, i:(i + 2)], d=self.d[i:(i + 2)])
                 i += 2
             else:
                 i += 1
@@ -155,7 +167,6 @@ class Classifier(object):
 
         # print('after: ddir[:50] = ')
         # print(self.ddir[:50])
-
 
         self.numsteps = numsteps
 
