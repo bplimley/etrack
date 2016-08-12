@@ -24,7 +24,7 @@ import etrack.reconstruction.evaluation as ev
 import etrack.visualization.trackplot as tp
 
 
-def tracks_for_don(momlist, tracklist):
+def tracks_for_don(momlist, tracklist, classifierlist):
     """
     Moment reconstruction evaluation set for Don Gunter. 6/23/2016.
 
@@ -34,30 +34,38 @@ def tracks_for_don(momlist, tracklist):
     """
 
     nmax = 1000
-    savedir = '/media/plimley/TEAM 7B/tracks_for_Don_4/'
+    savedir = '/media/plimley/TEAM 7B/tracks_for_Don_5/'
     csv_name = 'parameters.csv'
 
-    make_figures = False
+    make_figures = True
 
     if make_figures:
         # figure images
         print('Making {} figures at {}...'.format(nmax, dt.now()))
         for i in xrange(nmax):
             titlestr = '{}'.format(i)
-            if momlist[i] is None:
-                titlestr += ' [Failed edge check!]'
-            elif np.isnan(momlist[i].rotation_angle):
-                titlestr += ' [Failed edge check!]'
-            elif np.isnan(momlist[i].R):
-                titlestr += ' [bad radius calculation]'
-            if momlist[i].edge_pixel_segments > 1:
-                titlestr += ' [Warning: edge segments > 1]'
-            if momlist[i].edge_pixel_count > 4:
-                titlestr += ' [Warning: edge pixels > 4]'
-            if momlist[i].end_energy > 25:
-                titlestr += ' [Warning: end energy > 25keV]'
-            if momlist[i].phi > 1:
-                titlestr += ' [Warning: phi > 1 rad]'
+            if np.abs(classifierlist[i].g4track.beta_deg) > 60:
+                titlestr += ' [Beta > 60deg]'
+            if classifierlist[i].early_scatter:
+                titlestr += ' [Early scatter 30deg in 25um]'
+            if classifierlist[i].overlap:
+                titlestr += ' [Overlapping]'
+            if classifierlist[i].wrong_end:
+                titlestr += ' [Wrong end]'
+            # if momlist[i] is None:
+            #     titlestr += ' [Failed edge check!]'
+            # elif np.isnan(momlist[i].rotation_angle):
+            #     titlestr += ' [Failed edge check!]'
+            # elif np.isnan(momlist[i].R):
+            #     titlestr += ' [bad radius calculation]'
+            # if momlist[i].edge_pixel_segments > 1:
+            #     titlestr += ' [Warning: edge segments > 1]'
+            # if momlist[i].edge_pixel_count > 4:
+            #     titlestr += ' [Warning: edge pixels > 4]'
+            # if momlist[i].end_energy > 25:
+            #     titlestr += ' [Warning: end energy > 25keV]'
+            # if momlist[i].phi > 1:
+            #     titlestr += ' [Warning: phi > 1 rad]'
 
             f = tp.plot_moments_track(momlist[i], tracklist[i], title='')
             f.suptitle(titlestr)
@@ -80,6 +88,10 @@ def tracks_for_don(momlist, tracklist):
     while np.any(da < -180):
         da[da < -180] += 360
     params['delta_alpha_deg'] = da
+    params['early_scatter'] = [
+        c.early_scatter + 0 for c in classifierlist[:nmax]]
+    params['overlap'] = [c.overlap + 0 for c in classifierlist[:nmax]]
+    params['wrong_end'] = [c.wrong_end + 0 for c in classifierlist[:nmax]]
     params['edge_pixel_count'] = np.array(
         [m.edge_pixel_count for m in momlist[:nmax]])
     params['edge_pixel_segments'] = np.array(
