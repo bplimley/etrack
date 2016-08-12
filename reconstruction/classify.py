@@ -89,6 +89,7 @@ class Classifier(object):
         self.dx_newparticle_flag = (self.d > BIG_STEP_UM * 1.5)
 
     def check_early_scatter(self, v=False, scatter_type='total',
+                            use2d_angle=True, use2d_dist=True,
                             angle_threshold_deg=30):
         """
         look for a >90 degree direction change within the first scatterlen_um
@@ -100,22 +101,50 @@ class Classifier(object):
           'discrete': look for a single scattering of more than angle
         angle_threshold_deg: threshold angle. scattering through more than
           this angle is flagged.
+        use2d_angle: flag for looking at the scatter angle in the 2D plane
+        use2d_dist: flag for measuring scatterlen along the track projection
         """
 
         angle_threshold_rad = np.float(angle_threshold_deg) / 180 * np.pi
         angle_threshold_cos = np.cos(angle_threshold_rad)
 
-        self.scatterlen_steps = np.round(self.scatterlen_um / BIG_STEP_UM * 2)
-        self.x2 = self.x[:, :self.scatterlen_steps:2]
+        # use only every other point, so as to bypass the zigzag issue.
+        self.x2 = self.x[:, ::2]
         self.dx2 = self.x2[:, 1:] - self.x2[:, :-1]
+
+        # integrate the path length, either in 2D or 3D, to determine cutoff
+        #   for scatterlen
+        if use2d_dist:
+            self.d2_2d = np.linalg.norm(self.dx2[:2, :], axis=0)
+            integrated_dist = np.cumsum(self.d2_2d)
+        else:
+            self.d2 = np.linalg.norm(self.dx2, axis=0)
+            integrated_dist = np.cumsum(self.d2)
+        ind2 = np.nonzero(integrated_dist >= self.scatterlen_um)[0][0] - 1
+
+        self.x2 = self.x2[:ind2]
+        self.dx2 = self.dx2[:ind2]
+
         self.dx2norm = self.normalize_steps(self.dx2)
-        self.ddir2 = np.sum(self.dx2norm[:, 1:] * self.dx2norm[:, :-1], axis=0)
+        self.ddir2 = np.sum(
+            self.dx2norm[:, 1:] * self.dx2norm[:, :-1], axis=0)
+
+        self.dx2norm_2d = self.dx2[:2, :] / np.linalg.norm(
+            self.dx2[:2, :], axis=0)
+        self.ddir2_2d = np.sum(
+            self.dx2norm_2d[:, 1:] * self.dx2norm_2d[:, :-1], axis=0)
 
         if scatter_type.lower() == 'total':
-            ddir = np.sum(self.dx2norm[:, 0] * self.dx2norm[:, -1])
+            if use2d_angle:
+                ddir = np.sum(self.dx2norm_2d[:, 0] * self.dx2norm_2d[:, -1])
+            else:
+                ddir = np.sum(self.dx2norm[:, 0] * self.dx2norm[:, -1])
             self.early_scatter = (ddir < angle_threshold_cos)
         elif scatter_type.lower() == 'discrete':
-            self.early_scatter = np.any(self.ddir2 < angle_threshold_cos)
+            if use2d_angle:
+                self.early_scatter = np.any(self.ddir2 < angle_threshold_cos)
+            else:
+                self.early_scatter = np.any(self.ddir2 < angle_threshold_cos)
         else:
             raise ValueError(
                 'scatter_type {} not recognized!'.format(scatter_type))
@@ -130,6 +159,7 @@ class Classifier(object):
         """
 
         self.overlap = False    # until shown otherwise
+        self.scatterlen_steps = self.scatterlen_um / BIG_STEP_UM * 2
 
         # see which points are within overlapdist_um of these points
         # distance matrix: distance of all points from each of the first 50
