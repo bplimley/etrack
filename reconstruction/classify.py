@@ -109,37 +109,53 @@ class Classifier(object):
         angle_threshold_cos = np.cos(angle_threshold_rad)
 
         # use only every other point, so as to bypass the zigzag issue.
+        # x2: positions (every other point)
         self.x2 = self.x[:, ::2]
+        # dx2: delta-position between each entry in x2
         self.dx2 = self.x2[:, 1:] - self.x2[:, :-1]
 
         # integrate the path length, either in 2D or 3D, to determine cutoff
         #   for scatterlen
+        # d2: dx2 integrated to get path length
+        # d2_2d: dx2 integrated to get path length, in 2D
         if use2d_dist:
             self.d2_2d = np.linalg.norm(self.dx2[:2, :], axis=0)
             integrated_dist = np.cumsum(self.d2_2d)
         else:
             self.d2 = np.linalg.norm(self.dx2, axis=0)
             integrated_dist = np.cumsum(self.d2)
+        # ind2: the index where path length (2D or 3D) exceeds scatterlen
         ind2 = np.nonzero(integrated_dist >= self.scatterlen_um)[0][0] - 1
 
+        # trim x2 and dx2
         self.x2 = self.x2[:ind2]
         self.dx2 = self.dx2[:ind2]
 
+        # dx2norm: unit vectors of dx2
         self.dx2norm = self.normalize_steps(self.dx2)
+        # ddir2: dot product of consecutive dx2norm's. =cos(theta)
         self.ddir2 = np.sum(
             self.dx2norm[:, 1:] * self.dx2norm[:, :-1], axis=0)
 
+        # dx2norm_2d: 2D unit vectors of dx2
         self.dx2norm_2d = self.dx2[:2, :] / np.linalg.norm(
             self.dx2[:2, :], axis=0)
+        # ddir2_2d: dot product of consecutive dx2norm_2d's. =cos(theta)
         self.ddir2_2d = np.sum(
             self.dx2norm_2d[:, 1:] * self.dx2norm_2d[:, :-1], axis=0)
 
+        # for discrete scatters, look for large angles in dx2norm or dx2norm_2d
+        # for total scatter angle, dot the unit vector with the initial
+        #   direction
         if scatter_type.lower() == 'total':
+            # ddir: the unit vector at each step,
+            #   dotted with the initial unit vector, to get angle of deviation
             if use2d_angle:
                 ddir = np.sum(self.dx2norm_2d[:, 0] * self.dx2norm_2d[:, -1])
             else:
                 ddir = np.sum(self.dx2norm[:, 0] * self.dx2norm[:, -1])
             self.early_scatter = (ddir < angle_threshold_cos)
+            self.total_scatter_angle = np.arccos(ddir)
         elif scatter_type.lower() == 'discrete':
             if use2d_angle:
                 self.early_scatter = np.any(self.ddir2 < angle_threshold_cos)
