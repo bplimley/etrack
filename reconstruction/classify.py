@@ -125,6 +125,7 @@ class Classifier(object):
             self.d2 = np.linalg.norm(self.dx2, axis=0)
             integrated_dist = np.cumsum(self.d2)
         # ind2: the index where path length (2D or 3D) exceeds scatterlen
+        # short tracks raise an IndexError here
         ind2 = np.nonzero(integrated_dist >= self.scatterlen_um)[0][0] - 1
 
         # trim x2 and dx2

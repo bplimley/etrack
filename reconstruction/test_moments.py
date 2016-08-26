@@ -21,6 +21,7 @@ from etrack.reconstruction.trackdata import Track
 import etrack.io.trackio as trackio
 import etrack.reconstruction.trackmoments as tm
 import etrack.reconstruction.evaluation as ev
+from etrack.reconstruction.classify import Classifier
 import etrack.visualization.trackplot as tp
 
 
@@ -43,7 +44,10 @@ def tracks_for_don(momlist, tracklist, classifierlist):
         # figure images
         print('Making {} figures at {}...'.format(nmax, dt.now()))
         for i in xrange(nmax):
-            titlestr = '{}'.format(i)
+            titlestr = '{}, b={}, angle={}'.format(
+                i,
+                classifierlist[i].g4track.beta_deg,
+                classifierlist[i].total_scatter_angle * 180 / np.pi)
             if np.abs(classifierlist[i].g4track.beta_deg) > 60:
                 titlestr += ' [Beta > 60deg]'
             if classifierlist[i].early_scatter:
@@ -290,6 +294,27 @@ def moments_from_momentlist(momentlist):
     moment_vars = (first_moments, central_moments, rotated_moments,
                    R, phi, arclength, pr3a, pr3b, z, E, end_energy)
     return moment_vars
+
+
+def classifierlist_from_tracklist(tracklist, momlist, classify=True):
+    """
+    Make a list of Classifier objects from a tracklist and momentslist.
+
+    The momentslist is for checking the end.
+
+    classify=True: perform the classification. (default)
+    classify=False: create the objects but do not classify.
+    """
+
+    classifierlist = [Classifier(t.g4track) for t in tracklist]
+
+    if classify:
+        for i, c in enumerate(classifierlist):
+            c.classify()
+            if momlist is not None:
+                c.check_end(tracklist[i], momlist[i])
+
+    return classifierlist
 
 
 def plot_track_arc(track, debug=False, end_segment=False, box=False,
@@ -1314,6 +1339,25 @@ def add_result(track, mom, algname='moments'):
 
     track.add_algorithm(algname, mom.alpha * 180.0 / np.pi, np.nan)
 
+
+def main7():
+    """
+    Start from scratch and build a test dataset.
+    """
+
+    tracks_nofilter = get_tracklist(n_files=8)  # 8 files: 6705 tracks
+    tracks_300 = get_tracklist(n_files=8)     # 8 files: 1786 tracks >300keV
+
+    mom_nofilter = momentlist_from_tracklist(tracks_nofilter)
+    mom_300 = momentlist_from_tracklist(tracks_300)
+
+    clist_nofilter = classifierlist_from_tracklist(
+        tracks_nofilter, mom_nofilter)
+    clist_300 = classifierlist_from_tracklist(tracks_300, mom_300)
+
+    return (tracks_nofilter, tracks_300,
+            mom_nofilter, mom_300,
+            clist_nofilter, clist_300)
 
 if __name__ == '__main__':
     main2()
