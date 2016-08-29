@@ -24,7 +24,7 @@ class Classifier(object):
 
         self.E = np.copy(g4track.dE.flatten())
 
-    def classify(self, scatterlen_um=25, overlapdist_um=40, verbose=False):
+    def mc_classify(self, scatterlen_um=25, overlapdist_um=40, verbose=False):
         """
         Classify the Monte Carlo track as either:
           'good',
@@ -41,12 +41,37 @@ class Classifier(object):
         self.scatterlen_um = scatterlen_um
         self.overlapdist_um = overlapdist_um
 
+        self.check_escape()
+
         self.flag_newparticle()
 
         self.check_early_scatter(v=verbose)
         self.check_overlap()
 
-    def check_end(self, track, mom=None, HT=None, maxdist=3):
+    def end_classify(self, track, mom=None, HT=None):
+        """
+        Look at the end segment selection algorithm results, and classify.
+        """
+
+        self.get_end_info(track, mom=mom, HT=HT)
+        self.check_wrong_end(track, mom=mom, HT=HT)
+
+    def get_end_info(self, track, mom=None, HT=None):
+        """
+        Record number of ends, minimum end energy (this is the chosen end),
+        maximum end energy (may indicate escape).
+        """
+
+        if mom is not None:
+            ends_energy = mom.info.ends_energy
+        elif HT is not None:
+            ends_energy = HT.info.ends_energy
+
+        self.n_ends = len(ends_energy)
+        self.max_end_energy = np.max(ends_energy)
+        self.min_end_energy = np.min(ends_energy)
+
+    def check_wrong_end(self, track, mom=None, HT=None, maxdist=3):
         """
         See if the algorithm's end segment was correct or not.
         """
@@ -67,6 +92,7 @@ class Classifier(object):
             raise ValueError('bad value in moments or HybridTrack object')
 
         dist = np.sqrt((algx - g4x)**2 + (algy - g4y)**2)
+        self.end_distance = dist
         if dist > maxdist:
             self.wrong_end = True
         else:
@@ -74,6 +100,16 @@ class Classifier(object):
 
         self.g4xy = g4x, g4y
         self.algxy = algx, algy
+
+    def check_escape(self):
+        """
+        Check the Etot and Edep to see if track escaped. (>2 keV difference)
+        Unfortunately the g4track.is_contained flag is None in this dataset.
+        """
+
+        energy_diff_kev = (
+            self.g4track.energy_tot_kev - self.g4track.energy_dep_kev)
+        self.escaped = (energy_diff_kev > 2.0)
 
     def flag_newparticle(self):
         """

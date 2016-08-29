@@ -316,9 +316,9 @@ def classifierlist_from_tracklist(tracklist, momlist, classify=True):
 
     if classify:
         for i, c in enumerate(classifierlist):
-            c.classify()
+            c.mc_classify()
             if momlist is not None:
-                c.check_end(tracklist[i], momlist[i])
+                c.end_classify(tracklist[i], mom=momlist[i])
 
     return classifierlist
 
