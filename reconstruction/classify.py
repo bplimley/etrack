@@ -129,8 +129,8 @@ class Classifier(object):
         ind2 = np.nonzero(integrated_dist >= self.scatterlen_um)[0][0] - 1
 
         # trim x2 and dx2
-        self.x2 = self.x2[:ind2]
-        self.dx2 = self.dx2[:ind2]
+        self.x2 = self.x2[:, :ind2]
+        self.dx2 = self.dx2[:, :ind2]
 
         # dx2norm: unit vectors of dx2
         self.dx2norm = self.normalize_steps(self.dx2)
@@ -151,12 +151,17 @@ class Classifier(object):
         if scatter_type.lower() == 'total':
             # ddir: the unit vector at each step,
             #   dotted with the initial unit vector, to get angle of deviation
+            # take the maximum from along scatterlen
             if use2d_angle:
-                ddir = np.sum(self.dx2norm_2d[:, 0] * self.dx2norm_2d[:, -1])
+                ddir = np.array([
+                    np.sum(self.dx2norm_2d[:, 0] * self.dx2norm_2d[:, i])
+                    for i in xrange(1, self.dx2norm_2d.shape[1])])
             else:
-                ddir = np.sum(self.dx2norm[:, 0] * self.dx2norm[:, -1])
-            self.early_scatter = (ddir < angle_threshold_cos)
-            self.total_scatter_angle = np.arccos(ddir)
+                ddir = np.array([
+                    np.sum(self.dx2norm[:, 0] * self.dx2norm[:, i])
+                    for i in xrange(1, self.dx2norm.shape[1])])
+            self.early_scatter = (np.min(ddir) < angle_threshold_cos)
+            self.total_scatter_angle = np.arccos(np.min(ddir))
         elif scatter_type.lower() == 'discrete':
             if use2d_angle:
                 self.early_scatter = np.any(self.ddir2 < angle_threshold_cos)
