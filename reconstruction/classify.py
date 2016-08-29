@@ -162,7 +162,10 @@ class Classifier(object):
             integrated_dist = np.cumsum(self.d2)
         # ind2: the index where path length (2D or 3D) exceeds scatterlen
         # short tracks raise an IndexError here
-        ind2 = np.nonzero(integrated_dist >= self.scatterlen_um)[0][0] - 1
+        try:
+            ind2 = np.nonzero(integrated_dist >= self.scatterlen_um)[0][0] - 1
+        except IndexError:
+            raise TrackTooShortError()
 
         # trim x2 and dx2
         self.x2 = self.x2[:, :ind2]
@@ -281,3 +284,7 @@ class Classifier(object):
         round to nearest half-big-step (nearest 0.5 um)
         """
         return np.round(d / (BIG_STEP_UM / 2)) * (BIG_STEP_UM / 2)
+
+
+class TrackTooShortError(Exception):
+    pass
