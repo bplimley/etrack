@@ -21,8 +21,10 @@ from etrack.reconstruction.trackdata import Track
 import etrack.io.trackio as trackio
 import etrack.reconstruction.trackmoments as tm
 import etrack.reconstruction.evaluation as ev
-from etrack.reconstruction.classify import Classifier
+import etrack.reconstruction.classify as cl
 import etrack.visualization.trackplot as tp
+
+DEG = '$^\circ$'
 
 
 def tracks_for_don(momlist, tracklist, classifierlist):
@@ -38,20 +40,21 @@ def tracks_for_don(momlist, tracklist, classifierlist):
     savedir = '/media/plimley/TEAM 7B/tracks_for_Don_5/'
     csv_name = 'parameters.csv'
 
-    make_figures = True
+    make_figures = False
 
     if make_figures:
         # figure images
         print('Making {} figures at {}...'.format(nmax, dt.now()))
         for i in xrange(nmax):
-            titlestr = '{}, b={}, angle={}'.format(
+            titlestr = '{}, b={:.0f}{deg}, angle={:.1f}{deg}'.format(
                 i,
                 classifierlist[i].g4track.beta_deg,
-                classifierlist[i].total_scatter_angle * 180 / np.pi)
+                classifierlist[i].total_scatter_angle * 180 / np.pi,
+                deg=DEG)
             if np.abs(classifierlist[i].g4track.beta_deg) > 60:
-                titlestr += ' [Beta > 60deg]'
+                titlestr += ' [Beta > 60{}]'.format(DEG)
             if classifierlist[i].early_scatter:
-                titlestr += ' [Early scatter 30deg in 25um]'
+                titlestr += ' [Early scatter in 25um]'
             if classifierlist[i].overlap:
                 titlestr += ' [Overlapping]'
             if classifierlist[i].wrong_end:
@@ -84,6 +87,7 @@ def tracks_for_don(momlist, tracklist, classifierlist):
     params = collections.OrderedDict()
     params['id'] = ['{0:03d}'.format(i) for i in xrange(nmax)]
     params['E'] = np.array([t.energy_kev for t in tracklist[:nmax]])
+    params['beta'] = [c.g4track.beta_deg for c in classifierlist[:nmax]]
     da = np.array(
         [momlist[i].alpha * 180 / np.pi - tracklist[i].g4track.alpha_deg
          for i in xrange(nmax)])
@@ -94,6 +98,8 @@ def tracks_for_don(momlist, tracklist, classifierlist):
     params['delta_alpha_deg'] = da
     params['early_scatter'] = [
         c.early_scatter + 0 for c in classifierlist[:nmax]]
+    params['scatter_angle'] = [
+        c.total_scatter_angle * 180 / np.pi for c in classifierlist[:nmax]]
     params['overlap'] = [c.overlap + 0 for c in classifierlist[:nmax]]
     params['wrong_end'] = [c.wrong_end + 0 for c in classifierlist[:nmax]]
     params['edge_pixel_count'] = np.array(
@@ -306,7 +312,7 @@ def classifierlist_from_tracklist(tracklist, momlist, classify=True):
     classify=False: create the objects but do not classify.
     """
 
-    classifierlist = [Classifier(t.g4track) for t in tracklist]
+    classifierlist = [cl.Classifier(t.g4track) for t in tracklist]
 
     if classify:
         for i, c in enumerate(classifierlist):
