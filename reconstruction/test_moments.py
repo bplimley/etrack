@@ -316,9 +316,15 @@ def classifierlist_from_tracklist(tracklist, momlist, classify=True):
 
     if classify:
         for i, c in enumerate(classifierlist):
-            c.mc_classify()
-            if momlist is not None:
-                c.end_classify(tracklist[i], mom=momlist[i])
+            try:
+                c.mc_classify()
+            except cl.TrackTooShortError:
+                c.error = 'TrackTooShortError'
+            except cl.tp.G4TrackTooBigError:
+                c.error = 'G4TrackTooBigError'
+            else:
+                if momlist is not None:
+                    c.end_classify(tracklist[i], mom=momlist[i])
 
     return classifierlist
 

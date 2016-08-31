@@ -5,7 +5,7 @@ import numpy as np
 
 from etrack.reconstruction.trackdata import G4Track
 # import etrack.reconstruction.evaluation as ev
-from etrack.visualization.trackplot import get_image_xy
+import etrack.visualization.trackplot as tp
 
 BIG_STEP_UM = 1.0   # micron
 
@@ -80,7 +80,7 @@ class Classifier(object):
             raise ValueError(
                 'Requires either a moments object or a HybridTrack object')
 
-        g4xfull, g4yfull = get_image_xy(track)
+        g4xfull, g4yfull = tp.get_image_xy(track)
         g4x, g4y = g4xfull[0], g4yfull[0]
 
         # could throw an AttributeError if there were errors in the algorithm

@@ -346,7 +346,7 @@ def get_image_xy(track):
     g4size = np.array([np.max(g4x_pix[0, :]) - np.min(g4x_pix[0, :]),
                        np.max(g4x_pix[1, :]) - np.min(g4x_pix[1, :])])
     if g4size[0] > img.shape[0] or g4size[1] > img.shape[1]:
-        raise RuntimeError('G4Track too big')
+        raise G4TrackTooBigError()
 
     xoff2, yoff2 = find_g4_offsets(g4x_pix, img)
 
@@ -547,6 +547,10 @@ def get_colormap():
     cmap_hot_log = matplotlib.colors.LinearSegmentedColormap('hotlog', cdict)
 
     return cmap_hot_log
+
+
+class G4TrackTooBigError(Exception):
+    pass
 
 
 if False:
