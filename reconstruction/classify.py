@@ -4,6 +4,8 @@ import numpy as np
 # import matplotlib.pyplot as plt
 
 from etrack.reconstruction.trackdata import G4Track
+import etrack.io.dataformats as df
+import etrack.io.trackio as trackio
 # import etrack.reconstruction.evaluation as ev
 import etrack.visualization.trackplot as tp
 
@@ -15,14 +17,75 @@ class Classifier(object):
     Object to handle auto classifying (ground truth) a Monte Carlo track
     """
 
-    def __init__(self, g4track):
-        assert isinstance(g4track, G4Track), "Not a G4Track object"
+    class_name = 'Classifier'
+    data_format = df.get_format(class_name)
+
+    def __init__(self, g4track, suppress_check=False):
+        if not suppress_check:
+            assert isinstance(g4track, G4Track), "Not a G4Track object"
         self.g4track = g4track
 
         assert g4track.x.shape[0] == 3, "x has funny shape"
         self.x = np.copy(g4track.x)
 
         self.E = np.copy(g4track.dE.flatten())
+
+    @classmethod
+    def from_hdf5(cls, h5group, h5_to_pydict=None, pydict_to_pyobj=None,
+                  reconstruct=False):
+        """
+        Initialize a Classifier object from an HDF5 group.
+        """
+
+        if h5_to_pydict is None:
+            h5_to_pydict = {}
+        if pydict_to_pyobj is None:
+            pydict_to_pyobj = {}
+
+        read_dict = trackio.read_object_from_hdf5(
+            h5group, h5_to_pydict=h5_to_pydict)
+
+        constructed_object = cls.from_pydict(
+            read_dict, pydict_to_pyobj=pydict_to_pyobj,
+            reconstruct=reconstruct)
+
+        return constructed_object
+
+    @classmethod
+    def from_pydict(cls, read_dict, pydict_to_pyobj=None, reconstruct=False):
+        """
+        Initialize a Classifier object from a pydict.
+        """
+
+        if pydict_to_pyobj is None:
+            pydict_to_pyobj = {}
+
+        if id(read_dict) in pydict_to_pyobj:
+            return pydict_to_pyobj[id(read_dict)]
+
+        constructed_object = cls(read_dict['g4track'], suppress_check=True)
+
+        # add entry to pydict_to_pyobj
+        pydict_to_pyobj[id(read_dict)] = constructed_object
+
+        # reconstruct the g4track
+        if isinstance(constructed_object.g4track, G4Track):
+            continue
+        elif isinstance(constructed_object.g4track, dict):
+            constructed_object.g4track = G4Track.from_pydict(
+                constructed_object.g4track,
+                pydict_to_pyobj=pydict_to_pyobj)
+        else:
+            raise Exception("Unexpected or missing 'g4track' in Classifier")
+
+        constructed_object.x = np.copy(constructed_object.g4track.x)
+        constructed_object.E = np.copy(constructed_object.g4Track.dE.flatten())
+        if reconstruct:
+            constructed_object.mc_classify()
+            print(
+                'Reconstructing Classifier.end_classify() not implemented yet')
+
+        return constructed_object
 
     def mc_classify(self, scatterlen_um=25, overlapdist_um=40, verbose=False):
         """
@@ -143,6 +206,8 @@ class Classifier(object):
 
         angle_threshold_rad = np.float(angle_threshold_deg) / 180 * np.pi
         angle_threshold_cos = np.cos(angle_threshold_rad)
+
+        self.scatter_type=scatter_type
 
         # use only every other point, so as to bypass the zigzag issue.
         # x2: positions (every other point)

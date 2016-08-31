@@ -158,6 +158,22 @@ def get_format(class_name):
             ClassAttr('measurement_end_ind', int),
         )
 
+    elif class_name == 'Classifier':
+        data_format = (
+            ClassAttr('g4track', 'G4Track', is_user_object=True),
+            ClassAttr('scatterlen_um', float, may_be_none=True),
+            ClassAttr('overlapdist_um', float, may_be_none=True),
+            ClassAttr('scatter_type', str, may_be_none=True),
+            ClassAttr('use2d_angle', bool, may_be_none=True),
+            ClassAttr('use2d_dist', bool, may_be_none=True),
+            ClassAttr('angle_threshold_deg', float, may_be_none=True),
+            ClassAttr('escaped', bool, may_be_none=True),
+            ClassAttr('wrong_end', bool, may_be_none=True),
+            ClassAttr('early_scatter', bool, may_be_none=True),
+            ClassAttr('total_scatter_angle', float, may_be_none=True),
+            ClassAttr('overlap', bool, may_be_none=True),
+        )
+
     else:
         raise Exception('Unknown class_name')
 
