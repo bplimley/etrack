@@ -158,6 +158,23 @@ def get_format(class_name):
             ClassAttr('measurement_end_ind', int),
         )
 
+    elif class_name == 'MomentsReconstruction':
+        data_format = (
+            ClassAttr('original_image_kev', np.ndarray, make_dset=True),
+            ClassAttr('pixel_size_um', float),
+            ClassAttr('starting_distance_um', float),
+            ClassAttr('ends_energy', np.ndarray),
+            ClassAttr('rough_est', float),
+            ClassAttr('box_x', np.ndarray, may_be_none=True),
+            ClassAttr('box_y', np.ndarray, may_be_none=True),
+            ClassAttr('edge_pixel_count', int, may_be_none=True),
+            ClassAttr('edge_pixel_segments', int, may_be_none=True),
+            ClassAttr('phi', np.float, may_be_none=True),
+            ClassAttr('R', np.float, may_be_none=True),
+            ClassAttr('alpha', np.float, may_be_none=True),
+            ClassAttr('x0', np.ndarray, may_be_none=True),
+        )
+
     elif class_name == 'Classifier':
         data_format = (
             ClassAttr('g4track', 'G4Track', is_user_object=True),

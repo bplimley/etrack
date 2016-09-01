@@ -4,36 +4,76 @@ import numpy as np
 import skimage.morphology as morph
 
 from etrack.reconstruction import hybridtrack
-
-# Don's summary from November 2015:
-#  (0. separate initial segment)
-#   1. compute moments
-#   2a. determine center of image
-#   2b. recalculate moments relative to center
-#   3a. rotate image to principal axes of distribution
-#      (positive x-axis in direction of motion)
-#   3b. recalculate moments in rotated frame
-#   4. find the arc parameters in the principle axis frame
-#   5. find angle of entry, point of entry, arc length, and rate of
-#      charge deposition from arc parameters
-
+import etrack.io.dataformats as df
+import etrack.io.trackio as trackio
 
 class MomentsReconstruction(object):
 
+    class_name = 'MomentsReconstruction'
+    data_format = df.get_format(class_name)
+
     def __init__(self, original_image_kev, pixel_size_um=10.5,
-                 starting_distance=63):
+                 starting_distance_um=63):
         """
         Init: Load options only
         """
 
         self.original_image_kev = original_image_kev
+        self.pixel_size_um = pixel_size_um
         self.options = hybridtrack.ReconstructionOptions(pixel_size_um)
         # increase walking distance from 4 pixels to 6 pixels - for now
         # hybridtrack default: 40 um
         # initial testing before 6/21/16: 63 um
-        self.options.ridge_starting_distance_from_track_end_um = starting_distance
+        self.starting_distance_um = starting_distance_um
+        self.options.ridge_starting_distance_from_track_end_um = starting_distance_um
 
         self.info = hybridtrack.ReconstructionInfo()
+
+    @classmethod
+    def from_hdf5(cls, h5group, h5_to_pydict=None, pydict_to_pyobj=None,
+                  reconstruct=False):
+        """
+        Initialize a MomentsReconstruction object from an HDF5 group.
+        """
+
+        if h5_to_pydict is None:
+            h5_to_pydict = {}
+        if pydict_to_pyobj is None:
+            pydict_to_pyobj = {}
+
+        read_dict = trackio.read_object_from_hdf5(
+            h5group, h5_to_pydict=h5_to_pydict)
+
+        constructed_object = cls.from_pydict(
+            read_dict, pydict_to_pyobj=pydict_to_pyobj,
+            reconstruct=reconstruct)
+
+        return constructed_object
+
+    @classmethod
+    def from_pydict(cls, read_dict, pydict_to_pyobj=None, reconstruct=False):
+        """
+        Initialize a MomentsReconstruction object from a pydict.
+        """
+
+        if pydict_to_pyobj is None:
+            pydict_to_pyobj = {}
+
+        if id(read_dict) in pydict_to_pyobj:
+            return pydict_to_pyobj[id(read_dict)]
+
+        constructed_object = cls(
+            read_dict['original_image_kev'],
+            pixel_size_um=read_dict['pixel_size_um'],
+            starting_distance_um=read_dict['starting_distance_um'])
+
+        # add entry to pydict_to_pyobj
+        pydict_to_pyobj[id(read_dict)] = constructed_object
+
+        if reconstruct:
+            constructed_object.reconstruct()
+
+        return constructed_object
 
     def reconstruct(self):
 
@@ -104,8 +144,9 @@ class MomentsReconstruction(object):
         """
 
         # copied from hybridtrack.get_starting_point()
-        min_index = self.info.ends_energy.argmin()
-        self.end_energy = self.info.ends_energy[min_index]
+        self.ends_energy = self.info.ends_energy
+        min_index = self.ends_energy.argmin()
+        self.end_energy = self.ends_energy[min_index]
         self.start_coordinates = self.info.ends_xy[min_index]
         # start_coordinates are the end (extremity) of the thinned track
 
