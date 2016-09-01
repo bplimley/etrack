@@ -320,11 +320,12 @@ def classifierlist_from_tracklist(tracklist, momlist, classify=True):
                 c.mc_classify()
             except cl.TrackTooShortError:
                 c.error = 'TrackTooShortError'
-            except cl.tp.G4TrackTooBigError:
-                c.error = 'G4TrackTooBigError'
             else:
                 if momlist is not None:
-                    c.end_classify(tracklist[i], mom=momlist[i])
+                    try:
+                        c.end_classify(tracklist[i], mom=momlist[i])
+                    except tp.G4TrackTooBigError:
+                        c.error = 'G4TrackTooBigError'
 
     return classifierlist
 
@@ -347,11 +348,10 @@ def main1():
     test_moments_segmentation(tracklist)
 
 
-def get_tracklist(n_files=10):
+def get_tracklist(n_files=8, energy_thresh=0):
 
     filename = '/media/plimley/TEAM 7B/HTbatch01_pyml/MultiAngle_HT_*_*_py.h5'
     flist = glob.glob(filename)
-    energy_thresh = 0     # keV
     tracklist = []
 
     # get a bunch of tracks: ~250 in energy window per file, ~100 without error

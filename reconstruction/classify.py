@@ -70,7 +70,7 @@ class Classifier(object):
 
         # reconstruct the g4track
         if isinstance(constructed_object.g4track, G4Track):
-            continue
+            pass
         elif isinstance(constructed_object.g4track, dict):
             constructed_object.g4track = G4Track.from_pydict(
                 constructed_object.g4track,
