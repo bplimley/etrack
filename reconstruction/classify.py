@@ -21,14 +21,11 @@ class Classifier(object):
     data_format = df.get_format(class_name)
 
     def __init__(self, g4track, suppress_check=False):
-        if not suppress_check:
-            assert isinstance(g4track, G4Track), "Not a G4Track object"
-        self.g4track = g4track
-
+        assert isinstance(g4track, G4Track), "Not a G4Track object"
         assert g4track.x.shape[0] == 3, "x has funny shape"
         self.x = np.copy(g4track.x)
-
         self.E = np.copy(g4track.dE.flatten())
+        self.g4track = g4track
 
     @classmethod
     def from_hdf5(cls, h5group, h5_to_pydict=None, pydict_to_pyobj=None,
@@ -63,29 +60,55 @@ class Classifier(object):
         if id(read_dict) in pydict_to_pyobj:
             return pydict_to_pyobj[id(read_dict)]
 
-        constructed_object = cls(read_dict['g4track'], suppress_check=True)
-
-        # add entry to pydict_to_pyobj
-        pydict_to_pyobj[id(read_dict)] = constructed_object
-
-        # reconstruct the g4track
-        if isinstance(constructed_object.g4track, G4Track):
-            pass
-        elif isinstance(constructed_object.g4track, dict):
-            constructed_object.g4track = G4Track.from_pydict(
-                constructed_object.g4track,
-                pydict_to_pyobj=pydict_to_pyobj)
+        # first, reconstruct g4track (if needed)
+        if isinstance(read_dict['g4track'], G4Track):
+            # g4track is already a G4Track object (not sure how)
+            g4track = read_dict['g4track']
+        elif (isinstance(read_dict['g4track'], dict) and
+                id(read_dict['g4track']) in pydict_to_pyobj):
+            # g4track is in the pydict table
+            g4track = pydict_to_pyobj[id(read_dict['g4track'])]
+        elif isinstance(read_dict['g4track'], dict):
+            # g4track not in the pydict table. create and add it
+            g4track = G4Track.from_pydict(
+                read_dict['g4track'], pydict_to_pyobj=pydict_to_pyobj)
+            pydict_to_pyobj[id(read_dict['g4track'])] = g4track
         else:
             raise Exception("Unexpected or missing 'g4track' in Classifier")
 
-        constructed_object.x = np.copy(constructed_object.g4track.x)
-        constructed_object.E = np.copy(constructed_object.g4Track.dE.flatten())
+        new_obj = cls(g4track)
+
+        # add entry to pydict_to_pyobj
+        pydict_to_pyobj[id(read_dict)] = new_obj
+
+        # fill in outputs
+        if read_dict['scatterlen_um'] is not None:
+            # mc_classify ran
+            new_obj.scatterlen_um = read_dict['scatterlen_um']
+            new_obj.overlapdist_um = read_dict['overlapdist_um']
+            new_obj.escaped = read_dict['escaped']
+            new_obj.scatter_type = read_dict['scatter_type']
+            new_obj.use2d_angle = read_dict['use2d_angle']
+            new_obj.use2d_dist = read_dict['use2d_dist']
+            new_obj.angle_threshold_deg = read_dict['angle_threshold_deg']
+        if read_dict['early_scatter'] is not None:
+            # no TrackTooShortError
+            new_obj.early_scatter = read_dict['early_scatter']
+            new_obj.total_scatter_angle = read_dict['total_scatter_angle']
+            new_obj.overlap = read_dict['overlap']
+        if read_dict['wrong_end'] is not None:
+            # end_classify ran
+            new_obj.wrong_end = read_dict['wrong_end']
+            new_obj.n_ends = read_dict['n_ends']
+            new_obj.max_end_energy = read_dict['max_end_energy']
+            new_obj.min_end_energy = read_dict['min_end_energy']
+
         if reconstruct:
-            constructed_object.mc_classify()
+            new_obj.mc_classify()
             print(
                 'Reconstructing Classifier.end_classify() not implemented yet')
 
-        return constructed_object
+        return new_obj
 
     def mc_classify(self, scatterlen_um=25, overlapdist_um=40, verbose=False):
         """
@@ -207,7 +230,10 @@ class Classifier(object):
         angle_threshold_rad = np.float(angle_threshold_deg) / 180 * np.pi
         angle_threshold_cos = np.cos(angle_threshold_rad)
 
-        self.scatter_type=scatter_type
+        self.scatter_type = scatter_type
+        self.use2d_angle = use2d_angle
+        self.use2d_dist = use2d_dist
+        self.angle_threshold_deg = angle_threshold_deg
 
         # use only every other point, so as to bypass the zigzag issue.
         # x2: positions (every other point)

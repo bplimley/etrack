@@ -189,6 +189,9 @@ def get_format(class_name):
             ClassAttr('early_scatter', bool, may_be_none=True),
             ClassAttr('total_scatter_angle', float, may_be_none=True),
             ClassAttr('overlap', bool, may_be_none=True),
+            ClassAttr('n_ends', int, may_be_none=True),
+            ClassAttr('max_end_energy', float, may_be_none=True),
+            ClassAttr('min_end_energy', float, may_be_none=True),
         )
 
     else:
