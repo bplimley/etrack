@@ -242,6 +242,53 @@ def write_objects_to_hdf5(h5group_or_filename, pyobj_to_h5=None, **kwargs):
         return None
 
 
+def write_object_list_to_hdf5(h5group_or_filename, obj_list, prefix=None):
+    """
+    Write a list of objects into an HDF5 file. Their group names are numerical.
+
+    pyobj_to_h5 dict is always initialized fresh.
+    prefix: text to put before the numerical name.
+
+    The group name is 0-padded as needed.
+    """
+
+    pyobj_to_h5 = {}
+
+    if prefix is None:
+        prefix = ''
+    maxnumlen = len(str(len(obj_list)))
+    fmtstring = prefix + '{:0' + str(maxnumlen) + 'd}'
+
+    if (isinstance(h5group_or_filename, str) or
+            isinstance(h5group_or_filename, unicode)):
+        # filename supplied: create h5 file and close when finished
+        filename = h5group_or_filename
+        # check extension
+        if filename[-5:] != '.hdf5' and filename[-3:] != '.h5':
+            filename += '.h5'
+        with h5py.File(filename) as h5group:
+            for i, obj in enumerate(obj_list):
+                groupname = fmtstring.format(i)
+                write_object_to_hdf5(obj, h5group, groupname,
+                                     pyobj_to_h5=pyobj_to_h5)
+        return filename
+
+    elif isinstance(h5group_or_filename, h5py.Group):
+        # h5group supplied: just write the objects
+        h5group = h5group_or_filename
+        for i, obj in enumerate(obj_list):
+            groupname = fmtstring.format(i)
+            write_object_to_hdf5(obj, h5group, groupname,
+                                 pyobj_to_h5=pyobj_to_h5)
+        return h5group.file.filename
+
+    else:
+        raise InterfaceError(
+            'write_objects_to_hdf5 needs either an h5py.Group ' +
+            'or a string filename')
+        return None
+
+
 def read_object_from_hdf5(h5group, h5_to_pydict=None, ext_data_format=None,
                           verbosity=0):
     """
@@ -491,6 +538,72 @@ def read_object_from_hdf5(h5group, h5_to_pydict=None, ext_data_format=None,
 
     vprint(' ')
     return output
+
+
+def read_object_list_from_hdf5(h5group_or_filename, constructor,
+                               *args, **kwargs):
+    """
+    Create a list of objects, from an HDF5 file or group.
+
+    h5group_or_filename: either a h5py Group/File object, or a filename,
+        containing h5groups '000', '001', or so.
+    constructor: class method for constructing a single object.
+    *args, **kwargs: anything else to pass to constructor
+        except prefix, which indicates the text prefix to the index number
+    """
+
+    def get_fmtstring(h5group, prefix):
+        """
+        Figure out whether the h5 items are '0', '00', '000', etc.
+        """
+        if prefix is None:
+            prefix = ''
+        for n in xrange(10):
+            if (prefix + str('0' * n)) in h5group.keys():
+                fmtstring = prefix + '{:0' + str(n) + 'd}'
+                return fmtstring
+        else:
+            raise Exception('Item #0 not found')
+
+    def construct_list(h5group, fmtstring, constructor, *args, **kwargs):
+        """
+        Actually build the list of objects.
+        """
+
+        i = 0
+        obj_list = []
+        while fmtstring.format(i) in h5group.keys():
+            key = fmtstring.format(i)
+            new_obj = constructor(h5group[key], *args, **kwargs)
+            obj_list.append(new_obj)
+            i += 1
+        return obj_list
+
+    # ~~~ begin main ~~~
+    if 'prefix' in kwargs:
+        prefix = kwargs['prefix']
+        del(kwargs['prefix'])
+    else:
+        prefix = ''
+
+    if (isinstance(h5group_or_filename, str)
+            or isinstance(h5group_or_filename, unicode)):
+        with h5py.File(h5group_or_filename, 'r') as h5group:
+            fmtstring = get_fmtstring(h5group, prefix)
+            obj_list = construct_list(
+                h5group, fmtstring, constructor, *args, **kwargs)
+    elif isinstance(h5group_or_filename, h5py.Group):
+        h5group = h5group_or_filename
+        fmtstring = get_fmtstring(h5group, prefix)
+        obj_list = construct_list(
+            h5group, fmtstring, constructor, *args, **kwargs)
+    else:
+        raise InterfaceError(
+            'write_objects_to_hdf5 needs either an h5py.Group ' +
+            'or a string filename')
+        return None
+
+    return obj_list
 
 
 class InterfaceError(Exception):
