@@ -157,7 +157,7 @@ def tracks_for_don(momlist, tracklist, classifierlist):
 
 def tracklist_from_h5(filename, energy_thresh):
     """
-    Go through a pyml h5 file and make Tracks from pix10_5noise0noise0.
+    Go through a pyml h5 file and make Tracks from pix10_5noise0.
     Save them into a list if their energy is above energy_thresh_kev.
     """
 

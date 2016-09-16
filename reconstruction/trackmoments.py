@@ -62,18 +62,36 @@ class MomentsReconstruction(object):
         if id(read_dict) in pydict_to_pyobj:
             return pydict_to_pyobj[id(read_dict)]
 
-        constructed_object = cls(
+        new_obj = cls(
             read_dict['original_image_kev'],
             pixel_size_um=read_dict['pixel_size_um'],
             starting_distance_um=read_dict['starting_distance_um'])
+        # fill in outputs
+        if read_dict['ends_energy'] is not None:
+            # (actually required by the data_formats class)
+            new_obj.ends_energy = read_dict['ends_energy']
+            new_obj.rough_est = read_dict['rough_est']
+            new_obj.box_x = read_dict['box_x']
+            new_obj.box_y = read_dict['box_y']
+        if read_dict['edge_pixel_count'] is not None:
+            # successfully got a segment image
+            new_obj.edge_pixel_count = read_dict['edge_pixel_count']
+            new_obj.edge_pixel_segments = read_dict['edge_pixel_segments']
+        if read_dict['alpha'] is not None:
+            # actually, even if calculation is pathological, these are np.nan
+            # so they still get assigned.
+            new_obj.phi = read_dict['phi']
+            new_obj.R = read_dict['R']
+            new_obj.alpha = read_dict['alpha']
+            new_obj.x0 = read_dict['x0']
 
         # add entry to pydict_to_pyobj
-        pydict_to_pyobj[id(read_dict)] = constructed_object
+        pydict_to_pyobj[id(read_dict)] = new_obj
 
         if reconstruct:
-            constructed_object.reconstruct()
+            new_obj.reconstruct()
 
-        return constructed_object
+        return new_obj
 
     def reconstruct(self):
 
@@ -250,7 +268,7 @@ class MomentsReconstruction(object):
             # have we done this too much already?
             if self.options.ridge_starting_distance_from_track_end_um < 30:
                 raise CheckSegmentBoxError("Couldn't get a clean end segment")
-                return None
+
             # try again, with a shorter track segment
             self.options.ridge_starting_distance_from_track_end_um -= 10.5
             # now, repeat what we've done so far
