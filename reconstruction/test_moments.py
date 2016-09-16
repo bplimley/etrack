@@ -1377,15 +1377,21 @@ def HTlist_from_tracklist(tracklist):
     pass
 
 
-def process_file(filename):
+def process_file(loadfile, savefile):
     """
     For LRC.
-    Take one file, run moments and HT, and save results.
+    Take one file, run moments, classify, and save results.
     """
 
-    tracklist = tracklist_from_h5(filename, 0)
+    tracklist = tracklist_from_h5(loadfile, 0)
     momlist = momentlist_from_tracklist(tracklist, fill_nans=False)
     classifierlist = classifierlist_from_tracklist(tracklist, momlist)
+
+    with h5py.File(savefile, 'w') as h5save:
+        trackio.write_object_list_to_hdf5(
+            h5save, momlist, prefix='mom')
+        trackio.write_object_list_to_hdf5(
+            h5save, classifierlist, prefix='classifier')
 
 
 if __name__ == '__main__':
