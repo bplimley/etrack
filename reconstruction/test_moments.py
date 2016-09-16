@@ -203,7 +203,7 @@ def test_moments_segmentation(tracklist):
         plt.title(titlestr)
 
 
-def momentlist_from_tracklist(tracklist):
+def momentlist_from_tracklist(tracklist, fill_nans=True):
     """
     do moments reconstruction
     """
@@ -215,9 +215,8 @@ def momentlist_from_tracklist(tracklist):
     for t in tracklist:
         mom = tm.MomentsReconstruction(t.image)
         mom.track = t
-        try:
-            mom.reconstruct()
-        except (tm.CheckSegmentBoxError, RuntimeError):
+        mom.reconstruct()
+        if mom.error is not None and fill_nans:
             # fill in nan's for everything that tracks_for_don wants
             mom.alpha = np.nan
             mom.phi = np.nan
@@ -231,7 +230,6 @@ def momentlist_from_tracklist(tracklist):
             mom.edge_pixel_count = np.nan
             mom.edge_pixel_segments = np.nan
             mom.edge_avg_dist = np.nan
-            mom.ends_energy = np.nan
         momlist.append(mom)
     t1 = time.time()
     print('Reconstructed {} tracks in {} s ({} s/track)'.format(

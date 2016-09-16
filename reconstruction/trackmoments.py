@@ -29,6 +29,8 @@ class MomentsReconstruction(object):
 
         self.info = hybridtrack.ReconstructionInfo()
 
+        self.error = None
+
     @classmethod
     def from_hdf5(cls, h5group, h5_to_pydict=None, pydict_to_pyobj=None,
                   reconstruct=False):
@@ -98,9 +100,18 @@ class MomentsReconstruction(object):
         hybridtrack.choose_initial_end(
             self.original_image_kev, self.options, self.info)
 
-        self.segment_initial_end()
-        # get a sub-image containing the initial end
-        # also need a rough estimate of the electron direction (from thinned)
+        try:
+            self.segment_initial_end()
+            # get a sub-image containing the initial end
+            # also need a rough estimate of the electron direction
+            #   (using thinned)
+        except CheckSegmentBoxError:
+            self.error = 'CheckSegmentBoxError'
+            return
+        except RuntimeError:
+            self.error = 'what the heck happened?'
+            return
+
 
         # 1.
         self.get_coordlist()
@@ -108,7 +119,11 @@ class MomentsReconstruction(object):
         # 2ab.
         self.compute_central_moments()
         # 3ab.
-        self.compute_optimal_rotation_angle()
+        try:
+            self.compute_optimal_rotation_angle()
+        except MomentsError:
+            self.error = 'Rotation angle conditions not met'
+            return
         #  4.
         self.compute_arc_parameters()
 

@@ -165,6 +165,7 @@ def get_format(class_name):
             ClassAttr('starting_distance_um', float),
             ClassAttr('ends_energy', np.ndarray),
             ClassAttr('rough_est', float),
+            ClassAttr('error', str, may_be_none=True),
             ClassAttr('box_x', np.ndarray, may_be_none=True),
             ClassAttr('box_y', np.ndarray, may_be_none=True),
             ClassAttr('edge_pixel_count', int, may_be_none=True),
