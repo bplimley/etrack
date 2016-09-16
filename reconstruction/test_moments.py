@@ -22,6 +22,7 @@ import etrack.io.trackio as trackio
 import etrack.reconstruction.trackmoments as tm
 import etrack.reconstruction.evaluation as ev
 import etrack.reconstruction.classify as cl
+import etrack.reconstruction.hybridtrack as ht
 import etrack.visualization.trackplot as tp
 
 DEG = '$^\circ$'
@@ -1356,7 +1357,7 @@ def main7():
     """
 
     tracks_nofilter = get_tracklist(n_files=8)  # 8 files: 6705 tracks
-    tracks_300 = get_tracklist(n_files=8)     # 8 files: 1786 tracks >300keV
+    tracks_300 = get_tracklist(n_files=8, 300)  # 8 files: 1786 tracks >300keV
 
     mom_nofilter = momentlist_from_tracklist(tracks_nofilter)
     mom_300 = momentlist_from_tracklist(tracks_300)
@@ -1368,6 +1369,24 @@ def main7():
     return (tracks_nofilter, tracks_300,
             mom_nofilter, mom_300,
             clist_nofilter, clist_300)
+
+
+def HTlist_from_tracklist(tracklist):
+    """
+    """
+    pass
+
+
+def process_file(filename):
+    """
+    For LRC.
+    Take one file, run moments and HT, and save results.
+    """
+
+    tracklist = tracklist_from_h5(filename, 0)
+    momlist = momentlist_from_tracklist(tracklist, fill_nans=False)
+    classifierlist = classifierlist_from_tracklist(tracklist, momlist)
+
 
 if __name__ == '__main__':
     main2()
