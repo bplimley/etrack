@@ -379,3 +379,27 @@ class Classifier(object):
 
 class TrackTooShortError(Exception):
     pass
+
+
+def test_io(tracks=None):
+    """
+    """
+
+    import etrack.reconstruction.test_moments as tm
+
+    if tracks is None:
+        tracks = tm.get_tracklist(n_files=1)
+    mom = tm.momentlist_from_tracklist(tracks, fill_nans=False)
+    cl = tm.classifierlist_from_tracklist(tracks, mom)
+
+    filename = 'testcl.h5'
+    print('Writing classifiers to {}...'.format(filename))
+    trackio.write_object_list_to_hdf5(filename, cl, prefix='cl_')
+
+    print('Reading classifiers back...')
+    clread = trackio.read_object_list_from_hdf5(
+        filename, Classifier.from_hdf5, prefix='cl_')
+
+    import ipdb; ipdb.set_trace()
+
+    pass
