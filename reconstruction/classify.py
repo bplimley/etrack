@@ -103,6 +103,8 @@ class Classifier(object):
         pydict_to_pyobj[id(read_dict)] = new_obj
 
         # fill in outputs
+        if read_dict['error'] is not None:
+            new_obj.error = read_dict['error']
         if read_dict['scatterlen_um'] is not None:
             # mc_classify ran
             new_obj.scatterlen_um = read_dict['scatterlen_um']
@@ -423,11 +425,19 @@ def test_io(tracks=None):
 
     print('Checking attributes...')
     attrs = df.get_format('Classifier')
+    error_ind = []
+    error_list = []
     for i, c in enumerate(clread):
         if hasattr(c, 'error'):
-            continue
+            if c.error:
+                error_ind.append(i)
+                error_list.append(c.error)
+                # if there's a track error, which fields are filled, are wonky
+                continue
         for attr in attrs:
             if attr.name == 'g4track':
                 continue
             elif getattr(cl[i], attr.name) is not None:
                 assert getattr(cl[i], attr.name) == getattr(c, attr.name)
+
+    return error_ind, error_list
