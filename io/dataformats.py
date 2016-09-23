@@ -193,6 +193,7 @@ def get_format(class_name):
             ClassAttr('n_ends', int, may_be_none=True),
             ClassAttr('max_end_energy', float, may_be_none=True),
             ClassAttr('min_end_energy', float, may_be_none=True),
+            ClassAttr('error', str, may_be_none=True),
         )
 
     else:

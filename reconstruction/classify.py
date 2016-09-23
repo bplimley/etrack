@@ -46,6 +46,8 @@ class Classifier(object):
         self.max_end_energy = None
         self.min_end_energy = None
 
+        self.error = None
+
     @classmethod
     def from_hdf5(cls, h5group, h5_to_pydict=None, pydict_to_pyobj=None,
                   reconstruct=False):
@@ -419,6 +421,11 @@ def test_io(tracks=None):
     clread = trackio.read_object_list_from_hdf5(
         filename, Classifier.from_hdf5, prefix='cl_')
 
-    import ipdb; ipdb.set_trace()
-
-    pass
+    print('Checking attributes...')
+    attrs = df.get_format('Classifier')
+    for i, c in enumerate(clread):
+        for attr in attrs:
+            if attr.name == 'g4track':
+                continue
+            elif getattr(cl[i], attr.name) is not None:
+                assert getattr(cl[i], attr.name) == getattr(c, attr.name)
