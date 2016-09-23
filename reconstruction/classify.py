@@ -424,6 +424,8 @@ def test_io(tracks=None):
     print('Checking attributes...')
     attrs = df.get_format('Classifier')
     for i, c in enumerate(clread):
+        if hasattr(c, 'error'):
+            continue
         for attr in attrs:
             if attr.name == 'g4track':
                 continue
