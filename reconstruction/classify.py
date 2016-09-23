@@ -27,6 +27,12 @@ class Classifier(object):
         self.E = np.copy(g4track.dE.flatten())
         self.g4track = g4track
 
+        # avoid IO errors in case of only mc_classify and not end_classify
+        self.wrong_end = None
+        self.n_ends = None
+        self.max_end_energy = None
+        self.min_end_energy = None
+
     @classmethod
     def from_hdf5(cls, h5group, h5_to_pydict=None, pydict_to_pyobj=None,
                   reconstruct=False):
