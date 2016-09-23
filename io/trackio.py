@@ -61,11 +61,15 @@ def write_object_to_hdf5(obj, h5group, name, pyobj_to_h5=None):
         try:
             data = getattr(obj, attr.name)
         except AttributeError:
-            raise InterfaceError('Attribute does not exist')
+            raise InterfaceError(
+                'Attribute {} does not exist in obj {}'.format(
+                    attr.name, obj))
 
         # check for disallowed None
         if not attr.may_be_none and data is None:
-            raise InterfaceError('Found unexpected "None" value')
+            raise InterfaceError(
+                'Found unexpected "None" value on {} attribute of {}'.format(
+                    attr.name, obj))
 
         if data is None:
             return data
@@ -74,18 +78,26 @@ def write_object_to_hdf5(obj, h5group, name, pyobj_to_h5=None):
         if isinstance(data, list) or isinstance(data, tuple):
             # check if list/tuple is disallowed
             if not attr.is_always_list and not attr.is_sometimes_list:
-                raise InterfaceError('Found unexpected list type')
+                raise InterfaceError(
+                    'Found unexpected list type on {} attribute of {}'.format(
+                        attr.name, obj))
             # item checks occur later, in main
         elif isinstance(data, dict):
             # check if dict is disallowed
             if not attr.is_always_dict and not attr.is_sometimes_dict:
-                raise InterfaceError('Found unexpected dict type')
+                raise InterfaceError(
+                    'Found unexpected dict type on {} attribute of {}'.format(
+                        attr.name, obj))
             # item checks occur later, in main
         else:
             if attr.is_always_list:
-                raise InterfaceError('Expected a list type')
+                raise InterfaceError(
+                    'Expected a list type on {} attribute of {}'.format(
+                        attr.name, obj))
             if attr.is_always_dict:
-                raise InterfaceError('Expected a dict type')
+                raise InterfaceError(
+                    'Expected a dict type on {} attribute of {}'.format(
+                        attr.name, obj))
             check_item(attr, data)
 
         return data
@@ -99,7 +111,9 @@ def write_object_to_hdf5(obj, h5group, name, pyobj_to_h5=None):
 
         # None checks
         if not attr.may_be_none and item is None:
-            raise InterfaceError('Found unexpected "None" value')
+            raise InterfaceError(
+                'Found unexpected "None" value on {} attribute of {}'.format(
+                    attr.name, item))
         if item is None:
             return item
             # remaining checks are not applicable, and no need to return item
@@ -120,12 +134,16 @@ def write_object_to_hdf5(obj, h5group, name, pyobj_to_h5=None):
             try:
                 item = np.array(item)
             except ValueError:
-                raise InterfaceError('Attribute data cannot be cast properly')
+                raise InterfaceError(
+                    'Attribute data {} of type {} cannot be cast to {}'.format(
+                        attr.name, type(item), attr.dtype))
         else:
             try:
                 item = attr.dtype(item)
             except ValueError:
-                raise InterfaceError('Attribute data cannot be cast properly')
+                raise InterfaceError(
+                    'Attribute data {} of type {} cannot be cast to {}'.format(
+                        attr.name, type(item), attr.dtype))
 
         return item
 
