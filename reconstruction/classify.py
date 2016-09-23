@@ -28,6 +28,19 @@ class Classifier(object):
         self.g4track = g4track
 
         # avoid IO errors in case of only mc_classify and not end_classify
+        # or for errors in test_moments.classifierlist_from_tracklist
+
+        self.scatterlen_um = None
+        self.overlapdist_um = None
+        self.scatter_type = None
+        self.use2d_angle = None
+        self.use2d_dist = None
+        self.angle_threshold_deg = None
+        self.escaped = None
+        self.early_scatter = None
+        self.total_scatter_angle = None
+        self.overlap = None
+
         self.wrong_end = None
         self.n_ends = None
         self.max_end_energy = None
