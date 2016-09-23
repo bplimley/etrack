@@ -1356,8 +1356,11 @@ def main7():
     Start from scratch and build a test dataset.
     """
 
-    tracks_nofilter = get_tracklist(n_files=8)  # 8 files: 6705 tracks
-    tracks_300 = get_tracklist(n_files=8, 300)  # 8 files: 1786 tracks >300keV
+    tracks_nofilter = get_tracklist(n_files=8)
+    # 8 files: 6705 tracks
+
+    tracks_300 = get_tracklist(n_files=8, energy_thresh=300)
+    # 8 files: 1786 tracks >300keV
 
     mom_nofilter = momentlist_from_tracklist(tracks_nofilter)
     mom_300 = momentlist_from_tracklist(tracks_300)
