@@ -5,21 +5,17 @@ import ipdb as pdb
 import numpy as np
 import h5py
 import time
-import datetime
 import glob
 import os
 import multiprocessing
-from datetime import datetime as dt
 import psutil
 import progressbar
 
 from etrack.reconstruction.trackdata import Track
 import etrack.io.trackio as trackio
 import etrack.reconstruction.trackmoments as tm
-import etrack.reconstruction.evaluation as ev
 import etrack.reconstruction.classify as cl
 import etrack.reconstruction.hybridtrack as ht
-import etrack.visualization.trackplot as tp
 from etrack.workspace.filejob import JobOptions, vprint
 
 
@@ -143,7 +139,7 @@ def classify_etc(loadfile, savefile, v):
                 except KeyError:
                     vprint(v, 1,
                            '**Missing key {} in {}{}, skipping'.format(
-                               pnname, loadfile, trk.name))
+                               pn, loadfile, trk.name))
                     continue
                 h5_to_pydict = {}
                 pydict_to_pyobj = {}
@@ -221,7 +217,8 @@ def classify_etc(loadfile, savefile, v):
             if progressflag:
                 pbar.finish()
         # f gets closed here
-
+    except NotImplementedError:
+        pass
 
 if __name__ == '__main__':
     run_main()
