@@ -21,7 +21,7 @@ import psutil
 from etrack.reconstruction import trackdata, evaluation
 from etrack.io import trackio
 from etrack.reconstruction import hybridtrack as ht
-from alg_152a.etrack.reconstruction import hybridtrack as ht_a
+# from alg_152a.etrack.reconstruction import hybridtrack as ht_a
 from alg_152b.etrack.reconstruction import hybridtrack as ht_b
 from alg_152c.etrack.reconstruction import hybridtrack as ht_c
 from alg_152d.etrack.reconstruction import hybridtrack as ht_d
@@ -31,7 +31,8 @@ from etrack.workspace.filejob import JobOptions, vprint
 def run_main():
 
     multi_flag = True   # run in parallel - turn off to debug
-    _, loadpath, savepath, loadglob, saveglob, doneglob, v, n_proc = file_vars()
+    _, loadpath, savepath, loadglob, saveglob, doneglob, v, n_proc = (
+        file_vars())
 
     if not os.path.isdir(savepath):
         os.mkdir(savepath)
@@ -69,7 +70,8 @@ def file_vars():
 
     v = 1.5   # verbosity
 
-    return server_flag, loadpath, savepath, loadglob, saveglob, doneglob, v, n_threads
+    return (server_flag, loadpath, savepath, loadglob, saveglob, doneglob, v,
+            n_threads)
 
 
 def runfile(loadname):
@@ -86,7 +88,8 @@ def runfile(loadname):
     """
 
     # drop the path part of loadname, if it is given
-    server_flag, loadpath, savepath, loadglob, saveglob, doneglob, v, _ = file_vars()
+    server_flag, loadpath, savepath, loadglob, saveglob, doneglob, v, _ = (
+        file_vars())
 
     in_place_flag = False
     phflag = True
@@ -129,8 +132,8 @@ def pyml_run_algs(loadfile, savefile, v):
     ]
     alglist = {
         'python HT v1.52': ht,
-#        'python HT v1.52a': ht_a,
-# 1.52a causes RuntimeWarning and possibly breaks something more...
+        # 'python HT v1.52a': ht_a,
+        # 1.52a causes RuntimeWarning and possibly breaks something more...
         'python HT v1.52b': ht_b,
         'python HT v1.52c': ht_c,
         'python HT v1.52d': ht_d,
@@ -237,7 +240,7 @@ def pyml_run_algs(loadfile, savefile, v):
             vprint(
                 v, 1.5,
                 '\n  Finished loading {} at {} with {}% mem usage'.format(
-                loadfile, time.ctime(), psutil.virtual_memory().percent))
+                    loadfile, time.ctime(), psutil.virtual_memory().percent))
     except IOError:
         vprint(v, 1, 'IOError: Unable to open file (I think) for {}'.format(
             loadfile))
@@ -260,7 +263,8 @@ def pyml_run_algs(loadfile, savefile, v):
                 pngroup = h5save.create_group(pnname)
                 for algname, this_AR in AR_pn.items():
                     trackio.write_object_to_hdf5(this_AR, pngroup, algname)
-        vprint(v, 1.5, 'Finished saving {} at {}'.format(savefile, time.ctime()))
+        vprint(v, 1.5,
+               'Finished saving {} at {}'.format(savefile, time.ctime()))
     except IOError:
         vprint(v, 1, 'IOError: Unable to create file (I think) for {}'.format(
             savefile))
