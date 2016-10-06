@@ -163,8 +163,8 @@ def classify_etc(loadfile, savefile, v):
                         h5_to_pydict=h5_to_pydict,
                         pydict_to_pyobj=pydict_to_pyobj)
                 except trackio.InterfaceError:
-                    vprint(v, 2, 'InterfaceError at {}{}'.format(
-                        loadfile, pn.name))
+                    vprint(v, 2, 'InterfaceError at {}, {}'.format(
+                        loadfile, ind))
                     continue
                 tracklist.append(this_track)
 
