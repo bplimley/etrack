@@ -111,13 +111,16 @@ def classify_etc(loadfile, savefile, v):
     3. Classify
     """
 
-    multi_flag, *args = file_vars()
-    progressflag = not multi_flag
+    progressflag = not file_vars()[0]
 
     pn = 'pix10_5noise15'
+    HTname = 'python HT v1.52'
+    MTname = 'moments v1.0'
 
     vprint(v, 1, 'Starting {} at {} with {}% mem usage'.format(
         loadfile, time.ctime(), psutil.virtual_memory().percent))
+
+    tracklist = []
 
     try:
         with h5py.File(loadfile, 'a', driver='core') as f:
@@ -151,13 +154,73 @@ def classify_etc(loadfile, savefile, v):
                     # testing
                     break
 
-                # ...
+                # load track
+                try:
+                    this_track = Track.from_hdf5(
+                        trk,
+                        h5_to_pydict=h5_to_pydict,
+                        pydict_to_pyobj=pydict_to_pyobj)
+                except trackio.InterfaceError:
+                    vprint(v, 2, 'InterfaceError at {}{}'.format(
+                        loadfile, pn.name))
+                    continue
+                tracklist.append(this_track)
+
+                # run moments algorithm
+                if MTname not in this_track.algorithms:
+                    try:
+                        mom = tm.MomentsReconstruction(this_track.image)
+                        mom.reconstruct()
+                    except NotImplementedError:
+                        pass
+                    # any real exceptions?
+
+                    # write into track object
+                    this_track.add_algorithm(
+                        MTname,
+                        alpha_deg=mom.alpha * 180 / np.pi,
+                        beta_deg=0, info=None)
+                    # write into HDF5
+                    trackio.write_object_to_hdf5(
+                        this_track.algorithms[MTname],
+                        trk['algorithms'],
+                        MTname,
+                        pyobj_to_h5=pyobj_to_h5)
+
+                # run HT algorithm (v1.52)
+                if HTname not in this_track.algorithms:
+                    try:
+                        _, HTinfo = ht.reconstruct(this_track)
+                    except ht.InfiniteLoop:
+                        continue
+                    except ht.NoEndsFound:
+                        continue
+                    # trim memory usage
+                    if hasattr(HTinfo, 'ridge'):
+                        if HTinfo.ridge:
+                            for ridgept in HTinfo.ridge:
+                                ridgept.cuts = None
+                                ridgept.best_cut = None
+                    # write into track object
+                    this_track.add_algorithm(
+                        HTname,
+                        alpha_deg=HTinfo.alpha_deg,
+                        beta_deg=HTinfo.beta_deg,
+                        info=HTinfo)
+                    # write into HDF5
+                    trackio.write_object_to_hdf5(
+                        this_track.algorithms[HTname],
+                        trk['algorithms'],
+                        HTname,
+                        pyobj_to_h5=pyobj_to_h5)
+
+                # run classifier
 
                 if progressflag:
                     pbar.update(n)
             if progressflag:
                 pbar.finish()
-        # f gets closed
+        # f gets closed here
 
 
 if __name__ == '__main__':
