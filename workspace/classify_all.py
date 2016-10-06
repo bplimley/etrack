@@ -134,8 +134,10 @@ def classify_etc(loadfile, savefile, v):
             keylist = f.keys()
             keylist.sort()
             for ind in keylist:
-                # if int(ind) % 10 == 0:
-                #     ...
+                vprint(v, 3, 'Beginning track {} in {}'.format(ind, loadfile))
+                if int(ind) % 50 == 0:
+                    vprint(v, 2,
+                           'Beginning track {} in {}'.format(ind, loadfile))
                 try:
                     trk = f[ind][pn]
                 except KeyError:
@@ -150,9 +152,11 @@ def classify_etc(loadfile, savefile, v):
                 n += 1
                 if n > 50:
                     # testing
+                    vprint(v, 1, 'Finished 50 files, exiting')
                     break
 
                 # load track
+                vprint(v, 3, 'Loading track {} in {}'.format(ind, loadfile))
                 try:
                     this_track = Track.from_hdf5(
                         trk,
@@ -169,6 +173,8 @@ def classify_etc(loadfile, savefile, v):
                 # # we need the moments result for classifying,
                 # #   and it's cheap to compute anyway.
                 if True:
+                    vprint(v, 3, 'Running moments on track {} in {}'.format(
+                        ind, loadfile))
                     try:
                         mom = tm.MomentsReconstruction(this_track.image)
                         mom.reconstruct()
@@ -190,6 +196,8 @@ def classify_etc(loadfile, savefile, v):
 
                 # run HT algorithm (v1.52)
                 if HTname not in this_track.algorithms:
+                    vprint(v, 3, 'Running HT on track {} in {}'.format(
+                        ind, loadfile))
                     try:
                         _, HTinfo = ht.reconstruct(this_track)
                     except ht.InfiniteLoop:
@@ -214,19 +222,29 @@ def classify_etc(loadfile, savefile, v):
                         trk['algorithms'],
                         HTname,
                         pyobj_to_h5=pyobj_to_h5)
+                else:
+                    vprint(v, 3, 'Skipping HT on track {} in {}'.format(
+                        ind, loadfile))
 
                 # run classifier
+                vprint(v, 3, 'Running MC classifier on track {} in {}'.format(
+                    ind, loadfile))
                 classifier = cl.Classifier(this_track.g4track)
                 try:
                     classifier.mc_classify()
                 except cl.TrackTooShortError:
                     classifier.error = 'TrackTooShortError'
                 else:
+                    vprint(v, 3,
+                           'Running ends classifier on track {} in {}'.format(
+                               ind, loadfile))
                     try:
                         classifier.end_classify(this_track, mom=mom)
                     except tp.G4TrackTooBigError:
                         classifier.error = 'G4TrackTooBigError'
                 # write into savefile
+                vprint(v, 3, 'Writing classifier into {} for track {}'.format(
+                    savefile, ind))
                 trackio.write_object_to_hdf5(
                     classifier, h5save, ind, pyobj_to_h5=pyobj_to_h5)
 
