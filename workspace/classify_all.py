@@ -47,7 +47,7 @@ def file_vars():
     """
 
     multi_flag = False   # run in parallel - turn off to debug
-    server_flag = True
+    server_flag = False
     if server_flag:
         n_threads = 11
         loadpath = '/global/home/users/bcplimley/multi_angle/HTbatch01_pyml'
@@ -60,7 +60,7 @@ def file_vars():
     loadglob = 'MultiAngle_HT_*_*_py.h5'
     saveglob = 'MultiAngle_MT_*_*.h5'
 
-    v = 1   # verbosity
+    v = 3   # verbosity
 
     return (multi_flag, server_flag, loadpath, savepath, loadglob, saveglob, v,
             n_threads)
