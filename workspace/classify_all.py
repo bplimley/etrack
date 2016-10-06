@@ -16,6 +16,7 @@ import etrack.io.trackio as trackio
 import etrack.reconstruction.trackmoments as tm
 import etrack.reconstruction.classify as cl
 import etrack.reconstruction.hybridtrack as ht
+import etrack.visualization.trackplot as tp
 from etrack.workspace.filejob import JobOptions, vprint
 
 
@@ -119,7 +120,8 @@ def classify_etc(loadfile, savefile, v):
     tracklist = []
 
     try:
-        with h5py.File(loadfile, 'a', driver='core') as f:
+        with h5py.File(loadfile, 'a', driver='core') as f, h5py.File(
+                savefile, 'a', driver='core') as h5save:
             #
             n = 0
             if progressflag:
@@ -163,7 +165,10 @@ def classify_etc(loadfile, savefile, v):
                 tracklist.append(this_track)
 
                 # run moments algorithm
-                if MTname not in this_track.algorithms:
+                # if MTname not in this_track.algorithms:
+                # # we need the moments result for classifying,
+                # #   and it's cheap to compute anyway.
+                if True:
                     try:
                         mom = tm.MomentsReconstruction(this_track.image)
                         mom.reconstruct()
@@ -175,7 +180,7 @@ def classify_etc(loadfile, savefile, v):
                     this_track.add_algorithm(
                         MTname,
                         alpha_deg=mom.alpha * 180 / np.pi,
-                        beta_deg=0, info=None)
+                        beta_deg=np.nan, info=None)
                     # write into HDF5
                     trackio.write_object_to_hdf5(
                         this_track.algorithms[MTname],
@@ -211,6 +216,19 @@ def classify_etc(loadfile, savefile, v):
                         pyobj_to_h5=pyobj_to_h5)
 
                 # run classifier
+                classifier = cl.Classifier(this_track.g4track)
+                try:
+                    classifier.mc_classify()
+                except cl.TrackTooShortError:
+                    classifier.error = 'TrackTooShortError'
+                else:
+                    try:
+                        classifier.end_classify(this_track, mom=mom)
+                    except tp.G4TrackTooBigError:
+                        classifier.error = 'G4TrackTooBigError'
+                # write into savefile
+                trackio.write_object_to_hdf5(
+                    classifier, h5save, ind, pyobj_to_h5=pyobj_to_h5)
 
                 if progressflag:
                     pbar.update(n)
