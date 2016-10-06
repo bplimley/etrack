@@ -7,6 +7,7 @@ from etrack.reconstruction import hybridtrack
 import etrack.io.dataformats as df
 import etrack.io.trackio as trackio
 
+
 class MomentsReconstruction(object):
 
     class_name = 'MomentsReconstruction'
@@ -25,7 +26,8 @@ class MomentsReconstruction(object):
         # hybridtrack default: 40 um
         # initial testing before 6/21/16: 63 um
         self.starting_distance_um = starting_distance_um
-        self.options.ridge_starting_distance_from_track_end_um = starting_distance_um
+        self.options.ridge_starting_distance_from_track_end_um = (
+            starting_distance_um)
 
         self.info = hybridtrack.ReconstructionInfo()
 
@@ -111,7 +113,6 @@ class MomentsReconstruction(object):
         except RuntimeError:
             self.error = 'what the heck happened?'
             return
-
 
         # 1.
         self.get_coordlist()
