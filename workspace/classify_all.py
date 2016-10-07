@@ -152,8 +152,9 @@ def classify_etc(loadfile, savefile, v):
                 n += 1
                 if n > 50:
                     # testing
-                    vprint(v, 1, 'Finished 50 files, exiting')
-                    break
+                    # vprint(v, 1, 'Finished 50 files, exiting')
+                    # break
+                    pass
 
                 # load track
                 vprint(v, 3, 'Loading track {} in {}'.format(ind, loadfile))
