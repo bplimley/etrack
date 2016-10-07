@@ -183,12 +183,11 @@ def classify_etc(loadfile, savefile, v):
                     # any real exceptions?
 
                     # write into track object
-                    if hasattr(mom, 'alpha'):
-                        if mom.alpha:
-                            this_track.add_algorithm(
-                                MTname,
-                                alpha_deg=mom.alpha * 180 / np.pi,
-                                beta_deg=np.nan, info=None)
+                    if mom.alpha:
+                        this_track.add_algorithm(
+                            MTname,
+                            alpha_deg=mom.alpha * 180 / np.pi,
+                            beta_deg=np.nan, info=None)
                     else:
                         this_track.add_algorithm(
                             MTname,
