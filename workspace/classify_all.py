@@ -183,18 +183,18 @@ def classify_etc(loadfile, savefile, v):
                         pass
                     # any real exceptions?
 
-                    # write into track object
-                    if mom.alpha:
-                        this_track.add_algorithm(
-                            MTname,
-                            alpha_deg=mom.alpha * 180 / np.pi,
-                            beta_deg=np.nan, info=None)
-                    else:
-                        this_track.add_algorithm(
-                            MTname,
-                            alpha_deg=np.nan,
-                            beta_deg=np.nan, info=None)
                     if MTname not in this_track.algorithms:
+                        # write into track object
+                        if mom.alpha:
+                            this_track.add_algorithm(
+                                MTname,
+                                alpha_deg=mom.alpha * 180 / np.pi,
+                                beta_deg=np.nan, info=None)
+                        else:
+                            this_track.add_algorithm(
+                                MTname,
+                                alpha_deg=np.nan,
+                                beta_deg=np.nan, info=None)
                         # write into HDF5
                         trackio.write_object_to_hdf5(
                             this_track.algorithms[MTname],
