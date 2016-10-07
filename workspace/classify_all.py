@@ -193,6 +193,9 @@ def classify_etc(loadfile, savefile, v):
                         trk['algorithms'],
                         MTname,
                         pyobj_to_h5=pyobj_to_h5)
+                    # write into savefile
+                    trackio.write_object_to_hdf5(
+                        mom, h5save, 'mom_' + ind, pyobj_to_h5=pyobj_to_h5)
 
                 # run HT algorithm (v1.52)
                 if HTname not in this_track.algorithms:
@@ -246,7 +249,7 @@ def classify_etc(loadfile, savefile, v):
                 vprint(v, 3, 'Writing classifier into {} for track {}'.format(
                     savefile, ind))
                 trackio.write_object_to_hdf5(
-                    classifier, h5save, ind, pyobj_to_h5=pyobj_to_h5)
+                    classifier, h5save, 'cl_' + ind, pyobj_to_h5=pyobj_to_h5)
 
                 if progressflag:
                     pbar.update(n)
