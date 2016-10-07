@@ -193,12 +193,13 @@ def classify_etc(loadfile, savefile, v):
                             MTname,
                             alpha_deg=np.nan,
                             beta_deg=np.nan, info=None)
-                    # write into HDF5
-                    trackio.write_object_to_hdf5(
-                        this_track.algorithms[MTname],
-                        trk['algorithms'],
-                        MTname,
-                        pyobj_to_h5=pyobj_to_h5)
+                    if MTname not in this_track.algorithms:
+                        # write into HDF5
+                        trackio.write_object_to_hdf5(
+                            this_track.algorithms[MTname],
+                            trk['algorithms'],
+                            MTname,
+                            pyobj_to_h5=pyobj_to_h5)
                     # write into savefile
                     trackio.write_object_to_hdf5(
                         mom, h5save, 'mom_' + ind, pyobj_to_h5=pyobj_to_h5)
