@@ -31,6 +31,13 @@ class MomentsReconstruction(object):
 
         self.info = hybridtrack.ReconstructionInfo()
 
+        # for writing to file - these attributes must exist
+        self.edge_pixel_count = None
+        self.edge_pixel_segments = None
+        self.phi = None
+        self.R = None
+        self.alpha = None
+        self.x0 = None
         self.error = None
 
     @classmethod
