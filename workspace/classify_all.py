@@ -283,7 +283,7 @@ def test_read():
     momlist = trackio.read_object_list_from_hdf5(
         loadfile, tm.MomentsReconstruction.from_hdf5, prefix='mom_')
 
-
+    return clist, momlist
 
 
 if __name__ == '__main__':
