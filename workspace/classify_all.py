@@ -267,6 +267,25 @@ def classify_etc(loadfile, savefile, v):
     except NotImplementedError:
         pass
 
+
+def test_read():
+    """
+    Read classifier and moments objects from file, to test data integrity.
+    """
+
+    loadpath = '/media/plimley/TEAM 7B/MTbatch01'
+    loadname = 'MultiAngle_MT_100_1.h5'
+    loadfile = os.path.join(loadpath, loadname)
+
+    clist = trackio.read_object_list_from_hdf5(
+        loadfile, cl.Classifier.from_hdf5, prefix='cl_')
+
+    momlist = trackio.read_object_list_from_hdf5(
+        loadfile, tm.MomentsReconstruction.from_hdf5, prefix='mom_')
+
+
+
+
 if __name__ == '__main__':
     run_main()
 
