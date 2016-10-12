@@ -18,8 +18,8 @@ function write_DT_hdf5(loadfile, savename, donefilename)
         filedata = loadfile;
     end
     fn = fieldnames(filedata);
-    if any(strcmp(fn,'HT'))
-        tracks = filedata.HT;
+    if any(strcmp(fn,'DT'))
+        tracks = filedata.DT;
     elseif any(strcmp(fn,'Event'))
         tracks = filedata.Event;
     end
@@ -413,132 +413,13 @@ function writePixNoise(pixnoise, fieldname, parentname, savename, multiplicity)
         h5writeatt(savename, dataname, attname, attvalue);
     end
 
-    if do_nends
-        dataname = parentname;
+    % if do_nends
 
-        attname = 'n_ends';
-        attvalue = pixnoise.ends;
-        CheckScalar(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-    end
+    % if do_edgesegments
 
-    if do_edgesegments
-        dataname = parentname;
+    % if do_ridge
 
-        attname = 'lt';
-        attvalue = pixnoise.lt;
-        CheckScalar(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-
-        attname = 'Eend';
-        attvalue = pixnoise.Eend;
-        CheckScalar(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-
-        attname = 'edgesegments_energies_kev';
-        attvalue = pixnoise.EdgeSegments.energiesKev;
-        L = length(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-
-        attname = 'edgesegments_coordinates_pix';
-        attvalue = pixnoise.EdgeSegments.coordinatesPix;
-        if size(attvalue, 1) ~= L || size(attvalue, 2) ~= 2
-            error('bad size of coordinates_pix')
-        end
-        h5writeatt(savename, dataname, attname, attvalue);
-
-        attname = 'edgesegments_chosen_index';
-        attvalue = pixnoise.EdgeSegments.chosenIndex;
-        CheckScalar(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-
-        attname = 'edgesegments_start_coordinates_pix';
-        attvalue = pixnoise.EdgeSegments.startCoordinatesPix;
-        if length(attvalue) ~= 2
-            error('bad size of start_coordinates_pix')
-        end
-        h5writeatt(savename, dataname, attname, attvalue);
-
-        attname = 'edgesegments_start_direction_indices';
-        attvalue = pixnoise.EdgeSegments.startDirectionIndices;
-        CheckScalar(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-
-        attname = 'edgesegments_low_threshold_used';
-        attvalue = pixnoise.EdgeSegments.lowThresholdUsed;
-        CheckScalar(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-    end
-
-    if do_ridge
-        dataname = [parentname, '/thinned_img'];
-        data = pixnoise.thin';  % MATLAB transposes somehow
-        WriteToH5(savename, dataname, data, size(data));  % compressed
-
-        dataname = [parentname, '/x'];
-        data = pixnoise.x;
-        WriteToH5(savename, dataname, data, size(data));  % compressed
-
-        dataname = [parentname, '/y'];
-        data = pixnoise.y;
-        WriteToH5(savename, dataname, data, size(data));  % compressed
-
-        dataname = [parentname, '/w'];
-        data = pixnoise.w;
-        WriteToH5(savename, dataname, data, size(data));  % compressed
-
-        dataname = [parentname, '/a0'];
-        data = pixnoise.a0;
-        WriteToH5(savename, dataname, data, size(data));  % compressed
-
-        dataname = [parentname, '/dE'];
-        data = pixnoise.dE;
-        WriteToH5(savename, dataname, data, size(data));  % compressed
-    end
-
-    if do_measurement
-        dataname = parentname;
-
-        attname = 'alpha';
-        attvalue = pixnoise.alpha;
-        CheckScalar(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-
-        attname = 'beta';
-        attvalue = pixnoise.beta;
-        CheckScalar(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-
-        attname = 'dalpha';
-        attvalue = pixnoise.dalpha;
-        CheckScalar(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-
-        attname = 'dbeta';
-        attvalue = pixnoise.dbeta;
-        CheckScalar(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-
-        attname = 'dedx_ref';
-        attvalue = pixnoise.Measurement.dedxReference;
-        CheckScalar(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-
-        attname = 'dedx_meas';
-        attvalue = pixnoise.Measurement.dedxMeasured;
-        CheckScalar(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-
-        attname = 'measurement_start_ind';
-        attvalue = pixnoise.Measurement.indices(1);
-        CheckScalar(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-
-        attname = 'measurement_end_ind';
-        attvalue = pixnoise.Measurement.indices(end);
-        CheckScalar(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-    end
+    % if do_measurement
 
 end
 
