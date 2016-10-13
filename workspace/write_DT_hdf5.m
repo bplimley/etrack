@@ -1,5 +1,5 @@
-function write_DT_hdf5(loadfile, savename)
-    % function write_DT_hdf5(loadfile,savename)
+function write_DT_hdf5(loadfile, savename, donename)
+    % function write_DT_hdf5(loadfile, savename, donename)
     %
     % Load from MAT, write to HDF5.
     %
@@ -11,7 +11,7 @@ function write_DT_hdf5(loadfile, savename)
     %   run the algorithm on.
 
     progressflag = false;
-    donefileflag = false;   % need donefilename to use this
+    donefileflag = true;
 
     if ischar(loadfile)
         filedata = load(loadfile);
@@ -39,7 +39,7 @@ function write_DT_hdf5(loadfile, savename)
     end
 
     if donefileflag
-        save(donefilename, 'donefileflag')
+        save(donename, 'donefileflag')
     end
 end
 
