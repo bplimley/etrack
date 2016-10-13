@@ -33,10 +33,15 @@ for i = 1:length(flist)
     loadname = flist(i).name;
     savename = [loadname(1:end-4),'.h5'];
 
+    loadfull = fullfile(loadpath, loadname);
+    savefull = fullfile(savepath, savename);
+
     if isempty(dir(fullfile(savepath, savename)))
         disp(['Beginning ',flist(i).name,' at ',datestr(now)])
+        disp(loadfull)
+        disp(savefull)
         try
-            write_DT_hdf5(fullfile(loadpath, loadname), fullfile(savepath, savename));
+            write_DT_hdf5(loadfull, savefull);
         catch err
             disp(['Error in ',flist(i).name,': ',err.message])
         end

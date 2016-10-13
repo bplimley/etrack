@@ -32,7 +32,9 @@ function write_DT_hdf5(loadfile, savename, donefilename)
         dataname = ['/', sprintf('%05u', i-1)];
 
         writeHT(tracks{i}, dataname, savename);
-        progressbar(i/length(tracks));
+        if progressflag
+            progressbar(i/length(tracks));
+        end
     end
 
     if donefileflag
