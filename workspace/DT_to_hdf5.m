@@ -45,6 +45,11 @@ parfor i = 1:length(flist)
     donefull = fullfile(savepath, donename);
 
     if isempty(dir(donefull))
+        if ~isempty(dir(savefull))
+            disp(['Removing old version of ', flist(i).name])
+            % necessary to avoid "already exists" error
+            delete(savefull)
+        end
         disp(['Beginning ',flist(i).name,' at ',datestr(now)])
         try
             write_DT_hdf5(loadfull, savefull, donefull);
