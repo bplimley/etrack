@@ -29,7 +29,13 @@ flist = dir(fullfile(loadpath,filepattern));
 % startind = round(allind(1:end-1));
 % endind = round(allind(2:end));  % close enough
 
-for i = 1:length(flist)
+if LRCflag
+    matlabpool local 10
+else
+    matlabpool local 4
+end
+
+parfor i = 1:length(flist)
     loadname = flist(i).name;
     savename = [loadname(1:end-4),'.h5'];
     donename = ['done_', loadname];
@@ -48,3 +54,5 @@ for i = 1:length(flist)
         disp(['-- Finished ',flist(i).name,' at ',datestr(now)])
     end
 end
+
+matlabpool close
