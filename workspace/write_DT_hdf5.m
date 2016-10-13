@@ -318,15 +318,16 @@ function writePixNoise(pixnoise, fieldname, parentname, savename, multiplicity)
     do_pixnoise = true;
     check_pixsize = good_algorithm || has_multiple_tracks;
     check_noise = has_multiple_tracks;
-    do_img = has_algorithm;
+    % do_img = has_algorithm;
 
-    do_EtotTind = has_algorithm;
-    do_nends = good_algorithm || errorcode == 4;
+    % do_EtotTind = has_algorithm;
+    % do_nends = good_algorithm || errorcode == 4;
 
-    do_T = has_multiple_tracks;
-    do_edgesegments = good_algorithm;
-    do_ridge = has_ridge;
-    do_measurement = has_measurement;
+    % do_T = has_multiple_tracks;
+    do_T = true;
+    % do_edgesegments = good_algorithm;
+    % do_ridge = has_ridge;
+    % do_measurement = has_measurement;
 
 
     [pixsize, noise] = GetPixNoise(fieldname);
@@ -357,11 +358,7 @@ function writePixNoise(pixnoise, fieldname, parentname, savename, multiplicity)
         h5writeatt(savename, dataname, attname, attvalue);
     end
 
-    if do_img
-        dataname = [parentname, '/img'];
-        data = pixnoise.img';  % MATLAB transposes somehow
-        WriteToH5(savename, dataname, data, size(data));  % compressed
-    end
+    % if do_img
 
     if do_T
         dataname = parentname;
@@ -399,19 +396,7 @@ function writePixNoise(pixnoise, fieldname, parentname, savename, multiplicity)
         end
     end
 
-    if do_EtotTind
-        dataname = parentname;
-
-        attname = 'Etot';
-        attvalue = pixnoise.Etot;
-        CheckScalar(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-
-        attname = 'Tind';
-        attvalue = pixnoise.Tind;
-        CheckScalar(attvalue);
-        h5writeatt(savename, dataname, attname, attvalue);
-    end
+    % if do_EtotTind
 
     % if do_nends
 
