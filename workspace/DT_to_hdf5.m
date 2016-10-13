@@ -1,7 +1,7 @@
 % DT_to_hdf5.m
 % copied from MultiAngle_to_hdf5.m
 
-LRCflag = false;
+LRCflag = true;
 if LRCflag
     % run on LRC
     cd('/global/home/users/bcplimley/multi_angle/MatlabScripts')
