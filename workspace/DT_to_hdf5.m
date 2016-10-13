@@ -32,6 +32,9 @@ flist = dir(fullfile(loadpath,filepattern));
 if LRCflag
     matlabpool local 10
 else
+    % remove any existing pool - or else an error occurs
+    delete(gcp('nocreate'))
+    % new syntax
     p = parpool('local', 4);
 end
 
