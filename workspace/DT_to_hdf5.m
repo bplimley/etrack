@@ -32,7 +32,7 @@ flist = dir(fullfile(loadpath,filepattern));
 if LRCflag
     matlabpool local 10
 else
-    matlabpool local 4
+    p = parpool('local', 4);
 end
 
 parfor i = 1:length(flist)
@@ -55,4 +55,8 @@ parfor i = 1:length(flist)
     end
 end
 
-matlabpool close
+if LRCflag
+    matlabpool close
+else
+    p.delete
+end
