@@ -129,6 +129,19 @@ class G4Track(object):
         return g4track
 
     @classmethod
+    def from_dth5(cls, evt):
+        """
+        Construct a G4Track instance from an event in an HDF5 file.
+
+        The format is that of files from DT_to_hdf5.m / write_DT_hdf5.m.
+        evt is the h5py group corresponding to an event.
+        """
+
+        # G4Track comes from the 'cheat' subgroup, which is unchanged from
+        #   h5matlab.
+        return cls.from_h5matlab(evt)
+
+    @classmethod
     def from_pydict(cls, read_dict, pydict_to_pyobj=None):
         """
         Initialize a G4Track object from the dictionary returned by
