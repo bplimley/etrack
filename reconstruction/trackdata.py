@@ -432,6 +432,77 @@ class Track(object):
         return track
 
     @classmethod
+    def from_dth5(cls, pixnoise, g4track=None):
+        """
+        Construct a Track object from one pixelsize/noise of an event in an
+        HDF5 file.
+
+        The format is that of files from DT_to_hdf5.m / write_DT_hdf5.m.
+        """
+
+        # adapted from from_h5matlab()
+
+        try:
+            errorcode = pixnoise.attrs['errorcode']
+        except KeyError:
+            # found this in HTbatch01_h5m/MultiAngle_HT_100_12.h5 track 127
+            errorcode = 97
+        if errorcode != 0:
+            # for now, only accept tracks without errors
+            return errorcode
+
+        # see logbook p. 132 (2016-oct-11) for other error codes
+
+        # since this is data directly from DT,
+        #   we need to handle segmentation issues.
+        if 'T1' in pixnoise.keys():
+            # multiple tracks. not dealing with these.
+            # assume real multiplicity events (multiple scattering) were
+            #   already removed after the G4Track.
+            errorcode = 2   # "Segmentation divided the track"
+            return errorcode
+        if 'T0' not in pixnoise.keys():
+            # no track
+            errorcode = 3   # "No segmented image to use"
+            return errorcode
+
+        # now, the track info.
+        kwargs = {}
+        kwargs['is_modeled'] = True
+        kwargs['g4track'] = g4track
+
+        try:
+            data = pixnoise['T0']['img']
+        except KeyError:
+            errorcode = 76
+            return errorcode
+        img = np.zeros(data.shape)
+        data.read_direct(img)
+
+        try:
+            kwargs['pixel_size_um'] = pixnoise.attrs['pixel_size_um']
+            kwargs['noise_ev'] = pixnoise.attrs['noise_ev']
+            kwargs['energy_kev'] = pixnoise.attrs['E']
+            pix_thresh = pixnoise.attrs['pixel_threshold']
+            seg_thresh_kev = pixnoise.attrs['segment_threshold']
+            edgeflag = pixnoise['T0'].attrs['edgeflag']
+            kwargs['x_offset_pix'] = int(pixnoise['T0'].attrs['x'])
+            kwargs['y_offset_pix'] = int(pixnoise['T0'].attrs['y'])
+        except KeyError:
+            # hypothetical
+            errorcode = 78
+            return errorcode
+
+        # put extra info in the "label" attribute
+        label_text = 'pix_thresh={}, seg_thresh_kev={}, edgeflag={}'.format(
+            int(pix_thresh), float(seg_thresh_kev), int(edgeflag))
+        kwargs['label'] = label_text
+
+        track = Track(img, **kwargs)
+
+        return track
+
+    @classmethod
     def from_pydict(cls, read_dict, pydict_to_pyobj=None):
         """
         Initialize a Track object from the dictionary returned by
