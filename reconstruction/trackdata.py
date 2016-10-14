@@ -1039,6 +1039,24 @@ def test_h5matlab(h5file):
     # TODO: assertions!
 
 
+def test_dth5(loadfile):
+    """
+    includes G4Track and Track.
+    /media/plimley/TEAM 7B/DTbatch01_h5_1/MultiAngle_DT_100_1.h5
+    """
+
+    tracklist = []
+
+    with h5py.File(loadfile) as f:
+        for key in f:
+            evt = f[key]
+            g4t = G4Track.from_dth5(evt)
+            tracklist.append(Track.from_dth5(
+                evt['pix10_5noise15'], g4track=g4t))
+
+    return tracklist
+
+
 def main():
     """
     Run tests.
