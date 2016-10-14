@@ -94,15 +94,15 @@ class G4Track(object):
         try:
             # h5 attributes
             kwargs = {
-                'energy_tot_kev': cheat.attrs['Etot'],
-                'energy_dep_kev': cheat.attrs['Edep'],
-                'energy_esc_kev': evt.attrs['Eesc'],
-                'energy_xray_kev': cheat.attrs['Exray'],
-                'energy_brems_kev': cheat.attrs['Ebrems'],
+                'energy_tot_kev': float(cheat.attrs['Etot']),
+                'energy_dep_kev': float(cheat.attrs['Edep']),
+                'energy_esc_kev': float(evt.attrs['Eesc']),
+                'energy_xray_kev': float(cheat.attrs['Exray']),
+                'energy_brems_kev': float(cheat.attrs['Ebrems']),
                 'x0': cheat.attrs['x0'],
                 'first_step_vector': cheat.attrs['firstStepVector'],
-                'alpha_deg': cheat.attrs['alpha'],
-                'beta_deg': cheat.attrs['beta']
+                'alpha_deg': float(cheat.attrs['alpha']),
+                'beta_deg': float(cheat.attrs['beta'])
             }
         except KeyError:
             # found this in HTbatch01_h5m/MultiAngle_100_6.h5 track 117
@@ -443,7 +443,7 @@ class Track(object):
         # adapted from from_h5matlab()
 
         try:
-            errorcode = pixnoise.attrs['errorcode']
+            errorcode = int(pixnoise.attrs['errorcode'])
         except KeyError:
             # found this in HTbatch01_h5m/MultiAngle_HT_100_12.h5 track 127
             errorcode = 97
@@ -480,11 +480,11 @@ class Track(object):
         data.read_direct(img)
 
         try:
-            kwargs['pixel_size_um'] = pixnoise.attrs['pixel_size_um']
-            kwargs['noise_ev'] = pixnoise.attrs['noise_ev']
-            kwargs['energy_kev'] = pixnoise.attrs['E']
-            pix_thresh = pixnoise.attrs['pixel_threshold']
-            seg_thresh_kev = pixnoise.attrs['segment_threshold']
+            kwargs['pixel_size_um'] = float(pixnoise.attrs['pixel_size_um'])
+            kwargs['noise_ev'] = int(pixnoise.attrs['noise_ev'])
+            kwargs['energy_kev'] = float(pixnoise.attrs['E'])
+            pix_thresh = int(pixnoise.attrs['pixel_threshold'])
+            seg_thresh_kev = float(pixnoise.attrs['segment_threshold'])
             edgeflag = pixnoise['T0'].attrs['edgeflag']
             kwargs['x_offset_pix'] = int(pixnoise['T0'].attrs['x'])
             kwargs['y_offset_pix'] = int(pixnoise['T0'].attrs['y'])
