@@ -50,15 +50,15 @@ def file_vars():
     server_flag = False
     if server_flag:
         n_threads = 11
-        loadpath = '/global/home/users/bcplimley/multi_angle/HTbatch01_pyml'
-        savepath = '/global/home/users/bcplimley/multi_angle/MTbatch01'
+        loadpath = '/global/home/users/bcplimley/multi_angle/DTbatch01_h5'
+        savepath = '/global/home/users/bcplimley/multi_angle/algs_10.5_batch01'
     else:
         # LBL desktop
         n_threads = 4
-        loadpath = '/media/plimley/TEAM 7B/HTbatch01_pyml'
-        savepath = '/media/plimley/TEAM 7B/MTbatch01'
+        loadpath = '/media/plimley/TEAM 7B/DTbatch01_h5'
+        savepath = '/media/plimley/TEAM 7B/algs_10.5_batch01'
     loadglob = 'MultiAngle_HT_*_*_py.h5'
-    saveglob = 'MultiAngle_MT_*_*.h5'
+    saveglob = 'MultiAngle_algs_*_*.h5'
 
     v = 3   # verbosity
 
