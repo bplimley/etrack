@@ -11,7 +11,7 @@ import multiprocessing
 import psutil
 import progressbar
 
-from etrack.reconstruction.trackdata import Track
+from etrack.reconstruction.trackdata import Track, G4Track
 import etrack.io.trackio as trackio
 import etrack.reconstruction.trackmoments as tm
 import etrack.reconstruction.classify as cl
@@ -57,10 +57,10 @@ def file_vars():
         n_threads = 4
         loadpath = '/media/plimley/TEAM 7B/DTbatch01_h5'
         savepath = '/media/plimley/TEAM 7B/algs_10.5_batch01'
-    loadglob = 'MultiAngle_HT_*_*_py.h5'
+    loadglob = 'MultiAngle_DT_*_*_py.h5'
     saveglob = 'MultiAngle_algs_*_*.h5'
 
-    v = 3   # verbosity
+    v = 2   # verbosity
 
     return (multi_flag, server_flag, loadpath, savepath, loadglob, saveglob, v,
             n_threads)
@@ -117,7 +117,10 @@ def classify_etc(loadfile, savefile, v):
     vprint(v, 1, 'Starting {} at {} with {}% mem usage'.format(
         loadfile, time.ctime(), psutil.virtual_memory().percent))
 
-    tracklist = []
+    # keep track of events by their index string like '00021'
+    trackdict = {}
+
+    pyobj_to_h5 = {}
 
     try:
         with h5py.File(loadfile, 'a', driver='core') as f, h5py.File(
@@ -138,17 +141,21 @@ def classify_etc(loadfile, savefile, v):
                 if int(ind) % 50 == 0:
                     vprint(v, 2,
                            'Beginning track {} in {}'.format(ind, loadfile))
+
+                # evt is for the G4Track object
+                evt = f[ind]
+                # shouldn't get a KeyError because we are looping over ind
+
+                # trk is for the Track object
                 try:
-                    trk = f[ind][pn]
+                    trk = evt[pn]
                 except KeyError:
                     vprint(v, 1,
                            '**Missing key {} in {}{}, skipping'.format(
-                               pn, loadfile, trk.name))
+                               pn, loadfile, evt.name))
                     continue
-                h5_to_pydict = {}
-                pydict_to_pyobj = {}
-                pyobj_to_h5 = {}
 
+                trkpath = ind + '/' + pn
                 n += 1
                 if n > 50:
                     # testing
@@ -156,65 +163,62 @@ def classify_etc(loadfile, savefile, v):
                     # break
                     pass
 
-                # load track
-                vprint(v, 3, 'Loading track {} in {}'.format(ind, loadfile))
+                # load G4Track
+                vprint(v, 3, 'Loading G4Track {} in {}'.format(ind, loadfile))
                 try:
-                    this_track = Track.from_hdf5(
-                        trk,
-                        h5_to_pydict=h5_to_pydict,
-                        pydict_to_pyobj=pydict_to_pyobj)
+                    this_g4track = G4Track.from_dth5(evt)
                 except trackio.InterfaceError:
-                    vprint(v, 2, 'InterfaceError at {}, {}'.format(
+                    vprint(v, 2, 'InterfaceError in G4Track at {}, {}'.format(
                         loadfile, ind))
                     continue
-                tracklist.append(this_track)
+
+                # load Track
+                vprint(v, 3, 'Loading Track {} in {}'.format(ind, loadfile))
+                try:
+                    this_track = Track.from_dth5(trk, g4track=this_g4track)
+                except trackio.InterfaceError:
+                    vprint(v, 2, 'InterfaceError in Track at {}, {}'.format(
+                        loadfile, ind))
+                    continue
+                trackdict[ind] = this_track
 
                 # run moments algorithm
-                # if MTname not in this_track.algorithms:
-                # # we need the moments result for classifying,
-                # #   and it's cheap to compute anyway.
-                if True:
-                    vprint(v, 3, 'Running moments on track {} in {}'.format(
-                        ind, loadfile))
-                    try:
-                        mom = tm.MomentsReconstruction(this_track.image)
-                        mom.reconstruct()
-                    except NotImplementedError:
-                        pass
-                    # any real exceptions?
-
-                    if MTname not in this_track.algorithms:
-                        # write into track object
-                        if mom.alpha:
-                            this_track.add_algorithm(
-                                MTname,
-                                alpha_deg=mom.alpha * 180 / np.pi,
-                                beta_deg=np.nan, info=None)
-                        else:
-                            this_track.add_algorithm(
-                                MTname,
-                                alpha_deg=np.nan,
-                                beta_deg=np.nan, info=None)
-                        # write into HDF5
-                        trackio.write_object_to_hdf5(
-                            this_track.algorithms[MTname],
-                            trk['algorithms'],
-                            MTname,
-                            pyobj_to_h5=pyobj_to_h5)
-                    # write into savefile
-                    trackio.write_object_to_hdf5(
-                        mom, h5save, 'mom_' + ind, pyobj_to_h5=pyobj_to_h5)
+                vprint(v, 3, 'Running moments on track {} in {}'.format(
+                    ind, loadfile))
+                try:
+                    mom = tm.MomentsReconstruction(this_track.image)
+                    mom.reconstruct()
+                except NotImplementedError:
+                    pass
+                # any real exceptions?
+                # write into track object
+                if mom.alpha:
+                    this_track.add_algorithm(
+                        MTname,
+                        alpha_deg=mom.alpha * 180 / np.pi,
+                        beta_deg=np.nan, info=None)
+                else:
+                    this_track.add_algorithm(
+                        MTname,
+                        alpha_deg=np.nan,
+                        beta_deg=np.nan, info=None)
+                # write into savefile
+                trackio.write_object_to_hdf5(
+                    mom, h5save, 'mom_' + trkpath, pyobj_to_h5=pyobj_to_h5)
 
                 # run HT algorithm (v1.52)
-                if HTname not in this_track.algorithms:
-                    vprint(v, 3, 'Running HT on track {} in {}'.format(
-                        ind, loadfile))
-                    try:
-                        _, HTinfo = ht.reconstruct(this_track)
-                    except ht.InfiniteLoop:
-                        continue
-                    except ht.NoEndsFound:
-                        continue
+                vprint(v, 3, 'Running HT on track {} in {}'.format(
+                    ind, loadfile))
+                try:
+                    _, HTinfo = ht.reconstruct(this_track)
+                except (ht.InfiniteLoop, ht.NoEndsFound):
+                    # write empty into track object
+                    this_track.add_algorithm(
+                        HTname,
+                        alpha_deg=np.nan,
+                        beta_deg=np.nan,
+                        info=None)
+                else:
                     # trim memory usage
                     if hasattr(HTinfo, 'ridge'):
                         if HTinfo.ridge:
@@ -227,15 +231,16 @@ def classify_etc(loadfile, savefile, v):
                         alpha_deg=HTinfo.alpha_deg,
                         beta_deg=HTinfo.beta_deg,
                         info=HTinfo)
-                    # write into HDF5
+
+                # write py HDF5 format into savefile (including alg outputs)
+                try:
                     trackio.write_object_to_hdf5(
-                        this_track.algorithms[HTname],
-                        trk['algorithms'],
-                        HTname,
+                        this_track, h5save, trkpath,
                         pyobj_to_h5=pyobj_to_h5)
-                else:
-                    vprint(v, 3, 'Skipping HT on track {} in {}'.format(
-                        ind, loadfile))
+                except trackio.InterfaceError:
+                    vprint(v, 1, 'InterfaceError writing to file at ' +
+                           '{}, {}'.format(savefile, ind))
+                    continue
 
                 # run classifier
                 vprint(v, 3, 'Running MC classifier on track {} in {}'.format(
@@ -257,7 +262,8 @@ def classify_etc(loadfile, savefile, v):
                 vprint(v, 3, 'Writing classifier into {} for track {}'.format(
                     savefile, ind))
                 trackio.write_object_to_hdf5(
-                    classifier, h5save, 'cl_' + ind, pyobj_to_h5=pyobj_to_h5)
+                    classifier, h5save, 'cl_' + trkpath,
+                    pyobj_to_h5=pyobj_to_h5)
 
                 if progressflag:
                     pbar.update(n)
