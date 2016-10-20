@@ -32,6 +32,8 @@ def run_main():
     flist = glob.glob(os.path.join(loadpath, loadglob))
     flist.sort()
 
+    print('Found {} files to load'.format(len(flist)))
+
     if multi_flag:
         p = multiprocessing.Pool(processes=n_proc, maxtasksperchild=5)
         p.map(runfile, flist, chunksize=5)
@@ -57,10 +59,10 @@ def file_vars():
         n_threads = 4
         loadpath = '/media/plimley/TEAM 7B/DTbatch01_h5'
         savepath = '/media/plimley/TEAM 7B/algs_10.5_batch01'
-    loadglob = 'MultiAngle_DT_*_*_py.h5'
+    loadglob = 'MultiAngle_DT_*_*.h5'
     saveglob = 'MultiAngle_algs_*_*.h5'
 
-    v = 2   # verbosity
+    v = 3   # verbosity
 
     return (multi_flag, server_flag, loadpath, savepath, loadglob, saveglob, v,
             n_threads)
@@ -116,9 +118,6 @@ def classify_etc(loadfile, savefile, v):
 
     vprint(v, 1, 'Starting {} at {} with {}% mem usage'.format(
         loadfile, time.ctime(), psutil.virtual_memory().percent))
-
-    # keep track of events by their index string like '00021'
-    trackdict = {}
 
     pyobj_to_h5 = {}
 
@@ -180,7 +179,6 @@ def classify_etc(loadfile, savefile, v):
                     vprint(v, 2, 'InterfaceError in Track at {}, {}'.format(
                         loadfile, ind))
                     continue
-                trackdict[ind] = this_track
 
                 # run moments algorithm
                 vprint(v, 3, 'Running moments on track {} in {}'.format(
