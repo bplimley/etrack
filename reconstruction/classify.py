@@ -177,6 +177,8 @@ class Classifier(object):
             ends_energy = HT.info.ends_energy
 
         self.n_ends = len(ends_energy)
+        if self.n_ends == 0:
+            raise NoEnds('Cannot get max and min end energy')
         self.max_end_energy = np.max(ends_energy)
         self.min_end_energy = np.min(ends_energy)
 
@@ -401,6 +403,10 @@ class Classifier(object):
 
 
 class TrackTooShortError(Exception):
+    pass
+
+
+class NoEnds(Exception):
     pass
 
 
