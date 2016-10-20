@@ -155,7 +155,9 @@ def classify_etc(loadfile, savefile, v):
                     continue
 
                 trkpath = ind + '/' + pn
+                errorcode = 0
                 n += 1
+
                 if n > 50:
                     # testing
                     # vprint(v, 1, 'Finished 50 files, exiting')
@@ -267,6 +269,8 @@ def classify_etc(loadfile, savefile, v):
                         classifier.end_classify(this_track, mom=mom)
                     except tp.G4TrackTooBigError:
                         classifier.error = 'G4TrackTooBigError'
+                    except cl.NoEnds:
+                        classifier.error = 'NoEnds'
                 # write into savefile
                 vprint(v, 3, 'Writing classifier into {} for track {}'.format(
                     savefile, ind))
