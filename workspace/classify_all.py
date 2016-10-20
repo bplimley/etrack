@@ -180,6 +180,13 @@ def classify_etc(loadfile, savefile, v):
                         loadfile, ind))
                     continue
 
+                # check for error codes - Track.from_dth5 may return an int
+                if isinstance(this_track, int):
+                    this_save = h5save.create_group(trkpath)
+                    this_save.attrs.create(
+                        'errorcode', this_track, shape=np.shape(this_track))
+                    continue
+
                 # run moments algorithm
                 vprint(v, 3, 'Running moments on track {} in {}'.format(
                     ind, loadfile))
