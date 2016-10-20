@@ -299,7 +299,7 @@ def locate_all_ends(image_kev, options, info):
         info.ends_xy = ends_xy
     else:
         # still no ends.
-        raise
+        raise NoEndsFound('No ends found')
 
 
 def measure_energies(image_kev, options, info):
