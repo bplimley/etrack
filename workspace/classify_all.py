@@ -62,7 +62,7 @@ def file_vars():
     loadglob = 'MultiAngle_DT_*_*.h5'
     saveglob = 'MultiAngle_algs_*_*.h5'
 
-    v = 3   # verbosity
+    v = 2   # verbosity
 
     return (multi_flag, server_flag, loadpath, savepath, loadglob, saveglob, v,
             n_threads)
