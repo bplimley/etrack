@@ -18,8 +18,17 @@ def run_main():
 
     with h5py.File(loadfull, 'r') as f:
         usr_input = '0'
+        fig = None
 
         while not usr_input.startswith('q'):
+            # first, close previous plot if exists
+            try:
+                plt.close(fig)
+            except TypeError:
+                # fig is None
+                pass
+
+            # parse the input
             try:
                 # assume it's a number
                 indnum = int(usr_input)
@@ -34,12 +43,14 @@ def run_main():
                     skip = True
             indstr = '{:05d}'.format(indnum)
 
+            # show the event
             if not skip:
                 try:
-                    show_event(f[indstr][pn], indnum)
+                    fig = show_event(f[indstr][pn], indnum)
                 except KeyError:
                     print('### KeyError on {}/{}'.format(indstr, pn))
 
+            # next input
             usr_input = raw_input(prompt)
 
 
