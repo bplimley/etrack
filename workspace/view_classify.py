@@ -13,35 +13,39 @@ def run_main():
 
     loadfile = 'MultiAngle_algs_100_1.h5'
     loadfull = os.path.join(get_loadpath(), loadfile)
-    prompt = '[#], [n]ext, [p]revious, [q]uit: '
+    prompt = '[#], [n]ext, [p]revious, [q]uit. [Enter] for next: '
     pn = 'pix10_5noise15'
 
     with h5py.File(loadfull, 'r') as f:
-        usr_input = 0
+        usr_input = '0'
 
         while not usr_input.startswith('q'):
-            if isinstance(usr_input, int):
-                indnum = usr_input
-            elif usr_input.startswith('n'):
-                indnum += 1
-            elif usr_input.startswith('p'):
-                indnum -= 1
-            indstr = '{:05d}'.format(indnum)
+            try:
+                indnum = int(usr_input)
+            except ValueError:
+                if usr_input == '' or usr_input.startswith('n'):
+                    indnum += 1
+                elif usr_input.startswith('p'):
+                    indnum -= 1
+                else:
+                    print('### Unknown input')
+            else:
+                indstr = '{:05d}'.format(indnum)
 
             try:
-                show_event(f[indstr][pn])
+                show_event(f[indstr][pn], indnum)
             except KeyError:
                 print('### KeyError on {}/{}'.format(indstr, pn))
 
             usr_input = raw_input(prompt)
 
 
-def show_event(pn):
+def show_event(pn, ind):
     """
     Plot stuff for one event. pn is the h5py group of the pixelnoise.
     """
 
-    pass
+    print(ind)
 
 
 def get_loadpath():
