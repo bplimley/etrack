@@ -193,9 +193,16 @@ def classify_etc(loadfile, savefile, v):
                 try:
                     mom = tm.MomentsReconstruction(this_track.image)
                     mom.reconstruct()
-                except NotImplementedError:
-                    pass
-                # any real exceptions?
+                except ht.NoEndsFound:
+                    mom.alpha = None
+                    errorcode = 4
+                    this_save = h5save.create_group('mom_' + trkpath)
+                    this_save.attrs.create(
+                        'errorcode', errorcode, shape=np.shape(errorcode))
+                else:
+                    # write into savefile
+                    trackio.write_object_to_hdf5(
+                        mom, h5save, 'mom_' + trkpath, pyobj_to_h5=pyobj_to_h5)
                 # write into track object
                 if mom.alpha:
                     this_track.add_algorithm(
@@ -207,9 +214,6 @@ def classify_etc(loadfile, savefile, v):
                         MTname,
                         alpha_deg=np.nan,
                         beta_deg=np.nan, info=None)
-                # write into savefile
-                trackio.write_object_to_hdf5(
-                    mom, h5save, 'mom_' + trkpath, pyobj_to_h5=pyobj_to_h5)
 
                 # run HT algorithm (v1.52)
                 vprint(v, 3, 'Running HT on track {} in {}'.format(
