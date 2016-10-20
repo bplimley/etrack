@@ -21,21 +21,24 @@ def run_main():
 
         while not usr_input.startswith('q'):
             try:
+                # assume it's a number
                 indnum = int(usr_input)
             except ValueError:
+                # it's a string command
                 if usr_input == '' or usr_input.startswith('n'):
                     indnum += 1
                 elif usr_input.startswith('p'):
                     indnum -= 1
                 else:
                     print('### Unknown input')
-            else:
-                indstr = '{:05d}'.format(indnum)
+                    skip = True
+            indstr = '{:05d}'.format(indnum)
 
-            try:
-                show_event(f[indstr][pn], indnum)
-            except KeyError:
-                print('### KeyError on {}/{}'.format(indstr, pn))
+            if not skip:
+                try:
+                    show_event(f[indstr][pn], indnum)
+                except KeyError:
+                    print('### KeyError on {}/{}'.format(indstr, pn))
 
             usr_input = raw_input(prompt)
 
