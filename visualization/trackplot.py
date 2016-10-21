@@ -443,6 +443,21 @@ def plot_arrow(start_xy, direction_rad, length=5, headlength=1,
         plt.plot(x, y, color, lw=lw)
 
 
+def get_arc2(mom):
+    """
+    get arc and start point for plot. (arc_full and EP_full)
+    """
+
+    arc_rot = get_arc(mom)
+    # moments-calculated entry point EP a.k.a. x0
+    EP_central = mom.x0
+    # transform into full image frame
+    arc_full = mom.rotated_to_full(arc_rot)
+    EP_full = mom.central_to_full(EP_central)
+
+    return arc_full, EP_full
+
+
 def plot_moments_track(mom, track, title=''):
     """
     Plot track for Don. Left pane shows full track, right pane is zoomed.
@@ -464,12 +479,7 @@ def plot_moments_track(mom, track, title=''):
         if not np.isnan(mom.rotation_angle):
             good_moments = True
     if good_moments:
-        arc_rot = get_arc(mom)
-        # moments-calculated entry point EP a.k.a. x0
-        EP_central = mom.x0
-        # transform into full image frame
-        arc_full = mom.rotated_to_full(arc_rot)
-        EP_full = mom.central_to_full(EP_central)
+        arc_full, EP_full = get_arc2(mom)
         # moments-calculated direction alpha (radians)
         #   (in segment and full frames)
         alpha = mom.alpha
