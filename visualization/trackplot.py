@@ -404,6 +404,45 @@ def compute_energy_sum(x, y, interp):
     return E
 
 
+def get_arc(mom):
+    # circle center: center of circle which contains the arc.
+    phi2 = np.abs(mom.phi) / 2
+    circle_center_rot = [0, -mom.R * np.sin(phi2) / phi2]
+
+    # arc points
+    phi0 = np.pi / 2 - phi2
+    phi1 = np.pi / 2 + phi2
+    phi = np.linspace(phi0, phi1, 1000)
+    arc_rot = np.array([mom.R * np.cos(phi) + circle_center_rot[0],
+                        mom.R * np.sin(phi) + circle_center_rot[1]])
+    return arc_rot
+
+
+def plot_arrow(start_xy, direction_rad, length=5, headlength=1,
+               flipxy=True, color='c', lw=2):
+    headangle = 45 * np.pi / 180.0
+    leftangle = direction_rad + headangle
+    rightangle = direction_rad - headangle
+    head_dxy = np.array([length * np.cos(direction_rad),
+                         length * np.sin(direction_rad)])
+    dx = np.array([
+        0, head_dxy[0],
+        head_dxy[0] - headlength * np.cos(leftangle),
+        head_dxy[0],
+        head_dxy[0] - headlength * np.cos(rightangle)])
+    dy = np.array([
+        0, head_dxy[1],
+        head_dxy[1] - headlength * np.sin(leftangle),
+        head_dxy[1],
+        head_dxy[1] - headlength * np.sin(rightangle)])
+    x = start_xy[0] + dx
+    y = start_xy[1] + dy
+    if flipxy:
+        plt.plot(y, x, color, lw=lw)
+    else:
+        plt.plot(x, y, color, lw=lw)
+
+
 def plot_moments_track(mom, track, title=''):
     """
     Plot track for Don. Left pane shows full track, right pane is zoomed.
@@ -411,46 +450,7 @@ def plot_moments_track(mom, track, title=''):
     Monte Carlo arrow.
     """
 
-    # First: get all the coordinates we need.
-
-    def get_arc(mom):
-        # circle center: center of circle which contains the arc.
-        phi2 = np.abs(mom.phi) / 2
-        circle_center_rot = [0, -mom.R * np.sin(phi2) / phi2]
-
-        # arc points
-        phi0 = np.pi / 2 - phi2
-        phi1 = np.pi / 2 + phi2
-        phi = np.linspace(phi0, phi1, 1000)
-        arc_rot = np.array([mom.R * np.cos(phi) + circle_center_rot[0],
-                            mom.R * np.sin(phi) + circle_center_rot[1]])
-        return arc_rot
-
-    def plot_arrow(start_xy, direction_rad, length=5, headlength=1,
-                   flipxy=True, color='c', lw=2):
-        headangle = 45 * np.pi / 180.0
-        leftangle = direction_rad + headangle
-        rightangle = direction_rad - headangle
-        head_dxy = np.array([length * np.cos(direction_rad),
-                             length * np.sin(direction_rad)])
-        dx = np.array([
-            0, head_dxy[0],
-            head_dxy[0] - headlength * np.cos(leftangle),
-            head_dxy[0],
-            head_dxy[0] - headlength * np.cos(rightangle)])
-        dy = np.array([
-            0, head_dxy[1],
-            head_dxy[1] - headlength * np.sin(leftangle),
-            head_dxy[1],
-            head_dxy[1] - headlength * np.sin(rightangle)])
-        x = start_xy[0] + dx
-        y = start_xy[1] + dy
-        if flipxy:
-            plt.plot(y, x, color, lw=lw)
-        else:
-            plt.plot(x, y, color, lw=lw)
-
-    # begin main function
+    # use get_arc() and plot_arrow() to get all the coordinates we need.
 
     # geant4 entry point
     g4x, g4y = get_image_xy(track)
