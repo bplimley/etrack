@@ -65,7 +65,8 @@ def plot_track_image(img):
     return ax, im
 
 
-def plot_ridgepoints(ax, ridge_points, fmtstring='c.', **kwargs):
+def plot_ridgepoints(
+        ax, ridge_points, fmtstring='c.', offset=[0, 0], **kwargs):
     """
     """
 
@@ -74,8 +75,8 @@ def plot_ridgepoints(ax, ridge_points, fmtstring='c.', **kwargs):
 
     coordinates = np.array([r.coordinates_pix for r in ridge_points])
 
-    pts = plt.plot(coordinates[:, 1],
-                   coordinates[:, 0],
+    pts = plt.plot(coordinates[:, 1] - offset[1],
+                   coordinates[:, 0] - offset[0],
                    fmtstring, axes=ax, **kwargs)
 
     plt.xlim(xmin, xmax)
