@@ -420,7 +420,7 @@ def get_arc(mom):
 
 
 def plot_arrow(start_xy, direction_rad, length=5, headlength=1,
-               flipxy=True, color='c', lw=2):
+               flipxy=True, color='c', lw=2, ls='solid'):
     headangle = 45 * np.pi / 180.0
     leftangle = direction_rad + headangle
     rightangle = direction_rad - headangle
@@ -439,9 +439,9 @@ def plot_arrow(start_xy, direction_rad, length=5, headlength=1,
     x = start_xy[0] + dx
     y = start_xy[1] + dy
     if flipxy:
-        plt.plot(y, x, color, lw=lw)
+        plt.plot(y, x, color=color, lw=lw, ls=ls)
     else:
-        plt.plot(x, y, color, lw=lw)
+        plt.plot(x, y, color=color, lw=lw, ls=ls)
 
 
 def get_arc2(mom):
