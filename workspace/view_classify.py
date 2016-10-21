@@ -21,12 +21,7 @@ def run_main():
         fig = None
 
         while not usr_input.startswith('q'):
-            # first, close previous plot if exists
-            try:
-                plt.close(fig)
-            except TypeError:
-                # fig is None
-                pass
+            skip = False
 
             # parse the input
             try:
@@ -46,13 +41,20 @@ def run_main():
             # show the event
             if not skip:
                 try:
-                    fig = show_event(f[indstr][pn], indnum)
+                    print('Event {}'.format(indstr))
+                    fig = show_event(indstr, *objs)
                 except KeyError:
                     print('### KeyError on {}/{}'.format(indstr, pn))
 
             # next input
             usr_input = raw_input(prompt)
 
+            # close previous plot if exists
+            try:
+                plt.close(fig)
+            except TypeError:
+                # fig is None
+                pass
 
 def show_event(pn, ind):
     """
