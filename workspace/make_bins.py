@@ -73,7 +73,7 @@ def plot_beta_dists(Etot, beta):
         plt.ylabel('fraction of events')
 
 
-def find_energy_bins(Etot, n=10):
+def find_energy_bins(Etot, n=8):
     """
     Find equal-area energy bins, except 0-100 keV. n is the number of bins.
     """
