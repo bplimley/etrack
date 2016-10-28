@@ -10,6 +10,7 @@ import os
 import multiprocessing
 import psutil
 import progressbar
+import socket
 
 from etrack.reconstruction.trackdata import Track, G4Track
 import etrack.io.trackio as trackio
@@ -49,7 +50,11 @@ def file_vars():
     """
 
     multi_flag = False   # run in parallel - turn off to debug
-    server_flag = False
+    if socket.gethostname() == 'plimley-Vostro-mint17':
+        server_flag = False
+    elif socket.gethostname().startswith('n0'):
+        server_flag = True
+
     if server_flag:
         n_threads = 11
         loadpath = '/global/home/users/bcplimley/multi_angle/DTbatch01_h5'
