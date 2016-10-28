@@ -49,7 +49,7 @@ def file_vars():
     Gets loaded in run_main() as well as runfile(loadname).
     """
 
-    multi_flag = False   # run in parallel - turn off to debug
+    multi_flag = True   # run in parallel - turn off to debug
     if socket.gethostname() == 'plimley-Vostro-mint17':
         server_flag = False
     elif socket.gethostname().startswith('n0'):
@@ -67,7 +67,7 @@ def file_vars():
     loadglob = 'MultiAngle_DT_*_*.h5'
     saveglob = 'MultiAngle_algs_*_*.h5'
 
-    v = 2   # verbosity
+    v = 1   # verbosity
 
     return (multi_flag, server_flag, loadpath, savepath, loadglob, saveglob, v,
             n_threads)
