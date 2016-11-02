@@ -158,8 +158,10 @@ def get_results(loadfile, savefile, v):
     energy_track_kev = np.nan * np.ones(datalen)
     alpha_true_deg = np.nan * np.ones(datalen)
     beta_true_deg = np.nan * np.ones(datalen)
-    errorcode = np.nan * np.ones(datalen)
-    filename = np.nan * np.ones(datalen)
+    trk_errorcode = np.nan * np.ones(datalen)
+    cl_errorcode = np.nan * np.ones(datalen)
+    mom_errorcode = np.nan * np.ones(datalen)
+    filename = ['' for _ in xrange(datalen)]
     fileind = np.nan * np.ones(datalen)
     # ridge following
     alpha_ridge_deg = np.nan * np.ones(datalen)
@@ -194,7 +196,9 @@ def get_results(loadfile, savefile, v):
                 clstr = 'cl_' + indstr
                 momstr = 'mom_' + indstr
 
-                this_errorcode = 0
+                this_trk_errorcode = 0
+                this_cl_errorcode = 0
+                this_mom_errorcode = 0
 
                 # try:
                 this_trk = Track.from_hdf5(f[trkstr][pn])
