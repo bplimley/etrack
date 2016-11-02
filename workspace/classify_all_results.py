@@ -93,8 +93,8 @@ def runfile(loadname):
         file_vars())
 
     in_place_flag = False
-    phflag = True
-    doneflag = False
+    phflag = False
+    doneflag = True
 
     # setup
     opts = JobOptions(
