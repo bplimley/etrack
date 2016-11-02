@@ -216,7 +216,10 @@ def get_results(loadfile, savefile, v):
                     if read_errorcode > 0:
                         # multiplicity event
                         this_trk_errorcode = read_errorcode
+                        trk_errorcode[ind] = this_trk_errorcode
                         continue
+                    else:
+                        raise
                 energy_tot_kev[ind] = this_trk.g4track.energy_tot_kev
                 energy_dep_kev[ind] = this_trk.g4track.energy_dep_kev
                 energy_track_kev[ind] = this_trk.energy_kev
