@@ -255,6 +255,10 @@ def get_results(loadfile, savefile, v):
                 else:
                     if this_mom.error == 'CheckSegmentBoxError':
                         this_mom_errorcode = 9
+                    elif this_mom.error == 'what the heck happened?':
+                        this_mom.errorcode = 11
+                    elif this_mom.error == 'Rotation angle conditions not met':
+                        this_mom.errorcode = 12
                     else:
                         phi_deg[ind] = this_mom.phi / np.pi * 180
                         edge_pixels[ind] = this_mom.edge_pixel_count
