@@ -187,7 +187,7 @@ def get_results(loadfile, savefile, v):
                 pbar = progressbar.ProgressBar(
                     widgets=[progressbar.Percentage(), ' ',
                              progressbar.Bar(), ' ',
-                             progressbar.ETA()], maxval=len(f))
+                             progressbar.ETA()], maxval=datalen)
                 pbar.start()
 
             for ind in xrange(datalen):
@@ -257,8 +257,11 @@ def get_results(loadfile, savefile, v):
                 cl_errorcode[ind] = this_cl_errorcode
                 mom_errorcode[ind] = this_mom_errorcode
 
+                if progressflag:
+                    pbar.update(ind)
 
-                errorcode[ind] = this_errorcode
+            if progressflag:
+                pbar.finish()
 
     except NotImplementedError:
         pass
