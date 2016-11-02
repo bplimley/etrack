@@ -200,6 +200,9 @@ def get_results(loadfile, savefile, v):
                 this_cl_errorcode = 0
                 this_mom_errorcode = 0
 
+                filename[ind] = os.path.split(loadfile)[-1]
+                fileind[ind] = ind
+
                 try:
                     this_trk = Track.from_hdf5(f[trkstr][pn])
                 # except KeyError:
@@ -215,8 +218,6 @@ def get_results(loadfile, savefile, v):
                 energy_track_kev[ind] = this_trk.energy_kev
                 alpha_true_deg[ind] = this_trk.g4track.alpha_deg
                 beta_true_deg[ind] = this_trk.g4track.beta_deg
-                filename[ind] = os.path.split(loadfile)[-1]
-                fileind[ind] = ind
                 alpha_ridge_deg[ind] = this_trk[HTname].alpha_deg
                 alpha_moments_deg[ind] = this_trk[MTname].alpha_deg
 
