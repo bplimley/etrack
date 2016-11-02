@@ -261,6 +261,71 @@ def get_results(loadfile, savefile, v):
                 if progressflag:
                     pbar.update(ind)
 
+            # save to file
+            # basic info
+            h5save.create_dataset(
+                'energy_tot_kev', shape=(datalen,), data=energy_tot_kev)
+            h5save.create_dataset(
+                'energy_dep_kev', shape=(datalen,), data=energy_dep_kev)
+            h5save.create_dataset(
+                'energy_track_kev', shape=(datalen,), data=energy_track_kev)
+            h5save.create_dataset(
+                'alpha_true_deg', shape=(datalen,), data=alpha_true_deg)
+            h5save.create_dataset(
+                'beta_true_deg', shape=(datalen,), data=beta_true_deg)
+            h5save.create_dataset(
+                'trk_errorcode', shape=(datalen,), data=trk_errorcode,
+                dtype='f2')
+            h5save.create_dataset(
+                'cl_errorcode', shape=(datalen,), data=cl_errorcode,
+                dtype='f2')
+            h5save.create_dataset(
+                'mom_errorcode', shape=(datalen,), data=mom_errorcode,
+                dtype='f2')
+            h5save.create_dataset(
+                'filename', shape=(datalen,), data=filename,
+                dtype=h5py.special_dtype(vlen=str))
+            h5save.create_dataset(
+                'fileind', shape=(datalen,), data=fileind,
+                dtype='f4')
+            # ridge following
+            h5save.create_dataset(
+                'alpha_ridge_deg', shape=(datalen,), data=alpha_ridge_deg)
+            # moments
+            h5save.create_dataset(
+                'alpha_moments_deg', shape=(datalen,), data=alpha_moments_deg)
+            # rejection parameters
+            h5save.create_dataset(
+                'min_end_energy_kev', shape=(datalen,),
+                data=min_end_energy_kev)
+            h5save.create_dataset(
+                'max_end_energy_kev', shape=(datalen,),
+                data=max_end_energy_kev)
+            h5save.create_dataset(
+                'n_ends', shape=(datalen,), data=n_ends,
+                dtype='f4')
+            h5save.create_dataset(
+                'phi_deg', shape=(datalen,), data=phi_deg)
+            h5save.create_dataset(
+                'edge_pixels', shape=(datalen,), data=edge_pixels,
+                dtype='f4')
+            h5save.create_dataset(
+                'edge_segments', shape=(datalen,), data=edge_segments,
+                dtype='f2')
+            # Monte Carlo
+            h5save.create_dataset(
+                'overlap_flag', shape=(datalen,), data=overlap_flag,
+                dtype='f2')
+            h5save.create_dataset(
+                'wrong_end_flag', shape=(datalen,), data=wrong_end_flag,
+                dtype='f2')
+            h5save.create_dataset(
+                'early_scatter_flag', shape=(datalen,),
+                data=early_scatter_flag, dtype='f2')
+            h5save.create_dataset(
+                'total_scatter_angle_deg', shape=(datalen,),
+                data=total_scatter_angle_deg)
+
             if progressflag:
                 pbar.finish()
 
