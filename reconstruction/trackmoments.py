@@ -78,6 +78,7 @@ class MomentsReconstruction(object):
             pixel_size_um=read_dict['pixel_size_um'],
             starting_distance_um=read_dict['starting_distance_um'])
         # fill in outputs
+        new_obj.error = read_dict['error']
         if read_dict['ends_energy'] is not None:
             # (actually required by the data_formats class)
             new_obj.ends_energy = read_dict['ends_energy']
