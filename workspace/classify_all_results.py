@@ -206,6 +206,11 @@ def get_results(loadfile, savefile, v):
                 # track and algorithm alpha's
                 try:
                     this_trk = Track.from_hdf5(f[trkstr][pn])
+                except KeyError:
+                    # could be an MException from MATLAB
+                    this_trk_errorcode = 10
+                    trk_errorcode[ind] = this_trk_errorcode
+                    continue
                 except trackio.InterfaceError:
                     read_errorcode = f[trkstr][pn].attrs['errorcode']
                     if read_errorcode > 0:
