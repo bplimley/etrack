@@ -203,10 +203,9 @@ def get_results(loadfile, savefile, v):
                 filename[ind] = os.path.split(loadfile)[-1]
                 fileind[ind] = ind
 
+                # track and algorithm alpha's
                 try:
                     this_trk = Track.from_hdf5(f[trkstr][pn])
-                # except KeyError:
-                #     pass
                 except trackio.InterfaceError:
                     read_errorcode = f[trkstr][pn].attrs['errorcode']
                     if read_errorcode > 0:
@@ -221,10 +220,8 @@ def get_results(loadfile, savefile, v):
                 alpha_ridge_deg[ind] = this_trk[HTname].alpha_deg
                 alpha_moments_deg[ind] = this_trk[MTname].alpha_deg
 
-                # try:
+                # classifier
                 this_cl = cl.Classifier.from_hdf5(f[clstr][pn])
-                # except KeyError:
-                #     pass
                 min_end_energy_kev[ind] = this_cl.min_end_energy
                 max_end_energy_kev[ind] = this_cl.max_end_energy
                 n_ends[ind] = this_cl.n_ends
@@ -237,6 +234,7 @@ def get_results(loadfile, savefile, v):
                     total_scatter_angle_deg[ind] = (
                         this_cl.total_scatter_angle / np.pi * 180)
 
+                # moments info
                 try:
                     this_mom = tm.MomentsReconstruction.from_hdf5(
                         f[momstr][pn])
