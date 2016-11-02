@@ -200,12 +200,16 @@ def get_results(loadfile, savefile, v):
                 this_cl_errorcode = 0
                 this_mom_errorcode = 0
 
-                # try:
-                this_trk = Track.from_hdf5(f[trkstr][pn])
+                try:
+                    this_trk = Track.from_hdf5(f[trkstr][pn])
                 # except KeyError:
                 #     pass
-                # except trackio.InterfaceError:
-                #     pass
+                except trackio.InterfaceError:
+                    read_errorcode = f[trkstr][pn].attrs['errorcode']
+                    if read_errorcode > 0:
+                        # multiplicity event
+                        this_trk_errorcode = read_errorcode
+                        continue
                 energy_tot_kev[ind] = this_trk.g4track.energy_tot_kev
                 energy_dep_kev[ind] = this_trk.g4track.energy_dep_kev
                 energy_track_kev[ind] = this_trk.energy_kev
@@ -225,18 +229,34 @@ def get_results(loadfile, savefile, v):
                 n_ends[ind] = this_cl.n_ends
                 overlap_flag[ind] = this_cl.overlap
                 wrong_end_flag[ind] = this_cl.wrong_end
-                early_scatter_flag[ind] = this_cl.early_scatter
-                total_scatter_angle_deg[ind] = (
-                    this_cl.total_scatter_angle / np.pi * 180)
+                if this_cl.error == 'TrackTooShortError':
+                    this_cl_errorcode = 8
+                else:
+                    early_scatter_flag[ind] = this_cl.early_scatter
+                    total_scatter_angle_deg[ind] = (
+                        this_cl.total_scatter_angle / np.pi * 180)
 
-                # try:
-                this_mom = tm.MomentsReconstruction.from_hdf5(
-                    f[momstr][pn])
-                # except KeyError:
-                #     pass
-                phi_deg[ind] = this_mom.phi / np.pi * 180
-                edge_pixels[ind] = this_mom.edge_pixel_count
-                edge_segments[ind] = this_mom.edge_pixel_segments
+                try:
+                    this_mom = tm.MomentsReconstruction.from_hdf5(
+                        f[momstr][pn])
+                except trackio.InterfaceError:
+                    if f[momstr][pn].attrs['errorcode'] == 4:
+                        # no ends found
+                        this_mom_errorcode = 4
+                    else:
+                        raise
+                else:
+                    if this_mom.error == 'CheckSegmentBoxError':
+                        this_mom_errorcode = 9
+                    else:
+                        phi_deg[ind] = this_mom.phi / np.pi * 180
+                        edge_pixels[ind] = this_mom.edge_pixel_count
+                        edge_segments[ind] = this_mom.edge_pixel_segments
+
+                trk_errorcode[ind] = this_trk_errorcode
+                cl_errorcode[ind] = this_cl_errorcode
+                mom_errorcode[ind] = this_mom_errorcode
+
 
                 errorcode[ind] = this_errorcode
 
