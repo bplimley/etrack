@@ -65,7 +65,7 @@ def main():
 
     matrix = construct_tally_matrix(datadict, energy_bin_edges, beta_bin_edges)
 
-    return matrix
+    write_csv('case_tally.csv', matrix, energy_bin_edges, beta_bin_edges)
 
 
 def sort_cases(datadict):
