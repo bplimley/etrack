@@ -57,6 +57,7 @@ def main():
     filename = get_filename()
     datadict = get_data_dict(filename)
     datalen = get_datalen(datadict)
+    datadict['case'] = np.ones(shape=(datalen,), dtype=int) * -1
 
     energy_lg = (datadict['energy_tot_kev'] > 100)
     print(' ')
@@ -69,6 +70,7 @@ def main():
     for n in xrange(23):
         cond_list = condition_lookup(n)
         this_lg = construct_logical(datadict, cond_list)
+        datadict['case'][this_lg] = n
 
         this_n = np.sum(this_lg)
         this_nE = np.sum(this_lg & energy_lg)
