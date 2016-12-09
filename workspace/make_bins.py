@@ -179,6 +179,37 @@ def run_main():
     print(' ')
 
 
+def hardcoded_bins():
+    """
+    Save time from main() by just hardcoding the energy and beta bin edges.
+    This is for 8 energy bins and 10 beta bins (spanning + and - beta).
+    """
+
+    energy_bin_edges = np.array([
+        0,
+        100.0,
+        157.3932,
+        219.1005,
+        284.3663,
+        348.5078,
+        404.5489,
+        446.8330,
+        661.9864])
+
+    beta_bin_edges = np.array([
+        -90.0,
+        -53.13,
+        -36.87,
+        -23.58,
+        -11.537,
+        0,
+        11.537,
+        23.58,
+        36.87,
+        53.13,
+        90.0])
+
+    return energy_bin_edges, beta_bin_edges
 
 if __name__ == '__main__':
     run_main()
