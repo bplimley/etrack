@@ -53,6 +53,32 @@ def get_filename():
     return fullname
 
 
+def main():
+    filename = get_filename()
+    datadict = get_data_dict(filename)
+    datalen = get_datalen(datadict)
+
+    print('Data length: {}'.format(datalen))
+    energy_lg = (datadict['energy_tot_kev'] > 100)
+    print('  Above 100keV: {}'.format(np.sum(energy_lg)))
+
+    n_tot = 0
+    nE_tot = 0
+    for n in xrange(23):
+        cond_list = condition_lookup(n)
+        this_lg = construct_logical(datadict, cond_list)
+
+        this_n = np.sum(this_lg)
+        this_nE = np.sum(this_lg & energy_lg)
+        n_tot += this_n
+        nE_tot += this_nE
+
+        print('Case #{:2d}:   n = {:7d}      n(>100keV) = {:7d}'.format(
+            n, this_n, this_nE))
+
+    print('        n_tot = {:7d}  n(>100keV)_tot = {:7d}'.format(
+        n_tot, nE_tot))
+
 
 class Condition(object):
     """Simple container to contain the condition key, operator, and value."""
