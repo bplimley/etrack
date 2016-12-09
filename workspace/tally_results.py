@@ -41,7 +41,7 @@ TEST_KEY = 'energy_tot_kev'
 ESCAPE_KEV = 2.0
 MAX_END_MIN_KEV = 45.0
 MIN_END_MAX_KEV = 25.0
-PHI_MAX = np.pi / 2
+PHI_MAX_DEG = 90
 EDGE_PIXELS_MAX = 4
 EDGE_SEGMENTS_MAX = 1
 
@@ -161,7 +161,7 @@ def get_data_dict(filename):
         (datadict['min_end_energy_kev'] < MIN_END_MAX_KEV) &
         (datadict['n_ends'] > 0))
     datadict['moments_accept'] = (
-        (np.abs(datadict['phi']) < PHI_MAX) &
+        (np.abs(datadict['phi_deg']) < PHI_MAX_DEG) &
         (datadict['edge_pixels'] <= EDGE_PIXELS_MAX) &
         (datadict['edge_segments'] <= EDGE_SEGMENTS_MAX))
     datadict['ridge_accept'] = np.logical_not(
