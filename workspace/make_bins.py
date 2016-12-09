@@ -194,7 +194,7 @@ def hardcoded_bins():
         348.5078,
         404.5489,
         446.8330,
-        661.9864])
+        525.0])
 
     beta_bin_edges = np.array([
         -90.0,
