@@ -36,6 +36,7 @@ import ipdb as pdb
 from compile_classify import data_variable_list
 
 TEST_KEY = 'energy_tot_kev'
+NUM_CASES = 23
 
 # thresholds
 ESCAPE_KEV = 2.0
@@ -72,7 +73,7 @@ def sort_cases(datadict):
 
     n_tot = 0
     nE_tot = 0
-    for n in xrange(23):
+    for n in xrange(NUM_CASES):
         cond_list = condition_lookup(n)
         this_lg = construct_logical(datadict, cond_list)
         datadict['case'][this_lg] = n
