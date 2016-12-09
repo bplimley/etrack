@@ -46,10 +46,12 @@ EDGE_PIXELS_MAX = 4
 EDGE_SEGMENTS_MAX = 1
 
 
-def main():
+def get_filename():
     filepath = '/media/plimley/TEAM 7B/clresults_10.5_batch01'
     filename = 'compiled_results.h5'
-    datadict = get_data_dict(os.path.join(filepath, filename))
+    fullname = os.path.join(filepath, filename)
+    return fullname
+
 
 
 class Condition(object):
@@ -142,7 +144,7 @@ def get_data_dict(filename):
     datadict = {}
 
     with h5py.File(filename, 'r') as f:
-        datalen = f[TEST_KEY].shape[0]
+        datalen = get_datalen(f)
         for key in varlist:
             datadict[key] = np.empty(datalen)
             f[key].read_direct(datadict[key])
@@ -162,6 +164,11 @@ def get_data_dict(filename):
     datadict['ridge_accept'] = np.logical_not(
         np.isnan(datadict['alpha_ridge_deg']))
     return datadict
+
+
+def get_datalen(datadict_like):
+    """Get the length of the data vectors."""
+    return datadict_like[TEST_KEY].shape[0]
 
 
 if __name__ == '__main__':
