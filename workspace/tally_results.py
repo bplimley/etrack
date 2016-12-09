@@ -120,7 +120,7 @@ def condition_lookup(casenum):
     if casenum >= 1 and casenum <= 9:
         # escape
         cond_list.append(Condition('is_contained', 0))
-    else:
+    elif casenum > 0:
         # contained
         cond_list.append(Condition('is_contained', 1))
 
