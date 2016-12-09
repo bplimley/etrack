@@ -146,7 +146,10 @@ def get_data_dict(filename):
     with h5py.File(filename, 'r') as f:
         datalen = get_datalen(f)
         for key in varlist:
-            datadict[key] = np.empty(datalen)
+            if key != 'filename':
+                datadict[key] = np.empty(shape=(datalen,))
+            else:
+                datadict[key] = np.empty(shape=(datalen,), dtype='|S28')
             f[key].read_direct(datadict[key])
 
     # make implicit flags/parameters explicit
