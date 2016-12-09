@@ -34,6 +34,7 @@ import os
 import ipdb as pdb
 
 from compile_classify import data_variable_list
+from make_bins import hardcoded_bins as get_bins
 
 TEST_KEY = 'energy_tot_kev'
 NUM_CASES = 23
@@ -59,6 +60,12 @@ def main():
     datadict = get_data_dict(filename)
 
     n_tot, nE_tot = sort_cases(datadict)
+
+    energy_bin_edges, beta_bin_edges = get_bins()
+
+    matrix = construct_tally_matrix(datadict, energy_bin_edges, beta_bin_edges)
+
+    return matrix
 
 
 def sort_cases(datadict):
