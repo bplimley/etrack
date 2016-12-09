@@ -85,16 +85,16 @@ def condition_lookup(casenum):
 
     if casenum == 0:
         #  0: multiplicity / bad segmentation / corrupted file
-        cond_list = [Condition('trk_errorcode', 0, op='!=')]
+        cond_list = [Condition('no_trk_error', 0)]
     else:
-        cond_list = [Condition('trk_errorcode', 0)]
+        cond_list = [Condition('no_trk_error', 1)]
 
     if casenum >= 1 and casenum <= 9:
         # escape
-        cond_list.append(Condition('is_escape', 1))
+        cond_list.append(Condition('is_contained', 0))
     else:
         # contained
-        cond_list.append(Condition('is_escape', 0))
+        cond_list.append(Condition('is_contained', 1))
 
     if casenum == 1 or casenum == 10:
         # endpoint not found (or, not accepted)
@@ -155,7 +155,7 @@ def get_data_dict(filename):
             f[key].read_direct(datadict[key])
 
     # make implicit flags/parameters explicit
-    datadict['no_trk_error'] = (datadict['trk_errorcode'] == 0)
+    datadict['no_trk_error'] = (datadict['trk_errorcode'] == 0).astype(int)
     datadict['is_contained'] = np.abs(datadict['energy_tot_kev'] -
                                       datadict['energy_dep_kev']) < ESCAPE_KEV
     datadict['endpoint_accept'] = (
