@@ -85,7 +85,7 @@ def find_energy_bins(Etot, n=8):
     events_per_bin = float(N - ind100) / (n - 1)
 
     energy_bins = [0]
-    ind_edges = np.arange(ind100, N+1, events_per_bin)
+    ind_edges = np.arange(ind100, N+1, events_per_bin, dtype=int)
     for ind in ind_edges:
         try:
             energy_bins.append(s[ind])
