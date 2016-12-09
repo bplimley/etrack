@@ -162,8 +162,22 @@ def run_main():
 
     loadfile = 'energy_beta.txt'
     Etot, Edep, beta = load_energy_beta(loadfile)
+    energy_bins = find_energy_bins(Etot)
+    beta_bins = find_beta_bins()
 
-    find_energy_bins(Etot)
+    # plot_energy_bins(Etot, energy_bins)
+
+    tally_matrix = tally_bins(Etot, beta, energy_bins, beta_bins)
+    print('Tally matrix:')
+    print(tally_matrix)
+    print(' ')
+    print('Energy bin edges:')
+    print(energy_bins)
+    print(' ')
+    print('Beta bin edges:')
+    print(beta_bins)
+    print(' ')
+
 
 
 if __name__ == '__main__':
