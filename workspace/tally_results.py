@@ -56,6 +56,11 @@ def get_filename():
 def main():
     filename = get_filename()
     datadict = get_data_dict(filename)
+
+    n_tot, nE_tot = sort_cases(datadict)
+
+
+def sort_cases(datadict):
     datalen = get_datalen(datadict)
     datadict['case'] = np.ones(shape=(datalen,), dtype=int) * -1
 
@@ -82,6 +87,8 @@ def main():
 
     print('        n_tot = {:7d}  n(>100keV)_tot = {:7d}'.format(
         n_tot, nE_tot))
+
+    return n_tot, nE_tot
 
 
 class Condition(object):
