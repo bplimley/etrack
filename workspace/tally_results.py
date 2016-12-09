@@ -58,9 +58,11 @@ def main():
     datadict = get_data_dict(filename)
     datalen = get_datalen(datadict)
 
-    print('Data length: {}'.format(datalen))
     energy_lg = (datadict['energy_tot_kev'] > 100)
+    print(' ')
+    print('Data length: {}'.format(datalen))
     print('  Above 100keV: {}'.format(np.sum(energy_lg)))
+    print(' ')
 
     n_tot = 0
     nE_tot = 0
