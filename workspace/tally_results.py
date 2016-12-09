@@ -91,6 +91,33 @@ def sort_cases(datadict):
     return n_tot, nE_tot
 
 
+def show_event(datadict, n):
+    """
+    Display the relevant flags for a single event.
+    """
+    for flag in flag_list():
+        value = datadict[flag][n]
+        if type(value) is np.bool_:
+            val = int(value)
+        else:
+            val = value
+        print('{:20s}: {}'.format(flag, val))
+
+
+def flag_list():
+    """List of all the boolean flags used for cases"""
+    flags = (
+        'no_trk_error',
+        'is_contained',
+        'endpoint_accept',
+        'wrong_end_flag',
+        'ridge_accept',
+        'moments_accept',
+        'early_scatter_flag',
+    )
+    return flags
+
+
 class Condition(object):
     """Simple container to contain the condition key, operator, and value."""
 
