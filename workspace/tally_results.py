@@ -278,5 +278,32 @@ def get_datalen(datadict_like):
     return datadict_like[TEST_KEY].shape[0]
 
 
+def write_csv(filename, matrix, energy_bins, beta_bins):
+    """
+    Write a CSV file with all the numbers in it.
+    """
+
+    with open(filename, 'w') as f:
+        f.write(
+            'beta min,beta max,' +
+            ','.join(
+                [str(c) for c in xrange(NUM_CASES)]) +
+            '\n'
+        )
+        for i in xrange(len(energy_bins[:-1])):
+            f.write(
+                '\n,,{} keV < E_tot < {} keV:\n'.format(
+                    energy_bins[i], energy_bins[i + 1]))
+
+            for j in xrange(len(beta_bins[:-1])):
+                f.write(
+                    '{}deg,{}deg,'.format(
+                        beta_bins[j], beta_bins[j + 1]) +
+                    ','.join(
+                        [str(el) for el in matrix[i, j, :]]) +
+                    '\n'
+                )
+
+
 if __name__ == '__main__':
     main()
