@@ -170,7 +170,7 @@ def condition_lookup(casenum):
     if (casenum >= 2 and casenum <= 5) or (casenum >= 11 and casenum <= 14):
         # wrong end
         cond_list.append(Condition('wrong_end_flag', 1))
-    elif casenum > 0:
+    elif (casenum >= 6 and casenum <= 9) or casenum >= 15:
         # right end
         cond_list.append(Condition('wrong_end_flag', 0))
 
