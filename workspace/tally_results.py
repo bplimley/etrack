@@ -134,6 +134,8 @@ def condition_lookup(casenum):
         # no early scatter
         cond_list.append(Condition('early_scatter_flag', 0))
 
+    return cond_list
+
 
 def get_data_dict(filename):
     """
