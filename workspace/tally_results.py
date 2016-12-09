@@ -92,6 +92,36 @@ def sort_cases(datadict):
     return n_tot, nE_tot
 
 
+def construct_tally_matrix(datadict, energy_bin_edges, beta_bin_edges):
+    """
+    Build a matrix of number of events, split by energy, beta, and case #.
+    """
+
+    if 'case' not in datadict:
+        raise KeyError('Run sort_cases() before construct_tally_matrix()')
+
+    matrix = np.zeros(shape=(
+        len(energy_bin_edges) - 1,
+        len(beta_bin_edges) - 1,
+        NUM_CASES), dtype=int)
+
+    for i in xrange(len(energy_bin_edges[:-1])):
+        energy_lg = (
+            (datadict['energy_tot_kev'] > energy_bin_edges[i]) &
+            (datadict['energy_tot_kev'] <= energy_bin_edges[i + 1]))
+
+        for j in xrange(len(beta_bin_edges[:-1])):
+            beta_lg = (
+                (datadict['beta_true_deg'] > beta_bin_edges[j]) &
+                (datadict['beta_true_deg'] <= beta_bin_edges[j + 1]))
+
+            for k in xrange(NUM_CASES):
+                case_lg = (datadict['case'] == k)
+                matrix[i, j, k] = np.sum(energy_lg & beta_lg & case_lg)
+
+    return matrix
+
+
 def show_event(datadict, n):
     """
     Display the relevant flags for a single event.
