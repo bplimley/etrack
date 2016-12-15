@@ -3,29 +3,36 @@
 # tally results from compiled_results.h5 (result of compile_classify.py)
 #
 # Classification cases:
-#  0: multiplicity / bad segmentation / corrupted file
-#  1: escape. endpoint not found (or rejected)
-#  2: escape. endpoint accepted. wrong end. both reject
-#  3: escape. endpoint accepted. wrong end. moments accepts
-#  4: escape. endpoint accepted. wrong end. ridge accepts
-#  5: escape. endpoint accepted. wrong end. both accept
-#  6: escape. endpoint accepted. right end. both reject
-#  7: escape. endpoint accepted. right end. moments accepts
-#  8: escape. endpoint accepted. right end. ridge accepts
-#  9: escape. endpoint accepted. right end. both accept
-# 10: contained. endpoint not found (or rejected)
-# 11: contained. endpoint accepted. wrong end. both reject
-# 12: contained. endpoint accepted. wrong end. moments accepts
-# 13: contained. endpoint accepted. wrong end. ridge accepts
-# 14: contained. endpoint accepted. wrong end. both accept
-# 15: contained. endpoint accepted. right end. both reject. early scatter
-# 16: contained. endpoint accepted. right end. both reject. no early scatter
-# 17: contained. endpoint accepted. right end. moments accepts. early scatter
-# 18: contained. endpoint accepted. right end. moments accepts. no early scattr
-# 19: contained. endpoint accepted. right end. ridge accepts. early scatter
-# 20: contained. endpoint accepted. right end. ridge accepts. no early scatter
-# 21: contained. endpoint accepted. right end. both accept. early scatter
-# 22: contained. endpoint accepted. right end. both accept. no early scatter
+# [old#] [new#] [description]
+#  0  0 multiplicity / bad segmentation / corrupted file
+#  1  1 escape. endpoint not found
+#     2 escape. endpoint rejected by min end (>25 keV)
+#     3 escape. endpoint rejected by max end (<45 keV)
+#     4 escape. endpoint rejected by min and max ends
+#  2  5 escape. endpoint accepted. wrong end. both reject
+#  3  6 escape. endpoint accepted. wrong end. moments accepts
+#  4  7 escape. endpoint accepted. wrong end. ridge accepts
+#  5  8 escape. endpoint accepted. wrong end. both accept
+#  6  9 escape. endpoint accepted. right end. both reject
+#  7 10 escape. endpoint accepted. right end. moments accepts
+#  8 11 escape. endpoint accepted. right end. ridge accepts
+#  9 12 escape. endpoint accepted. right end. both accept
+# 10 13 contained. endpoint not found
+#    14 contained. endpoint rejected by min end (>25 keV)
+#    15 contained. endpoint rejected by max end (<45 keV)
+#    16 contained. endpoint rejected by min and max ends
+# 11 17 contained. endpoint accepted. wrong end. both reject
+# 12 18 contained. endpoint accepted. wrong end. moments accepts
+# 13 19 contained. endpoint accepted. wrong end. ridge accepts
+# 14 20 contained. endpoint accepted. wrong end. both accept
+# 15 21 contained. endpoint accepted. right end. both reject. early sc
+# 16 22 contained. endpoint accepted. right end. both reject. no early sc
+# 17 23 contained. endpoint accepted. right end. moments accepts. early sc
+# 18 24 contained. endpoint accepted. right end. moments accepts. no early sc
+# 19 25 contained. endpoint accepted. right end. ridge accepts. early sc
+# 20 26 contained. endpoint accepted. right end. ridge accepts. no early sc
+# 21 27 contained. endpoint accepted. right end. both accept. early sc
+# 22 28 contained. endpoint accepted. right end. both accept. no early sc
 
 from __future__ import print_function
 import numpy as np
@@ -37,7 +44,7 @@ from compile_classify import data_variable_list
 from make_bins import hardcoded_bins as get_bins
 
 TEST_KEY = 'energy_tot_kev'
-NUM_CASES = 23
+NUM_CASES = 29
 
 # thresholds
 ESCAPE_KEV = 2.0
@@ -191,48 +198,65 @@ def condition_lookup(casenum):
     else:
         cond_list = [Condition('no_trk_error', 1)]
 
-    if casenum >= 1 and casenum <= 9:
+    if casenum >= 1 and casenum <= 12:
         # escape
         cond_list.append(Condition('is_contained', 0))
     elif casenum > 0:
         # contained
         cond_list.append(Condition('is_contained', 1))
 
-    if casenum == 1 or casenum == 10:
-        # endpoint not found (or, not accepted)
-        cond_list.append(Condition('endpoint_accept', 0))
+    if casenum == 1 or casenum == 13:
+        # endpoint not found
+        cond_list.append(Condition('endpoint_found', 0))
+    elif casenum == 2 or casenum == 14:
+        # endpoint found, min end reject, max end accept
+        cond_list.append(Condition('endpoint_found', 1))
+        cond_list.append(Condition('min_end_accept', 0))
+        cond_list.append(Condition('max_end_accept', 1))
+    elif casenum == 3 or casenum == 15:
+        # endpoint found, max end reject, min end accept
+        cond_list.append(Condition('endpoint_found', 1))
+        cond_list.append(Condition('min_end_accept', 1))
+        cond_list.append(Condition('max_end_accept', 0))
+    elif casenum == 4 or casenum == 16:
+        # endpoint found, both max and min reject
+        cond_list.append(Condition('endpoint_found', 1))
+        cond_list.append(Condition('min_end_accept', 0))
+        cond_list.append(Condition('max_end_accept', 0))
     elif casenum > 0:
-        # endpoint accepted
-        cond_list.append(Condition('endpoint_accept', 1))
+        # endpoint found, both max and min accept
+        cond_list.append(Condition('endpoint_found', 1))
+        cond_list.append(Condition('min_end_accept', 1))
+        cond_list.append(Condition('max_end_accept', 1))
 
-    if (casenum >= 2 and casenum <= 5) or (casenum >= 11 and casenum <= 14):
+    if (casenum >= 5 and casenum <= 8) or (casenum >= 17 and casenum <= 20):
         # wrong end
         cond_list.append(Condition('wrong_end_flag', 1))
-    elif (casenum >= 6 and casenum <= 9) or casenum >= 15:
+    elif (casenum >= 9 and casenum <= 12) or casenum >= 21:
         # right end
         cond_list.append(Condition('wrong_end_flag', 0))
 
-    if casenum in (2, 6, 11, 15, 16):
+    if casenum in (5, 9, 17, 21, 22):
         # both reject
         cond_list.append(Condition('ridge_accept', 0))
         cond_list.append(Condition('moments_accept', 0))
-    elif casenum in (3, 7, 12, 17, 18):
+    elif casenum in (6, 10, 19, 23, 24):
         # moments accepts
         cond_list.append(Condition('ridge_accept', 0))
         cond_list.append(Condition('moments_accept', 1))
-    elif casenum in (4, 8, 13, 19, 20):
+    elif casenum in (7, 11, 19, 25, 26):
         # ridge accepts
         cond_list.append(Condition('ridge_accept', 1))
         cond_list.append(Condition('moments_accept', 0))
-    elif casenum in (5, 9, 14, 21, 22):
+    elif casenum in (8, 12, 20, 27, 28):
         # both accept
         cond_list.append(Condition('ridge_accept', 1))
         cond_list.append(Condition('moments_accept', 1))
 
-    if casenum in (15, 17, 19, 21):
+    if casenum in (21, 23, 25, 27):
         # early scatter
         cond_list.append(Condition('early_scatter_flag', 1))
-    elif casenum in (16, 18, 20, 22):
+    elif casenum in (22, 24, 26, 28):
         # no early scatter
         cond_list.append(Condition('early_scatter_flag', 0))
 
@@ -260,10 +284,15 @@ def get_data_dict(filename):
     datadict['no_trk_error'] = (datadict['trk_errorcode'] == 0).astype(int)
     datadict['is_contained'] = np.abs(datadict['energy_tot_kev'] -
                                       datadict['energy_dep_kev']) < ESCAPE_KEV
+    datadict['endpoint_found'] = (datadict['n_ends'] > 0)
+    datadict['max_end_accept'] = (
+        datadict['max_end_energy_kev'] > MAX_END_MIN_KEV)
+    datadict['min_end_accept'] = (
+        datadict['min_end_energy_kev'] < MIN_END_MAX_KEV)
     datadict['endpoint_accept'] = (
-        (datadict['max_end_energy_kev'] > MAX_END_MIN_KEV) &
-        (datadict['min_end_energy_kev'] < MIN_END_MAX_KEV) &
-        (datadict['n_ends'] > 0))
+        datadict['endpoint_found'] &
+        datadict['max_end_accept'] &
+        datadict['min_end_accept'])
     datadict['moments_accept'] = (
         (np.abs(datadict['phi_deg']) < PHI_MAX_DEG) &
         (datadict['edge_pixels'] <= EDGE_PIXELS_MAX) &
