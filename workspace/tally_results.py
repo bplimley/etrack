@@ -45,6 +45,7 @@ from make_bins import hardcoded_bins as get_bins
 
 TEST_KEY = 'energy_tot_kev'
 NUM_CASES = 29
+SAVE_FILE = 'case_tally2.csv'
 
 # thresholds
 ESCAPE_KEV = 2.0
@@ -72,7 +73,7 @@ def main():
 
     matrix = construct_tally_matrix(datadict, energy_bin_edges, beta_bin_edges)
 
-    write_csv('case_tally.csv', matrix, energy_bin_edges, beta_bin_edges)
+    write_csv(SAVE_FILE, matrix, energy_bin_edges, beta_bin_edges)
 
 
 def sort_cases(datadict):
