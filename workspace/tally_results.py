@@ -241,7 +241,7 @@ def condition_lookup(casenum):
         # both reject
         cond_list.append(Condition('ridge_accept', 0))
         cond_list.append(Condition('moments_accept', 0))
-    elif casenum in (6, 10, 19, 23, 24):
+    elif casenum in (6, 10, 18, 23, 24):
         # moments accepts
         cond_list.append(Condition('ridge_accept', 0))
         cond_list.append(Condition('moments_accept', 1))
