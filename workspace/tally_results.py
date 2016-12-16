@@ -57,7 +57,7 @@ EDGE_SEGMENTS_MAX = 1
 
 
 def get_filename():
-    filepath = '/media/plimley/TEAM 7B/clresults_10.5_batch01'
+    filepath = '/home/plimley/gh/etrack/workspace'
     filename = 'compiled_results.h5'
     fullname = os.path.join(filepath, filename)
     return fullname
