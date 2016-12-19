@@ -6,33 +6,49 @@
 # [old#] [new#] [description]
 #  0  0 multiplicity / bad segmentation / corrupted file
 #  1  1 escape. endpoint not found
-#     2 escape. endpoint rejected by min end (>25 keV)
-#     3 escape. endpoint rejected by max end (<45 keV)
-#     4 escape. endpoint rejected by min and max ends
-#  2  5 escape. endpoint accepted. wrong end. both reject
-#  3  6 escape. endpoint accepted. wrong end. moments accepts
-#  4  7 escape. endpoint accepted. wrong end. ridge accepts
-#  5  8 escape. endpoint accepted. wrong end. both accept
-#  6  9 escape. endpoint accepted. right end. both reject
-#  7 10 escape. endpoint accepted. right end. moments accepts
-#  8 11 escape. endpoint accepted. right end. ridge accepts
-#  9 12 escape. endpoint accepted. right end. both accept
-# 10 13 contained. endpoint not found
-#    14 contained. endpoint rejected by min end (>25 keV)
-#    15 contained. endpoint rejected by max end (<45 keV)
-#    16 contained. endpoint rejected by min and max ends
-# 11 17 contained. endpoint accepted. wrong end. both reject
-# 12 18 contained. endpoint accepted. wrong end. moments accepts
-# 13 19 contained. endpoint accepted. wrong end. ridge accepts
-# 14 20 contained. endpoint accepted. wrong end. both accept
-# 15 21 contained. endpoint accepted. right end. both reject. early sc
-# 16 22 contained. endpoint accepted. right end. both reject. no early sc
-# 17 23 contained. endpoint accepted. right end. moments accepts. early sc
-# 18 24 contained. endpoint accepted. right end. moments accepts. no early sc
-# 19 25 contained. endpoint accepted. right end. ridge accepts. early sc
-# 20 26 contained. endpoint accepted. right end. ridge accepts. no early sc
-# 21 27 contained. endpoint accepted. right end. both accept. early sc
-# 22 28 contained. endpoint accepted. right end. both accept. no early sc
+#     2 escape. endpoint reject by min end (>25 keV). wrong end.
+#     3 escape. endpoint reject by min end (>25 keV). right end. early sc
+#     4 escape. endpoint reject by min end (>25 keV). right end. no early sc
+#     5 escape. endpoint reject by max end (<45 keV). wrong end.
+#     6 escape. endpoint reject by max end (<45 keV). right end. early sc
+#     7 escape. endpoint reject by max end (<45 keV). right end. no early sc
+#     8 escape. endpoint reject by min and max ends. wrong end.
+#     9 escape. endpoint reject by min and max ends. right end. early sc
+#    10 escape. endpoint reject by min and max ends. right end. no early sc
+#  2 11 escape. endpoint accepted. wrong end. both reject
+#  3 12 escape. endpoint accepted. wrong end. moments accepts
+#  4 13 escape. endpoint accepted. wrong end. ridge accepts
+#  5 14 escape. endpoint accepted. wrong end. both accept
+#  6 15 escape. endpoint accepted. right end. both reject. early sc
+#    16 escape. endpoint accepted. right end. both reject. no early sc
+#  7 17 escape. endpoint accepted. right end. moments accepts. early sc
+#    18 escape. endpoint accepted. right end. moments accepts. no early sc
+#  8 19 escape. endpoint accepted. right end. ridge accepts. early sc
+#    20 escape. endpoint accepted. right end. ridge accepts. no early sc
+#  9 21 escape. endpoint accepted. right end. both accept. early sc
+#    22 escape. endpoint accepted. right end. both accept. no early sc
+# 10 23 contained. endpoint not found
+#    24 contained. endpoint reject by min end (>25 keV). wrong end.
+#    25 contained. endpoint reject by min end (>25 keV). right end. early sc
+#    26 contained. endpoint reject by min end (>25 keV). right end. no early sc
+#    27 contained. endpoint reject by max end (<45 keV). wrong end.
+#    28 contained. endpoint reject by max end (<45 keV). right end. early sc
+#    29 contained. endpoint reject by max end (<45 keV). right end. no early sc
+#    30 contained. endpoint reject by min and max ends. wrong end.
+#    31 contained. endpoint reject by min and max ends. right end. early sc
+#    32 contained. endpoint reject by min and max ends. right end. no early sc
+# 11 33 contained. endpoint accepted. wrong end. both reject
+# 12 34 contained. endpoint accepted. wrong end. moments accepts
+# 13 35 contained. endpoint accepted. wrong end. ridge accepts
+# 14 36 contained. endpoint accepted. wrong end. both accept
+# 15 37 contained. endpoint accepted. right end. both reject. early sc
+# 16 38 contained. endpoint accepted. right end. both reject. no early sc
+# 17 39 contained. endpoint accepted. right end. moments accepts. early sc
+# 18 40 contained. endpoint accepted. right end. moments accepts. no early sc
+# 19 41 contained. endpoint accepted. right end. ridge accepts. early sc
+# 20 42 contained. endpoint accepted. right end. ridge accepts. no early sc
+# 21 43 contained. endpoint accepted. right end. both accept. early sc
+# 22 44 contained. endpoint accepted. right end. both accept. no early sc
 
 from __future__ import print_function
 import numpy as np
@@ -44,8 +60,8 @@ from compile_classify import data_variable_list
 from make_bins import hardcoded_bins as get_bins
 
 TEST_KEY = 'energy_tot_kev'
-NUM_CASES = 29
-SAVE_FILE = 'case_tally2.csv'
+NUM_CASES = 45
+SAVE_FILE = 'case_tally3.csv'
 
 # thresholds
 ESCAPE_KEV = 2.0
@@ -199,27 +215,27 @@ def condition_lookup(casenum):
     else:
         cond_list = [Condition('no_trk_error', 1)]
 
-    if casenum >= 1 and casenum <= 12:
+    if casenum >= 1 and casenum <= 22:
         # escape
         cond_list.append(Condition('is_contained', 0))
     elif casenum > 0:
         # contained
         cond_list.append(Condition('is_contained', 1))
 
-    if casenum == 1 or casenum == 13:
+    if casenum in (1, 23):
         # endpoint not found
         cond_list.append(Condition('endpoint_found', 0))
-    elif casenum == 2 or casenum == 14:
+    elif casenum in (2, 3, 4, 24, 25, 26):
         # endpoint found, min end reject, max end accept
         cond_list.append(Condition('endpoint_found', 1))
         cond_list.append(Condition('min_end_accept', 0))
         cond_list.append(Condition('max_end_accept', 1))
-    elif casenum == 3 or casenum == 15:
+    elif casenum in (5, 6, 7, 27, 28, 29):
         # endpoint found, max end reject, min end accept
         cond_list.append(Condition('endpoint_found', 1))
         cond_list.append(Condition('min_end_accept', 1))
         cond_list.append(Condition('max_end_accept', 0))
-    elif casenum == 4 or casenum == 16:
+    elif casenum in (8, 9, 10, 30, 31, 32):
         # endpoint found, both max and min reject
         cond_list.append(Condition('endpoint_found', 1))
         cond_list.append(Condition('min_end_accept', 0))
@@ -230,34 +246,49 @@ def condition_lookup(casenum):
         cond_list.append(Condition('min_end_accept', 1))
         cond_list.append(Condition('max_end_accept', 1))
 
-    if (casenum >= 5 and casenum <= 8) or (casenum >= 17 and casenum <= 20):
+    if casenum in (
+            2, 5, 8,
+            11, 12, 13, 14,
+            24, 27, 30,
+            33, 34, 35, 36):
         # wrong end
         cond_list.append(Condition('wrong_end_flag', 1))
-    elif (casenum >= 9 and casenum <= 12) or casenum >= 21:
+    elif ((casenum in (3, 4, 6, 7, 9, 10)) or
+            (casenum >= 15 and casenum <= 22) or
+            (casenum in (25, 26, 28, 29, 31, 32)) or
+            (casenum >= 37)):
         # right end
         cond_list.append(Condition('wrong_end_flag', 0))
 
-    if casenum in (5, 9, 17, 21, 22):
-        # both reject
+    if casenum in (11, 15, 16, 33, 37, 38):
+        # both algs reject
         cond_list.append(Condition('ridge_accept', 0))
         cond_list.append(Condition('moments_accept', 0))
-    elif casenum in (6, 10, 18, 23, 24):
+    elif casenum in (12, 17, 18, 34, 39, 40):
         # moments accepts
         cond_list.append(Condition('ridge_accept', 0))
         cond_list.append(Condition('moments_accept', 1))
-    elif casenum in (7, 11, 19, 25, 26):
+    elif casenum in (13, 19, 20, 35, 41, 42):
         # ridge accepts
         cond_list.append(Condition('ridge_accept', 1))
         cond_list.append(Condition('moments_accept', 0))
-    elif casenum in (8, 12, 20, 27, 28):
-        # both accept
+    elif casenum in (14, 21, 22, 36, 43, 44):
+        # both algs accept
         cond_list.append(Condition('ridge_accept', 1))
         cond_list.append(Condition('moments_accept', 1))
 
-    if casenum in (21, 23, 25, 27):
+    if casenum in (
+            3, 6, 9,
+            15, 17, 19, 21,
+            25, 28, 31,
+            37, 39, 41, 43):
         # early scatter
         cond_list.append(Condition('early_scatter_flag', 1))
-    elif casenum in (22, 24, 26, 28):
+    elif casenum in (
+            4, 7, 10,
+            16, 18, 20, 22,
+            26, 29, 32,
+            38, 40, 42, 44):
         # no early scatter
         cond_list.append(Condition('early_scatter_flag', 0))
 
