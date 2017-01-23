@@ -368,5 +368,119 @@ def write_csv(filename, matrix, energy_bins, beta_bins):
                 )
 
 
+class ConfusionException(Exception):
+    pass
+
+
+class ConfusionMatrix(object):
+    """
+    Represents a confusion matrix (TP, FP, TN, FN).
+    """
+
+    def __init__(self, tally_dict, name=None, thresh=None):
+        """
+        Initialize a ConfusionMatrix.
+
+        tally_dict: a dict containing keys TP, FP, TN, FN,
+            each with an event count
+        name: a string to associate with it
+        value: a threshold value to associate with it
+        """
+
+        self.check_dict(tally_dict, 'missing key in tally_dict')
+
+        self.TP = tally_dict['TP']
+        self.FP = tally_dict['FP']
+        self.TN = tally_dict['TN']
+        self.FN = tally_dict['FN']
+
+        if (not isinstance(self.TP, int)
+                or not isinstance(self.FP, int)
+                or not isinstance(self.TN, int)
+                or not isinstance(self.FN, int)):
+            raise ConfusionException('tally_dict must contain integers')
+
+        self.P = self.TP + self.FN
+        self.N = self.TN + self.FP
+        self.total = self.P + self.N
+
+        self.TPR = float(self.TP) / self.P
+        self.TNR = float(self.TN) / self.N
+        self.PPV = float(self.TP) / (self.TP + self.FP)
+        self.NPV = float(self.TN) / (self.TN + self.FN)
+        self.FPR = 1 - self.TPR
+        self.FNR = 1 - self.TNR
+
+        self.sensitivity = self.TPR
+        self.specificity = self.TNR
+        self.precision = self.PPV
+        self.accuracy = (self.TP + self.TN) / self.total
+        self.F1_score = (2 * self.TP) / (2 * self.TP + self.FP + self.FN)
+
+        if name is not None:
+            self.name = name
+        else:
+            try:
+                self.name = tally_dict['name']
+            except KeyError:
+                self.name = None
+
+        if thresh is not None:
+            self.thresh = thresh
+        else:
+            try:
+                self.thresh = tally_dict['thresh']
+            except KeyError:
+                self.thresh = None
+
+    @classmethod
+    def from_cases(cls, case_list, case_dict, name=None, thresh=None):
+        """
+        Initialize a ConfusionMatrix from the datadict.
+
+        caselist: a vector of integers representing the case # of each event in
+          the dataset.
+        casedict: a dict with keys 'TP', 'FP', 'TN', 'FN'. The value of each is
+          a list of case numbers that are classified into that part of the
+          confusion matrix.
+        """
+
+        cls.check_dict(case_dict, 'missing key in case_dict')
+
+        if name is None:
+            try:
+                name = case_dict['name']
+            except KeyError:
+                pass
+
+        if thresh is None:
+            try:
+                thresh = case_dict['thresh']
+            except KeyError:
+                pass
+
+        tally_dict = {}
+        for square in ('TP', 'FP', 'TN', 'FN'):
+            tally_dict[square] = 0
+            for case in case_dict[square]:
+                tally_dict[square] += np.sum(np.array(case_list) == case)
+
+        conf = cls(tally_dict, name=name, thresh=thresh)
+
+        return conf
+
+    @classmethod
+    def check_dict(cls, this_dict, message=None):
+        """Make sure a dict has TP, FP, TN, FN keys."""
+
+        if message is None:
+            message = 'Missing TP/FP/TN/FN key in dict'
+        if ('TP' not in this_dict.keys()
+                or 'FP' not in this_dict.keys()
+                or 'TN' not in this_dict.keys()
+                or 'FN' not in this_dict.keys()):
+            raise ConfusionException(message)
+
+
 if __name__ == '__main__':
     main()
