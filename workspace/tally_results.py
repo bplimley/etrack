@@ -71,6 +71,39 @@ PHI_MAX_DEG = 90
 EDGE_PIXELS_MAX = 4
 EDGE_SEGMENTS_MAX = 1
 
+# case lists for ConfusionMatrix / ROC curves
+
+# from my email to Don 12/16/2016:
+#
+# I believe the confusion matrix for the low-energy end rejection
+#   (reject >25 keV) would be populated as follows. This includes both the
+#   correct end and early scatter, combined. (Positive refers to acceptance of
+#   the event.)
+#     TP = cases 7, 16, 18, 20, 22, 29, 38, 40, 42, 44
+#     FP = cases 5-6, 11-14, 15, 17, 19, 21, 27-28, 33-36, 37, 39, 41, 43
+#     TN = cases 2-3, 8-9, 24-25, 30-31
+#     FN = cases 4, 10, 26, 32
+# For escape events, as follows:
+#     TP = cases 24-26, 33-44
+#     FP = cases 2-4, 11-22
+#     TN = cases 5-10
+#     FN = cases 27-32
+# Not considered for either analysis are cases 0, 1, 23.
+
+LOW_END_CASE_LIST = {
+    'TP': [7, 16, 18, 20, 22,
+           29, 38, 40, 42, 44],
+    'FP': [5, 6, 11, 12, 13, 14, 15, 17, 19, 21,
+           27, 28, 33, 34, 35, 36, 37, 39, 41, 43],
+    'TN': [2, 3, 8, 9, 24, 25, 30, 31],
+    'FN': [4, 10, 26, 32]
+}
+ESCAPE_CASE_LIST = {
+    'TP': [24, 25, 26].extend(range(33, 45)),
+    'FP': [2, 3, 4].extend(range(11, 23)),
+    'TN': range(5, 11),
+    'FN': range(27, 33)
+}
 
 def get_filename():
     filepath = '/home/plimley/gh/etrack/workspace'
