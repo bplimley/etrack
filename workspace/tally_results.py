@@ -125,9 +125,15 @@ def main():
     write_csv(SAVE_FILE, matrix, energy_bin_edges, beta_bin_edges)
 
 
-def sort_cases(datadict):
+def sort_cases(datadict, write_in=True):
+    """
+    Determine the case number for each event in datadict. Returns a case_list.
+
+    If write_in is true, case_list gets written into datadict['case'].
+    """
+
     datalen = get_datalen(datadict)
-    datadict['case'] = np.ones(shape=(datalen,), dtype=int) * -1
+    case_list = np.ones(shape=(datalen,), dtype=int) * -1
 
     energy_lg = (datadict['energy_tot_kev'] > 100)
     print(' ')
@@ -140,7 +146,7 @@ def sort_cases(datadict):
     for n in xrange(NUM_CASES):
         cond_list = condition_lookup(n)
         this_lg = construct_logical(datadict, cond_list)
-        datadict['case'][this_lg] = n
+        case_list[this_lg] = n
 
         this_n = np.sum(this_lg)
         this_nE = np.sum(this_lg & energy_lg)
@@ -153,7 +159,10 @@ def sort_cases(datadict):
     print('        n_tot = {:7d}  n(>100keV)_tot = {:7d}'.format(
         n_tot, nE_tot))
 
-    return n_tot, nE_tot
+    if write_in:
+        datadict['case'] = case_list
+
+    return case_list
 
 
 def construct_tally_matrix(datadict, energy_bin_edges, beta_bin_edges):
