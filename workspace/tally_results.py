@@ -110,7 +110,7 @@ def main():
     filename = get_filename()
     datadict = get_data_dict(filename)
 
-    n_tot, nE_tot = sort_cases(datadict, write_in=True, verbose=True)
+    _ = sort_cases(datadict, write_in=True, verbose=True)
 
     energy_bin_edges, beta_bin_edges = get_bins()
 
@@ -462,6 +462,11 @@ def write_csv(filename, matrix, energy_bins, beta_bins):
                         [str(el) for el in matrix[i, j, :]]) +
                     '\n'
                 )
+
+
+def roc_curves():
+    filename = get_filename()
+    datadict = get_data_dict(filename)
 
 
 class ConfusionException(Exception):
