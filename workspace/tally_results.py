@@ -357,6 +357,24 @@ def get_data_dict(filename):
             f[key].read_direct(datadict[key])
 
     # make implicit flags/parameters explicit
+    add_basic_datadict_fields(datadict)
+
+    return datadict
+
+
+def add_basic_datadict_fields(datadict):
+    """
+    Add fields to datadict to make conditions more explicit:
+      no_trk_error
+      is_contained
+      endpoint_found
+      default_max_end_accept
+      default_min_end_accept
+      default_endpoint_accept
+      moments_accept
+      ridge_accept
+    """
+
     datadict['no_trk_error'] = (datadict['trk_errorcode'] == 0).astype(int)
     datadict['is_contained'] = np.abs(datadict['energy_tot_kev'] -
                                       datadict['energy_dep_kev']) < ESCAPE_KEV
@@ -375,7 +393,8 @@ def get_data_dict(filename):
         (datadict['edge_segments'] <= EDGE_SEGMENTS_MAX))
     datadict['ridge_accept'] = np.logical_not(
         np.isnan(datadict['alpha_ridge_deg']))
-    return datadict
+
+    return None
 
 
 def get_datalen(datadict_like):
