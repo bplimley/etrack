@@ -65,8 +65,8 @@ SAVE_FILE = 'case_tally3.csv'
 
 # thresholds
 ESCAPE_KEV = 2.0
-MAX_END_MIN_KEV = 45.0
-MIN_END_MAX_KEV = 25.0
+DEFAULT_MAX_END_MIN_KEV = 45.0
+DEFAULT_MIN_END_MAX_KEV = 25.0
 PHI_MAX_DEG = 90
 EDGE_PIXELS_MAX = 4
 EDGE_SEGMENTS_MAX = 1
@@ -204,7 +204,9 @@ def construct_logical(datadict, cond_list):
     return lg
 
 
-def condition_lookup(casenum):
+def condition_lookup(casenum,
+                     max_end_min_kev=DEFAULT_MAX_END_MIN_KEV,
+                     min_end_max_kev=DEFAULT_MIN_END_MAX_KEV):
     """
     Conditions which describe one case number from the classification chart.
     """
@@ -228,23 +230,23 @@ def condition_lookup(casenum):
     elif casenum in (2, 3, 4, 24, 25, 26):
         # endpoint found, min end reject, max end accept
         cond_list.append(Condition('endpoint_found', 1))
-        cond_list.append(Condition('min_end_accept', 0))
-        cond_list.append(Condition('max_end_accept', 1))
+        cond_list.append(Condition('default_min_end_accept', 0))
+        cond_list.append(Condition('default_max_end_accept', 1))
     elif casenum in (5, 6, 7, 27, 28, 29):
         # endpoint found, max end reject, min end accept
         cond_list.append(Condition('endpoint_found', 1))
-        cond_list.append(Condition('min_end_accept', 1))
-        cond_list.append(Condition('max_end_accept', 0))
+        cond_list.append(Condition('default_min_end_accept', 1))
+        cond_list.append(Condition('default_max_end_accept', 0))
     elif casenum in (8, 9, 10, 30, 31, 32):
         # endpoint found, both max and min reject
         cond_list.append(Condition('endpoint_found', 1))
-        cond_list.append(Condition('min_end_accept', 0))
-        cond_list.append(Condition('max_end_accept', 0))
+        cond_list.append(Condition('default_min_end_accept', 0))
+        cond_list.append(Condition('default_max_end_accept', 0))
     elif casenum > 0:
         # endpoint found, both max and min accept
         cond_list.append(Condition('endpoint_found', 1))
-        cond_list.append(Condition('min_end_accept', 1))
-        cond_list.append(Condition('max_end_accept', 1))
+        cond_list.append(Condition('default_min_end_accept', 1))
+        cond_list.append(Condition('default_max_end_accept', 1))
 
     if casenum in (
             2, 5, 8,
@@ -317,14 +319,14 @@ def get_data_dict(filename):
     datadict['is_contained'] = np.abs(datadict['energy_tot_kev'] -
                                       datadict['energy_dep_kev']) < ESCAPE_KEV
     datadict['endpoint_found'] = (datadict['n_ends'] > 0)
-    datadict['max_end_accept'] = (
-        datadict['max_end_energy_kev'] > MAX_END_MIN_KEV)
-    datadict['min_end_accept'] = (
-        datadict['min_end_energy_kev'] < MIN_END_MAX_KEV)
-    datadict['endpoint_accept'] = (
+    datadict['default_max_end_accept'] = (
+        datadict['max_end_energy_kev'] > DEFAULT_MAX_END_MIN_KEV)
+    datadict['default_min_end_accept'] = (
+        datadict['min_end_energy_kev'] < DEFAULT_MIN_END_MAX_KEV)
+    datadict['default_endpoint_accept'] = (
         datadict['endpoint_found'] &
-        datadict['max_end_accept'] &
-        datadict['min_end_accept'])
+        datadict['default_max_end_accept'] &
+        datadict['default_min_end_accept'])
     datadict['moments_accept'] = (
         (np.abs(datadict['phi_deg']) < PHI_MAX_DEG) &
         (datadict['edge_pixels'] <= EDGE_PIXELS_MAX) &
