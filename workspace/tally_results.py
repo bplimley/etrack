@@ -125,11 +125,15 @@ def main():
     write_csv(SAVE_FILE, matrix, energy_bin_edges, beta_bin_edges)
 
 
-def sort_cases(datadict, write_in=True):
+def sort_cases(datadict, write_in=True,
+               max_end_min_kev=DEFAULT_MAX_END_MIN_KEV,
+               min_end_max_kev=DEFAULT_MIN_END_MAX_KEV):
     """
     Determine the case number for each event in datadict. Returns a case_list.
 
     If write_in is true, case_list gets written into datadict['case'].
+
+    max_end_min_kev and min_end_max_kev allow adjusting of thresholds for ROC.
     """
 
     datalen = get_datalen(datadict)
@@ -144,6 +148,9 @@ def sort_cases(datadict, write_in=True):
     n_tot = 0
     nE_tot = 0
     for n in xrange(NUM_CASES):
+        adjust_endpoint_fields(datadict,
+                               max_end_min_kev=max_end_min_kev,
+                               min_end_max_kev=min_end_max_kev)
         cond_list = condition_lookup(n)
         this_lg = construct_logical(datadict, cond_list)
         case_list[this_lg] = n
@@ -246,11 +253,11 @@ def construct_logical(datadict, cond_list):
     return lg
 
 
-def condition_lookup(casenum,
-                     max_end_min_kev=DEFAULT_MAX_END_MIN_KEV,
-                     min_end_max_kev=DEFAULT_MIN_END_MAX_KEV):
+def condition_lookup(casenum):
     """
     Conditions which describe one case number from the classification chart.
+
+    (Note: thresholds are adjusted with adjust_endpoint_fields.)
     """
 
     if casenum == 0:
@@ -272,23 +279,23 @@ def condition_lookup(casenum,
     elif casenum in (2, 3, 4, 24, 25, 26):
         # endpoint found, min end reject, max end accept
         cond_list.append(Condition('endpoint_found', 1))
-        cond_list.append(Condition('default_min_end_accept', 0))
-        cond_list.append(Condition('default_max_end_accept', 1))
+        cond_list.append(Condition('min_end_accept', 0))
+        cond_list.append(Condition('max_end_accept', 1))
     elif casenum in (5, 6, 7, 27, 28, 29):
         # endpoint found, max end reject, min end accept
         cond_list.append(Condition('endpoint_found', 1))
-        cond_list.append(Condition('default_min_end_accept', 1))
-        cond_list.append(Condition('default_max_end_accept', 0))
+        cond_list.append(Condition('min_end_accept', 1))
+        cond_list.append(Condition('max_end_accept', 0))
     elif casenum in (8, 9, 10, 30, 31, 32):
         # endpoint found, both max and min reject
         cond_list.append(Condition('endpoint_found', 1))
-        cond_list.append(Condition('default_min_end_accept', 0))
-        cond_list.append(Condition('default_max_end_accept', 0))
+        cond_list.append(Condition('min_end_accept', 0))
+        cond_list.append(Condition('max_end_accept', 0))
     elif casenum > 0:
         # endpoint found, both max and min accept
         cond_list.append(Condition('endpoint_found', 1))
-        cond_list.append(Condition('default_min_end_accept', 1))
-        cond_list.append(Condition('default_max_end_accept', 1))
+        cond_list.append(Condition('min_end_accept', 1))
+        cond_list.append(Condition('max_end_accept', 1))
 
     if casenum in (
             2, 5, 8,
@@ -393,6 +400,29 @@ def add_basic_datadict_fields(datadict):
         (datadict['edge_segments'] <= EDGE_SEGMENTS_MAX))
     datadict['ridge_accept'] = np.logical_not(
         np.isnan(datadict['alpha_ridge_deg']))
+
+    # add fields max_end_accept, min_end_accept
+    #   in order to satisfy condition_lookup
+    adjust_endpoint_fields(datadict)
+
+    return None
+
+
+def adjust_endpoint_fields(datadict,
+                           max_end_min_kev=DEFAULT_MAX_END_MIN_KEV,
+                           min_end_max_kev=DEFAULT_MIN_END_MAX_KEV):
+    """
+    Add datadict fields based on thresholds.
+    """
+
+    datadict['max_end_accept'] = (
+        datadict['max_end_energy_kev'] > max_end_min_kev)
+    datadict['min_end_accept'] = (
+        datadict['min_end_energy_kev'] < min_end_max_kev)
+    datadict['endpoint_accept'] = (
+        datadict['endpoint_found'] &
+        datadict['max_end_accept'] &
+        datadict['min_end_accept'])
 
     return None
 
