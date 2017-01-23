@@ -90,7 +90,7 @@ EDGE_SEGMENTS_MAX = 1
 #     FN = cases 27-32
 # Not considered for either analysis are cases 0, 1, 23.
 
-LOW_END_CASE_LIST = {
+LOW_END_CASE_DICT = {
     'TP': [7, 16, 18, 20, 22,
            29, 38, 40, 42, 44],
     'FP': [5, 6, 11, 12, 13, 14, 15, 17, 19, 21,
@@ -98,7 +98,7 @@ LOW_END_CASE_LIST = {
     'TN': [2, 3, 8, 9, 24, 25, 30, 31],
     'FN': [4, 10, 26, 32]
 }
-ESCAPE_CASE_LIST = {
+ESCAPE_CASE_DICT = {
     'TP': [24, 25, 26].extend(range(33, 45)),
     'FP': [2, 3, 4].extend(range(11, 23)),
     'TN': range(5, 11),
@@ -468,6 +468,22 @@ def roc_curves():
     filename = get_filename()
     datadict = get_data_dict(filename)
 
+    # low-end rejection: nominal 25 keV
+    test_thresholds_low = np.arange(15, 35)
+    conf_list_low = []
+    for thresh in test_thresholds_low:
+        caselist = sort_cases(datadict, min_end_max_kev=thresh)
+        this_conf = ConfusionMatrix.from_cases(
+            caselist, LOW_END_CASE_DICT, name='low-end', thresh=thresh)
+        conf_list_low.append(this_conf)
+
+    # escape rejection: nominal 45 keV
+    test_thresholds_esc = np.arange(30, 60)
+    conf_list_esc = []
+    for thresh in test_thresholds_esc:
+        caselist = sort_cases(datadict, max_end_min_kev=thresh)
+        this_conf = ConfusionMatrix.from_cases(
+            caselist, ESCAPE_CASE_DICT, name='escape', thresh=thresh)
 
 class ConfusionException(Exception):
     pass
