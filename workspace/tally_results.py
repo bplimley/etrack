@@ -116,7 +116,7 @@ def main():
     filename = get_filename()
     datadict = get_data_dict(filename)
 
-    n_tot, nE_tot = sort_cases(datadict)
+    n_tot, nE_tot = sort_cases(datadict, write_in=True, verbose=True)
 
     energy_bin_edges, beta_bin_edges = get_bins()
 
@@ -125,7 +125,7 @@ def main():
     write_csv(SAVE_FILE, matrix, energy_bin_edges, beta_bin_edges)
 
 
-def sort_cases(datadict, write_in=True,
+def sort_cases(datadict, write_in=False, verbose=False,
                max_end_min_kev=DEFAULT_MAX_END_MIN_KEV,
                min_end_max_kev=DEFAULT_MIN_END_MAX_KEV):
     """
@@ -140,10 +140,12 @@ def sort_cases(datadict, write_in=True,
     case_list = np.ones(shape=(datalen,), dtype=int) * -1
 
     energy_lg = (datadict['energy_tot_kev'] > 100)
-    print(' ')
-    print('Data length: {}'.format(datalen))
-    print('  Above 100keV: {}'.format(np.sum(energy_lg)))
-    print(' ')
+
+    if verbose:
+        print(' ')
+        print('Data length: {}'.format(datalen))
+        print('  Above 100keV: {}'.format(np.sum(energy_lg)))
+        print(' ')
 
     n_tot = 0
     nE_tot = 0
@@ -160,11 +162,13 @@ def sort_cases(datadict, write_in=True,
         n_tot += this_n
         nE_tot += this_nE
 
-        print('Case #{:2d}:   n = {:7d}      n(>100keV) = {:7d}'.format(
-            n, this_n, this_nE))
+        if verbose:
+            print('Case #{:2d}:   n = {:7d}      n(>100keV) = {:7d}'.format(
+                n, this_n, this_nE))
 
-    print('        n_tot = {:7d}  n(>100keV)_tot = {:7d}'.format(
-        n_tot, nE_tot))
+    if verbose:
+        print('        n_tot = {:7d}  n(>100keV)_tot = {:7d}'.format(
+            n_tot, nE_tot))
 
     if write_in:
         datadict['case'] = case_list
