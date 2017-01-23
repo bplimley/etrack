@@ -599,5 +599,18 @@ class ConfusionMatrix(object):
             raise ConfusionException(message)
 
 
+class RocCurve(object):
+    """
+    Represents an Receiver-Operator Characteristic curve (ROC curve).
+    """
+
+    def __init__(self):
+        pass
+
+    @classmethod
+    def from_confmat_list(cls, confmat_list):
+        pass
+
+
 if __name__ == '__main__':
     main()
