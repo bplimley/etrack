@@ -105,12 +105,6 @@ ESCAPE_CASE_LIST = {
     'FN': range(27, 33)
 }
 
-def get_filename():
-    filepath = '/home/plimley/gh/etrack/workspace'
-    filename = 'compiled_results.h5'
-    fullname = os.path.join(filepath, filename)
-    return fullname
-
 
 def main():
     filename = get_filename()
@@ -123,6 +117,99 @@ def main():
     matrix = construct_tally_matrix(datadict, energy_bin_edges, beta_bin_edges)
 
     write_csv(SAVE_FILE, matrix, energy_bin_edges, beta_bin_edges)
+
+
+def get_filename():
+    filepath = '/home/plimley/gh/etrack/workspace'
+    filename = 'compiled_results.h5'
+    fullname = os.path.join(filepath, filename)
+    return fullname
+
+
+def get_data_dict(filename):
+    """
+    Load the hdf5 file and pull all the data from it into a dict.
+    """
+
+    varlist = data_variable_list()
+    datadict = {}
+
+    with h5py.File(filename, 'r') as f:
+        datalen = get_datalen(f)
+        for key in varlist:
+            if key != 'filename':
+                datadict[key] = np.empty(shape=(datalen,))
+            else:
+                datadict[key] = np.empty(shape=(datalen,), dtype='|S28')
+            f[key].read_direct(datadict[key])
+
+    # make implicit flags/parameters explicit
+    add_basic_datadict_fields(datadict)
+
+    return datadict
+
+
+def get_datalen(datadict_like):
+    """Get the length of the data vectors."""
+    return datadict_like[TEST_KEY].shape[0]
+
+
+def add_basic_datadict_fields(datadict):
+    """
+    Add fields to datadict to make conditions more explicit:
+      no_trk_error
+      is_contained
+      endpoint_found
+      default_max_end_accept
+      default_min_end_accept
+      default_endpoint_accept
+      moments_accept
+      ridge_accept
+    """
+
+    datadict['no_trk_error'] = (datadict['trk_errorcode'] == 0).astype(int)
+    datadict['is_contained'] = np.abs(datadict['energy_tot_kev'] -
+                                      datadict['energy_dep_kev']) < ESCAPE_KEV
+    datadict['endpoint_found'] = (datadict['n_ends'] > 0)
+    datadict['default_max_end_accept'] = (
+        datadict['max_end_energy_kev'] > DEFAULT_MAX_END_MIN_KEV)
+    datadict['default_min_end_accept'] = (
+        datadict['min_end_energy_kev'] < DEFAULT_MIN_END_MAX_KEV)
+    datadict['default_endpoint_accept'] = (
+        datadict['endpoint_found'] &
+        datadict['default_max_end_accept'] &
+        datadict['default_min_end_accept'])
+    datadict['moments_accept'] = (
+        (np.abs(datadict['phi_deg']) < PHI_MAX_DEG) &
+        (datadict['edge_pixels'] <= EDGE_PIXELS_MAX) &
+        (datadict['edge_segments'] <= EDGE_SEGMENTS_MAX))
+    datadict['ridge_accept'] = np.logical_not(
+        np.isnan(datadict['alpha_ridge_deg']))
+
+    # add fields max_end_accept, min_end_accept
+    #   in order to satisfy condition_lookup
+    adjust_endpoint_fields(datadict)
+
+    return None
+
+
+def adjust_endpoint_fields(datadict,
+                           max_end_min_kev=DEFAULT_MAX_END_MIN_KEV,
+                           min_end_max_kev=DEFAULT_MIN_END_MAX_KEV):
+    """
+    Add datadict fields based on thresholds.
+    """
+
+    datadict['max_end_accept'] = (
+        datadict['max_end_energy_kev'] > max_end_min_kev)
+    datadict['min_end_accept'] = (
+        datadict['min_end_energy_kev'] < min_end_max_kev)
+    datadict['endpoint_accept'] = (
+        datadict['endpoint_found'] &
+        datadict['max_end_accept'] &
+        datadict['min_end_accept'])
+
+    return None
 
 
 def sort_cases(datadict, write_in=False, verbose=False,
@@ -176,63 +263,6 @@ def sort_cases(datadict, write_in=False, verbose=False,
     return case_list
 
 
-def construct_tally_matrix(datadict, energy_bin_edges, beta_bin_edges):
-    """
-    Build a matrix of number of events, split by energy, beta, and case #.
-    """
-
-    if 'case' not in datadict:
-        raise KeyError('Run sort_cases() before construct_tally_matrix()')
-
-    matrix = np.zeros(shape=(
-        len(energy_bin_edges) - 1,
-        len(beta_bin_edges) - 1,
-        NUM_CASES), dtype=int)
-
-    for i in xrange(len(energy_bin_edges[:-1])):
-        energy_lg = (
-            (datadict['energy_tot_kev'] > energy_bin_edges[i]) &
-            (datadict['energy_tot_kev'] <= energy_bin_edges[i + 1]))
-
-        for j in xrange(len(beta_bin_edges[:-1])):
-            beta_lg = (
-                (datadict['beta_true_deg'] > beta_bin_edges[j]) &
-                (datadict['beta_true_deg'] <= beta_bin_edges[j + 1]))
-
-            for k in xrange(NUM_CASES):
-                case_lg = (datadict['case'] == k)
-                matrix[i, j, k] = np.sum(energy_lg & beta_lg & case_lg)
-
-    return matrix
-
-
-def show_event(datadict, n):
-    """
-    Display the relevant flags for a single event.
-    """
-    for flag in flag_list():
-        value = datadict[flag][n]
-        if type(value) is np.bool_:
-            val = int(value)
-        else:
-            val = value
-        print('{:20s}: {}'.format(flag, val))
-
-
-def flag_list():
-    """List of all the boolean flags used for cases"""
-    flags = (
-        'no_trk_error',
-        'is_contained',
-        'endpoint_accept',
-        'wrong_end_flag',
-        'ridge_accept',
-        'moments_accept',
-        'early_scatter_flag',
-    )
-    return flags
-
-
 class Condition(object):
     """Simple container to contain the condition key, operator, and value."""
 
@@ -243,18 +273,6 @@ class Condition(object):
             self.op = '=='
         else:
             self.op = op
-
-
-def construct_logical(datadict, cond_list):
-    """
-    Construct a logical vector based on a condition list.
-    """
-
-    lg = np.ones_like(datadict[TEST_KEY]).astype(bool)
-    for cond in cond_list:
-        lg = lg & (datadict[cond.key] == cond.value)
-
-    return lg
 
 
 def condition_lookup(casenum):
@@ -350,90 +368,73 @@ def condition_lookup(casenum):
     return cond_list
 
 
-def get_data_dict(filename):
+def construct_logical(datadict, cond_list):
     """
-    Load the hdf5 file and pull all the data from it into a dict.
-    """
-
-    varlist = data_variable_list()
-    datadict = {}
-
-    with h5py.File(filename, 'r') as f:
-        datalen = get_datalen(f)
-        for key in varlist:
-            if key != 'filename':
-                datadict[key] = np.empty(shape=(datalen,))
-            else:
-                datadict[key] = np.empty(shape=(datalen,), dtype='|S28')
-            f[key].read_direct(datadict[key])
-
-    # make implicit flags/parameters explicit
-    add_basic_datadict_fields(datadict)
-
-    return datadict
-
-
-def add_basic_datadict_fields(datadict):
-    """
-    Add fields to datadict to make conditions more explicit:
-      no_trk_error
-      is_contained
-      endpoint_found
-      default_max_end_accept
-      default_min_end_accept
-      default_endpoint_accept
-      moments_accept
-      ridge_accept
+    Construct a logical vector based on a condition list.
     """
 
-    datadict['no_trk_error'] = (datadict['trk_errorcode'] == 0).astype(int)
-    datadict['is_contained'] = np.abs(datadict['energy_tot_kev'] -
-                                      datadict['energy_dep_kev']) < ESCAPE_KEV
-    datadict['endpoint_found'] = (datadict['n_ends'] > 0)
-    datadict['default_max_end_accept'] = (
-        datadict['max_end_energy_kev'] > DEFAULT_MAX_END_MIN_KEV)
-    datadict['default_min_end_accept'] = (
-        datadict['min_end_energy_kev'] < DEFAULT_MIN_END_MAX_KEV)
-    datadict['default_endpoint_accept'] = (
-        datadict['endpoint_found'] &
-        datadict['default_max_end_accept'] &
-        datadict['default_min_end_accept'])
-    datadict['moments_accept'] = (
-        (np.abs(datadict['phi_deg']) < PHI_MAX_DEG) &
-        (datadict['edge_pixels'] <= EDGE_PIXELS_MAX) &
-        (datadict['edge_segments'] <= EDGE_SEGMENTS_MAX))
-    datadict['ridge_accept'] = np.logical_not(
-        np.isnan(datadict['alpha_ridge_deg']))
+    lg = np.ones_like(datadict[TEST_KEY]).astype(bool)
+    for cond in cond_list:
+        lg = lg & (datadict[cond.key] == cond.value)
 
-    # add fields max_end_accept, min_end_accept
-    #   in order to satisfy condition_lookup
-    adjust_endpoint_fields(datadict)
-
-    return None
+    return lg
 
 
-def adjust_endpoint_fields(datadict,
-                           max_end_min_kev=DEFAULT_MAX_END_MIN_KEV,
-                           min_end_max_kev=DEFAULT_MIN_END_MAX_KEV):
+def construct_tally_matrix(datadict, energy_bin_edges, beta_bin_edges):
     """
-    Add datadict fields based on thresholds.
+    Build a matrix of number of events, split by energy, beta, and case #.
     """
 
-    datadict['max_end_accept'] = (
-        datadict['max_end_energy_kev'] > max_end_min_kev)
-    datadict['min_end_accept'] = (
-        datadict['min_end_energy_kev'] < min_end_max_kev)
-    datadict['endpoint_accept'] = (
-        datadict['endpoint_found'] &
-        datadict['max_end_accept'] &
-        datadict['min_end_accept'])
+    if 'case' not in datadict:
+        raise KeyError('Run sort_cases() before construct_tally_matrix()')
 
-    return None
+    matrix = np.zeros(shape=(
+        len(energy_bin_edges) - 1,
+        len(beta_bin_edges) - 1,
+        NUM_CASES), dtype=int)
+
+    for i in xrange(len(energy_bin_edges[:-1])):
+        energy_lg = (
+            (datadict['energy_tot_kev'] > energy_bin_edges[i]) &
+            (datadict['energy_tot_kev'] <= energy_bin_edges[i + 1]))
+
+        for j in xrange(len(beta_bin_edges[:-1])):
+            beta_lg = (
+                (datadict['beta_true_deg'] > beta_bin_edges[j]) &
+                (datadict['beta_true_deg'] <= beta_bin_edges[j + 1]))
+
+            for k in xrange(NUM_CASES):
+                case_lg = (datadict['case'] == k)
+                matrix[i, j, k] = np.sum(energy_lg & beta_lg & case_lg)
+
+    return matrix
 
 
-def get_datalen(datadict_like):
-    """Get the length of the data vectors."""
-    return datadict_like[TEST_KEY].shape[0]
+def show_event(datadict, n):
+    """
+    Display the relevant flags for a single event.
+    """
+    for flag in flag_list():
+        value = datadict[flag][n]
+        if type(value) is np.bool_:
+            val = int(value)
+        else:
+            val = value
+        print('{:20s}: {}'.format(flag, val))
+
+
+def flag_list():
+    """List of all the boolean flags used for cases"""
+    flags = (
+        'no_trk_error',
+        'is_contained',
+        'endpoint_accept',
+        'wrong_end_flag',
+        'ridge_accept',
+        'moments_accept',
+        'early_scatter_flag',
+    )
+    return flags
 
 
 def write_csv(filename, matrix, energy_bins, beta_bins):
