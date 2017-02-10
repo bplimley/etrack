@@ -90,19 +90,21 @@ EDGE_SEGMENTS_MAX = 1
 #     FN = cases 27-32
 # Not considered for either analysis are cases 0, 1, 23.
 
+# Switch P and N because "positive" should be like an alarm condition.
+
 LOW_END_CASE_DICT = {
-    'TP': [7, 16, 18, 20, 22,
+    'TN': [7, 16, 18, 20, 22,
            29, 38, 40, 42, 44],
-    'FP': [5, 6, 11, 12, 13, 14, 15, 17, 19, 21,
+    'FN': [5, 6, 11, 12, 13, 14, 15, 17, 19, 21,
            27, 28, 33, 34, 35, 36, 37, 39, 41, 43],
-    'TN': [2, 3, 8, 9, 24, 25, 30, 31],
-    'FN': [4, 10, 26, 32]
+    'TP': [2, 3, 8, 9, 24, 25, 30, 31],
+    'FP': [4, 10, 26, 32]
 }
 ESCAPE_CASE_DICT = {
-    'TP': [24, 25, 26].extend(range(33, 45)),
-    'FP': [2, 3, 4].extend(range(11, 23)),
-    'TN': range(5, 11),
-    'FN': range(27, 33)
+    'TN': [24, 25, 26] + range(33, 45),
+    'FN': [2, 3, 4] + range(11, 23),
+    'TP': range(5, 11),
+    'FP': range(27, 33)
 }
 
 
