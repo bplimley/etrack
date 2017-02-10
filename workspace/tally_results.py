@@ -55,6 +55,7 @@ import numpy as np
 import h5py
 import os
 import ipdb as pdb
+import matplotlib.pyplot as plt
 
 from compile_classify import data_variable_list
 from make_bins import hardcoded_bins as get_bins
@@ -604,14 +605,54 @@ class ConfusionMatrix(object):
 class RocCurve(object):
     """
     Represents an Receiver-Operator Characteristic curve (ROC curve).
+
+    Plots TPR vs. FPR.
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, TPR, FPR):
+        self.TPR = np.array(TPR)
+        self.FPR = np.array(FPR)
 
     @classmethod
     def from_confmat_list(cls, confmat_list):
-        pass
+        """
+        Construct an ROC curve from a list of confusion matrices.
+        """
+        TPR = np.array([cm.TPR for cm in confmat_list])
+        FPR = np.array([cm.FPR for cm in confmat_list])
+        obj = cls(TPR, FPR)
+        return obj
+
+    def plot(self, ax=None, fmt=None, log=None, **kwargs):
+        """
+        Plot the ROC curve.
+
+        ax: an existing axes object
+        log: which axes are log-scale. Can be '', 'x', 'y', 'xy'
+        """
+
+        if log is None:
+            log = ''
+        if fmt is None:
+            fmt = 'k'
+        if ax is None:
+            ax = plt.axes()
+
+        if log == '':
+            ax.plot(self.FPR, self.TPR, fmt, **kwargs)
+        elif log.lower() == 'x':
+            ax.semilogx(self.FPR, self.TPR, fmt, **kwargs)
+        elif log.lower() == 'y':
+            ax.semilogy(self.FPR, self.TPR, fmt, **kwargs)
+        elif log.lower() == 'xy':
+            ax.loglog(self.FPR, self.TPR, fmt, **kwargs)
+
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.xlim((0, 1))
+        plt.ylim((0, 1))
+
+        return ax
 
 
 if __name__ == '__main__':
