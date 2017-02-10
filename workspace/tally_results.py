@@ -527,14 +527,14 @@ class ConfusionMatrix(object):
         self.TNR = float(self.TN) / self.N
         self.PPV = float(self.TP) / (self.TP + self.FP)
         self.NPV = float(self.TN) / (self.TN + self.FN)
-        self.FPR = 1 - self.TPR
-        self.FNR = 1 - self.TNR
+        self.FPR = 1 - self.TNR
+        self.FNR = 1 - self.TPR
 
         self.sensitivity = self.TPR
         self.specificity = self.TNR
         self.precision = self.PPV
-        self.accuracy = (self.TP + self.TN) / self.total
-        self.F1_score = (2 * self.TP) / (2 * self.TP + self.FP + self.FN)
+        self.accuracy = float(self.TP + self.TN) / self.total
+        self.F1_score = float(2 * self.TP) / (2 * self.TP + self.FP + self.FN)
 
         if name is not None:
             self.name = name
@@ -588,8 +588,8 @@ class ConfusionMatrix(object):
 
         return conf
 
-    @classmethod
-    def check_dict(cls, this_dict, message=None):
+    @staticmethod
+    def check_dict(this_dict, message=None):
         """Make sure a dict has TP, FP, TN, FN keys."""
 
         if message is None:
