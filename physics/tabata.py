@@ -233,7 +233,8 @@ def CSDA_range_mass(energy, Z, A, I_eV):
         d[13] * Z**d[14],       # 7
     )
     # Tabata 1996a equation 12
-    B = np.log((t0 / (I + c[7] * t0))**2) + np.log(1 + t0/2)
+    I0 = (I / ELECTRON_REST_ENERGY).to_base_units().magnitude
+    B = np.log((t0 / (I0 + c[7] * t0))**2) + np.log(1 + t0/2)
     # Tabata 1996a equation 11
     range_mass = c[1] / B * (
         np.log(1 + c[2] * t0**c[3]) / c[2] -
