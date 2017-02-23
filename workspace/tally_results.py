@@ -55,6 +55,7 @@ import numpy as np
 import h5py
 import os
 import ipdb as pdb
+import matplotlib.pyplot as plt
 
 from compile_classify import data_variable_list
 from make_bins import hardcoded_bins as get_bins
@@ -90,19 +91,21 @@ EDGE_SEGMENTS_MAX = 1
 #     FN = cases 27-32
 # Not considered for either analysis are cases 0, 1, 23.
 
+# Switch P and N because "positive" should be like an alarm condition.
+
 LOW_END_CASE_DICT = {
-    'TP': [7, 16, 18, 20, 22,
+    'TN': [7, 16, 18, 20, 22,
            29, 38, 40, 42, 44],
-    'FP': [5, 6, 11, 12, 13, 14, 15, 17, 19, 21,
+    'FN': [5, 6, 11, 12, 13, 14, 15, 17, 19, 21,
            27, 28, 33, 34, 35, 36, 37, 39, 41, 43],
-    'TN': [2, 3, 8, 9, 24, 25, 30, 31],
-    'FN': [4, 10, 26, 32]
+    'TP': [2, 3, 8, 9, 24, 25, 30, 31],
+    'FP': [4, 10, 26, 32]
 }
 ESCAPE_CASE_DICT = {
-    'TP': [24, 25, 26].extend(range(33, 45)),
-    'FP': [2, 3, 4].extend(range(11, 23)),
-    'TN': range(5, 11),
-    'FN': range(27, 33)
+    'TN': [24, 25, 26] + range(33, 45),
+    'FN': [2, 3, 4] + range(11, 23),
+    'TP': range(5, 11),
+    'FP': range(27, 33)
 }
 
 
@@ -469,7 +472,8 @@ def roc_curves():
     datadict = get_data_dict(filename)
 
     # low-end rejection: nominal 25 keV
-    test_thresholds_low = np.arange(15, 35)
+    print('Testing low-end rejection thresholds...')
+    test_thresholds_low = np.arange(10, 50)
     conf_list_low = []
     for thresh in test_thresholds_low:
         caselist = sort_cases(datadict, min_end_max_kev=thresh)
@@ -478,12 +482,43 @@ def roc_curves():
         conf_list_low.append(this_conf)
 
     # escape rejection: nominal 45 keV
-    test_thresholds_esc = np.arange(30, 60)
+    print('Testing escape rejection thresholds...')
+    test_thresholds_esc = np.arange(20, 100)
     conf_list_esc = []
     for thresh in test_thresholds_esc:
         caselist = sort_cases(datadict, max_end_min_kev=thresh)
         this_conf = ConfusionMatrix.from_cases(
             caselist, ESCAPE_CASE_DICT, name='escape', thresh=thresh)
+        conf_list_esc.append(this_conf)
+
+    # generate ROC curves
+    roc_low = RocCurve.from_confmat_list(conf_list_low)
+    roc_esc = RocCurve.from_confmat_list(conf_list_esc)
+
+    ax = roc_low.plot(fmt='r', lw=2)
+    roc_esc.plot(ax=ax, fmt='--b', lw=2)
+    plt.plot([0, 1], [0, 1], ':k', lw=2)
+
+    low_ind = np.flatnonzero(test_thresholds_low == DEFAULT_MIN_END_MAX_KEV)[0]
+    low_confmat = conf_list_low[low_ind]
+    plt.plot(low_confmat.FPR, low_confmat.TPR, '*g', ms=12, lw=3)
+
+    esc_ind = np.flatnonzero(test_thresholds_esc == DEFAULT_MAX_END_MIN_KEV)[0]
+    esc_confmat = conf_list_esc[esc_ind]
+    plt.plot(esc_confmat.FPR, esc_confmat.TPR, '*g', ms=12, lw=3)
+
+    plt.legend([
+        'Low-energy end rejection (bad start segment)',
+        'High-energy end rejection (escape)',
+        'Random'], loc="lower right")
+    plt.xlabel('False Positive Rate (track discarded erroneously)',
+               fontsize=16)
+    plt.ylabel('True Positive Rate (track discarded correctly)', fontsize=16)
+
+    pdb.set_trace()
+
+    return roc_low, roc_esc, conf_list_low, conf_list_esc, ax
+
 
 class ConfusionException(Exception):
     pass
@@ -525,14 +560,14 @@ class ConfusionMatrix(object):
         self.TNR = float(self.TN) / self.N
         self.PPV = float(self.TP) / (self.TP + self.FP)
         self.NPV = float(self.TN) / (self.TN + self.FN)
-        self.FPR = 1 - self.TPR
-        self.FNR = 1 - self.TNR
+        self.FPR = 1 - self.TNR
+        self.FNR = 1 - self.TPR
 
         self.sensitivity = self.TPR
         self.specificity = self.TNR
         self.precision = self.PPV
-        self.accuracy = (self.TP + self.TN) / self.total
-        self.F1_score = (2 * self.TP) / (2 * self.TP + self.FP + self.FN)
+        self.accuracy = float(self.TP + self.TN) / self.total
+        self.F1_score = float(2 * self.TP) / (2 * self.TP + self.FP + self.FN)
 
         if name is not None:
             self.name = name
@@ -586,8 +621,8 @@ class ConfusionMatrix(object):
 
         return conf
 
-    @classmethod
-    def check_dict(cls, this_dict, message=None):
+    @staticmethod
+    def check_dict(this_dict, message=None):
         """Make sure a dict has TP, FP, TN, FN keys."""
 
         if message is None:
@@ -602,14 +637,54 @@ class ConfusionMatrix(object):
 class RocCurve(object):
     """
     Represents an Receiver-Operator Characteristic curve (ROC curve).
+
+    Plots TPR vs. FPR.
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, TPR, FPR):
+        self.TPR = np.array(TPR)
+        self.FPR = np.array(FPR)
 
     @classmethod
     def from_confmat_list(cls, confmat_list):
-        pass
+        """
+        Construct an ROC curve from a list of confusion matrices.
+        """
+        TPR = np.array([cm.TPR for cm in confmat_list])
+        FPR = np.array([cm.FPR for cm in confmat_list])
+        obj = cls(TPR, FPR)
+        return obj
+
+    def plot(self, ax=None, fmt=None, log=None, **kwargs):
+        """
+        Plot the ROC curve.
+
+        ax: an existing axes object
+        log: which axes are log-scale. Can be '', 'x', 'y', 'xy'
+        """
+
+        if log is None:
+            log = ''
+        if fmt is None:
+            fmt = 'k'
+        if ax is None:
+            ax = plt.axes()
+
+        if log == '':
+            ax.plot(self.FPR, self.TPR, fmt, **kwargs)
+        elif log.lower() == 'x':
+            ax.semilogx(self.FPR, self.TPR, fmt, **kwargs)
+        elif log.lower() == 'y':
+            ax.semilogy(self.FPR, self.TPR, fmt, **kwargs)
+        elif log.lower() == 'xy':
+            ax.loglog(self.FPR, self.TPR, fmt, **kwargs)
+
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.xlim((0, 1))
+        plt.ylim((0, 1))
+
+        return ax
 
 
 if __name__ == '__main__':
