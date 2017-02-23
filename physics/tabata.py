@@ -17,14 +17,22 @@ Rad. Phys. and Chem. 64 (2002) 161-167.
 from __future__ import print_function
 
 import numpy as np
+import pint
+from pint.unit import ScaleConverter, UnitDefinition
 
-ELECTRON_REST_ENERGY_MEV = 0.510999
+units = pint.UnitRegistry()
+units.define(
+    UnitDefinition('%', 'percent', (), ScaleConverter(1 / 100.0)))
+units.define('keV = kiloelectron_volt')
+units.define('MeV = megaelectron_volt')
 
-MIN_ENERGY_1996A_KEV = 1    # Tabata 1996a p. 2
-SEMI_MIN_ENERGY_1996A_KEV = 10  # Tabata 1996a p. 2 (shell effects)
-MAX_ENERGY_1996A_KEV = 100e3    # Tabata 1996a p. 2
-MIN_ENERGY_2002_KEV = 10    # Tabata 2002 sec 2.3
-MAX_ENERGY_2002_KEV = 50e3  # Tabata 2002 sec 1; 2.1
+ELECTRON_REST_ENERGY = 0.510999 * units.MeV
+
+MIN_ENERGY_1996A = 1 * units.keV        # Tabata 1996a p. 2
+SEMI_MIN_ENERGY_1996A = 10 * units.keV  # Tabata 1996a p. 2 (shell effects)
+MAX_ENERGY_1996A = 100e3 * units.keV    # Tabata 1996a p. 2
+MIN_ENERGY_2002 = 10 * units.keV        # Tabata 2002 sec 2.3
+MAX_ENERGY_2002 = 50e3 * units.keV      # Tabata 2002 sec 1; 2.1
 
 # paper notation is 1-indexed. so here, elements at index 0 are placeholders
 TABATA_1996A_TABLE_1 = (
@@ -91,14 +99,14 @@ class EnergyOutOfRange(TabataError):
     pass
 
 
-def extrapolated_range_gcm2(energy_keV, Z, A, I_eV, ref=None):
+def extrapolated_range_mass(energy, Z, A, I_eV, ref=None):
     """Compute electron extrapolated range with Tabata's analytical formulae.
 
     Args:
-      energy_keV: initial electron energy [keV]
+      energy: initial electron energy [keV, or use pint]
       Z: atomic number of material
       A: atomic weight of material [AMU]
-      I_eV: mean excitation energy of material [eV]
+      I_eV: mean excitation energy of material [eV, or use pint]
       ref: may be '1996a', '2002', 'CSDA', or None.
         '1996a': calculate extrapolated range using 1996a detour factor.
         '2002': calculate extrapolated range using 2002 detour factor.
@@ -107,48 +115,54 @@ def extrapolated_range_gcm2(energy_keV, Z, A, I_eV, ref=None):
         [Default: None]
 
     Returns:
-      float of the computed extrapolated range, in g/cm^2.
+      pint quantity of the computed extrapolated range, in mass thickness.
 
     Raises:
       EnergyOutOfRange: if energy is out of bounds of accuracy.
     """
 
-    energy_keV = float(energy_keV)
-    energy_MeV = energy_keV / 1e3
-    I_eV = float(I_eV)
+    try:
+        energy = energy.to(units.MeV)
+    except AttributeError:
+        energy = energy * units.keV
+
+    try:
+        I = I_eV.to(units.eV)
+    except AttributeError:
+        I = I_eV * units.eV
 
     if ref is None:
         ref = '2002'
-        if ((ref > MAX_ENERGY_2002_KEV and ref <= MAX_ENERGY_1996A_KEV) or
-                (ref < MIN_ENERGY_2002_KEV and ref >= MIN_ENERGY_1996A_KEV)):
+        if ((energy > MAX_ENERGY_2002 and energy <= MAX_ENERGY_1996A) or
+                (energy < MIN_ENERGY_2002 and energy >= MIN_ENERGY_1996A)):
             ref = '1996a'
 
     if ref == '1996' or ref.lower() == '1996a':
-        _check_energy_1996a(energy_keV)
-        f_d = _detour_factor_1996a(energy_MeV, Z)
+        _check_energy_1996a(energy)
+        f_d = _detour_factor_1996a(energy, Z)
     elif ref == '2002':
-        _check_energy_2002(energy_keV)
-        f_d = _detour_factor_2002(energy_MeV, Z)
+        _check_energy_2002(energy)
+        f_d = _detour_factor_2002(energy, Z)
     elif ref.upper() == 'CSDA':
-        _check_energy_1996a(energy_keV)
+        _check_energy_1996a(energy)
         f_d = 1.
     else:
         raise ValueError("ref should be '1996a', '2002', 'CSDA', or None")
 
-    range_gcm2 = f_d * CSDA_range_gcm2(energy_MeV, Z, A, I_eV)
+    range_mass = f_d * CSDA_range_mass(energy, Z, A, I)
 
-    return range_gcm2
+    return range_mass
 
 
-def extrapolated_range_mm(energy_keV, Z, A, I_eV, density_gcm3, ref=None):
+def extrapolated_range_length(energy, Z, A, I_eV, density, ref=None):
     """Compute electron extrapolated range with Tabata's analytical formulae.
 
     Args:
-      energy_keV: initial electron energy [keV]
+      energy: initial electron energy [pint quantity or default keV]
       Z: atomic number of material
       A: atomic weight of material [AMU]
-      I_eV: mean excitation energy of material [eV]
-      density_gcm3: density of material [g/cm^3]
+      I_eV: mean excitation energy of material [pint quantity or default eV]
+      density: density of material [pint quantity or g/cm^3]
       ref: may be '1996a', '2002', 'CSDA', or None.
         '1996a': calculate extrapolated range using 1996a detour factor.
         '2002': calculate extrapolated range using 2002 detour factor.
@@ -157,22 +171,32 @@ def extrapolated_range_mm(energy_keV, Z, A, I_eV, density_gcm3, ref=None):
         [Default: None]
 
     Returns:
-      float of the computed extrapolated range, in mm.
+      pint quantity of the computed extrapolated range
 
     Raises:
       EnergyOutOfRange: if energy is out of bounds of accuracy.
     """
 
-    range_gcm2 = extrapolated_range_gcm2(energy_keV, Z, A, I_eV, ref=ref)
-    range_mm = gcm2_to_mm(range_gcm2, density_gcm3)
-    return range_mm
+    try:
+        energy = energy.to(units.MeV)
+    except AttributeError:
+        energy = energy * units.keV
+
+    try:
+        density = density.to(units.g / units.cm**3)
+    except AttributeError:
+        density = density * (units.g / units.cm**3)
+
+    range_mass = extrapolated_range_mass(energy, Z, A, I_eV, ref=ref)
+    range_length = gcm2_to_mm(range_mass, density)
+    return range_length
 
 
-def CSDA_range_gcm2(energy_MeV, Z, A, I_eV):
+def CSDA_range_mass(energy, Z, A, I_eV):
     """Compute electron CSDA range, using analytical formula in Tabata 1996a.
 
     Args:
-      energy_MeV: initial electron energy [MeV]
+      energy: initial electron energy [pint quantity, or default MeV]
       Z: atomic number of material
       A: atomic weight of material [AMU]
       I_eV: mean excitation energy of material [eV]
@@ -184,10 +208,17 @@ def CSDA_range_gcm2(energy_MeV, Z, A, I_eV):
       EnergyOutOfRange: if energy is out of bounds of accuracy.
     """
 
-    energy_MeV = float(energy_MeV)
+    try:
+        energy = energy.to(units.MeV)
+    except AttributeError:
+        energy = energy * units.MeV
 
-    I = I_eV / (1e6 * ELECTRON_REST_ENERGY_MEV)
-    t0 = energy_MeV / ELECTRON_REST_ENERGY_MEV
+    try:
+        I = I_eV.to(units.eV)
+    except AttributeError:
+        I = I_eV * units.eV
+
+    t0 = (energy / ELECTRON_REST_ENERGY).to_base_units().magnitude
 
     d = TABATA_1996A_TABLE_2
     # Tabata 1996a equations 13--19
@@ -204,14 +235,14 @@ def CSDA_range_gcm2(energy_MeV, Z, A, I_eV):
     # Tabata 1996a equation 12
     B = np.log((t0 / (I + c[7] * t0))**2) + np.log(1 + t0/2)
     # Tabata 1996a equation 11
-    range_gcm2 = c[1] / B * (
+    range_mass = c[1] / B * (
         np.log(1 + c[2] * t0**c[3]) / c[2] -
-        c[4] * t0**c[5] / (1 + c[6] * t0))
+        c[4] * t0**c[5] / (1 + c[6] * t0)) * units.g / units.cm**2
 
-    return range_gcm2
+    return range_mass
 
 
-def CSDA_range_mm(energy_MeV, Z, A, I_eV, density_gcm3):
+def CSDA_range_length(energy, Z, A, I_eV, density):
     """Compute electron CSDA range, using analytical formula in Tabata 1996a.
 
     Args:
@@ -228,83 +259,88 @@ def CSDA_range_mm(energy_MeV, Z, A, I_eV, density_gcm3):
       EnergyOutOfRange: if energy is out of bounds of accuracy.
     """
 
-    range_gcm2 = CSDA_range_gcm2(energy_MeV, Z, A, I_eV)
-    range_mm = gcm2_to_mm(range_gcm2)
-    return range_mm
+    try:
+        energy = energy.to(units.MeV)
+    except AttributeError:
+        energy = energy * units.MeV
+
+    try:
+        density = density.to(units.g / units.cm**3)
+    except AttributeError:
+        density = density * (units.g / units.cm**3)
+
+    range_mass = CSDA_range_mass(energy, Z, A, I_eV)
+    range_length = gcm2_to_mm(range_mass, density)
+    return range_length
 
 
-def gcm2_to_mm(mass_thickness_gcm2, density_gcm3):
+def gcm2_to_mm(mass_thickness, density):
     """Convert a mass thickness to a length.
 
     Args:
-      mass_thickness_gcm2: mass thickness [g/cm^2]
-      density_gcm3: density of material [g/cm^3]
+      mass_thickness: mass thickness [pint quantity]
+      density: density of material [pint quantity]
 
     Returns:
-      float of the length in mm
+      pint quantity of the length (units mm)
     """
 
-    density_gcm3 = float(density_gcm3)
-    length_cm = mass_thickness_gcm2 / density_gcm3
-    length_mm = length_cm * 10
-
-    return length_mm
+    return (mass_thickness / density).to(units.mm)
 
 
-def _check_energy_1996a(energy_keV):
+def _check_energy_1996a(energy):
     """Check for energy value out of bounds for Tabata 1996a.
 
     Args:
-      energy_keV: initial electron energy [keV]
+      energy: initial electron energy [pint quantity]
 
     Raises:
       EnergyOutOfRange: if energy is out of bounds
     """
 
-    if energy_keV < MIN_ENERGY_1996A_KEV:
+    if energy < MIN_ENERGY_1996A:
         raise EnergyOutOfRange(
-            'Range is inaccurate below {} keV'.format(MIN_ENERGY_1996A_KEV))
-    elif energy_keV < SEMI_MIN_ENERGY_1996A_KEV:
+            'Range is inaccurate below {}'.format(MIN_ENERGY_1996A))
+    elif energy < SEMI_MIN_ENERGY_1996A:
         print(
-            'Range is less accurate below {} keV, '.format(
-                SEMI_MIN_ENERGY_1996A_KEV) +
+            'Range is less accurate below {}, '.format(
+                SEMI_MIN_ENERGY_1996A) +
             'because shell effects are ignored')
-    elif energy_keV > MAX_ENERGY_1996A_KEV:
+    elif energy > MAX_ENERGY_1996A:
         raise EnergyOutOfRange(
-            'Range is inaccurate above {} keV'.format(MAX_ENERGY_1996A_KEV))
+            'Range is inaccurate above {}'.format(MAX_ENERGY_1996A))
 
 
-def _check_energy_2002(energy_keV):
+def _check_energy_2002(energy):
     """Check for energy value out of bounds for Tabata 2002.
 
     Args:
-      energy_keV: initial electron energy [keV]
+      energy: initial electron energy [pint quantity]
 
     Raises:
       EnergyOutOfRange: if energy is out of bounds
     """
 
-    if energy_keV < MIN_ENERGY_2002_KEV:
+    if energy < MIN_ENERGY_2002:
         raise EnergyOutOfRange(
-            'Range is inaccurate below {} keV'.format(MIN_ENERGY_2002_KEV))
-    elif energy_keV > MAX_ENERGY_2002_KEV:
+            'Range is inaccurate below {}'.format(MIN_ENERGY_2002))
+    elif energy > MAX_ENERGY_2002:
         raise EnergyOutOfRange(
-            'Range is inaccurate above {} keV'.format(MAX_ENERGY_2002_KEV))
+            'Range is inaccurate above {}'.format(MAX_ENERGY_2002))
 
 
-def _detour_factor_1996a(energy_MeV, Z):
+def _detour_factor_1996a(energy, Z):
     """Ratio of extrapolated range to CSDA range, according to Tabata 1996a.
 
     Args:
-      energy_MeV: initial electron energy [MeV]
+      energy: initial electron energy [pint quantity]
       Z: atomic number of material
 
     Returns:
       a float representing (extrapolated range) / (CSDA range)
     """
 
-    energy_MeV = float(energy_MeV)
-    t0 = energy_MeV / ELECTRON_REST_ENERGY_MEV
+    t0 = (energy / ELECTRON_REST_ENERGY).to_base_units().magnitude
     b = TABATA_1996A_TABLE_1
     # Tabata 1996a equations 3--8
     a = (
@@ -324,19 +360,18 @@ def _detour_factor_1996a(energy_MeV, Z):
     return detour_factor
 
 
-def _detour_factor_2002(energy_MeV, Z):
+def _detour_factor_2002(energy, Z):
     """Ratio of extrapolated range to CSDA range, according to Tabata 2002.
 
     Args:
-      energy_MeV: initial electron energy [MeV]
+      energy: initial electron energy [pint quantity]
       Z: atomic number of material
 
     Returns:
       a float representing (extrapolated range) / (CSDA range)
     """
 
-    energy_MeV = float(energy_MeV)
-    t0 = energy_MeV / ELECTRON_REST_ENERGY_MEV
+    t0 = (energy / ELECTRON_REST_ENERGY).to_base_units().magnitude
     b = TABATA_2002_TABLE_2
     # Tabata 2002 equations 9--14
     a = (
