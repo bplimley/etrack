@@ -163,7 +163,7 @@ def extrapolated_range_mm(energy_keV, Z, A, I_eV, density_gcm3, ref=None):
       EnergyOutOfRange: if energy is out of bounds of accuracy.
     """
 
-    range_gcm2 = extrapolated_range_gcm2(energy_keV, Z, A, I_eV, ref=None)
+    range_gcm2 = extrapolated_range_gcm2(energy_keV, Z, A, I_eV, ref=ref)
     range_mm = gcm2_to_mm(range_gcm2, density_gcm3)
     return range_mm
 
@@ -286,10 +286,10 @@ def _check_energy_2002(energy_keV):
 
     if energy_keV < MIN_ENERGY_2002_KEV:
         raise EnergyOutOfRange(
-            'Range is inaccurate below {} keV'.format(MIN_ENERGY_1996A_KEV))
+            'Range is inaccurate below {} keV'.format(MIN_ENERGY_2002_KEV))
     elif energy_keV > MAX_ENERGY_2002_KEV:
         raise EnergyOutOfRange(
-            'Range is inaccurate above {} keV'.format(MAX_ENERGY_1996A_KEV))
+            'Range is inaccurate above {} keV'.format(MAX_ENERGY_2002_KEV))
 
 
 def _detour_factor_1996a(energy_MeV, Z):
