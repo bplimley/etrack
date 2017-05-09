@@ -473,7 +473,7 @@ def roc_curves():
 
     # low-end rejection: nominal 25 keV
     print('Testing low-end rejection thresholds...')
-    test_thresholds_low = np.arange(10, 50)
+    test_thresholds_low = np.arange(10, 51)
     conf_list_low = []
     for thresh in test_thresholds_low:
         caselist = sort_cases(datadict, min_end_max_kev=thresh)
@@ -483,7 +483,7 @@ def roc_curves():
 
     # escape rejection: nominal 45 keV
     print('Testing escape rejection thresholds...')
-    test_thresholds_esc = np.arange(20, 100)
+    test_thresholds_esc = np.arange(20, 101)
     conf_list_esc = []
     for thresh in test_thresholds_esc:
         caselist = sort_cases(datadict, max_end_min_kev=thresh)
@@ -495,29 +495,9 @@ def roc_curves():
     roc_low = RocCurve.from_confmat_list(conf_list_low)
     roc_esc = RocCurve.from_confmat_list(conf_list_esc)
 
-    ax = roc_low.plot(fmt='r', lw=2)
-    roc_esc.plot(ax=ax, fmt='--b', lw=2)
-    plt.plot([0, 1], [0, 1], ':k', lw=2)
-
-    low_ind = np.flatnonzero(test_thresholds_low == DEFAULT_MIN_END_MAX_KEV)[0]
-    low_confmat = conf_list_low[low_ind]
-    plt.plot(low_confmat.FPR, low_confmat.TPR, '*g', ms=12, lw=3)
-
-    esc_ind = np.flatnonzero(test_thresholds_esc == DEFAULT_MAX_END_MIN_KEV)[0]
-    esc_confmat = conf_list_esc[esc_ind]
-    plt.plot(esc_confmat.FPR, esc_confmat.TPR, '*g', ms=12, lw=3)
-
-    plt.legend([
-        'Low-energy end rejection (bad start segment)',
-        'High-energy end rejection (escape)',
-        'Random'], loc="lower right")
-    plt.xlabel('False Positive Rate (track discarded erroneously)',
-               fontsize=16)
-    plt.ylabel('True Positive Rate (track discarded correctly)', fontsize=16)
-
-    pdb.set_trace()
-
-    return roc_low, roc_esc, conf_list_low, conf_list_esc, ax
+    return (roc_low, roc_esc,
+            conf_list_low, conf_list_esc,
+            test_thresholds_low, test_thresholds_esc)
 
 
 class ConfusionException(Exception):
