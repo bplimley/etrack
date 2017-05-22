@@ -194,7 +194,7 @@ def hardcoded_bins():
         348.5078,
         404.5489,
         446.8330,
-        525.0])
+        490.0])
 
     beta_bin_edges = np.array([
         -90.0,
@@ -210,6 +210,7 @@ def hardcoded_bins():
         90.0])
 
     return energy_bin_edges, beta_bin_edges
+
 
 if __name__ == '__main__':
     run_main()

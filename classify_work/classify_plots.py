@@ -4,6 +4,7 @@
 """Code for generating plots for 2017 moments/classification paper."""
 
 from __future__ import print_function
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -12,6 +13,10 @@ import tally_results as tr
 
 MKR = ('*', 's', 'o', 'x', '^')
 MS = (8, 5, 5, 7, 6)
+
+SMALL_SIZE = 14
+MEDIUM_SIZE = 18
+LARGE_SIZE = 24
 
 plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
 plt.rc('axes', titlesize=MEDIUM_SIZE)     # fontsize of the axes title
@@ -161,26 +166,49 @@ def plot_escape_roc(datadict, e_bins, b_bins, abs_beta=True):
 
     # based on tally_results.roc_curves()
     test_thresholds_esc = np.arange(20, 101)
-    conf_list_esc = []
+    conf_list_esc = np.empty(
+        (len(e_bins) - 1, len(test_thresholds_esc)), dtype='O')
+
     print('Building escape ROC curve with {} points'.format(
         len(test_thresholds_esc)), end='')
-    for thresh in test_thresholds_esc:
-        caselist = tr.sort_cases(datadict, max_end_min_kev=thresh)
-        this_conf = tr.ConfusionMatrix.from_cases(
-            caselist, tr.ESCAPE_CASE_DICT, name='escape', thresh=thresh)
-        conf_list_esc.append(this_conf)
-        print('.', end='')
-    roc_esc = tr.RocCurve.from_confmat_list(conf_list_esc)
 
-    roc_esc.plot()
+    for j, thresh in enumerate(test_thresholds_esc):
+        caselist = tr.sort_cases(datadict, max_end_min_kev=thresh)
+        for i in range(len(e_bins) - 1):
+            e_lg = ((datadict['energy_tot_kev'] > e_bins[i]) &
+                    (datadict['energy_tot_kev'] <= e_bins[i + 1]))
+            this_conf = tr.ConfusionMatrix.from_cases(
+                caselist[e_lg], tr.ESCAPE_CASE_DICT, thresh=thresh)
+            conf_list_esc[i, j] = this_conf
+        print('.', end='')
+        sys.stdout.flush()
+
+    print(' ')
+    plt.figure(figsize=(10, 8))
+    ax = plt.axes()
+    for i in range(len(e_bins) - 1):
+        this_roc = tr.RocCurve.from_confmat_list(conf_list_esc[i, :])
+        this_roc.plot(ax=ax, lw=2, color='C' + str(i), mark=45 - 20,
+                      label='{}-{} keV'.format(e_bins[i], e_bins[i + 1]))
+        if i + 2 == len(e_bins):
+            make_roc_plot(this_roc, conf_list_esc[i, :], test_thresholds_esc,
+                          label='{}-{} keV'.format(e_bins[i], e_bins[i + 1]))
+
+    plt.legend()
+    plt.grid('on')
+    plt.show()
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~
 
 
 def get_roc_data():
+    """OUTDATED"""
     return tr.roc_curves()
 
 
 def low_end_roc_curve(roc_data):
-    """Plot the ROC curve for the low-energy end."""
+    """OUTDATED - Plot the ROC curve for the low-energy end."""
 
     roc, conf_list, test_thresholds = roc_data[0], roc_data[2], roc_data[4]
     fig = make_roc_plot(roc, conf_list, test_thresholds, label='low')
@@ -188,7 +216,7 @@ def low_end_roc_curve(roc_data):
 
 
 def escape_roc_curve(roc_data):
-    """Plot the ROC curve for the escape."""
+    """ OUTDATED - Plot the ROC curve for the escape."""
 
     roc, conf_list, test_thresholds = roc_data[1], roc_data[3], roc_data[5]
     fig = make_roc_plot(roc, conf_list, test_thresholds, label='escape')
@@ -198,9 +226,10 @@ def escape_roc_curve(roc_data):
 def make_roc_plot(roc, conf_list, test_thresholds, label=None):
     """Plot the ROC curve for the low-energy end."""
 
-    fig = plt.figure(figsize=(8, 8))
-    ax = roc.plot(color='C0', lw=2, label=label)
-    ax.grid('on')
+    # fig = plt.figure(figsize=(8, 8))
+    # ax = roc.plot(color='C0', lw=2, label=label)
+    # ax.grid('on')
+    ax = plt.gca()
     # plt.plot([0, 1], [0, 1], ':k', lw=2)
 
     if len(test_thresholds) > 50:
@@ -225,7 +254,7 @@ def make_roc_plot(roc, conf_list, test_thresholds, label=None):
                fontsize=15)
     plt.ylabel('True Positive Rate (track discarded correctly)', fontsize=15)
 
-    return fig
+    # return fig
 
 
 if __name__ == '__main__':

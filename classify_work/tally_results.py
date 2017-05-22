@@ -635,7 +635,7 @@ class RocCurve(object):
         obj = cls(TPR, FPR)
         return obj
 
-    def plot(self, ax=None, fmt=None, log=None, **kwargs):
+    def plot(self, ax=None, fmt=None, log=None, mark=None, **kwargs):
         """
         Plot the ROC curve.
 
@@ -658,6 +658,10 @@ class RocCurve(object):
             ax.semilogy(self.FPR, self.TPR, fmt, **kwargs)
         elif log.lower() == 'xy':
             ax.loglog(self.FPR, self.TPR, fmt, **kwargs)
+
+        if mark is not None and 'color' in kwargs:
+            ax.plot(self.FPR[mark], self.TPR[mark], '*', color=kwargs['color'],
+                    ms=7)
 
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
