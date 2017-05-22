@@ -5,6 +5,7 @@
 
 from __future__ import print_function
 import sys
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -29,6 +30,8 @@ plt.rc('text', usetex=False)
 
 arrowprops = {'width': 0, 'headwidth': 6, 'fc': 'k'}
 
+savepath = '/home/plimley/gh/ETCI/papers/moments/'
+
 
 def main():
     energy_bin_edges, beta_bin_edges = get_bins()
@@ -36,8 +39,13 @@ def main():
     datadict = get_data_dict()
 
     # plot_escape_fraction(datadict, energy_bin_edges, beta_bin_edges)
+    # plt.savefig(os.path.join(savepath, 'f_esc.png'))
+
     # plot_early_scatter(datadict, energy_bin_edges, beta_bin_edges)
+    # plt.savefig(os.path.join(savepath, 'f_earlysc.png'))
+
     plot_escape_roc(datadict, energy_bin_edges, beta_bin_edges)
+    plt.savefig(os.path.join(savepath, 'roc_escape.png'))
 
 
 def get_data_dict():
