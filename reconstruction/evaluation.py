@@ -273,6 +273,24 @@ class AlgorithmResults(object):
         self.beta_unc = None
 
     @classmethod
+    def from_datadict(cls, datadict, lg, alg):
+        """Construct from the datadict in tally_results.py
+
+        lg: logical array to apply to data
+        alg: 'ridge' or 'moments'
+        """
+
+        kwargs = {}
+        kwargs['alpha_true_deg'] = datadict['alpha_true_deg'][lg]
+        kwargs['alpha_meas_deg'] = datadict['alpha_{}_deg'.format(alg)][lg]
+        # kwargs['beta_true_deg'] = datadict['beta_true_deg'][lg]
+        kwargs['energy_tot_kev'] = datadict['energy_tot_kev'][lg]
+        kwargs['energy_dep_kev'] = datadict['energy_dep_kev'][lg]
+        kwargs['is_contained'] = datadict['is_contained'][lg]
+
+        return cls(**kwargs)
+
+    @classmethod
     def from_hdf5(cls, h5group,
                   h5_to_pydict=None, pydict_to_pyobj=None,
                   reconstruct_fits=False):
@@ -977,7 +995,7 @@ class AlphaGaussPlusConstant(AlphaUncertainty):
 
         # resolution calculation is from MATLAB
         self.resolution = np.minimum(100.0 * 180.0 / self.n_values, 15)
-        n_bins = np.ceil(180 / self.resolution)
+        n_bins = np.ceil(180 / self.resolution).astype(int)
         nhist, edges = np.histogram(
             self.delta, bins=n_bins, range=(0.0, 180.0))
 

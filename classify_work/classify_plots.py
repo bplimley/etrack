@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 
 from make_bins import hardcoded_bins as get_bins
 import tally_results as tr
+import etrack.reconstruction.evaluation as ev
 
 MKR = ('*', 's', 'o', 'x', '^')
 MS = (8, 5, 5, 7, 6)
@@ -44,8 +45,10 @@ def main():
     # plot_early_scatter(datadict, energy_bin_edges, beta_bin_edges)
     # plt.savefig(os.path.join(savepath, 'f_earlysc.png'))
 
-    plot_escape_roc(datadict, energy_bin_edges, beta_bin_edges)
-    plt.savefig(os.path.join(savepath, 'roc_escape.png'))
+    # plot_escape_roc(datadict, energy_bin_edges, beta_bin_edges)
+    # plt.savefig(os.path.join(savepath, 'roc_escape.png'))
+
+    plot_ridge_alpha(datadict, energy_bin_edges, beta_bin_edges)
 
 
 def get_data_dict():
@@ -65,42 +68,34 @@ def plot_escape_fraction(datadict, e_bins, b_bins, abs_beta=True, yerr=False):
 
     plt.figure(figsize=(8, 6))
 
-    n_bins = len(b_bins) - 1
+    energy_lg, e_left, e_right = get_energy_lg(datadict, e_bins)
+    beta_lg, b_left, b_right = get_beta_lg(datadict, b_bins, abs_beta=abs_beta)
     if abs_beta:
-        jrange = range(n_bins / 2, n_bins)
+        labelbase = u'{:.1f}° < |β| < {:.1f}°'
     else:
-        jrange = range(n_bins)
+        labelbase = u'{:.1f}° < β < {:.1f}°'
 
-    for j in jrange:
-        if abs_beta:
-            beta_lg = ((np.abs(datadict['beta_true_deg']) > b_bins[j]) &
-                       (np.abs(datadict['beta_true_deg']) <= b_bins[j + 1]))
-        else:
-            beta_lg = ((datadict['beta_true_deg'] > b_bins[j]) &
-                       (datadict['beta_true_deg'] <= b_bins[j + 1]))
+    for j, b_lg in enumerate(beta_lg):
         f = []
         f_unc = []
         e_mean = []
         e_err = np.zeros((2, len(e_bins) - 1))
-        for i in range(len(e_bins) - 1):
-            e_lg = ((datadict['energy_tot_kev'] > e_bins[i]) &
-                    (datadict['energy_tot_kev'] <= e_bins[i + 1]))
-            n_esc = np.sum(beta_lg & e_lg & (datadict['is_contained'] == 0))
-            n_con = np.sum(beta_lg & e_lg & (datadict['is_contained'] == 1))
+        for i, e_lg in enumerate(energy_lg):
+            n_esc = np.sum(b_lg & e_lg & (datadict['is_contained'] == 0))
+            n_con = np.sum(b_lg & e_lg & (datadict['is_contained'] == 1))
             n_tot = n_esc + n_con
             f.append(float(n_esc) / float(n_tot))
             f_unc.append(np.sqrt(n_tot * f[-1] * (1 - f[-1])) / float(n_tot))
-            e_mean.append(np.mean(datadict['energy_tot_kev'][e_lg & beta_lg]))
-            e_err[0, i] = e_mean[-1] - e_bins[i]
-            e_err[1, i] = e_bins[i + 1] - e_mean[-1]
+            e_mean.append(np.mean(datadict['energy_tot_kev'][e_lg & b_lg]))
+            e_err[0, i] = e_mean[-1] - e_left[i]
+            e_err[1, i] = e_right[i] - e_mean[-1]
 
         m = MKR[j % len(MKR)]
         ms = MS[j % len(MS)]
         if not yerr:
             f_unc = None
         plt.errorbar(e_mean, f, yerr=f_unc, xerr=e_err, fmt=m, ms=ms,
-                     label=u'{:.1f}° < β < {:.1f}°'.format(
-                         b_bins[j], b_bins[j + 1]))
+                     label=labelbase.format(b_left[j], b_right[j]))
 
     plt.xlabel('Energy [keV]')
     plt.ylabel(u'Fraction escaping from 650 µm Si')
@@ -121,44 +116,34 @@ def plot_early_scatter(datadict, e_bins, b_bins, abs_beta=True, yerr=False):
 
     plt.figure(figsize=(8, 6))
 
-    n_bins = len(b_bins) - 1
+    energy_lg, e_left, e_right = get_energy_lg(datadict, e_bins)
+    beta_lg, b_left, b_right = get_beta_lg(datadict, b_bins, abs_beta=abs_beta)
     if abs_beta:
-        jrange = range(n_bins / 2, n_bins)
+        labelbase = u'{:.1f}° < |β| < {:.1f}°'
     else:
-        jrange = range(n_bins)
+        labelbase = u'{:.1f}° < β < {:.1f}°'
 
-    for j in jrange:
-        if abs_beta:
-            beta_lg = ((np.abs(datadict['beta_true_deg']) > b_bins[j]) &
-                       (np.abs(datadict['beta_true_deg']) <= b_bins[j + 1]))
-        else:
-            beta_lg = ((datadict['beta_true_deg'] > b_bins[j]) &
-                       (datadict['beta_true_deg'] <= b_bins[j + 1]))
+    for j, b_lg in enumerate(beta_lg):
         f = []
         f_unc = []
         e_mean = []
-        e_err = np.zeros((2, len(e_bins) - 1))
-        for i in range(len(e_bins) - 1):
-            e_lg = ((datadict['energy_tot_kev'] > e_bins[i]) &
-                    (datadict['energy_tot_kev'] <= e_bins[i + 1]))
-            n_sc = np.sum(
-                beta_lg & e_lg & (datadict['early_scatter_flag'] == 1))
-            n_no = np.sum(
-                beta_lg & e_lg & (datadict['early_scatter_flag'] == 0))
+        e_err = np.zeros((2, len(energy_lg)))
+        for i, e_lg in enumerate(energy_lg):
+            n_sc = np.sum(b_lg & e_lg & (datadict['early_scatter_flag'] == 1))
+            n_no = np.sum(b_lg & e_lg & (datadict['early_scatter_flag'] == 0))
             n_tot = n_sc + n_no
             f.append(float(n_sc) / float(n_tot))
             f_unc.append(np.sqrt(n_tot * f[-1] * (1 - f[-1])) / float(n_tot))
-            e_mean.append(np.mean(datadict['energy_tot_kev'][e_lg & beta_lg]))
-            e_err[0, i] = e_mean[-1] - e_bins[i]
-            e_err[1, i] = e_bins[i + 1] - e_mean[-1]
+            e_mean.append(np.mean(datadict['energy_tot_kev'][e_lg & b_lg]))
+            e_err[0, i] = e_mean[-1] - e_left[i]
+            e_err[1, i] = e_right[i] - e_mean[-1]
 
         m = MKR[j % len(MKR)]
         ms = MS[j % len(MS)]
         if not yerr:
             f_unc = None
         plt.errorbar(e_mean, f, yerr=f_unc, xerr=e_err, fmt=m, ms=ms,
-                     label=u'{:.1f}° < β < {:.1f}°'.format(
-                         b_bins[j], b_bins[j + 1]))
+                     label=labelbase.format(b_left[j], b_right[j]))
 
     plt.xlabel('Energy [keV]')
     plt.ylabel(u'Fraction scattering >30° in <25µm 2D')
@@ -177,16 +162,16 @@ def plot_escape_roc(datadict, e_bins, b_bins, abs_beta=True):
     conf_list_esc = np.empty(
         (len(e_bins) - 1, len(test_thresholds_esc)), dtype='O')
 
+    e_lg, e_left, e_right = get_energy_lg(datadict, e_bins)
+
     print('Building escape ROC curve with {} points'.format(
         len(test_thresholds_esc)), end='')
 
     for j, thresh in enumerate(test_thresholds_esc):
         caselist = tr.sort_cases(datadict, max_end_min_kev=thresh)
-        for i in range(len(e_bins) - 1):
-            e_lg = ((datadict['energy_tot_kev'] > e_bins[i]) &
-                    (datadict['energy_tot_kev'] <= e_bins[i + 1]))
+        for i, lg in enumerate(e_lg):
             this_conf = tr.ConfusionMatrix.from_cases(
-                caselist[e_lg], tr.ESCAPE_CASE_DICT, thresh=thresh)
+                caselist[lg], tr.ESCAPE_CASE_DICT, thresh=thresh)
             conf_list_esc[i, j] = this_conf
         print('.', end='')
         sys.stdout.flush()
@@ -194,13 +179,13 @@ def plot_escape_roc(datadict, e_bins, b_bins, abs_beta=True):
     print(' ')
     plt.figure(figsize=(10, 8))
     ax = plt.axes()
-    for i in range(len(e_bins) - 1):
+    for i in range(len(e_lg)):
         this_roc = tr.RocCurve.from_confmat_list(conf_list_esc[i, :])
         this_roc.plot(ax=ax, lw=2, color='C' + str(i), mark=45 - 20,
-                      label='{}-{} keV'.format(e_bins[i], e_bins[i + 1]))
+                      label='{}-{} keV'.format(e_left[i], e_right[i]))
         if i + 2 == len(e_bins):
             make_roc_plot(this_roc, conf_list_esc[i, :], test_thresholds_esc,
-                          label='{}-{} keV'.format(e_bins[i], e_bins[i + 1]))
+                          label='{}-{} keV'.format(e_left[i], e_right[i]))
 
     plt.legend()
     plt.grid('on')
@@ -232,7 +217,7 @@ def escape_roc_curve(roc_data):
 
 
 def make_roc_plot(roc, conf_list, test_thresholds, label=None):
-    """Plot the ROC curve for the low-energy end."""
+    """Plot the threshold labels for an ROC plot."""
 
     # fig = plt.figure(figsize=(8, 8))
     # ax = roc.plot(color='C0', lw=2, label=label)
@@ -262,7 +247,104 @@ def make_roc_plot(roc, conf_list, test_thresholds, label=None):
                fontsize=15)
     plt.ylabel('True Positive Rate (track discarded correctly)', fontsize=15)
 
-    # return fig
+
+def plot_ridge_alpha(datadict, e_bins, b_bins):
+    """..."""
+
+    labelbase = u'{:.1f}° < |β| < {:.1f}°'
+
+    beta_lg, b_left, b_right = get_beta_lg(
+        datadict, b_bins, abs_beta=True)
+    energy_lg, e_left, e_right = get_energy_lg(datadict, e_bins)
+
+    ridge = np.empty((len(beta_lg), len(energy_lg)), dtype='O')
+    moments = np.empty((len(beta_lg), len(energy_lg)), dtype='O')
+
+    for j, b_lg in enumerate(beta_lg):
+        for i, e_lg in enumerate(energy_lg):
+            this_ridge_ar = ev.AlgorithmResults.from_datadict(
+                datadict, b_lg & e_lg, 'ridge')
+            this_moments_ar = ev.AlgorithmResults.from_datadict(
+                datadict, b_lg & e_lg, 'moments')
+            this_ridge_ar.add_uncertainty(ev.AlphaGaussPlusConstant)
+            this_moments_ar.add_uncertainty(ev.AlphaGaussPlusConstant)
+            ridge[j, i] = this_ridge_ar
+            moments[j, i] = this_moments_ar
+
+    algs = ('ridge', 'moments')
+    for k, ar in enumerate((ridge, moments)):
+        for m, metric in enumerate(('FWHM', 'f')):
+            plt.figure(figsize=(8, 6))
+            ax = plt.axes()
+            for j, b_lg in enumerate(beta_lg):
+                mk = MKR[j % len(MKR)]
+                ms = MS[j % len(MS)]
+                metrics = []
+                e_mean = []
+                e_err = np.zeros((2, len(energy_lg)))
+                for i, e_lg in enumerate(energy_lg):
+                    e_mean.append(
+                        np.mean(datadict['energy_tot_kev'][e_lg & b_lg]))
+                    e_err[0, i] = e_mean[-1] - e_left[i]
+                    e_err[1, i] = e_right[i] - e_mean[-1]
+                    metrics.append(ar[j, i].alpha_unc.metrics[metric])
+                y = [met.value for met in metrics]
+                yerr = [met.uncertainty[0] for met in metrics]
+                ax.errorbar(e_mean, y, yerr=yerr, xerr=e_err, fmt=mk, ms=ms,
+                            label=labelbase.format(b_left[j], b_right[j]))
+            plt.xlabel('Energy [keV]')
+            plt.ylabel('{} [{}]'.format(metrics[0].name, metrics[0].units))
+            plt.ylim((metrics[0].axis_min, metrics[0].axis_max))
+            plt.xlim((0, 500))
+            plt.title('{} {}'.format(algs[k], metrics[0].name))
+            plt.legend()
+            plt.grid('on')
+            plt.show()
+            savename = '{}_{}.png'.format(('FWHM', 'f')[m], algs[k])
+            plt.savefig(os.path.join(savepath, savename))
+
+
+def get_beta_lg(datadict, b_bins, abs_beta=True):
+    """Get a list of logical vectors, representing each beta bin."""
+
+    n_bins = len(b_bins) - 1
+    if abs_beta:
+        jrange = range(n_bins / 2, n_bins)
+    else:
+        jrange = range(n_bins)
+
+    beta_lg = []
+    beta_left = []
+    beta_right = []
+
+    for j in jrange:
+        if abs_beta:
+            this_lg = ((np.abs(datadict['beta_true_deg']) > b_bins[j]) &
+                       (np.abs(datadict['beta_true_deg']) <= b_bins[j + 1]))
+        else:
+            this_lg = ((datadict['beta_true_deg'] > b_bins[j]) &
+                       (datadict['beta_true_deg'] <= b_bins[j + 1]))
+        beta_lg.append(this_lg)
+        beta_left.append(b_bins[j])
+        beta_right.append(b_bins[j + 1])
+
+    return beta_lg, beta_left, beta_right
+
+
+def get_energy_lg(datadict, e_bins):
+    """Get a list of logical vectors, representing each energy bin."""
+
+    energy_lg = []
+    energy_left = []
+    energy_right = []
+    for i in range(len(e_bins) - 1):
+        this_lg = ((datadict['energy_tot_kev'] > e_bins[i]) &
+                   (datadict['energy_tot_kev'] <= e_bins[i + 1]))
+        energy_lg.append(this_lg)
+        energy_left.append(e_bins[i])
+        energy_right.append(e_bins[i + 1])
+
+    return energy_lg, energy_left, energy_right
 
 
 if __name__ == '__main__':
