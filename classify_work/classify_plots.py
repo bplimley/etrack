@@ -39,14 +39,14 @@ def main():
 
     datadict = get_data_dict()
 
-    # plot_escape_fraction(datadict, energy_bin_edges, beta_bin_edges)
-    # plt.savefig(os.path.join(savepath, 'f_esc.png'))
+    plot_escape_fraction(datadict, energy_bin_edges, beta_bin_edges)
+    plt.savefig(os.path.join(savepath, 'f_esc.eps'))
 
-    # plot_early_scatter(datadict, energy_bin_edges, beta_bin_edges)
-    # plt.savefig(os.path.join(savepath, 'f_earlysc.png'))
+    plot_early_scatter(datadict, energy_bin_edges, beta_bin_edges)
+    plt.savefig(os.path.join(savepath, 'f_earlysc.eps'))
 
-    # plot_escape_roc(datadict, energy_bin_edges, beta_bin_edges)
-    # plt.savefig(os.path.join(savepath, 'roc_escape.png'))
+    plot_escape_roc(datadict, energy_bin_edges, beta_bin_edges)
+    plt.savefig(os.path.join(savepath, 'roc_escape.eps'))
 
     plot_ridge_alpha(datadict, energy_bin_edges, beta_bin_edges)
 
@@ -89,6 +89,10 @@ def plot_escape_fraction(datadict, e_bins, b_bins, abs_beta=True, yerr=False):
             e_mean.append(np.mean(datadict['energy_tot_kev'][e_lg & b_lg]))
             e_err[0, i] = e_mean[-1] - e_left[i]
             e_err[1, i] = e_right[i] - e_mean[-1]
+            if i + 1 == len(energy_lg):
+                print(u'f_escape for |β| {}-{}°, E {}-{} keV: {}±{}'.format(
+                    b_left[j], b_right[j], e_left[i], e_right[i],
+                    f[-1], f_unc[-1]))
 
         m = MKR[j % len(MKR)]
         ms = MS[j % len(MS)]
