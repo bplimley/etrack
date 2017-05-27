@@ -239,7 +239,7 @@ class Classifier(object):
                             use2d_angle=True, use2d_dist=True,
                             angle_threshold_deg=30):
         """
-        look for a >90 degree direction change within the first scatterlen_um
+        look for a >30 degree direction change within the first scatterlen_um
         of track.
 
         v: verbosity (True: print "Early scatter!")
